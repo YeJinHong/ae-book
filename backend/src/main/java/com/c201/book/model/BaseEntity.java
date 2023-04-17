@@ -13,27 +13,27 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public abstract class BaseEntity {
 
 	@CreatedDate
-	@Column(name = "created_date", updatable = false)
-	private LocalDateTime createdDate;
+	@Column(name = "created_at", updatable = false)
+	private LocalDateTime createdAt;
 
 	@LastModifiedDate
-	@Column(name = "updated_date")
-	private LocalDateTime updatedDate;
+	@Column(name = "updated_at")
+	private LocalDateTime updatedAt;
 
-	public LocalDateTime getCreatedDate() {
-		return createdDate;
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
 	}
 
-	public LocalDateTime getUpdatedDate() {
-		return updatedDate;
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
 	}
 
 	/**
-	 * 엔티티를 저장할 때 자동으로 createdDate 값을 설정
+	 * 엔티티를 저장할 때 자동으로 createdAt 값을 설정
 	 */
-	public void setCreatedDate(LocalDateTime createdDate) {
-		if (this.createdDate == null) {
-			this.createdDate = createdDate;
+	public void setCreatedAt(LocalDateTime createdAt) {
+		if (this.createdAt == null) {
+			this.createdAt = createdAt;
 		}
 	}
 
