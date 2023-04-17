@@ -34,7 +34,10 @@ async def create_review(title:str, words: str, writer=None, char=None):
     elif writer == None:
         
         #default number of character value
-        char = max(100,char)
+        if char == None:
+            char = 100
+        else:
+            char = max(100,char)
         
         m = f"제목:{title}, 키워드:{words}, 서평 {char}자 이내"
     
