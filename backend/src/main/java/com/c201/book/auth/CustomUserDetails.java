@@ -11,8 +11,12 @@ import java.util.List;
 public class CustomUserDetails implements UserDetails {
 
     private User user;
-    public CustomUserDetails(User user) { this.user = user; }
     List<GrantedAuthority> roles = new ArrayList<>();
+
+    public CustomUserDetails(User user) {
+        this.user = user;
+    }
+
     public void setAuthorities(List<GrantedAuthority> roles) {
         this.roles = roles;
     }
