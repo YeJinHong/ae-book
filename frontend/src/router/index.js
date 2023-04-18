@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
-import ColoringBoardView from '../views/ColoringBoardView.vue'
+import PaintingBoardView from '../views/PaintingBoardView.vue'
 
 Vue.use(Router)
 
@@ -13,9 +13,9 @@ export default new Router({
       component: HelloWorld
     },
     {
-      path: '/coloring',
-      name: 'ColoringBoard',
-      component: ColoringBoardView
+      path: '/painting',
+      name: 'PaintingBoard',
+      component: PaintingBoardView
     }
   ]
 })
