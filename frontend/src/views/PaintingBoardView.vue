@@ -30,8 +30,8 @@
     <div class="tools">
       <input id="line-width" @change="onLineWidthChange" type="range" min="5" max="20" value="10">
       <button id="reset-btn">초기화</button>
-      <button id="eraser-btn">지우개</button>
-      <button id="brush-btn">브러쉬</button>
+      <button id="eraser-btn" @click="onEraserClick">지우개</button>
+      <button id="brush-btn" @click="onBrushClick">브러쉬</button>
     </div>
     <div>
       <button>종료</button>
@@ -49,6 +49,7 @@ export default {
       canvas: Object,
       ctx: Object,
       isPainting: false,
+      mode: 'brush',
       colorOptions1: ['#ff0000', '#ff8c00', '#ffff00', '#008000'],
       colorOptions2: ['#0000ff', '#800080', '#000080', '#000000']
     }
@@ -63,9 +64,12 @@ export default {
   methods: {
     onMove (event) {
       if (this.isPainting) {
-        this.ctx.lineTo(event.offsetX, event.offsetY)
-        this.ctx.stroke()
-        return
+        if (this.mode === 'brush') {
+          this.ctx.lineTo(event.offsetX, event.offsetY)
+          this.ctx.stroke()
+        } else if (this.mode === 'eraser') {
+          this.ctx.clearRect(event.offsetX - 5, event.offsetY - 5, this.ctx.lineWidth, this.ctx.lineWidth)
+        }
       }
       this.ctx.beginPath()
       this.ctx.moveTo(event.offsetX, event.offsetY)
@@ -83,6 +87,12 @@ export default {
     onColorClick (color) {
       this.ctx.strokeStyle = color
       this.ctx.fillStyle = color
+    },
+    onBrushClick () {
+      this.mode = 'brush'
+    },
+    onEraserClick () {
+      this.mode = 'eraser'
     }
   }
 }
