@@ -1,5 +1,6 @@
 package com.c201.book.config;
 
+import com.c201.book.config.jwt.JwtAccessDeniedHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,8 @@ import org.springframework.web.filter.CorsFilter;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler; // 403 error(Forbidden, 권한 없음) 처리
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -52,7 +55,7 @@ public class SecurityConfig {
                 .addFilter(corsFilter()) // 커스텀 필터(corsFilter) 추가
                 .exceptionHandling() // 예외처리 기능 사용
                 //.authenticationEntryPoint(jwtAuthenticationEntryPoint) // 401 error(Unauthorized) 처리
-                //.accessDeniedHandler(jwtAccessDeniendHandeler) // 403 error(Forbidden) 처리
+                .accessDeniedHandler(jwtAccessDeniedHandler) // 403 error(Forbidden) 처리
                 .and()
                 //.apply(new JwtSecurityConfig(jwtTokenProvider, redisTemplate)) // 사용자 정의 API(JWT 토큰 관련 처리) 추가
 
