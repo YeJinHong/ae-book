@@ -2,6 +2,7 @@ package com.c201.book.service;
 
 import com.c201.book.api.common.BaseResponse;
 import com.c201.book.api.request.ReviewReqDto;
+import com.c201.book.model.Review;
 
 public interface ReviewService {
     // 1. saveReview : 서평 등록
@@ -16,4 +17,7 @@ public interface ReviewService {
     // 5. modifyReview : 특정 서평 수정
 
     // 6. deleteReview : 특정 서평 삭제
+    
+    // 7. findReviewByUserIdAndBookId : 유저가 특정 책에 작성한 서평 조회
+    public Review findReviewByUserIdAndBookId(Long userId, Long bookId);
 }
