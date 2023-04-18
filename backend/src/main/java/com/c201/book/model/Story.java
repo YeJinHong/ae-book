@@ -12,15 +12,16 @@ import javax.persistence.*;
 public class Story extends BaseEntity{
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
-    @Column(nullable = false, length = 500)
+    @Column(name = "title", nullable = false, length = 500)
     private String title;
 
-    @Column(nullable = false, length = 1500)
+    @Column(name = "content", nullable = false, length = 1500)
     private String content;
 
-    @Column(nullable = false, length = 200)
+    @Column(name = "img_url", nullable = false, length = 200)
     private String imgUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -30,7 +31,7 @@ public class Story extends BaseEntity{
     @Builder
     public Story(String title, String content, String imgUrl, User user) {
         this.title = title;
-        this. content = content;
+        this.content = content;
         this.imgUrl = imgUrl;
         this.user = user;
     }
