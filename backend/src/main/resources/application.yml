@@ -3,7 +3,7 @@ spring:
     group:
       local: db
       dev: db
-    active: local
+    active: dev
   data:
     redis:
       host: localhost
