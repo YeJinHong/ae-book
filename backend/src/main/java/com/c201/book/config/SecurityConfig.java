@@ -2,6 +2,8 @@ package com.c201.book.config;
 
 import com.c201.book.config.jwt.JwtAccessDeniedHandler;
 import com.c201.book.config.jwt.JwtAuthenticationEntryPoint;
+import com.c201.book.config.jwt.JwtSecurityConfig;
+import com.c201.book.config.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +23,7 @@ public class SecurityConfig {
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint; // 401 error(Unauthorized, 인증 자격 증명 불가) 처리
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler; // 403 error(Forbidden, 권한 없음) 처리
+    private final JwtTokenProvider jwtTokenProvider; //JWT 토큰 생성 관리
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -59,9 +62,9 @@ public class SecurityConfig {
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint) // 401 error(Unauthorized) 처리
                 .accessDeniedHandler(jwtAccessDeniedHandler) // 403 error(Forbidden) 처리
                 .and()
-                //.apply(new JwtSecurityConfig(jwtTokenProvider, redisTemplate)) // 사용자 정의 API(JWT 토큰 관련 처리) 추가
+                .apply(new JwtSecurityConfig(jwtTokenProvider)) // 사용자 정의 Filter(JWT 토큰 관련 처리) 추가
 
-                //.and()
+                .and()
                 .authorizeHttpRequests() // 요청에 대한 권한 인증 필요
                 .requestMatchers().permitAll() //나머지 설정은 API 다 나오면 계속 진행 예정
                 .anyRequest().permitAll(); // 이외의 다른 요청들 모든 페이지 접근 가능
