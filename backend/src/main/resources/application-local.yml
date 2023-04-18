@@ -1,4 +1,10 @@
 spring:
+  profiles:
+    group:
+      local:
+        - db
+      dev:
+        - db
   config:
     activate:
       on-profile: local
