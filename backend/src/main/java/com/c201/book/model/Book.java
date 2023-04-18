@@ -14,41 +14,44 @@ import java.sql.Date;
 public class Book extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "title", nullable = false, length = 100)
     private String title;
 
-    @Column(length = 1000)
+    @Column(name = "description", length = 1000)
     private String description;
 
-    @Column(nullable = false, length = 50)
+    @Column(name = "author", nullable = false, length = 50)
     private String author;
 
-    @Column(length = 50)
+    @Column(name = "publisher", length = 50)
     private String publisher;
 
+    @Column(name = "publish_date")
     private Date publishDate;
 
-    @Column(nullable = false, length = 40)
+    @Column(name = "isbn", nullable = false, length = 40)
     private String isbn;
 
+    @Column(name = "page")
     private int page;
 
-    @Column(nullable = false)
+    @Column(name = "price", nullable = false)
     private int price;
 
-    @Column(nullable = false, length = 200)
+    @Column(name = "aladin_url", nullable = false, length = 200)
     private String aladinUrl;
 
-    @Column(length = 200)
-//    @Column(length = 200, columnDefinition = "표지없음 s3 링크")
+    @Column(name = "cover_image_url", length = 200)
+//    @Column(name = "cover_image_url", length = 200, columnDefinition = "표지없음 s3 링크")
     private String coverImageUrl;
 
-    @ColumnDefault("0")
+    @Column(name = "score_sum", columnDefinition = "0")
     private int scoreSum;
 
-    @ColumnDefault("0")
+    @Column(name = "review_count", columnDefinition = "0")
     private int reviewCount;
 
     @Builder
