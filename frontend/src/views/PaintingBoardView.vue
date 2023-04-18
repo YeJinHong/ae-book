@@ -29,7 +29,7 @@
     </div>
     <div class="tools">
       <input id="line-width" @change="onLineWidthChange" type="range" min="5" max="20" value="10">
-      <button id="reset-btn">초기화</button>
+      <button id="reset-btn" @click="onResetClick">초기화</button>
       <button id="eraser-btn" @click="onEraserClick">지우개</button>
       <button id="brush-btn" @click="onBrushClick">브러쉬</button>
     </div>
@@ -93,6 +93,10 @@ export default {
     },
     onEraserClick () {
       this.mode = 'eraser'
+    },
+    onResetClick () {
+      this.ctx.clearRect(0, 0, 800, 500)
+      this.ctx.beginPath()
     }
   }
 }
