@@ -1,17 +1,11 @@
 spring:
-  profiles:
-    group:
-      local:
-        - db
-      dev:
-        - db
   config:
     activate:
       on-profile: local
   jpa:
     show-sql: true # true 설정시 JPA 쿼리문 확인 가능
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
       use-new-id-generator-mappings: false
     properties:
       hibernate:
