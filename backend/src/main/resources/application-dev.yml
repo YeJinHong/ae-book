@@ -1,8 +1,4 @@
 spring:
-  profiles:
-    group:
-      dev:
-        - db
   config:
     activate:
       on-profile: dev
