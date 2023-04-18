@@ -1,7 +1,10 @@
 spring:
   profiles:
     group:
-      "local": "local"
-      "dev": "dev"
+      local: db
+      dev: db
     active: dev
-
+  data:
+    redis:
+      host: localhost
+      port: 6379
