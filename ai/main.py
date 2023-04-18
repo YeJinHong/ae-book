@@ -1,7 +1,16 @@
-from fastapi import FastAPI
+from fastapi import FastAPI,File,UploadFile
+from fastapi.responses import JSONResponse
+
 from dotenv import load_dotenv
 import os
 import openai
+
+import io
+import base64
+
+import cv2
+
+import numpy as np
 
 app = FastAPI()
 
@@ -55,3 +64,50 @@ async def create_review(title:str, words: str, writer=None, char=None):
     
     #chatgpt response
     return completion.choices[0].message
+
+
+#convert image to sketch
+@app.post("/paintings/sketch")
+async def image_to_sketch(image: UploadFile = File(...)):
+    
+    #read image data
+    
+    img = await image.read()
+    
+    #convert image to byte string
+    
+    img = np.fromstring(img,dtype=np.uint8)
+    
+    #read image
+    img = cv2.imdecode(img,cv2.IMREAD_COLOR)
+    
+    #convert the color image to grayscale
+    gray_image = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    
+    #apply inverted filter
+    inverted_image = 255 - gray_image
+    
+    #apply gaussian blur
+    blur = cv2.GaussianBlur(inverted_image,(21,21),0)
+    
+    #convert blur image to inverted blur
+    inv_blur = 255 - blur
+    
+    #convert it to sketch image
+    #sketch can be obtained by performing bit-wise division
+    #between grayscale image and inverted-blur image
+    sketch = cv2.divide(gray_image, inv_blur, scale = 256.0)
+    
+    #convert sketch image to binary string
+    binary_sketch = cv2.imencode('.jpg',sketch)[1].tobytes()
+    
+    # encoding byte string to base64
+    encoded = base64.b64encode(binary_sketch)
+    
+    # decoding base64 to ascii
+    decoded = encoded.decode('ascii')
+    
+    #return json response
+    return JSONResponse(decoded)
+    
+    
