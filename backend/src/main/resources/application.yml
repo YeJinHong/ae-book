@@ -3,5 +3,5 @@ spring:
     group:
       "local": "local"
       "dev": "dev"
-    active: dev
+    active: local
 
