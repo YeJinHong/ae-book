@@ -1,15 +1,11 @@
 from fastapi import FastAPI,File,UploadFile
 from fastapi.responses import JSONResponse
-
 from dotenv import load_dotenv
 import os
 import openai
-
 import io
 import base64
-
 import cv2
-
 import numpy as np
 
 app = FastAPI()
@@ -71,11 +67,9 @@ async def create_review(title:str, words: str, writer=None, char=None):
 async def image_to_sketch(image: UploadFile = File(...)):
     
     #read image data
-    
     img = await image.read()
     
     #convert image to byte string
-    
     img = np.fromstring(img,dtype=np.uint8)
     
     #read image
