@@ -29,8 +29,10 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 
 	// swagger lib
-	implementation 'io.springfox:springfox-swagger2:2.9.2'
-	implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+//	implementation 'io.springfox:springfox-swagger2:2.9.2'
+//	implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+	// https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui
+	implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.6.9'
 
 }
 
