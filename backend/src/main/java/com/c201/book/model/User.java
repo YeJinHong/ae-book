@@ -15,7 +15,7 @@ public class User extends BaseEntity{
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "kakao_id", nullable = false, length = 200)
+    @Column(name = "kakao_id", length = 200)
     private Long kakaoId;
 
     @Column(name = "nickname", length = 100)
@@ -25,9 +25,10 @@ public class User extends BaseEntity{
     private String phone;
 
     @Column(name = "profile_url", length = 200)
+    // @Column(name = "profile_url", length = 200, columnDefinition = "카카오에서 주는 url")
     private String profileUrl;
 
-    @Column(name = "status", nullable = false)
+    @Column(name = "status", nullable = false, columnDefinition = "TINYINT default 1")
     private Boolean status;
 
     @Builder
