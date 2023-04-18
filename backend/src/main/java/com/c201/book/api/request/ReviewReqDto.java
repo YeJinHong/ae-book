@@ -11,4 +11,5 @@ import lombok.Data;
 public class ReviewReqDto {
     private String content;
     private int score;
+    private long bookId;
 }
