@@ -12,12 +12,13 @@ import javax.persistence.*;
 public class Review extends BaseEntity{
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
-    @Column(nullable = false, length = 1000)
+    @Column(name = "content", nullable = false, length = 1000)
     private String content;
 
-    @Column(nullable = false)
+    @Column(name = "score", nullable = false)
     private int score;
 
     @ManyToOne(fetch = FetchType.LAZY)
