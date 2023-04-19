@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.c201.book.api.common.BaseResponse;
 import com.c201.book.api.request.ReviewReqDto;
-import com.c201.book.api.vo.ReviewSo;
+import com.c201.book.api.vo.ReviewSO;
 import com.c201.book.converter.ReviewConverter;
 import com.c201.book.service.ReviewServiceImpl;
 import com.c201.book.utils.DtoValidationUtils;
@@ -51,7 +51,7 @@ public class ReviewController {
 		// DTO NOT NULL 검증
 		dtoValidationUtils.validateReviewReqDto(reviewReqDto);
 
-		ReviewSo reviewSo = reviewConverter.toReviewSo(reviewReqDto);
+		ReviewSO reviewSo = reviewConverter.toReviewSo(reviewReqDto);
 		// 서평 등록
 		//        reviewService.saveReview(Long.parseLong(customUserDetails.getUsername()), reviewReqDto); // TODO: 로그인 완성되면 아래 삭제하고 사용
 		reviewService.saveReview(1L, isbn, reviewReqDto); // 로그인 완성 전 하드코딩
