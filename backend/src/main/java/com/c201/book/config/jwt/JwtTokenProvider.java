@@ -26,6 +26,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class JwtTokenProvider implements InitializingBean {
 
+    private static final String AUTHORIZATION_HEADER = "Authorization"; //access token header
+    private static final String REFRESH_HEADER = "Refresh";
     private static final String AUTHORITIES_KEY = "auth";
     private static final String BEARER_TYPE = "Bearer";
     // private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;            // 만료시간 30분
@@ -38,7 +40,7 @@ public class JwtTokenProvider implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        String tempSecretKey = "ibook temp Secret Key book search read review"; // key 정보를 임시로 설정, 추후 다른 곳에서 받아서 사용할 예정
+        String tempSecretKey = "ibook temp Secret Key book search read review voice algorithm ssafy"; // key 정보를 임시로 설정, 추후 다른 곳에서 받아서 사용할 예정
         String encodedKey = Base64.getEncoder().encodeToString(tempSecretKey.getBytes());
         key = Keys.hmacShaKeyFor(encodedKey.getBytes());
     }
@@ -48,7 +50,7 @@ public class JwtTokenProvider implements InitializingBean {
      * param : Authentication authentication
      * return : TokenDto
      * */
-    public TokenDto generateTokenDto(String userId, long expiredTime) {
+    public TokenDto generateTokenDto(String userId) {
         long now = (new Date()).getTime();
 
         // 엑세스 토큰 생성
@@ -67,6 +69,8 @@ public class JwtTokenProvider implements InitializingBean {
 
         // TokenDto 생성하여 return
         return TokenDto.builder()
+                .AuthorizationHeader(AUTHORIZATION_HEADER)
+                .RefreshHeader(REFRESH_HEADER)
                 .grantType(BEARER_TYPE)
                 .accessToken(accessToken)
                 .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
