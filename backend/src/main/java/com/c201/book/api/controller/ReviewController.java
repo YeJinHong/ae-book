@@ -1,14 +1,16 @@
 package com.c201.book.api.controller;
 
-import java.util.List;
-
+import com.c201.book.utils.RegexValidator;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.c201.book.api.common.BaseResponse;
@@ -18,7 +20,6 @@ import com.c201.book.service.ReviewServiceImpl;
 import com.c201.book.utils.DtoValidationUtils;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,10 +35,10 @@ import lombok.extern.slf4j.Slf4j;
 public class ReviewController {
 
 	private final DtoValidationUtils dtoValidationUtils;
+	private final RegexValidator regexValidationUtils;
 	private final ReviewServiceImpl reviewService;
-	//    private final TokenUtils tokenUtils;
+//	private final TokenUtils tokenUtils; // TODO: 선영아 "해줘"
 
-	// 로그인 완성되면 주석 풀고 사용
 	@Operation(summary = "서평 등록", description = "새 서평을 등록합니다.")
 	@PostMapping(
 		path = "/{isbn}",
@@ -55,10 +56,11 @@ public class ReviewController {
 		dtoValidationUtils.validateReviewReqDto(reviewReqDto);
 
 		// isbn 검증
+		regexValidationUtils.validateIsbn(isbn);
 
 		// 서평 등록
 		// reviewService.saveReview(Long.parseLong(customUserDetails.getUsername()), reviewReqDto); // TODO: 로그인 완성되면 아래 삭제하고 사용
-		reviewService.saveReview(1L, isbn, reviewReqDto); // 로그인 완성 전 하드코딩
+		reviewService.saveReview(2L, isbn, reviewReqDto); // 로그인 완성 전 하드코딩
 
 		return new BaseResponse<>(null, 200, "서평 작성 완료");
 	}
@@ -69,14 +71,14 @@ public class ReviewController {
 			path = "/{isbn}"
 		)
 	public BaseResponse<?> getBookReviewList(
-		@PathVariable String isbn,
-		@RequestParam(name = "pageNumber", defaultValue = "1") int pageNumber,
-		@RequestParam(name = "pageSize", defaultValue = "5") int pageSize,
-		@RequestParam(name = "sort", defaultValue = "LATEST") @Schema(allowableValues = {"LATEST", "SCORE_HIGHEST",
-			"SCORE_LOWEST"}) String sort
-	) {
+			@PathVariable String isbn,
+			@PageableDefault(size=5, sort="id", direction = Sort.Direction.DESC) Pageable pageable
+			) {
+		// isbn 검증
+		regexValidationUtils.validateIsbn(isbn);
+
 		// 해당 도서 서평 리스트 찾기
-		List<ReviewResDto> reviews = reviewService.getBookReviewList(isbn, pageNumber, pageSize, sort);
+		Page<ReviewResDto> reviews = reviewService.getBookReviewList(isbn, pageable);
 
 		return new BaseResponse<>(reviews, 200, "해당 책의 서평 리스트가 도착했읍니다 ^_^b");
 	}
