@@ -14,6 +14,4 @@ public class ReviewReqDto {
     private String content;
     @Schema(description = "별점", defaultValue = "5")
     private int score;
-    @Schema(description = "도서 고유 아이디", defaultValue = "1")
-    private long bookId;
 }

@@ -18,7 +18,6 @@ public class DtoValidationUtils {
     public void validateReviewReqDto(ReviewReqDto reviewReqDto) {
         checkStringType(reviewReqDto.getContent(), "리뷰 내용");
         checkIntType(reviewReqDto.getScore(), "별점");
-        checkLongType(reviewReqDto.getBookId(), "책 고유 아이디");
     }
 
     public void checkLongType(Long value, String name){
