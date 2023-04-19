@@ -150,7 +150,10 @@ public class AuthService {
         TokenDto tokenDto = jwtTokenProvider.generateTokenDto(user.getId().toString());
 
         // 4. 유저 정보와 토큰 정보를 함께 전달
-        LoginUserInfoDto loginUserInfoDto = new LoginUserInfoDto(user, tokenDto);
+        LoginUserInfoDto loginUserInfoDto = LoginUserInfoDto.builder()
+                .user(user)
+                .tokenDto(tokenDto)
+                .build();
 
         return loginUserInfoDto;
     }
