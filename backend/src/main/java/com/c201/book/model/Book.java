@@ -48,10 +48,10 @@ public class Book extends BaseEntity {
 //    @Column(name = "cover_image_url", length = 200, columnDefinition = "표지없음 s3 링크")
     private String coverImageUrl;
 
-    @Column(name = "score_sum", columnDefinition = "0")
+    @Column(name = "score_sum", columnDefinition = "integer default 0")
     private int scoreSum;
 
-    @Column(name = "review_count", columnDefinition = "0")
+    @Column(name = "review_count", columnDefinition = "integer default 0")
     private int reviewCount;
 
     @Builder
@@ -68,5 +68,10 @@ public class Book extends BaseEntity {
         this.coverImageUrl = coverImageUrl;
         this.scoreSum = scoreSum;
         this.reviewCount = reviewCount;
+    }
+
+    public void updateScoreInfo(int score) {
+        this.scoreSum += score;
+        this.reviewCount++;
     }
 }

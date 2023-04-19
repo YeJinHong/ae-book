@@ -24,7 +24,14 @@ export default new Router({
     {
       path: '/painting',
       name: 'Painting',
-      component: AppPainting
+      component: AppPainting,
+      children: [
+        {
+          path: 'board',
+          name: 'paintingboard',
+          component: () => import('@/components/painting/PaintingBoardView')
+        }
+      ]
     },
     {
       path: '/searchbook',

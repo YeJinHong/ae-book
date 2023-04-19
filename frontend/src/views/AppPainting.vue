@@ -2,6 +2,7 @@
   <div>
   <header-navbar></header-navbar>
   <div> This is Painting Page</div>
+  <router-view></router-view>
 </div>
 </template>
 
