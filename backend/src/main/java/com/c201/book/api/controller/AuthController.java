@@ -46,7 +46,11 @@ public class AuthController {
         // log.info("headers : {} ", headers);
 
         // 4. 로그인 유저 정보 담기
-        LoginResDto loginResDto = new LoginResDto(loginUserInfoDto.getUser().getId(), loginUserInfoDto.getUser().getNickname(), loginUserInfoDto.getUser().getProfileUrl());
+        LoginResDto loginResDto = LoginResDto.builder()
+                .userId(loginUserInfoDto.getUser().getId())
+                .nickname(loginUserInfoDto.getUser().getNickname())
+                .profileUrl(loginUserInfoDto.getUser().getProfileUrl())
+                .build();
 
         return ResponseEntity.ok().headers(headers).body(loginResDto);
     }
