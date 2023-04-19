@@ -69,4 +69,9 @@ public class Book extends BaseEntity {
         this.scoreSum = scoreSum;
         this.reviewCount = reviewCount;
     }
+
+    public void updateScoreInfo(int score) {
+        this.scoreSum += score;
+        this.reviewCount++;
+    }
 }
