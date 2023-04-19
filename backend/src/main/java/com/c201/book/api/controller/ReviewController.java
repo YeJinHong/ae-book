@@ -1,7 +1,6 @@
 package com.c201.book.api.controller;
 
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -56,14 +55,14 @@ public class ReviewController {
 		return new BaseResponse<>(null, 200, "서평 작성 완료");
 	}
 
-	@Operation(summary = "특정 도서의 서평 리스트", description = "도서 상세 페이지에서 보여줄 서평 리스트입니다.")
-	@GetMapping
-		(
-			path = "/{isbn}"
-		)
-	public BaseResponse<?> getBookReviewList(@PathVariable String isbn) {
-		// DTO NOT NULL 검증
-
-		//
-	}
+	// @Operation(summary = "특정 도서의 서평 리스트", description = "도서 상세 페이지에서 보여줄 서평 리스트입니다.")
+	// @GetMapping
+	// 	(
+	// 		path = "/{isbn}"
+	// 	)
+	// public BaseResponse<?> getBookReviewList(@PathVariable String isbn) {
+	// 	// DTO NOT NULL 검증
+	//
+	// 	//
+	// }
 }
