@@ -4,7 +4,4 @@ spring:
       local: db
       dev: db
     active: dev
-  data:
-    redis:
-      host: localhost
-      port: 6379
+
