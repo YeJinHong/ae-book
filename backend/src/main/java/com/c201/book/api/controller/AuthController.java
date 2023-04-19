@@ -1,8 +1,10 @@
 package com.c201.book.api.controller;
 
 import com.c201.book.api.common.LoginUserInfoDto;
+import com.c201.book.api.common.TokenDto;
 import com.c201.book.api.response.LoginResDto;
 import com.c201.book.auth.KakaoTokenDto;
+import com.c201.book.model.User;
 import com.c201.book.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -38,18 +40,20 @@ public class AuthController {
         // log.info("user name : {}", loginUserInfoDto.getUser().getNickname());
 
         // 3. 헤더에 사용자 token 정보 담기
+        TokenDto tokenDto = loginUserInfoDto.getTokenDto();
         HttpHeaders headers = new HttpHeaders();
-        headers.add(loginUserInfoDto.getTokenDto().getAuthorizationHeader(),
-                loginUserInfoDto.getTokenDto().getGrantType() + " " + loginUserInfoDto.getTokenDto().getAccessToken());
-        headers.add(loginUserInfoDto.getTokenDto().getRefreshHeader(),
-                loginUserInfoDto.getTokenDto().getGrantType() + " " + loginUserInfoDto.getTokenDto().getRefreshToken());
+        headers.add(tokenDto.getAuthorizationHeader(),
+                tokenDto.getGrantType() + " " + tokenDto.getAccessToken());
+        headers.add(tokenDto.getRefreshHeader(),
+                tokenDto.getGrantType() + " " + tokenDto.getRefreshToken());
         // log.info("headers : {} ", headers);
 
         // 4. 로그인 유저 정보 담기
+        User user = loginUserInfoDto.getUser();
         LoginResDto loginResDto = LoginResDto.builder()
-                .userId(loginUserInfoDto.getUser().getId())
-                .nickname(loginUserInfoDto.getUser().getNickname())
-                .profileUrl(loginUserInfoDto.getUser().getProfileUrl())
+                .userId(user.getId())
+                .nickname(user.getNickname())
+                .profileUrl(user.getProfileUrl())
                 .build();
 
         return ResponseEntity.ok().headers(headers).body(loginResDto);
