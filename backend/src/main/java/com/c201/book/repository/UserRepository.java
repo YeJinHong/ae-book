@@ -7,4 +7,8 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findById(long id);
+
+    User findByKakaoId(Long id);
+
+    Long countByNicknameStartingWith(String nickname);
 }
