@@ -9,13 +9,13 @@ import com.c201.book.utils.exeption.CustomException;
 import com.c201.book.utils.exeption.ErrorCode;
 
 @Component
-public class RegexValidationUtils {
+public class RegexValidator {
 
 	/**
 	 * [문희주] ISBN 정규 표현식 검사
 	 * @param isbn
 	 */
-	public void IsbnValidation(String isbn) {
+	public void validateIsbn(String isbn) {
 		Pattern pattern = Pattern.compile("\\d{13}");
 		Matcher matcher = pattern.matcher((isbn));
 
