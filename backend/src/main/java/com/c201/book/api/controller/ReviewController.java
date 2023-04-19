@@ -1,18 +1,24 @@
 package com.c201.book.api.controller;
 
+import java.util.List;
+
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.c201.book.api.common.BaseResponse;
 import com.c201.book.api.request.ReviewReqDto;
+import com.c201.book.api.response.ReviewResDto;
 import com.c201.book.service.ReviewServiceImpl;
 import com.c201.book.utils.DtoValidationUtils;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,21 +54,30 @@ public class ReviewController {
 		// DTO NOT NULL 검증
 		dtoValidationUtils.validateReviewReqDto(reviewReqDto);
 
+		// isbn 검증
+
 		// 서평 등록
-		//        reviewService.saveReview(Long.parseLong(customUserDetails.getUsername()), reviewReqDto); // TODO: 로그인 완성되면 아래 삭제하고 사용
+		// reviewService.saveReview(Long.parseLong(customUserDetails.getUsername()), reviewReqDto); // TODO: 로그인 완성되면 아래 삭제하고 사용
 		reviewService.saveReview(1L, isbn, reviewReqDto); // 로그인 완성 전 하드코딩
 
 		return new BaseResponse<>(null, 200, "서평 작성 완료");
 	}
 
-	// @Operation(summary = "특정 도서의 서평 리스트", description = "도서 상세 페이지에서 보여줄 서평 리스트입니다.")
-	// @GetMapping
-	// 	(
-	// 		path = "/{isbn}"
-	// 	)
-	// public BaseResponse<?> getBookReviewList(@PathVariable String isbn) {
-	// 	// DTO NOT NULL 검증
-	//
-	// 	//
-	// }
+	@Operation(summary = "특정 도서의 서평 리스트", description = "도서 상세 페이지에서 보여줄 서평 리스트입니다.")
+	@GetMapping
+		(
+			path = "/{isbn}"
+		)
+	public BaseResponse<?> getBookReviewList(
+		@PathVariable String isbn,
+		@RequestParam(name = "pageNumber", defaultValue = "1") int pageNumber,
+		@RequestParam(name = "pageSize", defaultValue = "5") int pageSize,
+		@RequestParam(name = "sort", defaultValue = "LATEST") @Schema(allowableValues = {"LATEST", "SCORE_HIGHEST",
+			"SCORE_LOWEST"}) String sort
+	) {
+		// 해당 도서 서평 리스트 찾기
+		List<ReviewResDto> reviews = reviewService.getBookReviewList(isbn, pageNumber, pageSize, sort);
+
+		return new BaseResponse<>(reviews, 200, "해당 책의 서평 리스트가 도착했읍니다 ^_^b");
+	}
 }
