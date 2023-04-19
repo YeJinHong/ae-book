@@ -29,10 +29,10 @@ public class User extends BaseEntity{
     private String profileUrl;
 
     @Column(name = "status", nullable = false, columnDefinition = "TINYINT default 1")
-    private Boolean status;
+    private int status;
 
     @Builder
-    public User(Long kakaoId, String nickname, String phone, String profileUrl, Boolean status) {
+    public User(Long kakaoId, String nickname, String phone, String profileUrl, int status) {
         this.kakaoId = kakaoId;
         this.nickname = nickname;
         this.phone = phone;
