@@ -6,7 +6,7 @@ import com.c201.book.model.Review;
 
 public interface ReviewService {
     // 1. saveReview : 서평 등록
-    public BaseResponse<?> saveReview(ReviewReqDto reviewReqDto);
+    public void saveReview(Long userId, String isbn, ReviewReqDto reviewReqDto);
 
     // 2. getReviewList : 현재 로그인한 유저가 등록한 서평 리스트
 
@@ -17,7 +17,5 @@ public interface ReviewService {
     // 5. modifyReview : 특정 서평 수정
 
     // 6. deleteReview : 특정 서평 삭제
-    
-    // 7. findReviewByUserIdAndBookId : 유저가 특정 책에 작성한 서평 조회
-    public Review findReviewByUserIdAndBookId(Long userId, Long bookId);
+
 }
