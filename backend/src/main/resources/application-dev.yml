@@ -5,12 +5,18 @@ spring:
   jpa:
     show-sql: true # true 설정시 JPA 쿼리문 확인 가능
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
       use-new-id-generator-mappings: false
     properties:
       hibernate:
         format_sql: true # JPA의 구현체인 Hibernate가 동작하면서 발생한 SQL의 가독성을 높여준다.
     open-in-view: false
+
+  data:
+    redis:
+      host: # 운영 redis 적어야 함
+      port: 6379
+
 
 server:
   port: 8082
@@ -40,3 +46,4 @@ springdoc:
     query-config-enabled: true
   pre-loading-enabled: true
   packages-to-scan: com.c201.book
+
