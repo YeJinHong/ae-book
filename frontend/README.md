@@ -1,5 +1,5 @@
 # ae-book frontend
-- node 16.19.0
+- node v14.21.3
 - npm 9.6.4
 - vue/cli 2.9.6 
 
@@ -13,7 +13,7 @@
 # install dependencies
 npm install
 
-# serve with hot reload at localhost:8080
+# serve with hot reload at localhost:3000
 npm run dev
 
 # build for production with minification
