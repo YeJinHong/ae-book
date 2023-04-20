@@ -1,7 +1,8 @@
 package com.c201.book.auth;
 
-import com.c201.book.model.User;
-import com.c201.book.repository.UserRepository;
+import com.c201.book.api.review.persistence.entity.UserEntity;
+import com.c201.book.api.review.persistence.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,7 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         log.info("loadUserByUsername username : {}", username);
 
         long id = Long.parseLong(username);
-        User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("해당 유저 정보를 찾을 수 없습니다"));
+        UserEntity user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("해당 유저 정보를 찾을 수 없습니다"));
 
         return new CustomUserDetails(user);
     }
