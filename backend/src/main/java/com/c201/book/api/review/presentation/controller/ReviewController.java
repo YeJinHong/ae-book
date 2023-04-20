@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.c201.book.api.common.BaseResponse;
+import com.c201.book.api.common.constants.ApplicationConstants;
 import com.c201.book.api.review.presentation.dto.request.ReviewRequestDTO;
 import com.c201.book.api.review.presentation.dto.response.ReviewResponseDTO;
 import com.c201.book.api.review.presentation.validator.ReviewValidator;
@@ -56,7 +57,7 @@ public class ReviewController {
 		// User loginUser = tokenUtils.validateGetUser(customUserDetails);
 
 		// DTO NOT NULL 검증
-		reviewValidator.validateReviewRequestDto(reviewRequestDTO);
+		reviewValidator.validateReviewRequestDTO(reviewRequestDTO);
 
 		// isbn 검증
 		regexValidator.validateIsbn(isbn);
@@ -64,7 +65,7 @@ public class ReviewController {
 		ReviewSO reviewSO = reviewConverter.toReviewSO(reviewRequestDTO);
 		// 서평 등록
 		// reviewService.saveReview(Long.parseLong(customUserDetails.getUsername()), reviewRequestDTO); // TODO: 로그인 완성되면 아래 삭제하고 사용
-		reviewService.saveReview(1L, isbn, reviewRequestDTO); // 로그인 완성 전 하드코딩
+		reviewService.saveReview(4L, isbn, reviewSO); // 로그인 완성 전 하드코딩
 
 		return new BaseResponse<>(null, 200, "서평 작성 완료");
 	}
@@ -85,5 +86,17 @@ public class ReviewController {
 		Page<ReviewResponseDTO> reviews = reviewService.getBookReviewList(isbn, pageable);
 
 		return new BaseResponse<>(reviews, 200, "해당 책의 서평 리스트가 도착했읍니다 ^_^b");
+	}
+
+	@Operation(summary = "특정 서평 조회", description = "선택한 서평의 정보를 보여줍니다.")
+	@GetMapping(
+		path = "/detail/{reviewid}"
+	)
+	public BaseResponse<?> getReview(
+		@PathVariable(name = "reviewid") Long reviewId
+	) {
+		ReviewResponseDTO review = reviewService.getReview(reviewId);
+
+		return new BaseResponse<>(review, 200, ApplicationConstants.SUCCESS);
 	}
 }
