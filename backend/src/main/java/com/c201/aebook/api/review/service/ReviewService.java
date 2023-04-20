@@ -20,7 +20,7 @@ public interface ReviewService {
 	public ReviewResponseDTO getReview(Long reviewId);
 
 	// 5. modifyReview : 특정 서평 수정
-	public void modifyReview(Long userId, ReviewModifySO reviewModifySO);
+	public void modifyReview(String userId, ReviewModifySO reviewModifySO);
 
 	// 6. deleteReview : 특정 서평 삭제
 }
