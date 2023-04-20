@@ -1,5 +1,7 @@
 package com.c201.book.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,5 +50,49 @@ public class ReviewServiceImpl implements ReviewService {
 
 		// 5. 도서 별점 정보 갱신
 		book.updateScoreInfo(reviewReqDto.getScore());
+	}
+
+	@Override
+	public Page<ReviewResDto> getBookReviewList(String isbn, Pageable pageable) {
+		// 1. isbn 유효성 검증
+		Book book = bookRepository.findByIsbn(isbn).orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
+
+//		// 2. Pageable 객체 생성
+//		pageNumber = (pageNumber == 0) ? 0 : (pageNumber - 1);
+//		Pageable pageable = null;
+//		switch (sort) {
+//			case "SCORE_HIGHEST":
+//				pageable = PageRequest.of(pageNumber, pageSize, Sort.by("score").descending());
+//				break;
+//			case "SCORE_LOWEST":
+//				pageable = PageRequest.of(pageNumber, pageSize, Sort.by("score").ascending());
+//				break;
+//			default: // LATEST
+//				pageable = PageRequest.of(pageNumber, pageSize, Sort.by("id").descending();
+//				break;
+//		}
+
+		// 3. Review List
+		Page<Review> reviews = reviewRepository.findByBookId(book.getId(), pageable);
+
+		return reviews.map(a -> ReviewResDto.builder()
+				.reviewId(a.getId())
+				.reviewerId(a.getUser().getId())
+				.score(a.getScore())
+				.content(a.getContent())
+				.createAt(a.getCreatedAt())
+				.updateAt(a.getUpdatedAt())
+				.build());
+
+//		return reviews.stream()
+//			.map(a -> ReviewResDto.builder()
+//				.reviewId(a.getId())
+//				.reviewerId(a.getUser().getId())
+//				.score(a.getScore())
+//				.content(a.getContent())
+//				.createAt(a.getCreatedAt())
+//				.updateAt(a.getUpdatedAt())
+//				.build())
+//			.collect(Collectors.toList());
 	}
 }
