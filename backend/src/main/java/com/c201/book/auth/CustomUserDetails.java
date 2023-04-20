@@ -3,7 +3,7 @@ package com.c201.book.auth;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.c201.book.entity.UserEntity;
+import com.c201.book.api.review.persistence.entity.UserEntity;
 
 import java.util.ArrayList;
 import java.util.Collection;

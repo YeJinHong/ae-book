@@ -1,6 +1,6 @@
 package com.c201.book.api.common;
 
-import com.c201.book.entity.UserEntity;
+import com.c201.book.api.review.persistence.entity.UserEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
