@@ -1,16 +1,17 @@
 package com.c201.book.repository;
 
-import com.c201.book.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.c201.book.entity.UserEntity;
 
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findById(Long id);
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
+    Optional<UserEntity> findById(Long id);
 
-    User findByKakaoId(Long id);
+    UserEntity findByKakaoId(Long id);
 
     Long countByNicknameStartingWith(String nickname);
 }

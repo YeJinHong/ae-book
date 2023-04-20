@@ -1,6 +1,6 @@
 package com.c201.book.utils;
 
-import com.c201.book.api.request.ReviewReqDto;
+import com.c201.book.api.request.ReviewRequestDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +15,7 @@ public class DtoValidationUtils {
      * [문희주] ReviewReqDto NOT NULL 검증
      * @param reviewReqDto
      */
-    public void validateReviewReqDto(ReviewReqDto reviewReqDto) {
+    public void validateReviewReqDto(ReviewRequestDTO reviewReqDto) {
         checkStringType(reviewReqDto.getContent(), "리뷰 내용");
         checkIntType(reviewReqDto.getScore(), "별점");
     }

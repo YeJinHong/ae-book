@@ -1,12 +1,12 @@
 package com.c201.book.service;
 
 import com.c201.book.api.common.BaseResponse;
-import com.c201.book.api.request.ReviewReqDto;
-import com.c201.book.model.Review;
+import com.c201.book.api.request.ReviewRequestDTO;
+import com.c201.book.entity.ReviewEntity;
 
 public interface ReviewService {
     // 1. saveReview : 서평 등록
-    public void saveReview(Long userId, String isbn, ReviewReqDto reviewReqDto);
+    public void saveReview(Long userId, String isbn, ReviewRequestDTO reviewReqDto);
 
     // 2. getReviewList : 현재 로그인한 유저가 등록한 서평 리스트
 

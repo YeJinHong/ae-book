@@ -1,6 +1,7 @@
 package com.c201.book.api.common;
 
-import com.c201.book.model.User;
+import com.c201.book.entity.UserEntity;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,9 +9,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @Builder
-public class LoginUserInfoDto {
+public class LoginUserInfoDTO {
 
-    private User user;
-    private TokenDto tokenDto;
+    private UserEntity user;
+    private TokenDTO tokenDto;
 
 }

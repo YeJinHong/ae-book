@@ -1,4 +1,4 @@
-package com.c201.book.model;
+package com.c201.book.entity;
 
 import java.time.LocalDateTime;
 import javax.persistence.Column;

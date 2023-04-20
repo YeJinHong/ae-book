@@ -1,9 +1,10 @@
 package com.c201.book.config.jwt;
 
-import com.c201.book.api.common.TokenDto;
+import com.c201.book.api.common.TokenDTO;
 import com.c201.book.auth.CustomUserDetails;
 import com.c201.book.auth.CustomUserDetailsService;
-import com.c201.book.model.User;
+import com.c201.book.entity.UserEntity;
+
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +51,7 @@ public class JwtTokenProvider implements InitializingBean {
      * param : Authentication authentication
      * return : TokenDto
      * */
-    public TokenDto generateTokenDto(String userId) {
+    public TokenDTO generateTokenDto(String userId) {
         long now = (new Date()).getTime();
 
         // 엑세스 토큰 생성
@@ -68,7 +69,7 @@ public class JwtTokenProvider implements InitializingBean {
                 .compact();
 
         // TokenDto 생성하여 return
-        return TokenDto.builder()
+        return TokenDTO.builder()
                 .AuthorizationHeader(AUTHORIZATION_HEADER)
                 .RefreshHeader(REFRESH_HEADER)
                 .grantType(BEARER_TYPE)

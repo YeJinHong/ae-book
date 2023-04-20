@@ -42,7 +42,7 @@ public class ReviewController {
 	)
 	public BaseResponse<?> saveReview(
 		@PathVariable String isbn,
-		@RequestBody ReviewReqDto reviewReqDto
+		@RequestBody ReviewRequestDTO reviewReqDto
 		//            ,@AuthenticationPrincipal CustomUserDetails customUserDetails // TODO: 시큐리티 완성되면 주석 해제하고 쉼표 옮기기
 	) {
 		// TODO: 토큰 유효성 검증

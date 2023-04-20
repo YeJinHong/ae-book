@@ -1,4 +1,4 @@
-package com.c201.book.model;
+package com.c201.book.entity;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +11,8 @@ import java.sql.Date;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Book extends BaseEntity {
+@Table(name = "book")
+public class BookEntity extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -55,7 +56,7 @@ public class Book extends BaseEntity {
     private int reviewCount;
 
     @Builder
-    public Book(String title, String description, String author, String publisher, Date publishDate, String isbn, int page, int price, String aladinUrl, String coverImageUrl, int scoreSum, int reviewCount) {
+    public BookEntity(String title, String description, String author, String publisher, Date publishDate, String isbn, int page, int price, String aladinUrl, String coverImageUrl, int scoreSum, int reviewCount) {
         this.title = title;
         this.description = description;
         this.author = author;
