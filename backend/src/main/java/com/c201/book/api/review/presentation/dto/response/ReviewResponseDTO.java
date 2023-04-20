@@ -1,4 +1,4 @@
-package com.c201.book.api.response;
+package com.c201.book.api.review.presentation.dto.response;
 
 import java.time.LocalDateTime;
 
@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ReviewResDto {
+public class ReviewResponseDTO {
 	@Schema(description = "서평 ID", defaultValue = "1")
 	private Long reviewId;
 
@@ -31,7 +31,7 @@ public class ReviewResDto {
 	private LocalDateTime updateAt;
 
 	@Builder
-	public ReviewResDto(Long reviewId, Long reviewerId, int score, String content, LocalDateTime createAt,
+	public ReviewResponseDTO(Long reviewId, Long reviewerId, int score, String content, LocalDateTime createAt,
 		LocalDateTime updateAt) {
 		this.reviewId = reviewId;
 		this.reviewerId = reviewerId;
