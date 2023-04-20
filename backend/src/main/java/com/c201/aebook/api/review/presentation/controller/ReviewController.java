@@ -113,14 +113,14 @@ public class ReviewController {
 	) {
 		// TODO: 토큰 유효성 검증
 		// User loginUser = tokenUtils.validateGetUser(customUserDetails);
-		
+
 		// DTO NOT NULL 검증
 		reviewValidator.validateReviewModifyRequestDTO(reviewModifyRequestDTO);
 
 		ReviewModifySO reviewModifySO = reviewConverter.toReviewModifySO(reviewModifyRequestDTO);
 
 		// 서평 수정
-		reviewService.modifyReview(Long.parseLong(customUserDetails.getUsername()), reviewModifySO);
+		reviewService.modifyReview(customUserDetails.getUsername(), reviewModifySO);
 
 		return new BaseResponse<>(null, 200, ApplicationConstants.SUCCESS);
 
