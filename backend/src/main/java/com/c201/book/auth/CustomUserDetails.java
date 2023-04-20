@@ -1,8 +1,9 @@
 package com.c201.book.auth;
 
-import com.c201.book.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.c201.book.api.review.persistence.entity.UserEntity;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,10 +11,10 @@ import java.util.List;
 
 public class CustomUserDetails implements UserDetails {
 
-    private User user;
+    private UserEntity user;
     List<GrantedAuthority> roles = new ArrayList<>();
 
-    public CustomUserDetails(User user) {
+    public CustomUserDetails(UserEntity user) {
         this.user = user;
     }
 
