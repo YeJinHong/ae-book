@@ -5,8 +5,8 @@ import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Component;
 
-import com.c201.book.utils.exeption.CustomException;
-import com.c201.book.utils.exeption.ErrorCode;
+import com.c201.book.utils.exception.CustomException;
+import com.c201.book.utils.exception.ErrorCode;
 
 @Component
 public class RegexValidator {
