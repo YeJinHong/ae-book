@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,14 +14,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.c201.aebook.api.common.BaseResponse;
+import com.c201.aebook.api.common.constants.ApplicationConstants;
 import com.c201.aebook.api.review.presentation.dto.request.ReviewRequestDTO;
 import com.c201.aebook.api.review.presentation.dto.response.ReviewResponseDTO;
 import com.c201.aebook.api.review.presentation.validator.ReviewValidator;
 import com.c201.aebook.api.review.service.impl.ReviewServiceImpl;
 import com.c201.aebook.api.vo.ReviewSO;
+import com.c201.aebook.auth.CustomUserDetails;
 import com.c201.aebook.converter.ReviewConverter;
 import com.c201.aebook.utils.RegexValidator;
-import com.c201.aebook.api.common.constants.ApplicationConstants;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -50,8 +52,8 @@ public class ReviewController {
 	)
 	public BaseResponse<?> saveReview(
 		@PathVariable String isbn,
-		@RequestBody ReviewRequestDTO reviewRequestDTO
-		//            ,@AuthenticationPrincipal CustomUserDetails customUserDetails // TODO: 시큐리티 완성되면 주석 해제하고 쉼표 옮기기
+		@RequestBody ReviewRequestDTO reviewRequestDTO,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
 		// TODO: 토큰 유효성 검증
 		// User loginUser = tokenUtils.validateGetUser(customUserDetails);
@@ -64,8 +66,8 @@ public class ReviewController {
 
 		ReviewSO reviewSO = reviewConverter.toReviewSO(reviewRequestDTO);
 		// 서평 등록
-		// reviewService.saveReview(Long.parseLong(customUserDetails.getUsername()), reviewRequestDTO); // TODO: 로그인 완성되면 아래 삭제하고 사용
-		reviewService.saveReview(4L, isbn, reviewSO); // 로그인 완성 전 하드코딩
+		reviewService.saveReview(Long.parseLong(customUserDetails.getUsername()), isbn,
+			reviewSO);
 
 		return new BaseResponse<>(null, 200, "서평 작성 완료");
 	}
