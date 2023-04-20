@@ -1,0 +1,7 @@
+spring:
+  config:
+    activate:
+      on-profile: key
+
+aladin:
+  key: ttbleedy9091441001 # 알라딘 api key 정보
