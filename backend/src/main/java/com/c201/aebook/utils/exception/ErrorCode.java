@@ -22,7 +22,8 @@ public enum ErrorCode {
 
 	/* 404 NTO_FOUND : 해당하는 DATA를 찾을 수 없음 */
 	USER_NOT_FOUND(NOT_FOUND, "해당 사용자 정보를 찾을 수 없습니다"), // 희주
-	BOOK_NOT_FOUND(NOT_FOUND, "존재하지 않는 도서입니다."); // 희주
+	BOOK_NOT_FOUND(NOT_FOUND, "존재하지 않는 도서입니다."), // 희주
+	REVIEW_NOT_FOUND(NOT_FOUND, "존재하지 않는 서평입니다."); // 희주
 
 	private final HttpStatus httpStatus;
 	private final String message;
