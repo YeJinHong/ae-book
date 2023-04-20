@@ -111,6 +111,9 @@ public class ReviewController {
 		@RequestBody ReviewModifyRequestDTO reviewModifyRequestDTO,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
+		// TODO: 토큰 유효성 검증
+		// User loginUser = tokenUtils.validateGetUser(customUserDetails);
+		
 		// DTO NOT NULL 검증
 		reviewValidator.validateReviewModifyRequestDTO(reviewModifyRequestDTO);
 
