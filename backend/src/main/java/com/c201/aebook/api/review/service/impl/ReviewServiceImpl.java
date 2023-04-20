@@ -6,16 +6,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.c201.aebook.api.book.persistence.entity.BookEntity;
-import com.c201.aebook.api.review.persistence.entity.ReviewEntity;
-import com.c201.aebook.api.user.persistence.entity.UserEntity;
-import com.c201.aebook.api.review.persistence.repository.ReviewRepository;
-import com.c201.aebook.api.user.persistence.repository.UserRepository;
 import com.c201.aebook.api.book.persistence.repository.BookRepository;
+import com.c201.aebook.api.review.persistence.entity.ReviewEntity;
+import com.c201.aebook.api.review.persistence.repository.ReviewRepository;
 import com.c201.aebook.api.review.presentation.dto.response.ReviewResponseDTO;
 import com.c201.aebook.api.review.service.ReviewService;
+import com.c201.aebook.api.user.persistence.entity.UserEntity;
+import com.c201.aebook.api.user.persistence.repository.UserRepository;
+import com.c201.aebook.api.vo.ReviewModifySO;
+import com.c201.aebook.api.vo.ReviewSO;
 import com.c201.aebook.utils.exception.CustomException;
 import com.c201.aebook.utils.exception.ErrorCode;
-import com.c201.aebook.api.vo.ReviewSO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,11 +31,11 @@ public class ReviewServiceImpl implements ReviewService {
 	@Override
 	@Transactional
 	public void saveReview(Long userId, String isbn, ReviewSO reviewSO) {
-		// 1. 유효한 isbn인지 검증
+		// 1. isbn 유효성 검증
 		BookEntity bookEntity = bookRepository.findByIsbn(isbn)
 			.orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
 
-		// 2. 유효한 userId인지 검증
+		// 2. userId 유효성 검증
 		UserEntity userEntity = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
@@ -87,5 +88,17 @@ public class ReviewServiceImpl implements ReviewService {
 			.createAt(review.getCreatedAt())
 			.updateAt(review.getUpdatedAt())
 			.build();
+	}
+
+	@Override
+	@Transactional
+	public void modifyReview(Long userId, ReviewModifySO reviewModifySO) {
+		// 1. reviewId 유효성 검증
+		ReviewEntity reviewEntity = reviewRepository.findById(reviewModifySO.getReviewId())
+			.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+
+		// 2. 서평 수정
+		reviewEntity.updateReviewEntity(reviewModifySO.getContent(), reviewModifySO.getScore());
+		reviewRepository.save(reviewEntity);
 	}
 }
