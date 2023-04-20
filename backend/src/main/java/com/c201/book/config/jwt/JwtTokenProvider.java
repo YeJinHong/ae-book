@@ -1,9 +1,9 @@
 package com.c201.book.config.jwt;
 
 import com.c201.book.api.common.TokenDTO;
+import com.c201.book.api.review.persistence.entity.UserEntity;
 import com.c201.book.auth.CustomUserDetails;
 import com.c201.book.auth.CustomUserDetailsService;
-import com.c201.book.entity.UserEntity;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
