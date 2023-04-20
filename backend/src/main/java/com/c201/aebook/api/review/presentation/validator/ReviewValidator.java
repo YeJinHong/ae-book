@@ -3,6 +3,7 @@ package com.c201.aebook.api.review.presentation.validator;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import com.c201.aebook.api.review.presentation.dto.request.ReviewModifyRequestDTO;
 import com.c201.aebook.api.review.presentation.dto.request.ReviewRequestDTO;
 
 /**
@@ -17,8 +18,14 @@ public class ReviewValidator {
 	 * @param reviewRequestDTO
 	 */
 	public void validateReviewRequestDTO(ReviewRequestDTO reviewRequestDTO) {
-		checkStringType(reviewRequestDTO.getContent(), "리뷰 내용");
+		checkStringType(reviewRequestDTO.getContent(), "서평 내용");
 		checkIntType(reviewRequestDTO.getScore(), "별점");
+	}
+
+	public void validateReviewModifyRequestDTO(ReviewModifyRequestDTO reviewModifyRequestDTO) {
+		checkLongType(reviewModifyRequestDTO.getReviewId(), "서평 아이디");
+		checkStringType(reviewModifyRequestDTO.getContent(), "서평 내용");
+		checkIntType(reviewModifyRequestDTO.getScore(), "별점");
 	}
 
 	public void checkLongType(Long value, String name) {
