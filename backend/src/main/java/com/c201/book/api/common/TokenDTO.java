@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class TokenDto {
+public class TokenDTO {
     private String AuthorizationHeader; // Authorization
     private String RefreshHeader; // Refresh
     private String grantType; // Bearer

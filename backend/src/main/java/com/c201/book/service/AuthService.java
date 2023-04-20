@@ -1,11 +1,11 @@
 package com.c201.book.service;
 
-import com.c201.book.api.common.LoginUserInfoDto;
+import com.c201.book.api.common.LoginUserInfoDTO;
 import com.c201.book.auth.KakaoProfile;
-import com.c201.book.auth.KakaoTokenDto;
-import com.c201.book.api.common.TokenDto;
+import com.c201.book.auth.KakaoTokenDTO;
+import com.c201.book.api.common.TokenDTO;
 import com.c201.book.config.jwt.JwtTokenProvider;
-import com.c201.book.model.User;
+import com.c201.book.entity.UserEntity;
 import com.c201.book.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,7 +39,7 @@ public class AuthService {
      * @param code
      * @return KakaoTokenDto
      * */
-    public KakaoTokenDto getAccessToken(String code) {
+    public KakaoTokenDTO getAccessToken(String code) {
         RestTemplate rt = new RestTemplate();
 
         // 1. Header 생성
@@ -67,9 +67,9 @@ public class AuthService {
 
         // 4. 발급 받은 카카오 Access token 정보 중 필요한 정보만 KakaoTokenDto에 저장
         ObjectMapper objectMapper = new ObjectMapper();
-        KakaoTokenDto kakaoTokenDto = null;
+        KakaoTokenDTO kakaoTokenDto = null;
         try {
-            kakaoTokenDto = objectMapper.readValue(accessTokenResponse.getBody(), KakaoTokenDto.class);
+            kakaoTokenDto = objectMapper.readValue(accessTokenResponse.getBody(), KakaoTokenDTO.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -119,11 +119,11 @@ public class AuthService {
      * @param token
      * @return loginUserInfo
      * */
-    public LoginUserInfoDto saveUserOrLogin(String token) {
+    public LoginUserInfoDTO saveUserOrLogin(String token) {
         KakaoProfile profile = findProfile(token);
 
         // 1. 카카오 아이디로 유저 정보 찾기
-        User user = userRepository.findByKakaoId(profile.getId());
+        UserEntity user = userRepository.findByKakaoId(profile.getId());
 
         // 2. 유저 정보가 없다면
         if(user == null) {
@@ -134,7 +134,7 @@ public class AuthService {
             };
 
             // 2-2. DB에 유저 정보 저장
-            user = User.builder()
+            user = UserEntity.builder()
                     .kakaoId(profile.getId())
                     .nickname(profile.getKakao_account().getProfile().getNickname())
                     //.phone(profile.kakao_account.getPhone_number())
@@ -147,10 +147,10 @@ public class AuthService {
         }
 
         // 3. 유저의 token 발급
-        TokenDto tokenDto = jwtTokenProvider.generateTokenDto(user.getId().toString());
+        TokenDTO tokenDto = jwtTokenProvider.generateTokenDto(user.getId().toString());
 
         // 4. 유저 정보와 토큰 정보를 함께 전달
-        LoginUserInfoDto loginUserInfoDto = LoginUserInfoDto.builder()
+        LoginUserInfoDTO loginUserInfoDto = LoginUserInfoDTO.builder()
                 .user(user)
                 .tokenDto(tokenDto)
                 .build();

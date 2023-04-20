@@ -1,4 +1,4 @@
-package com.c201.book.model;
+package com.c201.book.entity;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -9,7 +9,8 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor
-public class User extends BaseEntity{
+@Table(name = "user")
+public class UserEntity extends BaseEntity{
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -32,7 +33,7 @@ public class User extends BaseEntity{
     private int status;
 
     @Builder
-    public User(Long kakaoId, String nickname, String phone, String profileUrl, int status) {
+    public UserEntity(Long kakaoId, String nickname, String phone, String profileUrl, int status) {
         this.kakaoId = kakaoId;
         this.nickname = nickname;
         this.phone = phone;

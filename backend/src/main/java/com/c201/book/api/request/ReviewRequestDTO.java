@@ -15,7 +15,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReviewReqDto {
+public class ReviewRequestDTO {
 	@Schema(description = "서평 내용", defaultValue = "장관이에요 절경이고요")
 	private String content;
 	@Schema(description = "별점", defaultValue = "5")

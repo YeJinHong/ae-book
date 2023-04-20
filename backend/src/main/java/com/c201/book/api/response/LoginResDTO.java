@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class LoginResDto {
+public class LoginResDTO {
     private final Long userId;
     private final String nickname;
     private final String profileUrl;

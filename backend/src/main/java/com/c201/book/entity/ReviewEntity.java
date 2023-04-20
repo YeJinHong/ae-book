@@ -1,4 +1,4 @@
-package com.c201.book.model;
+package com.c201.book.entity;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -9,7 +9,8 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Review extends BaseEntity{
+@Table(name = "review")
+public class ReviewEntity extends BaseEntity{
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -23,14 +24,14 @@ public class Review extends BaseEntity{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
-    private Book book;
+    private BookEntity book;
 
     @Builder
-    public Review(String content, int score, User user, Book book) {
+    public ReviewEntity(String content, int score, UserEntity user, BookEntity book) {
         this.content = content;
         this.score = score;
         this.user = user;
