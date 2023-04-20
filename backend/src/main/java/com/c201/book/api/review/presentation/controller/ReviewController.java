@@ -8,17 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.c201.book.api.common.BaseResponse;
-<<<<<<< HEAD:backend/src/main/java/com/c201/book/api/controller/ReviewController.java
-import com.c201.book.api.request.ReviewReqDto;
-import com.c201.book.api.vo.ReviewSO;
-import com.c201.book.converter.ReviewConverter;
-import com.c201.book.service.ReviewServiceImpl;
-import com.c201.book.utils.DtoValidationUtils;
-=======
 import com.c201.book.api.review.presentation.dto.request.ReviewRequestDTO;
 import com.c201.book.api.review.presentation.validator.ReviewValidator;
 import com.c201.book.api.review.service.impl.ReviewServiceImpl;
->>>>>>> a5c59e2 ([S08P31C201-433-1-package-refactoring] 패키지 구조 변경함):backend/src/main/java/com/c201/book/api/review/presentation/controller/ReviewController.java
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
