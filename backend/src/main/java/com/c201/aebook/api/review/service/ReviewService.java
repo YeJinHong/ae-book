@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.c201.aebook.api.review.presentation.dto.response.ReviewResponseDTO;
+import com.c201.aebook.api.vo.ReviewModifySO;
 import com.c201.aebook.api.vo.ReviewSO;
 
 public interface ReviewService {
@@ -19,8 +20,7 @@ public interface ReviewService {
 	public ReviewResponseDTO getReview(Long reviewId);
 
 	// 5. modifyReview : 특정 서평 수정
+	public void modifyReview(Long userId, ReviewModifySO reviewModifySO);
 
 	// 6. deleteReview : 특정 서평 삭제
-
-	// 7.
 }
