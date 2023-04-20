@@ -7,6 +7,8 @@ import openai
 import io
 import base64
 import cv2
+import sys
+import requests
 import numpy as np
 
 app = FastAPI()
@@ -14,6 +16,8 @@ app = FastAPI()
 #open api key
 load_dotenv()
 openai.api_key = os.getenv("SECRET_KEY")
+client_id = os.getenv("CLIENT_ID")
+client_secret = os.getenv("CLIENT_SECRET")
 
 @app.get("/")
 async def root():
@@ -24,6 +28,34 @@ async def root():
 @app.get("/hello/{name}")
 async def say_hello(name: str):
     return {"message":f"Hello {name}"}
+
+
+"""
+input:mp3 file(keyword)
+output:text
+"""
+@app.post("/reviews/sound")
+async def sound_to_text(sound: UploadFile = File(...)):
+    
+    lang = "Kor"
+    url = "https://naveropenapi.apigw.ntruss.com/recog/v1/stt?lang=" + lang
+    
+    #read mp3 file to byte string
+    data = await sound.read()
+    
+    headers = {
+        "X-NCP-APIGW-API-KEY-ID": client_id,
+        "X-NCP-APIGW-API-KEY": client_secret,
+        "Content-Type": "application/octet-stream"
+    }
+    
+    response = requests.post(url,  data=data, headers=headers)
+    rescode = response.status_code
+    
+    if(rescode == 200):
+        return response.text
+    else:
+        return "Error : " + response.text
 
 
 @app.post("/reviews/gpt")
