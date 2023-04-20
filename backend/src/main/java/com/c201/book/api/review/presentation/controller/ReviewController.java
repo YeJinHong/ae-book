@@ -1,7 +1,10 @@
 package com.c201.book.api.review.presentation.controller;
 
-import java.util.List;
-
+import com.c201.book.utils.RegexValidator;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +22,7 @@ import com.c201.book.api.vo.ReviewSO;
 import com.c201.book.converter.ReviewConverter;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,11 +38,11 @@ import lombok.extern.slf4j.Slf4j;
 public class ReviewController {
 
 	private final ReviewValidator dtoValidationUtils;
+	private final RegexValidator regexValidationUtils;
 	private final ReviewServiceImpl reviewService;
 	private final ReviewConverter reviewConverter;
-	//    private final TokenUtils tokenUtils;
+	//	private final TokenUtils tokenUtils; // TODO: 선영아 "해줘"
 
-	// 로그인 완성되면 주석 풀고 사용
 	@Operation(summary = "서평 등록", description = "새 서평을 등록합니다.")
 	@PostMapping(
 		path = "/{isbn}",
@@ -55,6 +59,9 @@ public class ReviewController {
 		// DTO NOT NULL 검증
 		dtoValidationUtils.validateReviewReqDto(reviewReqDto);
 
+		// isbn 검증
+		regexValidationUtils.validateIsbn(isbn);
+
 		ReviewSO reviewSo = reviewConverter.toReviewSo(reviewReqDto);
 		// 서평 등록
 		// reviewService.saveReview(Long.parseLong(customUserDetails.getUsername()), reviewReqDto); // TODO: 로그인 완성되면 아래 삭제하고 사용
@@ -63,14 +70,21 @@ public class ReviewController {
 		return new BaseResponse<>(null, 200, "서평 작성 완료");
 	}
 
-	// @Operation(summary = "특정 도서의 서평 리스트", description = "도서 상세 페이지에서 보여줄 서평 리스트입니다.")
-	// @GetMapping
-	// 	(
-	// 		path = "/{isbn}"
-	// 	)
-	// public BaseResponse<?> getBookReviewList(@PathVariable String isbn) {
-	// 	// DTO NOT NULL 검증
-	//
-	// 	//
-	// }
+	@Operation(summary = "특정 도서의 서평 리스트", description = "도서 상세 페이지에서 보여줄 서평 리스트입니다.")
+	@GetMapping
+		(
+			path = "/{isbn}"
+		)
+	public BaseResponse<?> getBookReviewList(
+			@PathVariable String isbn,
+			@PageableDefault(size=5, sort="id", direction = Sort.Direction.DESC) Pageable pageable
+			) {
+		// isbn 검증
+		regexValidationUtils.validateIsbn(isbn);
+
+		// 해당 도서 서평 리스트 찾기
+		Page<ReviewResDto> reviews = reviewService.getBookReviewList(isbn, pageable);
+
+		return new BaseResponse<>(reviews, 200, "해당 책의 서평 리스트가 도착했읍니다 ^_^b");
+	}
 }
