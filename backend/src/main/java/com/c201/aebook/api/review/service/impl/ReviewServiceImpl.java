@@ -11,11 +11,11 @@ import com.c201.aebook.api.user.persistence.entity.UserEntity;
 import com.c201.aebook.api.review.persistence.repository.ReviewRepository;
 import com.c201.aebook.api.user.persistence.repository.UserRepository;
 import com.c201.aebook.api.book.persistence.repository.BookRepository;
-import com.c201.aebook.api.review.presentation.dto.request.ReviewRequestDTO;
 import com.c201.aebook.api.review.presentation.dto.response.ReviewResponseDTO;
 import com.c201.aebook.api.review.service.ReviewService;
 import com.c201.aebook.utils.exception.CustomException;
 import com.c201.aebook.utils.exception.ErrorCode;
+import com.c201.aebook.api.vo.ReviewSO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,31 +29,31 @@ public class ReviewServiceImpl implements ReviewService {
 
 	@Override
 	@Transactional
-	public void saveReview(Long userId, String isbn, ReviewRequestDTO reviewReqDto) {
+	public void saveReview(Long userId, String isbn, ReviewSO reviewSO) {
 		// 1. 유효한 isbn인지 검증
-		BookEntity book = bookRepository.findByIsbn(isbn)
+		BookEntity bookEntity = bookRepository.findByIsbn(isbn)
 			.orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
 
 		// 2. 유효한 userId인지 검증
-		UserEntity user = userRepository.findById(userId)
+		UserEntity userEntity = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		// 3. 해당 책에 서평을 작성한 적 없는지 검증
-		ReviewEntity review = reviewRepository.findByUserIdAndBookId(userId, book.getId());
-		if (review != null) {
+		ReviewEntity reviewEntity = reviewRepository.findByUserIdAndBookId(userId, bookEntity.getId());
+		if (reviewEntity != null) {
 			throw new CustomException(ErrorCode.DUPLICATED_REVIEW);
 		}
 
 		// 4. 서평 저장
 		reviewRepository.save(ReviewEntity.builder()
-			.content(reviewReqDto.getContent())
-			.score(reviewReqDto.getScore())
-			.user(user)
-			.book(book)
+			.content(reviewSO.getContent())
+			.score(reviewSO.getScore())
+			.user(userEntity)
+			.book(bookEntity)
 			.build());
 
 		// 5. 도서 별점 정보 갱신
-		book.updateScoreInfo(reviewReqDto.getScore());
+		bookEntity.updateScoreInfo(reviewSO.getScore());
 	}
 
 	@Override
@@ -73,5 +73,19 @@ public class ReviewServiceImpl implements ReviewService {
 			.createAt(a.getCreatedAt())
 			.updateAt(a.getUpdatedAt())
 			.build());
+	}
+
+	@Override
+	public ReviewResponseDTO getReview(Long reviewId) {
+		ReviewEntity review = reviewRepository.findById(reviewId)
+			.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+		return ReviewResponseDTO.builder()
+			.reviewId(review.getId())
+			.reviewerId(review.getUser().getId())
+			.score(review.getScore())
+			.content(review.getContent())
+			.createAt(review.getCreatedAt())
+			.updateAt(review.getUpdatedAt())
+			.build();
 	}
 }
