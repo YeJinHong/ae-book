@@ -14,6 +14,7 @@ public interface ReviewService {
 	public Page<ReviewResponseDTO> getBookReviewList(String isbn, Pageable pageable);
 
 	// 3. getMyReviewList : 현재 로그인한 유저가 등록한 서평 리스트
+	public Page<ReviewResponseDTO> getMyReviewList(String userId, Pageable pageable);
 
 	// 4. getReview : 특정 서평 조회
 	public ReviewResponseDTO getReview(Long reviewId);

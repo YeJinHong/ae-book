@@ -76,6 +76,20 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 
 	@Override
+	public Page<ReviewResponseDTO> getMyReviewList(String userId, Pageable pageable) {
+		Page<ReviewEntity> reviews = reviewRepository.findByUserId(Long.valueOf(userId), pageable);
+
+		return reviews.map(a -> ReviewResponseDTO.builder()
+			.reviewId(a.getId())
+			.reviewerId(a.getUser().getId())
+			.score(a.getScore())
+			.content(a.getContent())
+			.createAt(a.getCreatedAt())
+			.updateAt(a.getUpdatedAt())
+			.build());
+	}
+
+	@Override
 	public ReviewResponseDTO getReview(Long reviewId) {
 		ReviewEntity review = reviewRepository.findById(reviewId)
 			.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
