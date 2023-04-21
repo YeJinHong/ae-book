@@ -13,7 +13,10 @@ import numpy as np
 
 app = FastAPI()
 
-#open api key
+#constant
+STT_URL = "https://naveropenapi.apigw.ntruss.com/recog/v1/stt?lang=Kor"
+
+#api key
 load_dotenv()
 openai.api_key = os.getenv("SECRET_KEY")
 client_id = os.getenv("CLIENT_ID")
@@ -37,9 +40,6 @@ output:text
 @app.post("/reviews/sound")
 async def sound_to_text(sound: UploadFile = File(...)):
     
-    lang = "Kor"
-    url = "https://naveropenapi.apigw.ntruss.com/recog/v1/stt?lang=" + lang
-    
     #read mp3 file to byte string
     data = await sound.read()
     
@@ -49,7 +49,7 @@ async def sound_to_text(sound: UploadFile = File(...)):
         "Content-Type": "application/octet-stream"
     }
     
-    response = requests.post(url,  data=data, headers=headers)
+    response = requests.post(STT_URL,  data=data, headers=headers)
     rescode = response.status_code
     
     if(rescode == 200):
