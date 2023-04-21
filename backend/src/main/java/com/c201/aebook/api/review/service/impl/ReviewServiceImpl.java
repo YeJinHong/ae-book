@@ -29,17 +29,17 @@ public class ReviewServiceImpl implements ReviewService {
 
 	@Override
 	@Transactional
-	public void saveReview(Long userId, String isbn, ReviewSO reviewSO) {
+	public void saveReview(String userId, String isbn, ReviewSO reviewSO) {
 		// 1. isbn 유효성 검증
 		BookEntity bookEntity = bookRepository.findByIsbn(isbn)
 			.orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
 
 		// 2. userId 유효성 검증
-		UserEntity userEntity = userRepository.findById(userId)
+		UserEntity userEntity = userRepository.findById(Long.valueOf(userId))
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		// 3. 해당 책에 서평을 작성한 적 없는지 검증
-		ReviewEntity reviewEntity = reviewRepository.findByUserIdAndBookId(userId, bookEntity.getId());
+		ReviewEntity reviewEntity = reviewRepository.findByUserIdAndBookId(userEntity.getId(), bookEntity.getId());
 		if (reviewEntity != null) {
 			throw new CustomException(ErrorCode.DUPLICATED_REVIEW);
 		}
