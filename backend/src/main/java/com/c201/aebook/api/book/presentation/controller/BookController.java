@@ -22,7 +22,7 @@ public class BookController {
 
     @Operation(summary = "ISBN으로 도서 검색", description = "해당 ISBN의 도서 상세 정보를 반환합니다.")
     @GetMapping("/{isbn}")
-    public BaseResponse<?> searchBookDetail(@PathVariable String isbn){
+    public BaseResponse<?> searchBookDetail(@PathVariable(name = "isbn") String isbn){
         BookResponseDTO book = bookService.searchBookDetail(isbn);
         return new BaseResponse<>(book, HttpStatus.OK.value(), ApplicationConstants.SUCCESS);
     }
