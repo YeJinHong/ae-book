@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "도서 Controller")
@@ -23,7 +24,7 @@ public class BookController {
     @GetMapping("/{isbn}")
     public BaseResponse<?> searchBookDetail(@PathVariable String isbn){
         BookResponseDTO book = bookService.searchBookDetail(isbn);
-        return new BaseResponse<>(book, 200, ApplicationConstants.SUCCESS);
+        return new BaseResponse<>(book, HttpStatus.OK.value(), ApplicationConstants.SUCCESS);
     }
     // TODO : 키워드 검색으로 도서 리스트를 반환하는 searchBookList
 
