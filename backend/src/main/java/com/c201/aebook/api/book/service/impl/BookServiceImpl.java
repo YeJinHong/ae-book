@@ -2,13 +2,12 @@ package com.c201.aebook.api.book.service.impl;
 
 import com.c201.aebook.api.book.persistence.entity.BookEntity;
 import com.c201.aebook.api.book.persistence.repository.BookRepository;
+import com.c201.aebook.api.book.presentation.dto.response.BookResponseDTO;
 import com.c201.aebook.api.book.service.BookService;
 import com.c201.aebook.utils.exception.CustomException;
 import com.c201.aebook.utils.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -16,8 +15,20 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
 
     @Override
-    public BookEntity searchBookDetail(String isbn) {
+    public BookResponseDTO searchBookDetail(String isbn) {
         BookEntity book = bookRepository.findByIsbn(isbn).orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
-        return book;
+        BookResponseDTO bookResponseDTO = BookResponseDTO.builder()
+                .aladinUrl(book.getAladinUrl())
+                .price(book.getPrice())
+                .author(book.getAuthor())
+                .coverImageUrl(book.getCoverImageUrl())
+                .title(book.getTitle())
+                .description(book.getDescription())
+                .page(book.getPage())
+                .isbn(book.getIsbn())
+                .publishDate(book.getPublishDate())
+                .publisher(book.getPublisher())
+                .build();
+        return bookResponseDTO;
     }
 }
