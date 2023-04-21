@@ -6,16 +6,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.c201.aebook.api.book.persistence.entity.BookEntity;
-import com.c201.aebook.api.review.persistence.entity.ReviewEntity;
-import com.c201.aebook.api.user.persistence.entity.UserEntity;
-import com.c201.aebook.api.review.persistence.repository.ReviewRepository;
-import com.c201.aebook.api.user.persistence.repository.UserRepository;
 import com.c201.aebook.api.book.persistence.repository.BookRepository;
+import com.c201.aebook.api.review.persistence.entity.ReviewEntity;
+import com.c201.aebook.api.review.persistence.repository.ReviewRepository;
 import com.c201.aebook.api.review.presentation.dto.response.ReviewResponseDTO;
 import com.c201.aebook.api.review.service.ReviewService;
+import com.c201.aebook.api.user.persistence.entity.UserEntity;
+import com.c201.aebook.api.user.persistence.repository.UserRepository;
+import com.c201.aebook.api.vo.ReviewSO;
 import com.c201.aebook.utils.exception.CustomException;
 import com.c201.aebook.utils.exception.ErrorCode;
-import com.c201.aebook.api.vo.ReviewSO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,17 +29,17 @@ public class ReviewServiceImpl implements ReviewService {
 
 	@Override
 	@Transactional
-	public void saveReview(Long userId, String isbn, ReviewSO reviewSO) {
-		// 1. 유효한 isbn인지 검증
+	public void saveReview(String userId, String isbn, ReviewSO reviewSO) {
+		// 1. isbn 유효성 검증
 		BookEntity bookEntity = bookRepository.findByIsbn(isbn)
 			.orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
 
-		// 2. 유효한 userId인지 검증
-		UserEntity userEntity = userRepository.findById(userId)
+		// 2. userId 유효성 검증
+		UserEntity userEntity = userRepository.findById(Long.valueOf(userId))
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		// 3. 해당 책에 서평을 작성한 적 없는지 검증
-		ReviewEntity reviewEntity = reviewRepository.findByUserIdAndBookId(userId, bookEntity.getId());
+		ReviewEntity reviewEntity = reviewRepository.findByUserIdAndBookId(userEntity.getId(), bookEntity.getId());
 		if (reviewEntity != null) {
 			throw new CustomException(ErrorCode.DUPLICATED_REVIEW);
 		}
@@ -87,5 +87,28 @@ public class ReviewServiceImpl implements ReviewService {
 			.createAt(review.getCreatedAt())
 			.updateAt(review.getUpdatedAt())
 			.build();
+	}
+
+	@Override
+	@Transactional
+	public void modifyReview(Long reviewId, String userId, ReviewSO reviewSO) {
+		// 1. reviewId 유효성 검증
+		ReviewEntity reviewEntity = reviewRepository.findById(reviewId)
+			.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+
+		// 2. 작성자 아이디 일치 검증
+		if (reviewEntity.getUser().getId() != Long.valueOf(userId)) {
+			throw new CustomException(ErrorCode.FORBIDDEN_USER);
+		}
+
+		// 3. 해당 도서의 별점 정보 변경
+		BookEntity bookEntity = bookRepository.findById(reviewEntity.getBook().getId())
+			.orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
+		bookEntity.updateScore(-reviewEntity.getScore());
+		bookEntity.updateScore(reviewSO.getScore());
+
+		// 4. 서평 수정
+		reviewEntity.updateReviewEntity(reviewSO.getContent(), reviewSO.getScore());
+		reviewRepository.save(reviewEntity);
 	}
 }

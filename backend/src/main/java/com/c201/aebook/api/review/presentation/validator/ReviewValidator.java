@@ -17,7 +17,7 @@ public class ReviewValidator {
 	 * @param reviewRequestDTO
 	 */
 	public void validateReviewRequestDTO(ReviewRequestDTO reviewRequestDTO) {
-		checkStringType(reviewRequestDTO.getContent(), "리뷰 내용");
+		checkStringType(reviewRequestDTO.getContent(), "서평 내용");
 		checkIntType(reviewRequestDTO.getScore(), "별점");
 	}
 
