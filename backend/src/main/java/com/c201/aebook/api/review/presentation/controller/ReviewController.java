@@ -132,9 +132,15 @@ public class ReviewController {
 		path = "/{reviewid}"
 	)
 	public BaseResponse<?> deleteReview(
-		@PathVariable Long reviewId,
+		@PathVariable(name = "reviewid") Long reviewId,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
-		return null;
+		// TODO: 토큰 유효성 검증
+		// User loginUser = tokenUtils.validateGetUser(customUserDetails);
+
+		// 서평 삭제
+		reviewService.deleteReview(reviewId, customUserDetails.getUsername());
+
+		return new BaseResponse<>(null, 200, ApplicationConstants.SUCCESS);
 	}
 }
