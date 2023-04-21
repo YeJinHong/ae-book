@@ -94,10 +94,10 @@ public class ReviewController {
 
 	@Operation(summary = "특정 서평 조회", description = "선택한 서평의 정보를 보여줍니다.")
 	@GetMapping(
-		path = "/detail/{reviewid}"
+		path = "/detail/{reviewId}"
 	)
 	public BaseResponse<?> getReview(
-		@PathVariable(name = "reviewid") Long reviewId
+		@PathVariable(name = "reviewId") Long reviewId
 	) {
 		ReviewResponseDTO review = reviewService.getReview(reviewId);
 
@@ -106,10 +106,10 @@ public class ReviewController {
 
 	@Operation(summary = "특정 서평 수정", description = "선택한 서평의 내용을 수정합니다.")
 	@PatchMapping(
-		path = "/{reviewid}"
+		path = "/{reviewId}"
 	)
 	public BaseResponse<?> modifyReview(
-		@PathVariable(name = "reviewid") Long reviewId,
+		@PathVariable(name = "reviewId") Long reviewId,
 		@RequestBody ReviewRequestDTO reviewRequestDTO,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
@@ -129,10 +129,10 @@ public class ReviewController {
 
 	@Operation(summary = "특정 서평 삭제", description = "선택한 서평을 삭제합니다.")
 	@DeleteMapping(
-		path = "/{reviewid}"
+		path = "/{reviewId}"
 	)
 	public BaseResponse<?> deleteReview(
-		@PathVariable(name = "reviewid") Long reviewId,
+		@PathVariable(name = "reviewId") Long reviewId,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
 		// TODO: 토큰 유효성 검증
