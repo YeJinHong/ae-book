@@ -101,7 +101,13 @@ public class ReviewServiceImpl implements ReviewService {
 			throw new CustomException(ErrorCode.FORBIDDEN_USER);
 		}
 
-		// 3. 서평 수정
+		// 3. 해당 도서의 별점 정보 변경
+		BookEntity bookEntity = bookRepository.findById(reviewEntity.getBook().getId())
+			.orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
+		bookEntity.updateScoreInfo(-reviewEntity.getScore());
+		bookEntity.updateScoreInfo(reviewSO.getScore());
+
+		// 4. 서평 수정
 		reviewEntity.updateReviewEntity(reviewSO.getContent(), reviewSO.getScore());
 		reviewRepository.save(reviewEntity);
 	}
