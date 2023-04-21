@@ -6,6 +6,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,12 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.c201.aebook.api.common.BaseResponse;
 import com.c201.aebook.api.common.constants.ApplicationConstants;
-import com.c201.aebook.api.review.presentation.dto.request.ReviewModifyRequestDTO;
 import com.c201.aebook.api.review.presentation.dto.request.ReviewRequestDTO;
 import com.c201.aebook.api.review.presentation.dto.response.ReviewResponseDTO;
 import com.c201.aebook.api.review.presentation.validator.ReviewValidator;
 import com.c201.aebook.api.review.service.impl.ReviewServiceImpl;
-import com.c201.aebook.api.vo.ReviewModifySO;
 import com.c201.aebook.api.vo.ReviewSO;
 import com.c201.aebook.auth.CustomUserDetails;
 import com.c201.aebook.converter.ReviewConverter;
@@ -106,23 +105,36 @@ public class ReviewController {
 	}
 
 	@Operation(summary = "특정 서평 수정", description = "선택한 서평의 내용을 수정합니다.")
-	@PatchMapping
+	@PatchMapping(
+		path = "/{reviewid}"
+	)
 	public BaseResponse<?> modifyReview(
-		@RequestBody ReviewModifyRequestDTO reviewModifyRequestDTO,
+		@PathVariable(name = "reviewid") Long reviewId,
+		@RequestBody ReviewRequestDTO reviewRequestDTO,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
 		// TODO: 토큰 유효성 검증
 		// User loginUser = tokenUtils.validateGetUser(customUserDetails);
 
 		// DTO NOT NULL 검증
-		reviewValidator.validateReviewModifyRequestDTO(reviewModifyRequestDTO);
+		reviewValidator.validateReviewRequestDTO(reviewRequestDTO);
 
-		ReviewModifySO reviewModifySO = reviewConverter.toReviewModifySO(reviewModifyRequestDTO);
+		ReviewSO reviewSO = reviewConverter.toReviewSO(reviewRequestDTO);
 
 		// 서평 수정
-		reviewService.modifyReview(customUserDetails.getUsername(), reviewModifySO);
+		reviewService.modifyReview(reviewId, customUserDetails.getUsername(), reviewSO);
 
 		return new BaseResponse<>(null, 200, ApplicationConstants.SUCCESS);
+	}
 
+	@Operation(summary = "특정 서평 삭제", description = "선택한 서평을 삭제합니다.")
+	@DeleteMapping(
+		path = "/{reviewid}"
+	)
+	public BaseResponse<?> deleteReview(
+		@PathVariable Long reviewId,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails
+	) {
+		return null;
 	}
 }

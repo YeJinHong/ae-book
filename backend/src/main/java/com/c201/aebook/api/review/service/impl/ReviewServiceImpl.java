@@ -13,7 +13,6 @@ import com.c201.aebook.api.review.presentation.dto.response.ReviewResponseDTO;
 import com.c201.aebook.api.review.service.ReviewService;
 import com.c201.aebook.api.user.persistence.entity.UserEntity;
 import com.c201.aebook.api.user.persistence.repository.UserRepository;
-import com.c201.aebook.api.vo.ReviewModifySO;
 import com.c201.aebook.api.vo.ReviewSO;
 import com.c201.aebook.utils.exception.CustomException;
 import com.c201.aebook.utils.exception.ErrorCode;
@@ -92,9 +91,9 @@ public class ReviewServiceImpl implements ReviewService {
 
 	@Override
 	@Transactional
-	public void modifyReview(String userId, ReviewModifySO reviewModifySO) {
+	public void modifyReview(Long reviewId, String userId, ReviewSO reviewSO) {
 		// 1. reviewId 유효성 검증
-		ReviewEntity reviewEntity = reviewRepository.findById(reviewModifySO.getReviewId())
+		ReviewEntity reviewEntity = reviewRepository.findById(reviewId)
 			.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
 
 		// 2. 작성자 아이디 일치 검증
@@ -103,7 +102,7 @@ public class ReviewServiceImpl implements ReviewService {
 		}
 
 		// 3. 서평 수정
-		reviewEntity.updateReviewEntity(reviewModifySO.getContent(), reviewModifySO.getScore());
+		reviewEntity.updateReviewEntity(reviewSO.getContent(), reviewSO.getScore());
 		reviewRepository.save(reviewEntity);
 	}
 }
