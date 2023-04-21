@@ -104,8 +104,8 @@ public class ReviewServiceImpl implements ReviewService {
 		// 3. 해당 도서의 별점 정보 변경
 		BookEntity bookEntity = bookRepository.findById(reviewEntity.getBook().getId())
 			.orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
-		bookEntity.updateScoreInfo(-reviewEntity.getScore());
-		bookEntity.updateScoreInfo(reviewSO.getScore());
+		bookEntity.updateScore(-reviewEntity.getScore());
+		bookEntity.updateScore(reviewSO.getScore());
 
 		// 4. 서평 수정
 		reviewEntity.updateReviewEntity(reviewSO.getContent(), reviewSO.getScore());
