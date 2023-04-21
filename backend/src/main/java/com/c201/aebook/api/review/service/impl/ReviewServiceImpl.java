@@ -111,4 +111,20 @@ public class ReviewServiceImpl implements ReviewService {
 		reviewEntity.updateReviewEntity(reviewSO.getContent(), reviewSO.getScore());
 		reviewRepository.save(reviewEntity);
 	}
+
+	@Override
+	@Transactional
+	public void deleteReview(Long reviewId, String userId) {
+		// 1. reviewId 유효성 검증
+		ReviewEntity reviewEntity = reviewRepository.findById(reviewId)
+			.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+
+		// 2. 작성자 아이디 일치 검증
+		if (reviewEntity.getUser().getId() != Long.valueOf(userId)) {
+			throw new CustomException(ErrorCode.FORBIDDEN_USER);
+		}
+
+		// 3. 서평 삭제
+		reviewRepository.delete(reviewEntity);
+	}
 }

@@ -22,4 +22,5 @@ public interface ReviewService {
 	public void modifyReview(Long reviewId, String userId, ReviewSO reviewSO);
 
 	// 6. deleteReview : 특정 서평 삭제
+	public void deleteReview(Long reviewId, String userId);
 }
