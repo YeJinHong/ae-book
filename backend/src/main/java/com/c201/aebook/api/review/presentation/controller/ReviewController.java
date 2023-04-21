@@ -68,7 +68,7 @@ public class ReviewController {
 
 		ReviewSO reviewSO = reviewConverter.toReviewSO(reviewRequestDTO);
 		// 서평 등록
-		reviewService.saveReview(Long.parseLong(customUserDetails.getUsername()), isbn,
+		reviewService.saveReview(customUserDetails.getUsername(), isbn,
 			reviewSO);
 
 		return new BaseResponse<>(null, 200, "서평 작성 완료");
