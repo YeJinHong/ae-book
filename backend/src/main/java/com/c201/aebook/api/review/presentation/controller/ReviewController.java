@@ -92,12 +92,26 @@ public class ReviewController {
 		return new BaseResponse<>(reviews, 200, "해당 책의 서평 리스트가 도착했읍니다 ^_^b");
 	}
 
+	@Operation(summary = "사용자 서평 조회", description = "현재 로그인한 사용자가 작성한 서평 리스트입니다.")
+	@GetMapping
+	public BaseResponse<?> getMyReviewList(
+		@AuthenticationPrincipal CustomUserDetails customUserDetails,
+		@PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+	) {
+		// TODO: 토큰 유효성 검증
+		// User loginUser = tokenUtils.validateGetUser(customUserDetails);
+
+		Page<ReviewResponseDTO> reviews = reviewService.getMyReviewList(customUserDetails.getUsername(), pageable);
+
+		return new BaseResponse<>(reviews, 200, ApplicationConstants.SUCCESS);
+	}
+
 	@Operation(summary = "특정 서평 조회", description = "선택한 서평의 정보를 보여줍니다.")
 	@GetMapping(
-		path = "/detail/{reviewid}"
+		path = "/detail/{reviewId}"
 	)
 	public BaseResponse<?> getReview(
-		@PathVariable(name = "reviewid") Long reviewId
+		@PathVariable(name = "reviewId") Long reviewId
 	) {
 		ReviewResponseDTO review = reviewService.getReview(reviewId);
 
@@ -106,10 +120,11 @@ public class ReviewController {
 
 	@Operation(summary = "특정 서평 수정", description = "선택한 서평의 내용을 수정합니다.")
 	@PatchMapping(
-		path = "/{reviewid}"
+		path = "/{reviewId}",
+		consumes = MediaType.APPLICATION_JSON_VALUE
 	)
 	public BaseResponse<?> modifyReview(
-		@PathVariable(name = "reviewid") Long reviewId,
+		@PathVariable(name = "reviewId") Long reviewId,
 		@RequestBody ReviewRequestDTO reviewRequestDTO,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
@@ -129,12 +144,18 @@ public class ReviewController {
 
 	@Operation(summary = "특정 서평 삭제", description = "선택한 서평을 삭제합니다.")
 	@DeleteMapping(
-		path = "/{reviewid}"
+		path = "/{reviewId}"
 	)
 	public BaseResponse<?> deleteReview(
-		@PathVariable Long reviewId,
+		@PathVariable(name = "reviewId") Long reviewId,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
-		return null;
+		// TODO: 토큰 유효성 검증
+		// User loginUser = tokenUtils.validateGetUser(customUserDetails);
+
+		// 서평 삭제
+		reviewService.deleteReview(reviewId, customUserDetails.getUsername());
+
+		return new BaseResponse<>(null, 200, ApplicationConstants.SUCCESS);
 	}
 }
