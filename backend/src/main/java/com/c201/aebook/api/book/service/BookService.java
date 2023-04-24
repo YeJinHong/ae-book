@@ -16,6 +16,6 @@ public interface BookService {
 	// 2. 검색시 책 제목 자동 완성
 	public List<String> getAutocompleteTitle(String keyword);
 
-	// 3. 도서 검색 결과 반환
+	// 3. 도서 통합 검색 결과 반환
 	public Page<BookSearchResponseDTO> searchBookList(String keyword, boolean[] searchType, Pageable pageable);
 }
