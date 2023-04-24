@@ -9,6 +9,9 @@ import com.c201.aebook.utils.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
@@ -31,4 +34,15 @@ public class BookServiceImpl implements BookService {
                 .build();
         return bookResponseDTO;
     }
+
+    @Override
+    public List<String> getAutocompleteTitle(String keyword) {
+        List<BookEntity> bookList = bookRepository.findTop5ByTitleContaining(keyword);
+        List<String> titleList = bookList.stream()
+                .map(BookEntity::getTitle)
+                .collect(Collectors.toList());
+        return titleList;
+    }
+
+
 }

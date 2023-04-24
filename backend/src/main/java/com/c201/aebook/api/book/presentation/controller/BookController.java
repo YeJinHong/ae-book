@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Tag(name = "도서 Controller")
 @Slf4j
 @RestController
@@ -31,5 +33,10 @@ public class BookController {
     // TODO : 새로 들어온 책 리스트를 반환하는 getNewBookList()
 
     // TODO : 검색어 자동완성 getAutocompleteTitle()
-
+    @Operation(summary = "키워드로 책 제목 자동완성", description = "키워드를 입력하면 책 제목을 자동 완성합니다.")
+    @GetMapping("/autocomplete")
+    public BaseResponse<?> getAutocompleteTitle(@RequestParam(name = "keyword") String keyword){
+        List<String> titleList = bookService.getAutocompleteTitle(keyword);
+        return new BaseResponse<>(titleList, HttpStatus.OK.value(), ApplicationConstants.SUCCESS);
+    }
 }
