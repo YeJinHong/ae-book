@@ -70,7 +70,7 @@ public class ReviewServiceImpl implements ReviewService {
 
 		return reviews.map(a -> ReviewResponseDTO.builder()
 			.reviewId(a.getId())
-			// .reviewerId(a.getUser().getId())
+			.reviewer(a.getUser().getNickname())
 			.score(a.getScore())
 			.content(a.getContent())
 			.createAt(a.getCreatedAt())
@@ -84,7 +84,7 @@ public class ReviewServiceImpl implements ReviewService {
 
 		return reviews.map(a -> ReviewResponseDTO.builder()
 			.reviewId(a.getId())
-			// .reviewerId(a.getUser().getId())
+			.reviewer(a.getUser().getNickname())
 			.score(a.getScore())
 			.content(a.getContent())
 			.createAt(a.getCreatedAt())
@@ -98,7 +98,7 @@ public class ReviewServiceImpl implements ReviewService {
 			.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
 		return ReviewResponseDTO.builder()
 			.reviewId(review.getId())
-			// .reviewerId(review.getUser().getId())
+			.reviewer(review.getUser().getNickname())
 			.score(review.getScore())
 			.content(review.getContent())
 			.createAt(review.getCreatedAt())
