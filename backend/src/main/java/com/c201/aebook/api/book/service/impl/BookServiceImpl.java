@@ -3,6 +3,7 @@ package com.c201.aebook.api.book.service.impl;
 import com.c201.aebook.api.book.persistence.entity.BookEntity;
 import com.c201.aebook.api.book.persistence.repository.BookRepository;
 import com.c201.aebook.api.book.presentation.dto.response.BookResponseDTO;
+import com.c201.aebook.api.book.presentation.dto.response.BookSearchResponseDTO;
 import com.c201.aebook.api.book.service.BookService;
 import com.c201.aebook.utils.exception.CustomException;
 import com.c201.aebook.utils.exception.ErrorCode;
@@ -42,6 +43,24 @@ public class BookServiceImpl implements BookService {
                 .map(BookEntity::getTitle)
                 .collect(Collectors.toList());
         return titleList;
+    }
+
+    @Override
+    public List<BookSearchResponseDTO> searchBookList(String keyword) {
+        List<BookEntity> bookList = bookRepository.findByTitleContaining(keyword);
+        List<BookSearchResponseDTO> result = bookList.stream()
+                .map(book -> BookSearchResponseDTO.builder()
+                        .aladinUrl(book.getAladinUrl())
+                        .author(book.getAuthor())
+                        .publishDate(book.getPublishDate())
+                        .title(book.getTitle())
+                        .isbn(book.getIsbn())
+                        .coverImageUrl(book.getCoverImageUrl())
+                        .price(book.getPrice())
+                        .publisher(book.getPublisher())
+                        .build())
+                .collect(Collectors.toList());
+        return result;
     }
 
 
