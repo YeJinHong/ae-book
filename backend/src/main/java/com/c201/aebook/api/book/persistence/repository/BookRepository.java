@@ -12,4 +12,5 @@ import java.util.Optional;
 public interface BookRepository extends JpaRepository<BookEntity, Long> {
     public Optional<BookEntity> findByIsbn(String isbn);
     public List<BookEntity> findTop5ByTitleContaining(String keyword);
+    public List<BookEntity> findByTitleContaining(String keyword);
 }
