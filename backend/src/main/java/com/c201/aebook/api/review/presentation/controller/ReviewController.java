@@ -1,5 +1,7 @@
 package com.c201.aebook.api.review.presentation.controller;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -145,5 +147,15 @@ public class ReviewController {
 		reviewService.deleteReview(reviewId, customUserDetails.getUsername());
 
 		return new BaseResponse<>(null, 200, ApplicationConstants.SUCCESS);
+	}
+
+	@Operation(summary = "최신 서평 리스트", description = "메인페이지에서 보여줄 최신 서평 12개 리스트입니다")
+	@GetMapping(
+		path = "/latest"
+	)
+	public BaseResponse<?> getNewReviewList() {
+		List<ReviewResponseDTO> reviews = reviewService.getNewReviewList();
+
+		return new BaseResponse<>(reviews, 200, ApplicationConstants.SUCCESS);
 	}
 }

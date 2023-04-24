@@ -1,5 +1,7 @@
 package com.c201.aebook.api.review.service;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -24,4 +26,7 @@ public interface ReviewService {
 
 	// 6. deleteReview : 특정 서평 삭제
 	public void deleteReview(Long reviewId, String userId);
+
+	// 7. getNewReviewList : 최신 서평 12개
+	public List<ReviewResponseDTO> getNewReviewList();
 }
