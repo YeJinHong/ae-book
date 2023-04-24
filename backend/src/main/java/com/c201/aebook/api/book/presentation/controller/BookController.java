@@ -6,6 +6,7 @@ import com.c201.aebook.api.book.presentation.dto.response.BookSearchResponseDTO;
 import com.c201.aebook.api.book.service.BookService;
 import com.c201.aebook.api.common.BaseResponse;
 import com.c201.aebook.api.common.constants.ApplicationConstants;
+import com.c201.aebook.utils.RegexValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +23,13 @@ import java.util.List;
 @RequestMapping("/books")
 public class BookController {
     private final BookService bookService;
+    private final RegexValidator regexValidator;
 
     @Operation(summary = "ISBN으로 도서 검색", description = "해당 ISBN의 도서 상세 정보를 반환합니다.")
     @GetMapping("/{isbn}")
     public BaseResponse<?> searchBookDetail(@PathVariable(name = "isbn") String isbn){
+        // ISBN 검증
+        regexValidator.validateIsbn(isbn);
         BookResponseDTO book = bookService.searchBookDetail(isbn);
         return new BaseResponse<>(book, HttpStatus.OK.value(), ApplicationConstants.SUCCESS);
     }
