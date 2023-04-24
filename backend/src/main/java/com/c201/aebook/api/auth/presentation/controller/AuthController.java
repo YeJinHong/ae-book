@@ -19,8 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import com.c201.aebook.api.common.LoginUserInfoDTO;
 import com.c201.aebook.api.common.TokenDTO;
 import com.c201.aebook.api.user.persistence.entity.UserEntity;
-import com.c201.aebook.api.auth.presentation.dto.response.LoginResDTO;
-import com.c201.aebook.api.auth.service.AuthService;
+import com.c201.aebook.api.auth.presentation.dto.response.LoginResponseDTO;
 import com.c201.aebook.auth.dto.KakaoTokenDTO;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -69,13 +68,13 @@ public class AuthController {
 
         // 4. 로그인 유저 정보 담기
         UserEntity user = loginUserInfoDto.getUser();
-        LoginResDTO loginResDto = LoginResDTO.builder()
+        LoginResponseDTO loginResponseDto = LoginResponseDTO.builder()
                 .userId(user.getId())
                 .nickname(user.getNickname())
                 .profileUrl(user.getProfileUrl())
                 .build();
 
-        return ResponseEntity.ok().headers(headers).body(loginResDto);
+        return ResponseEntity.ok().headers(headers).body(loginResponseDto);
     }
 
     @Operation(summary = "토큰 재발행", description = "토큰 재발행을 합니다.")
