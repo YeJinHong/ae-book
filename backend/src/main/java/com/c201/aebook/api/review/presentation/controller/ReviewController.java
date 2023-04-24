@@ -57,9 +57,6 @@ public class ReviewController {
 		@RequestBody ReviewRequestDTO reviewRequestDTO,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
-		// TODO: 토큰 유효성 검증
-		// User loginUser = tokenUtils.validateGetUser(customUserDetails);
-
 		// DTO NOT NULL 검증
 		reviewValidator.validateReviewRequestDTO(reviewRequestDTO);
 
@@ -98,9 +95,6 @@ public class ReviewController {
 		@AuthenticationPrincipal CustomUserDetails customUserDetails,
 		@PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
 	) {
-		// TODO: 토큰 유효성 검증
-		// User loginUser = tokenUtils.validateGetUser(customUserDetails);
-
 		Page<ReviewResponseDTO> reviews = reviewService.getMyReviewList(customUserDetails.getUsername(), pageable);
 
 		return new BaseResponse<>(reviews, 200, ApplicationConstants.SUCCESS);
@@ -128,9 +122,6 @@ public class ReviewController {
 		@RequestBody ReviewRequestDTO reviewRequestDTO,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
-		// TODO: 토큰 유효성 검증
-		// User loginUser = tokenUtils.validateGetUser(customUserDetails);
-
 		// DTO NOT NULL 검증
 		reviewValidator.validateReviewRequestDTO(reviewRequestDTO);
 
@@ -150,9 +141,6 @@ public class ReviewController {
 		@PathVariable(name = "reviewId") Long reviewId,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
-		// TODO: 토큰 유효성 검증
-		// User loginUser = tokenUtils.validateGetUser(customUserDetails);
-
 		// 서평 삭제
 		reviewService.deleteReview(reviewId, customUserDetails.getUsername());
 
