@@ -80,10 +80,10 @@ public class StoryController {
 		@AuthenticationPrincipal CustomUserDetails customUserDetails,
 		@PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
 	) {
-		// 로그인 한 유저의 동화책 리스트를 가져온다.
+		// 로그인 한 유저의 Id를 추출
 		Long userId = Long.parseLong(customUserDetails.getUsername());
 
-		// 해당 도서 서평 리스트 찾기
+		// 해당 유저의 동화 리스트 추출
 		Page<StoryResponseDTO> stories = storyService.getStoryList(userId, pageable);
 
 		return new BaseResponse<>(stories, HttpStatus.OK.value(), "나의 동화책 리스트가 정상적으로 도착했습니다.");
