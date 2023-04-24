@@ -1,6 +1,7 @@
 from fastapi import FastAPI,File,UploadFile
 from fastapi.responses import JSONResponse
 from review_star_prediction import *
+from isbn_ocr import *
 from dotenv import load_dotenv
 import os
 import openai
@@ -164,5 +165,54 @@ async def image_to_sketch(image: UploadFile = File(...)):
     
     #return json response
     return JSONResponse(decoded)
+
+
+"""
+input: isbn image
+output: isbn string
+"""
+@app.post("/books/isbn")
+async def isbn_detection(image: UploadFile = File(...)):
     
+    #read image data
+    img = await image.read()
+    
+    #convert image to byte string
+    img = np.fromstring(img,dtype=np.uint8)
+    
+    #read image
+    img = cv2.imdecode(img,cv2.IMREAD_COLOR)
+    
+    #detect
+    result = ocr.ocr(img,cls = True)
+    
+    #find isbn string
+    for idx in range(len(result)):
+        res = result[idx]
+        for line in res:
+            
+            #success
+            if 'ISBN' in line[1][0]:
+                
+                #simple cleansing
+                
+                #case1 : ISBN 979-11-6050-443-9 (with white space)
+                if line[1][0][4] == ' ':
+                    
+                    data = line[1][0][5:]
+                
+                #case2 : ISBN979-11-6050-443-9 (no white space)
+                elif line[1][0][4] >= '0' and line[1][0][4] <= '9':
+                    
+                    data = line[1][0][4:]
+                
+                #case3 : unpredictable case
+                else:
+                    
+                    data = line[1][0]
+                    
+                return {"status":1, "data":data} 
+    
+    #fail
+    return {"status":0, "data":""} 
     
