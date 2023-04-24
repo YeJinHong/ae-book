@@ -29,12 +29,12 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return String.valueOf(user.getId());
+        return String.valueOf(this.user.getId());
     }
 
     @Override
     public String getUsername() {
-        return String.valueOf(user.getId());
+        return String.valueOf(this.user.getId());
     }
 
     @Override
