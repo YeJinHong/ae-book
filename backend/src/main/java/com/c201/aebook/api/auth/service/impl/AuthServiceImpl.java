@@ -217,7 +217,6 @@ public class AuthServiceImpl implements AuthService {
             throw new CustomException(ErrorCode.MISMATCH_REFRESH_TOKEN);
         }
 
-        // 이전 정보 지우기
         ValueOperations<String, String> logoutValueOperations = redisTemplate.opsForValue();
         logoutValueOperations.set(tokenSO.getAccessToken(), tokenSO.getAccessToken());
 
