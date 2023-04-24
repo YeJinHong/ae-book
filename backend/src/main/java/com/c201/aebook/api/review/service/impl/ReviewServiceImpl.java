@@ -53,7 +53,7 @@ public class ReviewServiceImpl implements ReviewService {
 			.build());
 
 		// 5. 도서 별점 정보 갱신
-		bookEntity.updateScoreInfo(reviewSO.getScore());
+		bookEntity.updateScoreInfo(reviewSO.getScore(), 1);
 	}
 
 	@Override
@@ -64,6 +64,20 @@ public class ReviewServiceImpl implements ReviewService {
 
 		// 2. Review List
 		Page<ReviewEntity> reviews = reviewRepository.findByBookId(bookEntity.getId(), pageable);
+
+		return reviews.map(a -> ReviewResponseDTO.builder()
+			.reviewId(a.getId())
+			.reviewerId(a.getUser().getId())
+			.score(a.getScore())
+			.content(a.getContent())
+			.createAt(a.getCreatedAt())
+			.updateAt(a.getUpdatedAt())
+			.build());
+	}
+
+	@Override
+	public Page<ReviewResponseDTO> getMyReviewList(String userId, Pageable pageable) {
+		Page<ReviewEntity> reviews = reviewRepository.findByUserId(Long.valueOf(userId), pageable);
 
 		return reviews.map(a -> ReviewResponseDTO.builder()
 			.reviewId(a.getId())
@@ -92,23 +106,34 @@ public class ReviewServiceImpl implements ReviewService {
 	@Override
 	@Transactional
 	public void modifyReview(Long reviewId, String userId, ReviewSO reviewSO) {
-		// 1. reviewId 유효성 검증
-		ReviewEntity reviewEntity = reviewRepository.findById(reviewId)
+		// 1. reviewId 유효성, 작성자 아이디 일치 검증
+		ReviewEntity reviewEntity = reviewRepository.findByIdAndUserId(reviewId, Long.valueOf(userId))
 			.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
 
-		// 2. 작성자 아이디 일치 검증
-		if (reviewEntity.getUser().getId() != Long.valueOf(userId)) {
-			throw new CustomException(ErrorCode.FORBIDDEN_USER);
-		}
-
-		// 3. 해당 도서의 별점 정보 변경
+		// 2. 해당 도서의 별점 정보 변경
 		BookEntity bookEntity = bookRepository.findById(reviewEntity.getBook().getId())
 			.orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
-		bookEntity.updateScore(-reviewEntity.getScore());
-		bookEntity.updateScore(reviewSO.getScore());
+		bookEntity.updateScoreInfo(-reviewEntity.getScore(), 0);
+		bookEntity.updateScoreInfo(reviewSO.getScore(), 0);
 
-		// 4. 서평 수정
+		// 3. 서평 수정
 		reviewEntity.updateReviewEntity(reviewSO.getContent(), reviewSO.getScore());
 		reviewRepository.save(reviewEntity);
+	}
+
+	@Override
+	@Transactional
+	public void deleteReview(Long reviewId, String userId) {
+		// 1. reviewId 유효성, 작성자 아이디 일치 검증
+		ReviewEntity reviewEntity = reviewRepository.findByIdAndUserId(reviewId, Long.valueOf(userId))
+			.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+
+		// 2. 해당 도서의 별점 정보 변경
+		BookEntity bookEntity = bookRepository.findById(reviewEntity.getBook().getId())
+			.orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
+		bookEntity.updateScoreInfo(-reviewEntity.getScore(), -1);
+
+		// 3. 서평 삭제
+		reviewRepository.delete(reviewEntity);
 	}
 }
