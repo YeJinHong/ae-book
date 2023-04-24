@@ -23,6 +23,7 @@ import com.c201.aebook.api.story.presentation.dto.request.StoryRequestDTO;
 import com.c201.aebook.api.story.presentation.dto.response.StoryResponseDTO;
 import com.c201.aebook.api.story.presentation.validator.StoryValidator;
 import com.c201.aebook.api.story.service.StoryService;
+import com.c201.aebook.api.vo.StoryDeleteSO;
 import com.c201.aebook.api.vo.StorySO;
 import com.c201.aebook.auth.CustomUserDetails;
 import com.c201.aebook.converter.StoryConverter;
@@ -100,7 +101,11 @@ public class StoryController {
 		@PathVariable(name = "storyId") Long storyId,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
-		storyService.deleteStory(storyId);
+		Long userId = Long.parseLong(customUserDetails.getUsername());
+
+		StoryDeleteSO storyDeleteSO = storyConverter.toStoryDeleteSO(userId, storyId);
+
+		storyService.deleteStory(storyDeleteSO);
 		return new BaseResponse<>(null, HttpStatus.OK.value(), "특정 동화의 삭제를 완료하였습니다.");
 	}
 
