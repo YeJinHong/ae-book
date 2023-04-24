@@ -31,6 +31,7 @@ public class BookRepositoryImpl implements BookCustomRepository {
 		return new PageImpl<>(bookList.getResults(), pageable, bookList.getTotal());
 	}
 
+	// 체크된 검색 옵션으로 동적 쿼리 만들기
 	private BooleanBuilder checkSearchOption(boolean[] searchType, String keyword) {
 		BooleanBuilder booleanBuilder = new BooleanBuilder();
 
