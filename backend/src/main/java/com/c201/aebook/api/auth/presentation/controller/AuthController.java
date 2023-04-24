@@ -5,6 +5,7 @@ import com.c201.aebook.api.common.BaseResponse;
 import com.c201.aebook.api.vo.TokenSO;
 import com.c201.aebook.auth.CustomUserDetails;
 import com.c201.aebook.config.jwt.JwtProperties;
+import com.c201.aebook.converter.TokenConverter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -39,6 +40,7 @@ public class AuthController {
 
     private final AuthServiceImpl authService;
     private final RedisTemplate redisTemplate;
+    private final TokenConverter tokenConverter;
 
     @Operation(summary = "카카오 소셜 로그인", description = "카카오로 소셜 로그인을 합니다.")
     @GetMapping("/login")
@@ -83,15 +85,14 @@ public class AuthController {
             HttpServletRequest request
     ) {
         // 받은 token 정보 가져오기
-        String jwt = authService.resolveToken(request, JwtProperties.AUTHORIZATION_HEADER);
-        String refresh = authService.resolveToken(request, JwtProperties.REFRESH_HEADER);
-        // log.info("jwt : {} ", jwt);
-        // log.info("refresh : {}", refresh);
+        String accessToken = authService.resolveToken(request, JwtProperties.AUTHORIZATION_HEADER);
+        String refreshToken = authService.resolveToken(request, JwtProperties.REFRESH_HEADER);
+        log.info("jwt : {} ", accessToken);
+        log.info("refresh : {}", refreshToken);
 
         // requestTokenDto에 받은 토큰 정보 저장하기
-        TokenSO requestTokenSO = TokenSO.builder()
-                .accessToken(jwt)
-                .refreshToken(refresh).build();
+        TokenSO requestTokenSO = tokenConverter.toTokenSO(accessToken, refreshToken);
+        log.info("requesTokenSO : {}", requestTokenSO.getAccessToken());
 
         // 토큰 재발행
         TokenDTO tokenDto = authService.reissueAccessToken(requestTokenSO);
