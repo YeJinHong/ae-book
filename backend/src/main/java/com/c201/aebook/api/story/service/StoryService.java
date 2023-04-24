@@ -10,4 +10,6 @@ public interface StoryService {
 	public void saveStory(StorySO storySO);
 
 	Page<StoryResponseDTO> getStoryList(Long userId, Pageable pageable);
+
+	public void deleteStory(Long storyId);
 }

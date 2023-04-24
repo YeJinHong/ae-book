@@ -54,4 +54,12 @@ public class StoryServiceImpl implements StoryService {
 			.imgUrl(a.getImgUrl())
 			.build());
 	}
+
+	@Override
+	public void deleteStory(Long storyId) {
+		// 1. Story 유효성 검증
+		StoryEntity storyEntity = storyRepository.findById(storyId)
+			.orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
+		storyRepository.deleteById(storyId);
+	}
 }
