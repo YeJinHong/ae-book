@@ -16,7 +16,7 @@ public class ReviewResponseDTO {
 	private Long reviewId;
 
 	@Schema(description = "서평 작성자 닉네임", defaultValue = "아응앵")
-	private String reviewer;
+	private String reviewerNickname;
 
 	@Schema(description = "별점", defaultValue = "5")
 	private int score;
@@ -31,10 +31,10 @@ public class ReviewResponseDTO {
 	private LocalDateTime updateAt;
 
 	@Builder
-	public ReviewResponseDTO(Long reviewId, String reviewer, int score, String content, LocalDateTime createAt,
+	public ReviewResponseDTO(Long reviewId, String reviewerNickname, int score, String content, LocalDateTime createAt,
 		LocalDateTime updateAt) {
 		this.reviewId = reviewId;
-		this.reviewer = reviewer;
+		this.reviewerNickname = reviewerNickname;
 		this.score = score;
 		this.content = content;
 		this.createAt = createAt;

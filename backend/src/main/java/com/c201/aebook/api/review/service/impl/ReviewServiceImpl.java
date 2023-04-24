@@ -70,7 +70,7 @@ public class ReviewServiceImpl implements ReviewService {
 
 		return reviews.map(a -> ReviewResponseDTO.builder()
 			.reviewId(a.getId())
-			.reviewer(a.getUser().getNickname())
+			.reviewerNickname(a.getUser().getNickname())
 			.score(a.getScore())
 			.content(a.getContent())
 			.createAt(a.getCreatedAt())
@@ -84,7 +84,7 @@ public class ReviewServiceImpl implements ReviewService {
 
 		return reviews.map(a -> ReviewResponseDTO.builder()
 			.reviewId(a.getId())
-			.reviewer(a.getUser().getNickname())
+			.reviewerNickname(a.getUser().getNickname())
 			.score(a.getScore())
 			.content(a.getContent())
 			.createAt(a.getCreatedAt())
@@ -98,7 +98,7 @@ public class ReviewServiceImpl implements ReviewService {
 			.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
 		return ReviewResponseDTO.builder()
 			.reviewId(review.getId())
-			.reviewer(review.getUser().getNickname())
+			.reviewerNickname(review.getUser().getNickname())
 			.score(review.getScore())
 			.content(review.getContent())
 			.createAt(review.getCreatedAt())
@@ -141,13 +141,13 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 
 	@Override
-	public List<ReviewResponseDTO> getNewReviewList() {
+	public List<ReviewResponseDTO> getLatestReviewList() {
 		List<ReviewEntity> reviews = reviewRepository.findTop12ByOrderByIdDesc();
 
 		return reviews.stream()
 			.map(a -> ReviewResponseDTO.builder()
 				.reviewId(a.getId())
-				.reviewer(a.getUser().getNickname())
+				.reviewerNickname(a.getUser().getNickname())
 				.score(a.getScore())
 				.content(a.getContent())
 				.createAt(a.getCreatedAt())

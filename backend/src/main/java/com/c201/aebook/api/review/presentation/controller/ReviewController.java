@@ -153,8 +153,8 @@ public class ReviewController {
 	@GetMapping(
 		path = "/latest"
 	)
-	public BaseResponse<?> getNewReviewList() {
-		List<ReviewResponseDTO> reviews = reviewService.getNewReviewList();
+	public BaseResponse<?> getLatestReviewList() {
+		List<ReviewResponseDTO> reviews = reviewService.getLatestReviewList();
 
 		return new BaseResponse<>(reviews, 200, ApplicationConstants.SUCCESS);
 	}
