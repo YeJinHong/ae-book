@@ -21,7 +21,7 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
 
 	public Page<ReviewEntity> findByUserId(Long userId, Pageable pageable);
 
-	@Query("SELECT RE FROM ReviewEntity RE LEFT JOIN FETCH RE.user")
+	@Query("SELECT RE FROM ReviewEntity RE LEFT JOIN FETCH RE.user ORDER BY RE.id DESC")
 	public List<ReviewEntity> findTop12ByOrderByIdDesc();
 
 }
