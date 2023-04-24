@@ -1,6 +1,7 @@
 package com.c201.aebook.api.auth.presentation.controller;
 
 import com.c201.aebook.api.auth.service.impl.AuthServiceImpl;
+import com.c201.aebook.api.common.BaseResponse;
 import com.c201.aebook.api.vo.TokenSO;
 import com.c201.aebook.auth.CustomUserDetails;
 import com.c201.aebook.config.jwt.JwtProperties;
@@ -77,7 +78,7 @@ public class AuthController {
 
     @Operation(summary = "토큰 재발행", description = "토큰 재발행을 합니다.")
     @PostMapping(path = "/access-token")
-    public ResponseEntity<?> reissueAccessToken(
+    public BaseResponse<?> reissueAccessToken(
             HttpServletResponse response,
             HttpServletRequest request
     ) {
@@ -98,7 +99,7 @@ public class AuthController {
         // 헤더에 토큰 정보 담기
         response.setHeader(JwtProperties.AUTHORIZATION_HEADER, tokenDto.getGrantType() + " " + tokenDto.getAccessToken());
         response.setHeader(JwtProperties.REFRESH_HEADER, tokenDto.getGrantType() + " " + tokenDto.getRefreshToken());
-        return new ResponseEntity<>("access token 재발행 성공", HttpStatus.OK);
+        return new BaseResponse<>(null, 200, "token 재발행 성공");
     }
 
 }
