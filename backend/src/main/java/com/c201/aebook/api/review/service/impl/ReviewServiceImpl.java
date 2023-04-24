@@ -1,5 +1,8 @@
 package com.c201.aebook.api.review.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -65,13 +68,13 @@ public class ReviewServiceImpl implements ReviewService {
 		// 2. Review List
 		Page<ReviewEntity> reviews = reviewRepository.findByBookId(bookEntity.getId(), pageable);
 
-		return reviews.map(a -> ReviewResponseDTO.builder()
-			.reviewId(a.getId())
-			.reviewerId(a.getUser().getId())
-			.score(a.getScore())
-			.content(a.getContent())
-			.createAt(a.getCreatedAt())
-			.updateAt(a.getUpdatedAt())
+		return reviews.map(r -> ReviewResponseDTO.builder()
+			.reviewId(r.getId())
+			.reviewerNickname(r.getUser().getNickname())
+			.score(r.getScore())
+			.content(r.getContent())
+			.createAt(r.getCreatedAt())
+			.updateAt(r.getUpdatedAt())
 			.build());
 	}
 
@@ -79,13 +82,13 @@ public class ReviewServiceImpl implements ReviewService {
 	public Page<ReviewResponseDTO> getMyReviewList(String userId, Pageable pageable) {
 		Page<ReviewEntity> reviews = reviewRepository.findByUserId(Long.valueOf(userId), pageable);
 
-		return reviews.map(a -> ReviewResponseDTO.builder()
-			.reviewId(a.getId())
-			.reviewerId(a.getUser().getId())
-			.score(a.getScore())
-			.content(a.getContent())
-			.createAt(a.getCreatedAt())
-			.updateAt(a.getUpdatedAt())
+		return reviews.map(r -> ReviewResponseDTO.builder()
+			.reviewId(r.getId())
+			.reviewerNickname(r.getUser().getNickname())
+			.score(r.getScore())
+			.content(r.getContent())
+			.createAt(r.getCreatedAt())
+			.updateAt(r.getUpdatedAt())
 			.build());
 	}
 
@@ -95,7 +98,7 @@ public class ReviewServiceImpl implements ReviewService {
 			.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
 		return ReviewResponseDTO.builder()
 			.reviewId(review.getId())
-			.reviewerId(review.getUser().getId())
+			.reviewerNickname(review.getUser().getNickname())
 			.score(review.getScore())
 			.content(review.getContent())
 			.createAt(review.getCreatedAt())
@@ -135,5 +138,21 @@ public class ReviewServiceImpl implements ReviewService {
 
 		// 3. 서평 삭제
 		reviewRepository.delete(reviewEntity);
+	}
+
+	@Override
+	public List<ReviewResponseDTO> getLatestReviewList() {
+		List<ReviewEntity> reviews = reviewRepository.findTop12ByOrderByIdDesc();
+
+		return reviews.stream()
+			.map(r -> ReviewResponseDTO.builder()
+				.reviewId(r.getId())
+				.reviewerNickname(r.getUser().getNickname())
+				.score(r.getScore())
+				.content(r.getContent())
+				.createAt(r.getCreatedAt())
+				.updateAt(r.getUpdatedAt())
+				.build())
+			.collect(Collectors.toList());
 	}
 }
