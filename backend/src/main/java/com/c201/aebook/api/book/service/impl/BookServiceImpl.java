@@ -53,8 +53,8 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public Page<BookSearchResponseDTO> searchBookList(String keyword, boolean[] searchType, Pageable pageable) {
-		Page<BookEntity> bookList = bookCustomRepository.searchBookList(keyword, searchType, pageable);
+	public Page<BookSearchResponseDTO> searchBookList(String keyword, String[] searchTarget, Pageable pageable) {
+		Page<BookEntity> bookList = bookCustomRepository.searchBookList(keyword, searchTarget, pageable);
 		Page<BookSearchResponseDTO> result = bookList.map(book -> BookSearchResponseDTO.builder()
 			.aladinUrl(book.getAladinUrl())
 			.author(book.getAuthor())

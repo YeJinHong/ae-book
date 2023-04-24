@@ -52,9 +52,9 @@ public class BookController {
 	@Operation(summary = "도서 통합 검색", description = "검색 키워드를 포함하는 도서 리스트를 반환합니다.")
 	@GetMapping
 	public BaseResponse<?> searchBookList(@RequestParam("keyword") String keyword,
-		@RequestParam(name = "searchType", defaultValue = "true,true,true") boolean[] searchType,
+		@RequestParam(name = "searchTarget", defaultValue = "TITLE,AUTHOR,PUBLISHER") String[] searchTarget,
 		@PageableDefault(size = 10) Pageable pageable) {
-		Page<BookSearchResponseDTO> bookSearchList = bookService.searchBookList(keyword, searchType, pageable);
+		Page<BookSearchResponseDTO> bookSearchList = bookService.searchBookList(keyword, searchTarget, pageable);
 		return new BaseResponse<>(bookSearchList, HttpStatus.OK.value(), ApplicationConstants.SUCCESS);
 	}
 
