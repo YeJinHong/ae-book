@@ -6,9 +6,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -65,7 +68,7 @@ public class StoryController {
 		StorySO storySO = storyConverter.toStorySO(userId, uploadImageUrl, storyRequestDTO);
 		storyService.saveStory(storySO);
 
-		return new BaseResponse<>(null, 200, "동화 작성 완료");
+		return new BaseResponse<>(null, HttpStatus.OK.value(), "동화 작성 완료");
 	}
 
 	// TODO : getStoryList
@@ -83,11 +86,22 @@ public class StoryController {
 		// 해당 도서 서평 리스트 찾기
 		Page<StoryResponseDTO> stories = storyService.getStoryList(userId, pageable);
 
-		return new BaseResponse<>(stories, 200, "나의 동화책 리스트가 정상적으로 도착했습니다.");
+		return new BaseResponse<>(stories, HttpStatus.OK.value(), "나의 동화책 리스트가 정상적으로 도착했습니다.");
 	}
 
 	// TODO : getStoryDetail
 	// TODO : updateStoryTitle
 	// TODO : deleteStory
+	@Operation(summary = "특정 동화를 삭제", description = "특정 동화를 삭제")
+	@DeleteMapping(
+		path = "/{storyId}"
+	)
+	public BaseResponse<?> deleteStory(
+		@PathVariable(name = "storyId") Long storyId,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails
+	) {
+		storyService.deleteStory(storyId);
+		return new BaseResponse<>(null, HttpStatus.OK.value(), "특정 동화의 삭제를 완료하였습니다.");
+	}
 
 }
