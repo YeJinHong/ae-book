@@ -16,11 +16,11 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Repository
-public class BookRepositoryImpl implements BookCustomRepository {
+public class BookCustomRepositoryImpl implements BookCustomRepository {
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public Page<BookEntity> findByTitleContaining(String keyword, boolean[] searchType, Pageable pageable) {
+	public Page<BookEntity> searchBookList(String keyword, boolean[] searchType, Pageable pageable) {
 		QueryResults<BookEntity> bookList = queryFactory
 			.selectFrom(bookEntity)
 			.where(checkSearchOption(searchType, keyword))
