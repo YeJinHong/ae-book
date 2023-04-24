@@ -1,6 +1,7 @@
 package com.c201.aebook.api.auth.presentation.controller;
 
 import com.c201.aebook.api.auth.service.impl.AuthServiceImpl;
+import com.c201.aebook.api.vo.TokenSO;
 import com.c201.aebook.auth.CustomUserDetails;
 import com.c201.aebook.config.jwt.JwtProperties;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -87,12 +88,12 @@ public class AuthController {
         // log.info("refresh : {}", refresh);
 
         // requestTokenDto에 받은 토큰 정보 저장하기
-        TokenDTO requestTokenDto = TokenDTO.builder()
+        TokenSO requestTokenSO = TokenSO.builder()
                 .accessToken(jwt)
                 .refreshToken(refresh).build();
 
         // 토큰 재발행
-        TokenDTO tokenDto = authService.reissueAccessToken(requestTokenDto);
+        TokenDTO tokenDto = authService.reissueAccessToken(requestTokenSO);
 
         // 헤더에 토큰 정보 담기
         response.setHeader(JwtProperties.AUTHORIZATION_HEADER, tokenDto.getGrantType() + " " + tokenDto.getAccessToken());
