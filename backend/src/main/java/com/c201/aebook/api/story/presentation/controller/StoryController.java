@@ -79,7 +79,7 @@ public class StoryController {
 	)
 	public BaseResponse<?> getStoryList(
 		@AuthenticationPrincipal CustomUserDetails customUserDetails,
-		@PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+		@PageableDefault(size = 8, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
 	) {
 		// 로그인 한 유저의 Id를 추출
 		Long userId = Long.parseLong(customUserDetails.getUsername());
