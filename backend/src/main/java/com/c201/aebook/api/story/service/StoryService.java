@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.c201.aebook.api.story.presentation.dto.response.StoryResponseDTO;
+import com.c201.aebook.api.vo.StoryDeleteSO;
 import com.c201.aebook.api.vo.StorySO;
 
 public interface StoryService {
@@ -11,5 +12,5 @@ public interface StoryService {
 
 	Page<StoryResponseDTO> getStoryList(Long userId, Pageable pageable);
 
-	public void deleteStory(Long storyId);
+	public void deleteStory(StoryDeleteSO storyId);
 }

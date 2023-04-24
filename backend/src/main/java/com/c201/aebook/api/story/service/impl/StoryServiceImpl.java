@@ -10,6 +10,7 @@ import com.c201.aebook.api.story.presentation.dto.response.StoryResponseDTO;
 import com.c201.aebook.api.story.service.StoryService;
 import com.c201.aebook.api.user.persistence.entity.UserEntity;
 import com.c201.aebook.api.user.persistence.repository.UserRepository;
+import com.c201.aebook.api.vo.StoryDeleteSO;
 import com.c201.aebook.api.vo.StorySO;
 import com.c201.aebook.utils.exception.CustomException;
 import com.c201.aebook.utils.exception.ErrorCode;
@@ -56,10 +57,15 @@ public class StoryServiceImpl implements StoryService {
 	}
 
 	@Override
-	public void deleteStory(Long storyId) {
+	public void deleteStory(StoryDeleteSO storyDeleteSO) {
 		// 1. Story 유효성 검증
-		StoryEntity storyEntity = storyRepository.findById(storyId)
+		StoryEntity storyEntity = storyRepository.findById(storyDeleteSO.getStoryId())
 			.orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
-		storyRepository.deleteById(storyId);
+
+		// 2. User 유효성 검증
+		UserEntity userEntity = userRepository.findById(storyDeleteSO.getUserId())
+			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+		storyRepository.deleteById(storyDeleteSO.getStoryId());
 	}
 }
