@@ -199,12 +199,12 @@ async def isbn_detection(image: UploadFile = File(...)):
                 #case1 : ISBN 979-11-6050-443-9 (with white space)
                 if line[1][0][4] == ' ':
                     
-                    data = line[1][0][5:]
+                    data = line[1][0][5:].replace('-','').strip()
                 
                 #case2 : ISBN979-11-6050-443-9 (no white space)
                 elif line[1][0][4] >= '0' and line[1][0][4] <= '9':
                     
-                    data = line[1][0][4:]
+                    data = line[1][0][4:].replace('-','').strip()
                 
                 #case3 : unpredictable case
                 else:
