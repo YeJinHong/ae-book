@@ -1,5 +1,7 @@
 package com.c201.aebook.api.review.presentation.controller;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -57,9 +59,6 @@ public class ReviewController {
 		@RequestBody ReviewRequestDTO reviewRequestDTO,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
-		// TODO: 토큰 유효성 검증
-		// User loginUser = tokenUtils.validateGetUser(customUserDetails);
-
 		// DTO NOT NULL 검증
 		reviewValidator.validateReviewRequestDTO(reviewRequestDTO);
 
@@ -98,9 +97,6 @@ public class ReviewController {
 		@AuthenticationPrincipal CustomUserDetails customUserDetails,
 		@PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
 	) {
-		// TODO: 토큰 유효성 검증
-		// User loginUser = tokenUtils.validateGetUser(customUserDetails);
-
 		Page<ReviewResponseDTO> reviews = reviewService.getMyReviewList(customUserDetails.getUsername(), pageable);
 
 		return new BaseResponse<>(reviews, 200, ApplicationConstants.SUCCESS);
@@ -128,9 +124,6 @@ public class ReviewController {
 		@RequestBody ReviewRequestDTO reviewRequestDTO,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
-		// TODO: 토큰 유효성 검증
-		// User loginUser = tokenUtils.validateGetUser(customUserDetails);
-
 		// DTO NOT NULL 검증
 		reviewValidator.validateReviewRequestDTO(reviewRequestDTO);
 
@@ -150,12 +143,19 @@ public class ReviewController {
 		@PathVariable(name = "reviewId") Long reviewId,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
-		// TODO: 토큰 유효성 검증
-		// User loginUser = tokenUtils.validateGetUser(customUserDetails);
-
 		// 서평 삭제
 		reviewService.deleteReview(reviewId, customUserDetails.getUsername());
 
 		return new BaseResponse<>(null, 200, ApplicationConstants.SUCCESS);
+	}
+
+	@Operation(summary = "최신 서평 리스트", description = "메인페이지에서 보여줄 최신 서평 12개 리스트입니다")
+	@GetMapping(
+		path = "/latest"
+	)
+	public BaseResponse<?> getLatestReviewList() {
+		List<ReviewResponseDTO> reviews = reviewService.getLatestReviewList();
+
+		return new BaseResponse<>(reviews, 200, ApplicationConstants.SUCCESS);
 	}
 }
