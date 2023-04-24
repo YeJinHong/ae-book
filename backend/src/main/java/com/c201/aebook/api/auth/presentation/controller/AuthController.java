@@ -87,12 +87,12 @@ public class AuthController {
         // 받은 token 정보 가져오기
         String accessToken = authService.resolveToken(request, JwtProperties.AUTHORIZATION_HEADER);
         String refreshToken = authService.resolveToken(request, JwtProperties.REFRESH_HEADER);
-        log.info("jwt : {} ", accessToken);
-        log.info("refresh : {}", refreshToken);
+        // log.info("jwt : {} ", accessToken);
+        // log.info("refresh : {}", refreshToken);
 
         // requestTokenDto에 받은 토큰 정보 저장하기
         TokenSO requestTokenSO = tokenConverter.toTokenSO(accessToken, refreshToken);
-        log.info("requesTokenSO : {}", requestTokenSO.getAccessToken());
+        // log.info("requesTokenSO : {}", requestTokenSO.getAccessToken());
 
         // 토큰 재발행
         TokenDTO tokenDto = authService.reissueAccessToken(requestTokenSO);
@@ -101,6 +101,32 @@ public class AuthController {
         response.setHeader(JwtProperties.AUTHORIZATION_HEADER, tokenDto.getGrantType() + " " + tokenDto.getAccessToken());
         response.setHeader(JwtProperties.REFRESH_HEADER, tokenDto.getGrantType() + " " + tokenDto.getRefreshToken());
         return new BaseResponse<>(null, 200, "token 재발행 성공");
+    }
+
+    @Transactional
+    @Operation(summary = "로그아웃", description = "로그아웃을 합니다.")
+    @SecurityRequirement(name = "bearerAuth")
+    @PostMapping("/logout")
+    public BaseResponse<?> logout(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            HttpServletRequest request
+    ) {
+
+        ValueOperations<String, String> logoutValueOperations = redisTemplate.opsForValue();
+
+        String accessToken = authService.resolveToken(request, JwtProperties.AUTHORIZATION_HEADER);
+        String refreshToken = authService.resolveToken(request, JwtProperties.REFRESH_HEADER);
+
+        // header로 받은 토큰이 하나라도 null 이라면
+        if (accessToken == null || refreshToken == null) {
+            return new BaseResponse<>(null, HttpStatus.BAD_REQUEST.value(), "TOKEN_IS_NULL");
+        }
+
+        logoutValueOperations.set(accessToken, accessToken);
+        logoutValueOperations.set(refreshToken, refreshToken);
+
+        log.info("로그아웃한 사용자 : '{}'", customUserDetails.getUsername());
+        return new BaseResponse<>(null, HttpStatus.OK.value(), "로그아웃 성공");
     }
 
 }
