@@ -1,11 +1,20 @@
 package com.c201.aebook.api.auth.presentation.controller;
 
+import com.c201.aebook.api.auth.service.impl.AuthServiceImpl;
+import com.c201.aebook.api.common.BaseResponse;
+import com.c201.aebook.api.vo.TokenSO;
+import com.c201.aebook.auth.CustomUserDetails;
+import com.c201.aebook.config.jwt.JwtProperties;
+import com.c201.aebook.converter.TokenConverter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 
 import com.c201.aebook.api.common.LoginUserInfoDTO;
 import com.c201.aebook.api.common.TokenDTO;
@@ -19,6 +28,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 @Tag(name="회원인증")
 @Slf4j
 @RequiredArgsConstructor
@@ -26,7 +38,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final AuthService authService;
+    private final AuthServiceImpl authService;
+    private final RedisTemplate redisTemplate;
+    private final TokenConverter tokenConverter;
 
     @Operation(summary = "카카오 소셜 로그인", description = "카카오로 소셜 로그인을 합니다.")
     @GetMapping("/login")
@@ -62,6 +76,31 @@ public class AuthController {
                 .build();
 
         return ResponseEntity.ok().headers(headers).body(loginResDto);
+    }
+
+    @Operation(summary = "토큰 재발행", description = "토큰 재발행을 합니다.")
+    @PostMapping(path = "/access-token")
+    public BaseResponse<?> reissueAccessToken(
+            HttpServletResponse response,
+            HttpServletRequest request
+    ) {
+        // 받은 token 정보 가져오기
+        String accessToken = authService.resolveToken(request, JwtProperties.AUTHORIZATION_HEADER);
+        String refreshToken = authService.resolveToken(request, JwtProperties.REFRESH_HEADER);
+        log.info("jwt : {} ", accessToken);
+        log.info("refresh : {}", refreshToken);
+
+        // requestTokenDto에 받은 토큰 정보 저장하기
+        TokenSO requestTokenSO = tokenConverter.toTokenSO(accessToken, refreshToken);
+        log.info("requesTokenSO : {}", requestTokenSO.getAccessToken());
+
+        // 토큰 재발행
+        TokenDTO tokenDto = authService.reissueAccessToken(requestTokenSO);
+
+        // 헤더에 토큰 정보 담기
+        response.setHeader(JwtProperties.AUTHORIZATION_HEADER, tokenDto.getGrantType() + " " + tokenDto.getAccessToken());
+        response.setHeader(JwtProperties.REFRESH_HEADER, tokenDto.getGrantType() + " " + tokenDto.getRefreshToken());
+        return new BaseResponse<>(null, 200, "token 재발행 성공");
     }
 
 }
