@@ -44,16 +44,16 @@ public class AuthController {
     public ResponseEntity<?> login(
             @RequestParam(name = "code") String code
     ) {
-        log.info("code : {} ", code);
+        // log.info("code : {} ", code);
 
         // 1. 프론트에서 받은 kakao 인가 코드를 통해 kakao accessToken 발급
         KakaoTokenDTO kakaoTokenDto = authService.getAccessToken(code);
-        log.info("KakaoTokenDto : {} ", kakaoTokenDto);
+        // log.info("KakaoTokenDto : {} ", kakaoTokenDto);
 
         // 2. 발급 받은 accessToken으로 카카오 회원 정보 확인 후 DB 저장 또는 로그인(토큰 발급)
         LoginUserInfoDTO loginUserInfoDto = authService.saveUserOrLogin(kakaoTokenDto.getAccess_token());
-        log.info("access Token : {} ", loginUserInfoDto.getTokenDto().getAccessToken());
-        log.info("user name : {}", loginUserInfoDto.getUser().getNickname());
+        // log.info("access Token : {} ", loginUserInfoDto.getTokenDto().getAccessToken());
+        // log.info("user name : {}", loginUserInfoDto.getUser().getNickname());
 
         // 3. 헤더에 사용자 token 정보 담기
         TokenDTO tokenDto = loginUserInfoDto.getTokenDto();
@@ -62,7 +62,7 @@ public class AuthController {
                 tokenDto.getGrantType() + " " + tokenDto.getAccessToken());
         headers.add(tokenDto.getRefreshHeader(),
                 tokenDto.getGrantType() + " " + tokenDto.getRefreshToken());
-        log.info("headers : {} ", headers);
+        // log.info("headers : {} ", headers);
 
         // 4. 로그인 유저 정보 담기
         UserEntity user = loginUserInfoDto.getUser();
