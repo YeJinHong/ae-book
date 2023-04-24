@@ -1,18 +1,26 @@
 from fastapi import FastAPI,File,UploadFile
 from fastapi.responses import JSONResponse
+from review_star_prediction import *
 from dotenv import load_dotenv
 import os
 import openai
 import io
 import base64
 import cv2
+import sys
+import requests
 import numpy as np
 
 app = FastAPI()
 
-#open api key
+#constant
+STT_URL = "https://naveropenapi.apigw.ntruss.com/recog/v1/stt?lang=Kor"
+
+#api key
 load_dotenv()
 openai.api_key = os.getenv("SECRET_KEY")
+client_id = os.getenv("CLIENT_ID")
+client_secret = os.getenv("CLIENT_SECRET")
 
 @app.get("/")
 async def root():
@@ -23,6 +31,31 @@ async def root():
 @app.get("/hello/{name}")
 async def say_hello(name: str):
     return {"message":f"Hello {name}"}
+
+
+"""
+input:mp3 file(keyword)
+output:text
+"""
+@app.post("/reviews/sound")
+async def sound_to_text(sound: UploadFile = File(...)):
+    
+    #read mp3 file to byte string
+    data = await sound.read()
+    
+    headers = {
+        "X-NCP-APIGW-API-KEY-ID": client_id,
+        "X-NCP-APIGW-API-KEY": client_secret,
+        "Content-Type": "application/octet-stream"
+    }
+    
+    response = requests.post(STT_URL,  data=data, headers=headers)
+    rescode = response.status_code
+    
+    if(rescode == 200):
+        return response.text
+    else:
+        return "Error : " + response.text
 
 
 @app.post("/reviews/gpt")
@@ -61,6 +94,34 @@ async def create_review(title:str, words: str, writer=None, char=None):
     #chatgpt response
     return completion.choices[0].message
 
+#prediction review star point
+"""
+input: chatgpt review
+output: string of star point(one of 1,2,3,4,5)
+"""
+@app.post("/reviews/point")
+async def predict_star_point(review: str):
+
+    #simple preprocessing review
+    review = review.strip("\n").strip(" ")
+
+    #transform review
+    transform_review = tokenizer.batch_encode_plus([review],max_length=128,pad_to_max_length=True)
+
+    #prepare input data
+    token_ids = torch.tensor(transform_review['input_ids']).long()
+    attention_mask = torch.tensor(transform_review['attention_mask']).long()
+
+    #prediction
+    output = star_model(token_ids, attention_mask)
+
+    #for confidence
+    #percentage_output = F.softmax(output, dim = 1)
+
+    #get maximum confidence class 
+    pred = output.cpu().detach().numpy()
+    sorted_pred = np.argsort(pred,axis = 1)
+    return str(sorted_pred[0][-1]+1)
 
 #convert image to sketch
 @app.post("/paintings/sketch")
