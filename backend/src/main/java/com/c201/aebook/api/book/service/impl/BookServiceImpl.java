@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.c201.aebook.api.book.persistence.entity.BookEntity;
+import com.c201.aebook.api.book.persistence.repository.BookCustomRepository;
 import com.c201.aebook.api.book.persistence.repository.BookRepository;
 import com.c201.aebook.api.book.presentation.dto.response.BookResponseDTO;
 import com.c201.aebook.api.book.presentation.dto.response.BookSearchResponseDTO;
@@ -21,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
 	private final BookRepository bookRepository;
+	private final BookCustomRepository bookCustomRepository;
 
 	@Override
 	public BookResponseDTO searchBookDetail(String isbn) {
@@ -51,8 +53,8 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public Page<BookSearchResponseDTO> searchBookList(String keyword, Pageable pageable) {
-		Page<BookEntity> bookList = bookRepository.findByTitleContaining(keyword, pageable);
+	public Page<BookSearchResponseDTO> searchBookList(String keyword, boolean[] searchType, Pageable pageable) {
+		Page<BookEntity> bookList = bookCustomRepository.findByTitleContaining(keyword, searchType, pageable);
 		Page<BookSearchResponseDTO> result = bookList.map(book -> BookSearchResponseDTO.builder()
 			.aladinUrl(book.getAladinUrl())
 			.author(book.getAuthor())
