@@ -1,5 +1,8 @@
 package com.c201.aebook.api.review.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -67,7 +70,7 @@ public class ReviewServiceImpl implements ReviewService {
 
 		return reviews.map(a -> ReviewResponseDTO.builder()
 			.reviewId(a.getId())
-			.reviewerId(a.getUser().getId())
+			// .reviewerId(a.getUser().getId())
 			.score(a.getScore())
 			.content(a.getContent())
 			.createAt(a.getCreatedAt())
@@ -81,7 +84,7 @@ public class ReviewServiceImpl implements ReviewService {
 
 		return reviews.map(a -> ReviewResponseDTO.builder()
 			.reviewId(a.getId())
-			.reviewerId(a.getUser().getId())
+			// .reviewerId(a.getUser().getId())
 			.score(a.getScore())
 			.content(a.getContent())
 			.createAt(a.getCreatedAt())
@@ -95,7 +98,7 @@ public class ReviewServiceImpl implements ReviewService {
 			.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
 		return ReviewResponseDTO.builder()
 			.reviewId(review.getId())
-			.reviewerId(review.getUser().getId())
+			// .reviewerId(review.getUser().getId())
 			.score(review.getScore())
 			.content(review.getContent())
 			.createAt(review.getCreatedAt())
@@ -135,5 +138,21 @@ public class ReviewServiceImpl implements ReviewService {
 
 		// 3. 서평 삭제
 		reviewRepository.delete(reviewEntity);
+	}
+
+	@Override
+	public List<ReviewResponseDTO> getNewReviewList() {
+		List<ReviewEntity> reviews = reviewRepository.findTop12ByOrderByIdDesc();
+
+		return reviews.stream()
+			.map(a -> ReviewResponseDTO.builder()
+				.reviewId(a.getId())
+				.reviewer(a.getUser().getNickname())
+				.score(a.getScore())
+				.content(a.getContent())
+				.createAt(a.getCreatedAt())
+				.updateAt(a.getUpdatedAt())
+				.build())
+			.collect(Collectors.toList());
 	}
 }
