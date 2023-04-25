@@ -16,8 +16,8 @@ public class ReviewValidator {
 	 * [문희주] ReviewRequestDTO NOT NULL 검증
 	 * @param reviewRequestDTO
 	 */
-	public void validateReviewRequestDto(ReviewRequestDTO reviewRequestDTO) {
-		checkStringType(reviewRequestDTO.getContent(), "리뷰 내용");
+	public void validateReviewRequestDTO(ReviewRequestDTO reviewRequestDTO) {
+		checkStringType(reviewRequestDTO.getContent(), "서평 내용");
 		checkIntType(reviewRequestDTO.getScore(), "별점");
 	}
 
