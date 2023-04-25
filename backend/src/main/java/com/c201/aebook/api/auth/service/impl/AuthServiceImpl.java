@@ -212,7 +212,7 @@ public class AuthServiceImpl implements AuthService {
         RefreshRedisTokenEntity refreshRedisToken = refreshRedisRepository.findById(authentication.getName())
                 .orElseThrow(() -> new CustomException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
 
-        // refresh token이 유저에 저장된 refresh token과 다르면 에러 발생
+        // 4. refresh token이 유저에 저장된 refresh token과 다르면 에러 발생
         if (!refreshRedisToken.getToken().equals(tokenSO.getRefreshToken())) {
             throw new CustomException(ErrorCode.MISMATCH_REFRESH_TOKEN);
         }
@@ -220,11 +220,11 @@ public class AuthServiceImpl implements AuthService {
         ValueOperations<String, String> logoutValueOperations = redisTemplate.opsForValue();
         logoutValueOperations.set(tokenSO.getAccessToken(), tokenSO.getAccessToken());
 
-        // 토큰 새로 생성
+        // 5. 토큰 새로 생성
         log.info("userId : {}", authentication.getName());
         TokenDTO tokenDTO = jwtTokenProvider.generateTokenDto(authentication.getName());
 
-        // Redis에 refreshToken 저장
+        // 6. Redis에 refreshToken 저장
         RefreshRedisTokenEntity newRedisToken = RefreshRedisTokenEntity.createToken(authentication.getName(), tokenDTO.getRefreshToken());
         refreshRedisRepository.save(newRedisToken);
 
