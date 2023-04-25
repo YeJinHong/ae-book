@@ -13,15 +13,22 @@ import com.c201.aebook.api.review.persistence.entity.ReviewEntity;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
+	@Query("SELECT re FROM ReviewEntity re LEFT JOIN FETCH re.user WHERE re.id = :reviewId")
+	public Optional<ReviewEntity> findById(Long reviewId);
+
 	public ReviewEntity findByUserIdAndBookId(Long userId, Long bookId);
 
+	@Query(value = "SELECT re FROM ReviewEntity re LEFT JOIN FETCH re.user WHERE re.book.id = :bookId",
+		countQuery = "select count(re) from ReviewEntity re")
 	public Page<ReviewEntity> findByBookId(Long bookId, Pageable pageable);
 
 	public Optional<ReviewEntity> findByIdAndUserId(Long reviewId, Long userId);
 
+	@Query(value = "SELECT re FROM ReviewEntity re LEFT JOIN FETCH re.user WHERE re.user.id = :userId",
+		countQuery = "select count(re) from ReviewEntity re")
 	public Page<ReviewEntity> findByUserId(Long userId, Pageable pageable);
 
-	@Query("SELECT RE FROM ReviewEntity RE LEFT JOIN FETCH RE.user ORDER BY RE.updatedAt DESC")
+	@Query("SELECT re FROM ReviewEntity re LEFT JOIN FETCH re.user ORDER BY re.updatedAt DESC")
 	public List<ReviewEntity> findTop12ByOrderByIdDesc();
 
 }
