@@ -52,4 +52,15 @@ public class UserServiceImpl implements UserService {
 
         return userResponseDTO;
     }
+
+    @Override
+    @Transactional
+    public void deleteUserInfo(Long userId) {
+        // 1. 사용자 아이디로 user 찾기
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        // 2. 사용자 탈퇴처리(카카오 아이디와 전화번호는 null로 변경, 닉네임은 '탈퇴한 사용자'로 변경, status는 0으로 변경)
+        user.deleteUserEntity(null, null, "탈퇴한 사용자", 0);
+    }
 }
