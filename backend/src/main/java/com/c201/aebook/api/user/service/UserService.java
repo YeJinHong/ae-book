@@ -1,6 +1,6 @@
 package com.c201.aebook.api.user.service;
 
-import com.c201.aebook.api.user.presentation.dto.response.UserResponeDTO;
+import com.c201.aebook.api.user.presentation.dto.response.UserResponseDTO;
 import com.c201.aebook.api.vo.UserSO;
 
 public interface UserService {
@@ -9,6 +9,6 @@ public interface UserService {
 
     public String getProfileImage(long userId);
 
-    public UserResponeDTO updateUserInfo(Long userId, UserSO userSO);
+    public UserResponseDTO updateUserInfo(Long userId, UserSO userSO);
 
 }
