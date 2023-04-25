@@ -34,22 +34,14 @@ export default new Router({
       ]
     },
     {
-      path: '/book',
-      name: 'Book',
-      component: AppBook,
-      children: [
-        {
-          path: '/searchbook',
-          name: 'SearchBook',
-          component: AppSearchBook
-        },
-        {
-          path: '/searchbookbypicture',
-          name: 'SearchBookByPicture',
-          component: AppSearchBookByPicture
-        }
-      ]
+      path: '/searchbook',
+      name: 'SearchBook',
+      component: AppSearchBook
+    },
+    {
+      path: '/searchbookbypicture',
+      name: 'SearchBookByPicture',
+      component: AppSearchBookByPicture
     }
-    
   ]
 })
