@@ -56,7 +56,7 @@ public class StoryServiceImpl implements StoryService {
 	public StoryResponseDTO getStoryDetail(Long storyId) {
 		// 1. Story 유효성 검증
 		StoryEntity storyEntity = storyRepository.findById(storyId)
-			.orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
+			.orElseThrow(() -> new CustomException(ErrorCode.STORY_NOT_FOUND));
 
 		return storyConverter.toStoryResponseDTO(storyEntity, storyEntity.getId(),
 			userRepository.findById(storyEntity.getUser().getId()).get().getNickname());
