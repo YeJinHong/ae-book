@@ -2,6 +2,8 @@ package com.c201.aebook.api.book.persistence.repository;
 
 import static com.c201.aebook.api.book.persistence.entity.QBookEntity.*;
 
+import java.util.Arrays;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -20,10 +22,10 @@ public class BookCustomRepositoryImpl implements BookCustomRepository {
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public Page<BookEntity> searchBookList(String keyword, boolean[] searchType, Pageable pageable) {
+	public Page<BookEntity> searchBookList(String keyword, String[] searchTarget, Pageable pageable) {
 		QueryResults<BookEntity> bookList = queryFactory
 			.selectFrom(bookEntity)
-			.where(checkSearchOption(searchType, keyword))
+			.where(checkSearchOption(searchTarget, keyword))
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
 			.fetchResults();
@@ -32,18 +34,18 @@ public class BookCustomRepositoryImpl implements BookCustomRepository {
 	}
 
 	// 체크된 검색 옵션으로 동적 쿼리 만들기
-	private BooleanBuilder checkSearchOption(boolean[] searchType, String keyword) {
+	private BooleanBuilder checkSearchOption(String[] searchTarget, String keyword) {
 		BooleanBuilder booleanBuilder = new BooleanBuilder();
-
-		if (searchType[0] == true) { // title
-			booleanBuilder.or(bookEntity.title.containsIgnoreCase(keyword));
-		}
-		if (searchType[1] == true) { // author
-			booleanBuilder.or(bookEntity.author.containsIgnoreCase(keyword));
-		}
-		if (searchType[2] == true) { // publisher
-			booleanBuilder.or(bookEntity.publisher.containsIgnoreCase(keyword));
-		}
+		Arrays.stream(searchTarget)
+			.forEach(target -> {
+				if ("TITLE".equals(target)) {
+					booleanBuilder.or(bookEntity.title.containsIgnoreCase(keyword));
+				} else if ("AUTHOR".equals(target)) {
+					booleanBuilder.or(bookEntity.author.containsIgnoreCase(keyword));
+				} else if ("PUBLISHER".equals(target)) {
+					booleanBuilder.or(bookEntity.publisher.containsIgnoreCase(keyword));
+				}
+			});
 
 		return booleanBuilder;
 	}

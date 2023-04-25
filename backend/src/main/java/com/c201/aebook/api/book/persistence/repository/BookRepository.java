@@ -13,4 +13,6 @@ public interface BookRepository extends JpaRepository<BookEntity, Long> {
 	public Optional<BookEntity> findByIsbn(String isbn);
 
 	public List<BookEntity> findTop5ByTitleContaining(String keyword);
+
+	public List<BookEntity> findTop16ByOrderByUpdatedAtDesc();
 }

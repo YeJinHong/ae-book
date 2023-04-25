@@ -12,7 +12,9 @@ import com.c201.aebook.api.book.persistence.repository.BookCustomRepository;
 import com.c201.aebook.api.book.persistence.repository.BookRepository;
 import com.c201.aebook.api.book.presentation.dto.response.BookResponseDTO;
 import com.c201.aebook.api.book.presentation.dto.response.BookSearchResponseDTO;
+import com.c201.aebook.api.book.presentation.dto.response.BookSimpleResponseDTO;
 import com.c201.aebook.api.book.service.BookService;
+import com.c201.aebook.converter.BookConverter;
 import com.c201.aebook.utils.exception.CustomException;
 import com.c201.aebook.utils.exception.ErrorCode;
 
@@ -23,23 +25,13 @@ import lombok.RequiredArgsConstructor;
 public class BookServiceImpl implements BookService {
 	private final BookRepository bookRepository;
 	private final BookCustomRepository bookCustomRepository;
+	private final BookConverter bookConverter;
 
 	@Override
 	public BookResponseDTO searchBookDetail(String isbn) {
 		BookEntity book = bookRepository.findByIsbn(isbn)
 			.orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
-		BookResponseDTO bookResponseDTO = BookResponseDTO.builder()
-			.aladinUrl(book.getAladinUrl())
-			.price(book.getPrice())
-			.author(book.getAuthor())
-			.coverImageUrl(book.getCoverImageUrl())
-			.title(book.getTitle())
-			.description(book.getDescription())
-			.page(book.getPage())
-			.isbn(book.getIsbn())
-			.publishDate(book.getPublishDate())
-			.publisher(book.getPublisher())
-			.build();
+		BookResponseDTO bookResponseDTO = bookConverter.toBookResponseDTO(book);
 		return bookResponseDTO;
 	}
 
@@ -53,18 +45,17 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public Page<BookSearchResponseDTO> searchBookList(String keyword, boolean[] searchType, Pageable pageable) {
-		Page<BookEntity> bookList = bookCustomRepository.searchBookList(keyword, searchType, pageable);
-		Page<BookSearchResponseDTO> result = bookList.map(book -> BookSearchResponseDTO.builder()
-			.aladinUrl(book.getAladinUrl())
-			.author(book.getAuthor())
-			.publishDate(book.getPublishDate())
-			.title(book.getTitle())
-			.isbn(book.getIsbn())
-			.coverImageUrl(book.getCoverImageUrl())
-			.price(book.getPrice())
-			.publisher(book.getPublisher())
-			.build());
+	public Page<BookSearchResponseDTO> searchBookList(String keyword, String[] searchTarget, Pageable pageable) {
+		Page<BookEntity> bookList = bookCustomRepository.searchBookList(keyword, searchTarget, pageable);
+		Page<BookSearchResponseDTO> result = bookList.map(book -> bookConverter.toBookSearchResponseDTO(book));
+		return result;
+	}
+
+	@Override
+	public List<BookSimpleResponseDTO> getNewBookList() {
+		List<BookEntity> bookList = bookRepository.findTop16ByOrderByUpdatedAtDesc();
+		List<BookSimpleResponseDTO> result = bookList.stream().map(book -> bookConverter.toBookSimpleResponseDTO(book))
+			.collect(Collectors.toList());
 		return result;
 	}
 
