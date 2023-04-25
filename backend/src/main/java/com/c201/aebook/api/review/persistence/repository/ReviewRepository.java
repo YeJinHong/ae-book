@@ -13,7 +13,6 @@ import com.c201.aebook.api.review.persistence.entity.ReviewEntity;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
-	// https://github.com/lmHOLO/SOCK/blob/master/back/sock/src/main/java/com/holo/sock/repository/snack/ReviewRepository.java
 	@Query("SELECT re FROM ReviewEntity re LEFT JOIN FETCH re.user WHERE re.id = :reviewId")
 	public Optional<ReviewEntity> findById(Long reviewId);
 
