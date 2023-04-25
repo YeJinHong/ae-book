@@ -7,12 +7,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.springframework.batch.item.ItemReader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -43,17 +45,16 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 	private final String outputType = "xml";
 	private final int maxResults = 50;
 	private final String queryType = "ItemNewAll";
+	private final RestTemplate restTemplate;
 	@Value("${aladin.api.key}")
 	private String API_KEY;
 	private int nextIndex = 0;
 	private List<BookEntity> bookList;
 
-	//private RestTemplate restTemplate = new RestTemplate();
-
-	// @Autowired
-	// public AladinBatchItemReader(RestTemplate restTemplate) {
-	// 	this.restTemplate = restTemplate;
-	// }
+	@Autowired
+	public AladinBatchItemReader(RestTemplate restTemplate) {
+		this.restTemplate = restTemplate;
+	}
 
 	/*
 	 * 알라딘 api에서 책 정보를 읽어옴
@@ -85,9 +86,9 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 		SAXException,
 		ParseException {
 
-		RestTemplate restTemplate = new RestTemplate();
 		List<BookEntity> books = new ArrayList<>();
 		for (int pages = 1; pages <= 20; pages++) {
+			//알라딘 url 정보
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(API_URL)
 				.queryParam("ttbkey", API_KEY)
 				.queryParam("QueryType", queryType)
@@ -99,18 +100,7 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 				.queryParam("OptResult", "usedList")
 				.queryParam("Output", outputType);
 
-			System.out.println(builder.toUriString());
-
-			ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, null,
-				String.class);
-			String responseBody = response.getBody();
-
-			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-			InputSource inputSource = new InputSource(new StringReader(responseBody));
-			Document document = documentBuilder.parse(inputSource);
-
-			NodeList itemNodes = document.getElementsByTagName("item");
+			NodeList itemNodes = getItemElementByUrl(builder);
 
 			for (int i = 0; i < itemNodes.getLength(); i++) {
 				Node itemNode = itemNodes.item(i);
@@ -123,37 +113,106 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 		return books;
 	}
 
-	private BookEntity parseBook(Node itemNode) throws ParseException {
+	private BookEntity parseBook(Node itemNode) throws
+		ParseException,
+		ParserConfigurationException,
+		IOException,
+		SAXException {
 		String title = getChildText(itemNode, "title");
 		String author = getChildText(itemNode, "author");
 		String publisher = getChildText(itemNode, "publisher");
 		String pubDate = getChildText(itemNode, "pubDate");
 		String coverUrl = getChildText(itemNode, "cover");
 		String description = getChildText(itemNode, "description");
-		String isbn13 = getChildText(itemNode, "isbn13");
-		String isbn = getChildText(itemNode, "isbn");
-
-		int price = Integer.parseInt(getChildText(itemNode, "priceSales"));
-
-		NodeList nodeList = itemNode.getChildNodes();
-		Node subInfoNode = getChildNode(nodeList, "subInfo");
-
-		NodeList usedList = subInfoNode.getChildNodes();
-		Node usedListNode = getChildNode(usedList, "usedList");
-
-		NodeList userUsedList = usedListNode.getChildNodes();
-		Node userUsedNode = getChildNode(userUsedList, "userUsed");
-
-		//알라딘 url 얻어옴
-		String aladinUrl = getChildText(userUsedNode, "link");
-
-		long bookId = Integer.parseInt(itemNode.getAttributes().getNamedItem("itemId").getTextContent());
 
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = format.parse(pubDate);
 
+		//하위 태그인 subInfo에 접근
+		NodeList nodeList = itemNode.getChildNodes();
+		Node subInfoNode = getChildNode(nodeList, "subInfo");
+
+		NodeList subInfoList = subInfoNode.getChildNodes();
+		Node usedListNode = getChildNode(subInfoList, "usedList");
+
+		NodeList userUsedList = usedListNode.getChildNodes();
+
+		Node userUsedNode = getChildNode(userUsedList, "userUsed");
+		Node aladinUsedNode = getChildNode(userUsedList, "aladinUsed");
+		Node spaceUsedNode = getChildNode(userUsedList, "spaceUsed");
+
+		int userUsedPrice = parseToInteger(userUsedNode, "minPrice");//회원 직접 배송 중고의 보유 상품중 최저가 상품 판매가격
+		int newUsedBookprice = parseToInteger(itemNode, "priceSales");//새로 들어온 중고책 가격
+		int aladinUsedPrice = parseToInteger(aladinUsedNode, "minPrice");//알라딘 직접 배송 중고의 보유 상품중 최저가 상품 판매가격
+		int spaceUsedPrice = parseToInteger(spaceUsedNode, "minPrice");//광활한 우주점(매장 배송) 중고의 보유 상품중 최저가 상품 판매가격
+
+		//보유 상품수
+		int aladinUsedItemCount = parseToInteger(aladinUsedNode, "itemCount");
+		int spaceUsedItemCount = parseToInteger(spaceUsedNode, "itemCount");
+		int userUsedItemCount = parseToInteger(userUsedNode, "itemCount");
+
+		ArrayList<Integer> prices = new ArrayList<>();
+		prices.add(newUsedBookprice);
+
+		//보유 상품수가 0이 아닌 경우에만 최저가 비교에 사용함
+		if (aladinUsedItemCount != 0) {
+			prices.add(aladinUsedPrice);
+		}
+		if (spaceUsedItemCount != 0) {
+			prices.add(spaceUsedPrice);
+		}
+		if (userUsedItemCount != 0) {
+			prices.add(userUsedPrice);
+		}
+
+		//최저가 구함
+		int minPriceResult = getMinPrice(prices);
+
+		String isbn;
+		String aladinUrl;
+		long newUsedBookId = Integer.parseInt(itemNode.getAttributes().getNamedItem("itemId").getTextContent());
+
+		Node newBookParentNode = getChildNode(subInfoList, "newBookList");
+		NodeList newBookList = newBookParentNode.getChildNodes();
+		Node newBookNode = getChildNode(newBookList, "newBook");
+		long usedBookId = Integer.parseInt(getChildText(newBookNode, "itemId"));
+
+		long minPriceBookId;
+
+		//최저가 가격의 알라딘 url 얻어옴
+		if (minPriceResult == newUsedBookprice) {
+			aladinUrl = getChildText(itemNode, "link");
+			isbn = getChildText(itemNode, "isbn");
+			minPriceBookId = newUsedBookId;
+		} else {
+			if (minPriceResult == aladinUsedPrice) {
+				aladinUrl = getChildText(aladinUsedNode, "link");
+
+			} else if (minPriceResult == spaceUsedPrice) {
+				aladinUrl = getChildText(spaceUsedNode, "link");
+			} else {
+				aladinUrl = getChildText(userUsedNode, "link");
+			}
+			minPriceBookId = usedBookId;
+			//isbn 구함
+			String subInfoIsbn = getChildText(newBookNode, "isbn");
+
+			//도서 상세 페이지로 접속
+			String detailUrl = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx";
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(detailUrl)
+				.queryParam("ttbkey", API_KEY)
+				.queryParam("itemIdType", "ISBN")
+				.queryParam("ItemId", subInfoIsbn)
+				.queryParam("output", outputType)
+				.queryParam("Version", "20131101");
+
+			NodeList itemNodes = getItemElementByUrl(builder);
+
+			isbn = getChildText(itemNodes.item(0), "isbn13");
+		}
+
 		BookEntity book = BookEntity.builder()
-			.id(bookId)
+			.id(minPriceBookId)
 			.coverImageUrl(coverUrl)
 			.isbn(isbn)
 			.publishDate(date)
@@ -162,10 +221,40 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 			.aladinUrl(aladinUrl)
 			.author(author)
 			.description(description)
-			.price(price)
+			.price(minPriceResult)
 			.build();
 
 		return book;
+	}
+
+	private NodeList getItemElementByUrl(UriComponentsBuilder builder) throws
+		IOException,
+		SAXException,
+		ParserConfigurationException {
+		ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, null,
+			String.class);
+		String responseBody = response.getBody();
+
+		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+		InputSource inputSource = new InputSource(new StringReader(responseBody));
+		Document document = documentBuilder.parse(inputSource);
+
+		return document.getElementsByTagName("item");
+	}
+
+	/*
+	 * 해당 태그의 값을 Integer로 변환
+	 * */
+	private int parseToInteger(Node nodeItem, String tagName) {
+		return Integer.parseInt(getChildText(nodeItem, tagName));
+	}
+
+	/*
+	 * 최저가 구함
+	 * */
+	private int getMinPrice(List<Integer> prices) {
+		return prices.stream().filter(Objects::nonNull).min(Integer::compareTo).orElse(0);
 	}
 
 	private Node getChildNode(NodeList itemNode, String tagName) {

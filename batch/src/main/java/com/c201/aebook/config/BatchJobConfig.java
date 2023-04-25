@@ -19,7 +19,7 @@ import com.c201.aebook.api.book.persistence.entity.BookEntity;
 @EnableBatchProcessing
 public class BatchJobConfig {
 
-	private static final int CHUNK_SIZE = 10;
+	private static final int CHUNK_SIZE = 300;
 	private final JobBuilderFactory jobBuilderFactory;
 	private final StepBuilderFactory stepBuilderFactory;
 	private final AladinBatchItemReader aladinBatchItemReader;
