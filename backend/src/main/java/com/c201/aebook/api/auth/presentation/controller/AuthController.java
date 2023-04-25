@@ -83,20 +83,20 @@ public class AuthController {
             HttpServletResponse response,
             HttpServletRequest request
     ) {
-        // 받은 token 정보 가져오기
+        // 1. 받은 token 정보 가져오기
         String accessToken = authService.resolveToken(request, JwtProperties.AUTHORIZATION_HEADER);
         String refreshToken = authService.resolveToken(request, JwtProperties.REFRESH_HEADER);
         // log.info("jwt : {} ", accessToken);
         // log.info("refresh : {}", refreshToken);
 
-        // requestTokenDto에 받은 토큰 정보 저장하기
+        // 2. requestTokenDto에 받은 토큰 정보 저장하기
         TokenSO requestTokenSO = tokenConverter.toTokenSO(accessToken, refreshToken);
         // log.info("requesTokenSO : {}", requestTokenSO.getAccessToken());
 
-        // 토큰 재발행
+        // 3. 토큰 재발행
         TokenDTO tokenDto = authService.reissueAccessToken(requestTokenSO);
 
-        // 헤더에 토큰 정보 담기
+        // 4. 헤더에 토큰 정보 담기
         response.setHeader(JwtProperties.AUTHORIZATION_HEADER, tokenDto.getGrantType() + " " + tokenDto.getAccessToken());
         response.setHeader(JwtProperties.REFRESH_HEADER, tokenDto.getGrantType() + " " + tokenDto.getRefreshToken());
         return new BaseResponse<>(null, 200, "token 재발행 성공");
@@ -110,17 +110,18 @@ public class AuthController {
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             HttpServletRequest request
     ) {
-
         ValueOperations<String, String> logoutValueOperations = redisTemplate.opsForValue();
 
+        // 1. token 정보 가져오기
         String accessToken = authService.resolveToken(request, JwtProperties.AUTHORIZATION_HEADER);
         String refreshToken = authService.resolveToken(request, JwtProperties.REFRESH_HEADER);
 
-        // header로 받은 토큰이 하나라도 null 이라면
+        // 2. header로 받은 토큰이 하나라도 null 이라면 400에러 발생
         if (accessToken == null || refreshToken == null) {
             return new BaseResponse<>(null, HttpStatus.BAD_REQUEST.value(), "TOKEN_IS_NULL");
         }
 
+        // 3. redis에 token 정보 set하기
         logoutValueOperations.set(accessToken, accessToken);
         logoutValueOperations.set(refreshToken, refreshToken);
 
