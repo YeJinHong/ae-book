@@ -9,6 +9,7 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 
 import com.c201.aebook.api.batch.AladinBatchItemReader;
 import com.c201.aebook.api.batch.AladinBatchItemWriter;
@@ -45,11 +46,13 @@ public class BatchJobConfig {
 
 	@Bean
 	public Step step() {
-		return stepBuilderFactory.get("step")
+		return stepBuilderFactory.get("batch step")
 			.<BookEntity, BookEntity>chunk(CHUNK_SIZE)
 			.reader(aladinBatchItemReader)
 			.writer(aladinBatchItemWriter)
 			.build();
 	}
+
+
 
 }
