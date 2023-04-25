@@ -20,7 +20,7 @@ public class UserController {
     private final UserServiceImpl userService;
 
     @Operation(summary = "닉네임 중복 검사", description = "사용자의 닉네임 중복 검사를 합니다.")
-    @PostMapping(path = "/exists")
+    @GetMapping(path = "/exists")
     public BaseResponse<?> checkUserNickname(
             @RequestParam(name = "nickname") String nickname
     ) {
