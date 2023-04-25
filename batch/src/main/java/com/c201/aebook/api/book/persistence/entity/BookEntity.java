@@ -92,13 +92,4 @@ public class BookEntity extends BaseEntity {
         this.aladinUrl = aladinUrl;
     }
 
-    @Override
-    public String toString() {
-        return "BookEntity{" +
-            "id=" + id +
-            ", isbn='" + isbn + '\'' +
-            ", price=" + price +
-            ", aladinUrl='" + aladinUrl + '\'' +
-            '}';
-    }
 }
