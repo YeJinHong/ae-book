@@ -191,26 +191,23 @@ async def isbn_detection(image: UploadFile = File(...)):
         res = result[idx]
         for line in res:
             
+            data = line[1][0]
+            
             #success
-            if 'ISBN' in line[1][0]:
+            if 'ISBN' in data:
                 
                 #simple cleansing
                 
                 #case1 : ISBN 979-11-6050-443-9 (with white space)
-                if line[1][0][4] == ' ':
+                if data[4] == ' ':
                     
-                    data = line[1][0][5:].replace('-','').strip()
+                    data = data[5:].replace('-','').strip()
                 
                 #case2 : ISBN979-11-6050-443-9 (no white space)
-                elif line[1][0][4] >= '0' and line[1][0][4] <= '9':
+                elif data[4] >= '0' and data[4] <= '9':
                     
-                    data = line[1][0][4:].replace('-','').strip()
-                
-                #case3 : unpredictable case
-                else:
-                    
-                    data = line[1][0]
-                    
+                    data = data[4:].replace('-','').strip()
+                                
                 return {"status":1, "data":data} 
     
     #fail
