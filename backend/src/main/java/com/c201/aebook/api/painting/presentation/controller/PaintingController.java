@@ -1,10 +1,27 @@
 package com.c201.aebook.api.painting.presentation.controller;
 
+import java.io.IOException;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.c201.aebook.api.common.BaseResponse;
+import com.c201.aebook.api.common.constants.ApplicationConstants;
+import com.c201.aebook.api.painting.presentation.dto.request.PaintingRequestDTO;
+import com.c201.aebook.api.painting.presentation.validator.PaintingValidator;
 import com.c201.aebook.api.painting.service.impl.PaintingServiceImpl;
+import com.c201.aebook.api.vo.PaintingSO;
+import com.c201.aebook.auth.CustomUserDetails;
+import com.c201.aebook.converter.PaintingConverter;
+import com.c201.aebook.utils.S3Uploader;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,8 +33,37 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/paintings")
 public class PaintingController {
 	private final PaintingServiceImpl paintingService;
+	private final PaintingConverter paintingConverter;
+	private final PaintingValidator paintingValidator;
+	private final S3Uploader s3Uploader;
 
 	// TODO : savePainting
+	@Operation(summary = "그림 저장", description = "그림을 저장합니다.")
+	@PostMapping(
+		path = "",
+		consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}
+	)
+	public BaseResponse<?> savePainting(
+		@RequestPart(value = "paintingFile") MultipartFile multipartFile,
+		@RequestPart(value = "data") PaintingRequestDTO paintingRequestDTO,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails
+	) throws IOException {
+		Long userId = Long.parseLong(customUserDetails.getUsername());
+		String dirName = String.valueOf(userId) + "/paintings";
+
+		// DTO NOT NULL 검증
+		paintingValidator.validatePaintingRequestDTO(paintingRequestDTO);
+
+		// aws s3 file upload
+		String uploadImageUrl = s3Uploader.upload(multipartFile, dirName);
+
+		// 그림 DB 저장
+		PaintingSO paintingSO = paintingConverter.toPaintingSO(userId, uploadImageUrl, paintingRequestDTO);
+		paintingService.savePainting(paintingSO);
+
+		return new BaseResponse<>(null, HttpStatus.OK.value(), ApplicationConstants.SUCCESS);
+	}
+
 	// TODO : downloadPainting
 	// TODO : deletePainting
 	// TODO : updatePaintingTitle
