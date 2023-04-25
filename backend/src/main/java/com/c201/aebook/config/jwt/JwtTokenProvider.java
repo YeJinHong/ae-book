@@ -8,6 +8,8 @@ import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,11 +30,12 @@ public class JwtTokenProvider implements InitializingBean {
     private static final String BEARER_TYPE = "Bearer";
     // private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;            // 만료시간 30분
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;   // 개발을 위해서 한시적으로 access token 시간 늘리기
-    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7 * 4;  // 만료시간 한달
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7 * 2;  // 만료시간 한달
 
     private Key key;
 
     private final CustomUserDetailsService customUserDetailsService;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -58,6 +61,7 @@ public class JwtTokenProvider implements InitializingBean {
                 .compact();
 
         // 리프레시 토큰 생성
+        // log.info("token : {}", new Date(now + REFRESH_TOKEN_EXPIRE_TIME));
         String refreshToken = Jwts.builder()
                 .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
                 .signWith(key, SignatureAlgorithm.HS512)
@@ -94,6 +98,15 @@ public class JwtTokenProvider implements InitializingBean {
      * return : boolean
      * */
     public boolean validateToken(String token) {
+        log.info("token : {}", token);
+
+        ValueOperations<String, String> logoutValueOperations = redisTemplate.opsForValue();
+
+        // 토큰이 null이라면 로그아웃된 유저의 토큰
+        if (logoutValueOperations.get(token) != null) {
+            log.info("로그아웃된 토큰입니다.");
+            return false;
+        }
 
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);

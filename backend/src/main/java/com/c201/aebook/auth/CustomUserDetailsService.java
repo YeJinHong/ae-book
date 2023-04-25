@@ -26,6 +26,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         long id = Long.parseLong(username);
         UserEntity user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("해당 유저 정보를 찾을 수 없습니다"));
 
+        // log.info("user : {}", user.getNickname());
         return new CustomUserDetails(user);
     }
 }

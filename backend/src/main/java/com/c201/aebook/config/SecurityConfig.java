@@ -7,6 +7,7 @@ import com.c201.aebook.config.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -24,6 +25,7 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint; // 401 error(Unauthorized, 인증 자격 증명 불가) 처리
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler; // 403 error(Forbidden, 권한 없음) 처리
     private final JwtTokenProvider jwtTokenProvider; //JWT 토큰 생성 관리
+    private final RedisTemplate redisTemplate;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -62,7 +64,7 @@ public class SecurityConfig {
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint) // 401 error(Unauthorized) 처리
                 .accessDeniedHandler(jwtAccessDeniedHandler) // 403 error(Forbidden) 처리
                 .and()
-                .apply(new JwtSecurityConfig(jwtTokenProvider)) // 사용자 정의 Filter(JWT 토큰 관련 처리) 추가
+                .apply(new JwtSecurityConfig(jwtTokenProvider, redisTemplate)) // 사용자 정의 Filter(JWT 토큰 관련 처리) 추가
 
                 .and()
                 .authorizeHttpRequests() // 요청에 대한 권한 인증 필요
