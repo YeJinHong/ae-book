@@ -41,4 +41,10 @@ public class UserEntity extends BaseEntity {
         this.profileUrl = profileUrl;
         this.status = status;
     }
+
+    public void updateUserEntity(String nickname, String profileUrl) {
+        this.nickname = nickname;
+        this.profileUrl = profileUrl;
+    }
+
 }
