@@ -13,4 +13,6 @@ public interface StoryService {
 	Page<StoryResponseDTO> getStoryList(Long userId, Pageable pageable);
 
 	public void deleteStory(StoryDeleteSO storyId);
+
+	StoryResponseDTO getStoryDetail(Long storyId);
 }
