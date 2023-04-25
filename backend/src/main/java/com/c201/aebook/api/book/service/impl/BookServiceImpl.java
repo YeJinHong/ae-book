@@ -71,7 +71,7 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public List<BookSimpleResponseDTO> getNewBookList() {
-		List<BookEntity> bookList = bookRepository.findTop14ByOrderByUpdatedAtDesc();
+		List<BookEntity> bookList = bookRepository.findTop16ByOrderByUpdatedAtDesc();
 		List<BookSimpleResponseDTO> result = bookList.stream().map(book -> BookSimpleResponseDTO.builder()
 				.author(book.getAuthor())
 				.title(book.getTitle())
