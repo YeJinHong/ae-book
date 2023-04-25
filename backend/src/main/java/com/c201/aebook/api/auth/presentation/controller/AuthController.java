@@ -19,8 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import com.c201.aebook.api.common.LoginUserInfoDTO;
 import com.c201.aebook.api.common.TokenDTO;
 import com.c201.aebook.api.user.persistence.entity.UserEntity;
-import com.c201.aebook.api.auth.presentation.dto.response.LoginResDTO;
-import com.c201.aebook.api.auth.service.AuthService;
+import com.c201.aebook.api.auth.presentation.dto.response.LoginResponseDTO;
 import com.c201.aebook.auth.dto.KakaoTokenDTO;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -69,13 +68,13 @@ public class AuthController {
 
         // 4. 로그인 유저 정보 담기
         UserEntity user = loginUserInfoDto.getUser();
-        LoginResDTO loginResDto = LoginResDTO.builder()
+        LoginResponseDTO loginResponseDto = LoginResponseDTO.builder()
                 .userId(user.getId())
                 .nickname(user.getNickname())
                 .profileUrl(user.getProfileUrl())
                 .build();
 
-        return ResponseEntity.ok().headers(headers).body(loginResDto);
+        return ResponseEntity.ok().headers(headers).body(loginResponseDto);
     }
 
     @Operation(summary = "토큰 재발행", description = "토큰 재발행을 합니다.")
@@ -87,12 +86,12 @@ public class AuthController {
         // 받은 token 정보 가져오기
         String accessToken = authService.resolveToken(request, JwtProperties.AUTHORIZATION_HEADER);
         String refreshToken = authService.resolveToken(request, JwtProperties.REFRESH_HEADER);
-        log.info("jwt : {} ", accessToken);
-        log.info("refresh : {}", refreshToken);
+        // log.info("jwt : {} ", accessToken);
+        // log.info("refresh : {}", refreshToken);
 
         // requestTokenDto에 받은 토큰 정보 저장하기
         TokenSO requestTokenSO = tokenConverter.toTokenSO(accessToken, refreshToken);
-        log.info("requesTokenSO : {}", requestTokenSO.getAccessToken());
+        // log.info("requesTokenSO : {}", requestTokenSO.getAccessToken());
 
         // 토큰 재발행
         TokenDTO tokenDto = authService.reissueAccessToken(requestTokenSO);
@@ -101,6 +100,32 @@ public class AuthController {
         response.setHeader(JwtProperties.AUTHORIZATION_HEADER, tokenDto.getGrantType() + " " + tokenDto.getAccessToken());
         response.setHeader(JwtProperties.REFRESH_HEADER, tokenDto.getGrantType() + " " + tokenDto.getRefreshToken());
         return new BaseResponse<>(null, 200, "token 재발행 성공");
+    }
+
+    @Transactional
+    @Operation(summary = "로그아웃", description = "로그아웃을 합니다.")
+    @SecurityRequirement(name = "bearerAuth")
+    @PostMapping("/logout")
+    public BaseResponse<?> logout(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            HttpServletRequest request
+    ) {
+
+        ValueOperations<String, String> logoutValueOperations = redisTemplate.opsForValue();
+
+        String accessToken = authService.resolveToken(request, JwtProperties.AUTHORIZATION_HEADER);
+        String refreshToken = authService.resolveToken(request, JwtProperties.REFRESH_HEADER);
+
+        // header로 받은 토큰이 하나라도 null 이라면
+        if (accessToken == null || refreshToken == null) {
+            return new BaseResponse<>(null, HttpStatus.BAD_REQUEST.value(), "TOKEN_IS_NULL");
+        }
+
+        logoutValueOperations.set(accessToken, accessToken);
+        logoutValueOperations.set(refreshToken, refreshToken);
+
+        log.info("로그아웃한 사용자 : '{}'", customUserDetails.getUsername());
+        return new BaseResponse<>(null, HttpStatus.OK.value(), "로그아웃 성공");
     }
 
 }
