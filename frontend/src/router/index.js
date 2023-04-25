@@ -4,6 +4,7 @@ import AppMain from '@/views/AppMain'
 import AppStory from '@/views/AppStory'
 import AppPainting from '@/views/AppPainting'
 import AppBook from '@/views/AppBook'
+import AppMyPage from '@/views/AppMyPage'
 
 Vue.use(Router)
 
@@ -46,6 +47,18 @@ export default new Router({
           path: 'searchbypicture',
           name: 'BookSearchByPicture',
           component: () => import('@/components/book/BookSearchByPictureView')
+        }
+      ]
+    },
+    {
+      path: '/mypage',
+      name: 'MyPage',
+      component: AppMyPage,
+      children: [
+        {
+          path: 'review',
+          name: 'MyReview',
+          component: () => import('@/components/myPage/MyReviewListView')
         }
       ]
     }
