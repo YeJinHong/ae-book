@@ -118,9 +118,6 @@ public class StoryController {
 
 		StoryPatchSO storyPatchSO = storyConverter.toStoryPatchSO(customUserDetails.getUsername(), storyId,
 			storyPatchRequestDTO);
-		System.out.println(storyPatchSO.getStoryId());
-		System.out.println(storyPatchSO.getTitle());
-		System.out.println(storyPatchSO.getUserId());
 
 		storyService.updateStoryTitle(storyPatchSO);
 
