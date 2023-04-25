@@ -57,7 +57,7 @@ public class StoryController {
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) throws IOException {
 		Long userId = Long.parseLong(customUserDetails.getUsername());
-		String dirName = String.valueOf(userId);
+		String dirName = customUserDetails.getUsername();
 
 		// DTO NOT NULL 검증
 		storyValidator.validateStoryRequestDTO(storyRequestDTO);
@@ -72,7 +72,6 @@ public class StoryController {
 		return new BaseResponse<>(null, HttpStatus.OK.value(), "동화 작성 완료");
 	}
 
-	// TODO : getStoryList
 	@Operation(summary = "로그인 유저의 동화 리스트", description = "마이페이지에서 보여줄 나의 동화 리스트")
 	@GetMapping(
 		path = ""
