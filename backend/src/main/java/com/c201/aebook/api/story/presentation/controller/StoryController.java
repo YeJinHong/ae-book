@@ -2,7 +2,13 @@ package com.c201.aebook.api.story.presentation.controller;
 
 import java.io.IOException;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -11,9 +17,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.c201.aebook.api.common.BaseResponse;
 import com.c201.aebook.api.story.presentation.dto.request.StoryRequestDTO;
+import com.c201.aebook.api.story.presentation.dto.response.StoryResponseDTO;
 import com.c201.aebook.api.story.presentation.validator.StoryValidator;
 import com.c201.aebook.api.story.service.StoryService;
 import com.c201.aebook.api.vo.StorySO;
+import com.c201.aebook.auth.CustomUserDetails;
 import com.c201.aebook.converter.StoryConverter;
 import com.c201.aebook.utils.S3Uploader;
 
@@ -41,13 +49,10 @@ public class StoryController {
 	)
 	public BaseResponse<?> saveStory(
 		@RequestPart(value = "imageFile") MultipartFile multipartFile,
-		@RequestPart(value = "data") StoryRequestDTO storyRequestDTO
-		//,@AuthenticationPrincipal CustomUserDetails customUserDetails // TODO: 시큐리티 완성되면 주석 해제하고 쉼표 옮기기
+		@RequestPart(value = "data") StoryRequestDTO storyRequestDTO,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) throws IOException {
-		// TODO: 토큰 유효성 검증 후 임시 dirName 변수 삭제
-		// UserEntity loginUser = tokenUtils.validateGetUser(customUserDetails);
-		// Long userId = loginUser.getId();
-		Long userId = 1l;
+		Long userId = Long.parseLong(customUserDetails.getUsername());
 		String dirName = String.valueOf(userId);
 
 		// DTO NOT NULL 검증
@@ -64,6 +69,23 @@ public class StoryController {
 	}
 
 	// TODO : getStoryList
+	@Operation(summary = "로그인 유저의 동화 리스트", description = "마이페이지에서 보여줄 나의 동화 리스트")
+	@GetMapping(
+		path = ""
+	)
+	public BaseResponse<?> getStoryList(
+		@AuthenticationPrincipal CustomUserDetails customUserDetails,
+		@PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+	) {
+		// 로그인 한 유저의 동화책 리스트를 가져온다.
+		Long userId = Long.parseLong(customUserDetails.getUsername());
+
+		// 해당 도서 서평 리스트 찾기
+		Page<StoryResponseDTO> stories = storyService.getStoryList(userId, pageable);
+
+		return new BaseResponse<>(stories, 200, "나의 동화책 리스트가 정상적으로 도착했습니다.");
+	}
+
 	// TODO : getStoryDetail
 	// TODO : updateStoryTitle
 	// TODO : deleteStory
