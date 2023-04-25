@@ -38,11 +38,11 @@ public class BookCustomRepositoryImpl implements BookCustomRepository {
 		BooleanBuilder booleanBuilder = new BooleanBuilder();
 		Arrays.stream(searchTarget)
 			.forEach(target -> {
-				if (target.equals("TITLE")) {
+				if ("TITLE".equals(target)) {
 					booleanBuilder.or(bookEntity.title.containsIgnoreCase(keyword));
-				} else if (target.equals("AUTHOR")) {
+				} else if ("AUTHOR".equals(target)) {
 					booleanBuilder.or(bookEntity.author.containsIgnoreCase(keyword));
-				} else if (target.equals("PUBLISHER")) {
+				} else if ("PUBLISHER".equals(target)) {
 					booleanBuilder.or(bookEntity.publisher.containsIgnoreCase(keyword));
 				}
 			});
