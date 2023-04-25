@@ -9,6 +9,6 @@ public interface UserService {
 
     public String getProfileImage(long userId);
 
-    public UserResponeDTO updateUserInfo(long userId, UserSO userSO);
+    public UserResponeDTO updateUserInfo(Long userId, UserSO userSO);
 
 }
