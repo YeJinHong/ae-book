@@ -66,7 +66,7 @@ public class StoryServiceImpl implements StoryService {
 	public void updateStoryTitle(StoryPatchSO storyPatchSO) {
 		// 1. Story 유효성 검증
 		StoryEntity storyEntity = storyRepository.findById(storyPatchSO.getStoryId())
-			.orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
+			.orElseThrow(() -> new CustomException(ErrorCode.STORY_NOT_FOUND));
 
 		// 2. User 유효성 검증
 		UserEntity userEntity = userRepository.findById(Long.parseLong(storyPatchSO.getUserId()))
@@ -86,7 +86,7 @@ public class StoryServiceImpl implements StoryService {
 	public void deleteStory(StoryDeleteSO storyDeleteSO) {
 		// 1. Story 유효성 검증
 		StoryEntity storyEntity = storyRepository.findById(storyDeleteSO.getStoryId())
-			.orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
+			.orElseThrow(() -> new CustomException(ErrorCode.STORY_NOT_FOUND));
 
 		// 2. User 유효성 검증
 		UserEntity userEntity = userRepository.findById(storyDeleteSO.getUserId())
