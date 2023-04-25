@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.c201.aebook.api.book.presentation.dto.response.BookResponseDTO;
 import com.c201.aebook.api.book.presentation.dto.response.BookSearchResponseDTO;
+import com.c201.aebook.api.book.presentation.dto.response.BookSimpleResponseDTO;
 import com.c201.aebook.api.book.service.BookService;
 import com.c201.aebook.api.common.BaseResponse;
 import com.c201.aebook.api.common.constants.ApplicationConstants;
@@ -58,6 +59,11 @@ public class BookController {
 		return new BaseResponse<>(bookSearchList, HttpStatus.OK.value(), ApplicationConstants.SUCCESS);
 	}
 
-	// TODO : 새로 들어온 책 리스트를 반환하는 getNewBookList()
+	@Operation(summary = "최신 도서 검색", description = "최근 업데이트된 도서 리스트를 반환합니다.")
+	@GetMapping("new")
+	public BaseResponse<?> getNewBookList() {
+		List<BookSimpleResponseDTO> newBookList = bookService.getNewBookList();
+		return new BaseResponse<>(newBookList, HttpStatus.OK.value(), ApplicationConstants.SUCCESS);
+	}
 
 }

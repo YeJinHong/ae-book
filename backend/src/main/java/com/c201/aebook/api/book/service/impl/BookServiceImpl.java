@@ -12,6 +12,7 @@ import com.c201.aebook.api.book.persistence.repository.BookCustomRepository;
 import com.c201.aebook.api.book.persistence.repository.BookRepository;
 import com.c201.aebook.api.book.presentation.dto.response.BookResponseDTO;
 import com.c201.aebook.api.book.presentation.dto.response.BookSearchResponseDTO;
+import com.c201.aebook.api.book.presentation.dto.response.BookSimpleResponseDTO;
 import com.c201.aebook.api.book.service.BookService;
 import com.c201.aebook.utils.exception.CustomException;
 import com.c201.aebook.utils.exception.ErrorCode;
@@ -65,6 +66,20 @@ public class BookServiceImpl implements BookService {
 			.price(book.getPrice())
 			.publisher(book.getPublisher())
 			.build());
+		return result;
+	}
+
+	@Override
+	public List<BookSimpleResponseDTO> getNewBookList() {
+		List<BookEntity> bookList = bookRepository.findTop14ByOrderByUpdatedAtDesc();
+		List<BookSimpleResponseDTO> result = bookList.stream().map(book -> BookSimpleResponseDTO.builder()
+				.author(book.getAuthor())
+				.title(book.getTitle())
+				.isbn(book.getIsbn())
+				.coverImageUrl(book.getCoverImageUrl())
+				.price(book.getPrice())
+				.build())
+			.collect(Collectors.toList());
 		return result;
 	}
 
