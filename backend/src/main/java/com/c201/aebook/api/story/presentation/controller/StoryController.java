@@ -90,8 +90,19 @@ public class StoryController {
 	}
 
 	// TODO : getStoryDetail
+	@Operation(summary = "특정 동화의 상세 정보 조회", description = "특정 동화의 상세 정보 조회")
+	@GetMapping(
+		path = "/{storyId}"
+	)
+	public BaseResponse<?> getStoryDetail(
+		@PathVariable(name = "storyId") Long storyId
+	) {
+		StoryResponseDTO storyResponseDTO = storyService.getStoryDetail(storyId);
+
+		return new BaseResponse<>(storyResponseDTO, HttpStatus.OK.value(), "특정 동화의 정보가 정상적으로 도착했습니다");
+	}
+
 	// TODO : updateStoryTitle
-	// TODO : deleteStory
 	@Operation(summary = "특정 동화를 삭제", description = "특정 동화를 삭제")
 	@DeleteMapping(
 		path = "/{storyId}"
