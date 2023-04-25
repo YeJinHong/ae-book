@@ -11,6 +11,7 @@ import com.c201.aebook.api.story.service.StoryService;
 import com.c201.aebook.api.user.persistence.entity.UserEntity;
 import com.c201.aebook.api.user.persistence.repository.UserRepository;
 import com.c201.aebook.api.vo.StoryDeleteSO;
+import com.c201.aebook.api.vo.StoryPatchSO;
 import com.c201.aebook.api.vo.StorySO;
 import com.c201.aebook.converter.StoryConverter;
 import com.c201.aebook.utils.exception.CustomException;
@@ -52,6 +53,36 @@ public class StoryServiceImpl implements StoryService {
 	}
 
 	@Override
+	public StoryResponseDTO getStoryDetail(Long storyId) {
+		// 1. Story 유효성 검증
+		StoryEntity storyEntity = storyRepository.findById(storyId)
+			.orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
+
+		return storyConverter.toStoryResponseDTO(storyEntity, storyEntity.getId(),
+			userRepository.findById(storyEntity.getUser().getId()).get().getNickname());
+	}
+
+	@Override
+	public void updateStoryTitle(StoryPatchSO storyPatchSO) {
+		// 1. Story 유효성 검증
+		StoryEntity storyEntity = storyRepository.findById(storyPatchSO.getStoryId())
+			.orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
+
+		// 2. User 유효성 검증
+		UserEntity userEntity = userRepository.findById(Long.parseLong(storyPatchSO.getUserId()))
+			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+		// Entity에 Setter가 없기 때문에 builder 패턴 사용
+		storyRepository.save(StoryEntity.builder()
+			.id(storyEntity.getId())
+			.title(storyPatchSO.getTitle())
+			.content(storyEntity.getContent())
+			.imgUrl(storyEntity.getImgUrl())
+			.user(storyEntity.getUser())
+			.build());
+	}
+
+	@Override
 	public void deleteStory(StoryDeleteSO storyDeleteSO) {
 		// 1. Story 유효성 검증
 		StoryEntity storyEntity = storyRepository.findById(storyDeleteSO.getStoryId())
@@ -61,16 +92,5 @@ public class StoryServiceImpl implements StoryService {
 		UserEntity userEntity = userRepository.findById(storyDeleteSO.getUserId())
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-		storyRepository.deleteById(storyDeleteSO.getStoryId());
-	}
-
-	@Override
-	public StoryResponseDTO getStoryDetail(Long storyId) {
-		// 1. Story 유효성 검증
-		StoryEntity storyEntity = storyRepository.findById(storyId)
-			.orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
-		
-		return storyConverter.toStoryResponseDTO(storyEntity, storyEntity.getId(),
-			userRepository.findById(storyEntity.getUser().getId()).get().getNickname());
 	}
 }

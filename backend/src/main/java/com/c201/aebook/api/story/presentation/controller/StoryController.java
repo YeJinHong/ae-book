@@ -11,19 +11,23 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.c201.aebook.api.common.BaseResponse;
+import com.c201.aebook.api.story.presentation.dto.request.StoryPatchRequestDTO;
 import com.c201.aebook.api.story.presentation.dto.request.StoryRequestDTO;
 import com.c201.aebook.api.story.presentation.dto.response.StoryResponseDTO;
 import com.c201.aebook.api.story.presentation.validator.StoryValidator;
 import com.c201.aebook.api.story.service.StoryService;
 import com.c201.aebook.api.vo.StoryDeleteSO;
+import com.c201.aebook.api.vo.StoryPatchSO;
 import com.c201.aebook.api.vo.StorySO;
 import com.c201.aebook.auth.CustomUserDetails;
 import com.c201.aebook.converter.StoryConverter;
@@ -89,7 +93,6 @@ public class StoryController {
 		return new BaseResponse<>(stories, HttpStatus.OK.value(), "나의 동화책 리스트가 정상적으로 도착했습니다.");
 	}
 
-	// TODO : getStoryDetail
 	@Operation(summary = "특정 동화의 상세 정보 조회", description = "특정 동화의 상세 정보 조회")
 	@GetMapping(
 		path = "/{storyId}"
@@ -102,7 +105,28 @@ public class StoryController {
 		return new BaseResponse<>(storyResponseDTO, HttpStatus.OK.value(), "특정 동화의 정보가 정상적으로 도착했습니다");
 	}
 
-	// TODO : updateStoryTitle
+	@Operation(summary = "특정 동화의 제목 변경", description = "특정 동화의 제목 변경")
+	@PatchMapping(
+		path = "/{storyId}",
+		consumes = MediaType.APPLICATION_JSON_VALUE
+	)
+	public BaseResponse<?> updateStoryTitle(
+		@PathVariable(name = "storyId") Long storyId,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails,
+		@RequestBody StoryPatchRequestDTO storyPatchRequestDTO
+	) {
+
+		StoryPatchSO storyPatchSO = storyConverter.toStoryPatchSO(customUserDetails.getUsername(), storyId,
+			storyPatchRequestDTO);
+		System.out.println(storyPatchSO.getStoryId());
+		System.out.println(storyPatchSO.getTitle());
+		System.out.println(storyPatchSO.getUserId());
+
+		storyService.updateStoryTitle(storyPatchSO);
+
+		return new BaseResponse<>(null, HttpStatus.OK.value(), "특정 동화의 제목이 정상적으로 변경되었습니다.");
+	}
+
 	@Operation(summary = "특정 동화를 삭제", description = "특정 동화를 삭제")
 	@DeleteMapping(
 		path = "/{storyId}"
