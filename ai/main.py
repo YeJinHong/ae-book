@@ -2,6 +2,7 @@ from fastapi import FastAPI,File,UploadFile
 from fastapi.responses import JSONResponse
 from review_star_prediction import *
 from isbn_ocr import *
+from caption import *
 from dotenv import load_dotenv
 import os
 import openai
@@ -11,6 +12,7 @@ import cv2
 import sys
 import requests
 import numpy as np
+from PIL import Image
 
 app = FastAPI()
 
@@ -191,28 +193,47 @@ async def isbn_detection(image: UploadFile = File(...)):
         res = result[idx]
         for line in res:
             
+            data = line[1][0]
+            
             #success
-            if 'ISBN' in line[1][0]:
+            if 'ISBN' in data:
                 
                 #simple cleansing
                 
                 #case1 : ISBN 979-11-6050-443-9 (with white space)
-                if line[1][0][4] == ' ':
+                if data[4] == ' ':
                     
-                    data = line[1][0][5:].replace('-','').strip()
+                    data = data[5:].replace('-','').strip()
                 
                 #case2 : ISBN979-11-6050-443-9 (no white space)
-                elif line[1][0][4] >= '0' and line[1][0][4] <= '9':
+                elif data[4] >= '0' and data[4] <= '9':
                     
-                    data = line[1][0][4:].replace('-','').strip()
-                
-                #case3 : unpredictable case
-                else:
-                    
-                    data = line[1][0]
-                    
+                    data = data[4:].replace('-','').strip()
+                                
                 return {"status":1, "data":data} 
     
     #fail
     return {"status":0, "data":""} 
+
+"""
+input: image
+output: caption text
+"""
+@app.post("/stories/words")
+async def image_caption(image: UploadFile = File(...)):
     
+    #read image & open image
+    img = await image.read()
+    img = io.BytesIO(img)
+    img = Image.open(img)
+    
+    #preprocessing image
+    img = preprocess(img).unsqueeze(0).to(device)
+    
+    #simple captioning
+    with torch.no_grad():
+        prefix = clip_model.encode_image(img).to(device, dtype=torch.float32)
+        prefix_embed = caption_model.clip_project(prefix).reshape(1, prefix_length, -1)
+        generated_text_prefix = generate(caption_model, tokenizer2, embed=prefix_embed)
+
+    return {"data":generated_text_prefix}
