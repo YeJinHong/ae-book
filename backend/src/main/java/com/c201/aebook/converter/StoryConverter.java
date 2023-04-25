@@ -14,7 +14,7 @@ import com.c201.aebook.api.vo.StorySO;
 public interface StoryConverter {
 	StorySO toStorySO(Long userId, String imgUrl, StoryRequestDTO storyRequestDTO);
 
-	StoryDeleteSO toStoryDeleteSO(Long userId, Long storyID);
+	StoryDeleteSO toStoryDeleteSO(Long userId, Long storyId);
 
 	StoryResponseDTO toStoryResponseDTO(StoryEntity storyEntity, Long storyId, String storyAuthorNickname,
 		LocalDateTime createdAt, LocalDateTime updatedAt);
