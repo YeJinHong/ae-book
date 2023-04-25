@@ -237,3 +237,24 @@ async def image_caption(image: UploadFile = File(...)):
         generated_text_prefix = generate(caption_model, tokenizer2, embed=prefix_embed)
 
     return {"data":generated_text_prefix}
+
+"""
+input: caption text
+output: chatgpt story
+"""
+@app.post("/stories/gpt")
+async def create_story(text: str):
+    
+    #chatgpt query
+    query = f"{text}로 동화를 만들어줘"
+    
+    #chatgpt request
+    completion = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "user", "content": query}
+    ]
+    )
+    
+    #chatgpt response
+    return completion.choices[0].message
