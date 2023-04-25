@@ -48,6 +48,13 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 	private int nextIndex = 0;
 	private List<BookEntity> bookList;
 
+	//private RestTemplate restTemplate = new RestTemplate();
+
+	// @Autowired
+	// public AladinBatchItemReader(RestTemplate restTemplate) {
+	// 	this.restTemplate = restTemplate;
+	// }
+
 	/*
 	 * 알라딘 api에서 책 정보를 읽어옴
 	 * */
@@ -77,8 +84,8 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 		ParserConfigurationException,
 		SAXException,
 		ParseException {
-		RestTemplate restTemplate = new RestTemplate();
 
+		RestTemplate restTemplate = new RestTemplate();
 		List<BookEntity> books = new ArrayList<>();
 		for (int pages = 1; pages <= 20; pages++) {
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(API_URL)
@@ -91,6 +98,8 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 				.queryParam("SubSearchTarget", SUB_SEARCH_TARGET)
 				.queryParam("OptResult", "usedList")
 				.queryParam("Output", outputType);
+
+			System.out.println(builder.toUriString());
 
 			ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, null,
 				String.class);
@@ -135,6 +144,7 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 		NodeList userUsedList = usedListNode.getChildNodes();
 		Node userUsedNode = getChildNode(userUsedList, "userUsed");
 
+		//알라딘 url 얻어옴
 		String aladinUrl = getChildText(userUsedNode, "link");
 
 		long bookId = Integer.parseInt(itemNode.getAttributes().getNamedItem("itemId").getTextContent());
@@ -158,18 +168,16 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 		return book;
 	}
 
-	private Node getChildNode(NodeList itemNode, String tagName){
+	private Node getChildNode(NodeList itemNode, String tagName) {
 		for (int i = 0; i < itemNode.getLength(); i++) {
 			Node node = itemNode.item(i);
-			if(tagName.equals(node.getNodeName())){
+			if (tagName.equals(node.getNodeName())) {
 				return node;
 			}
 		}
 
 		return null;
 	}
-
-	
 
 	private String getChildText(Node itemNode, String tagName) {
 		NodeList nodeList = itemNode.getChildNodes();
