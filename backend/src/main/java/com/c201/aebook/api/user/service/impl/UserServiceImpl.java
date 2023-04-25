@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserResponeDTO updateUserInfo(long userId, UserSO userSO) {
+    public UserResponeDTO updateUserInfo(Long userId, UserSO userSO) {
         // 1. 사용자 아이디로 user 찾기
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
