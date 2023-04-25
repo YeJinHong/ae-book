@@ -53,14 +53,14 @@ public class BookController {
 	@Operation(summary = "도서 통합 검색", description = "검색 키워드를 포함하는 도서 리스트를 반환합니다.")
 	@GetMapping
 	public BaseResponse<?> searchBookList(@RequestParam("keyword") String keyword,
-		@RequestParam(name = "searchTarget", defaultValue = "TITLE,AUTHOR,PUBLISHER") String[] searchTarget,
+		@RequestParam(name = "searchTargets", defaultValue = "TITLE,AUTHOR,PUBLISHER") String[] searchTargets,
 		@PageableDefault(size = 10) Pageable pageable) {
-		Page<BookSearchResponseDTO> bookSearchList = bookService.searchBookList(keyword, searchTarget, pageable);
+		Page<BookSearchResponseDTO> bookSearchList = bookService.searchBookList(keyword, searchTargets, pageable);
 		return new BaseResponse<>(bookSearchList, HttpStatus.OK.value(), ApplicationConstants.SUCCESS);
 	}
 
 	@Operation(summary = "최신 도서 검색", description = "최근 업데이트된 도서 리스트를 반환합니다.")
-	@GetMapping("new")
+	@GetMapping("/new")
 	public BaseResponse<?> getNewBookList() {
 		List<BookSimpleResponseDTO> newBookList = bookService.getNewBookList();
 		return new BaseResponse<>(newBookList, HttpStatus.OK.value(), ApplicationConstants.SUCCESS);
