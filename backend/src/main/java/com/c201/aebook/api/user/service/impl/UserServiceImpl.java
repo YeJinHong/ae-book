@@ -1,11 +1,11 @@
 package com.c201.aebook.api.user.service.impl;
 
 import com.c201.aebook.api.user.persistence.entity.UserEntity;
-import com.c201.aebook.api.user.presentation.dto.response.UserResponeDTO;
+import com.c201.aebook.api.user.presentation.dto.response.UserResponseDTO;
 import com.c201.aebook.api.user.service.UserService;
 import com.c201.aebook.api.user.persistence.repository.UserRepository;
-import com.c201.aebook.api.user.service.UserService;
 import com.c201.aebook.api.vo.UserSO;
+import com.c201.aebook.converter.UserConverter;
 import com.c201.aebook.utils.exception.CustomException;
 import com.c201.aebook.utils.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final UserConverter userConverter;
 
     @Override
     public void duplicatedUserByNickname(String nickname) {
@@ -38,7 +39,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserResponeDTO updateUserInfo(Long userId, UserSO userSO) {
+    public UserResponseDTO updateUserInfo(Long userId, UserSO userSO) {
         // 1. 사용자 아이디로 user 찾기
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -47,11 +48,8 @@ public class UserServiceImpl implements UserService {
         user.updateUserEntity(userSO.getNickname(), userSO.getProfileUrl());
 
         // 3. userResponseDTO에 저장
-        UserResponeDTO userResponeDTO = UserResponeDTO.builder()
-                .nickname(user.getNickname())
-                .profileUrl(user.getProfileUrl())
-                .build();
+        UserResponseDTO userResponseDTO = userConverter.toUserResponse(user.getNickname(), user.getProfileUrl());
 
-        return userResponeDTO;
+        return userResponseDTO;
     }
 }
