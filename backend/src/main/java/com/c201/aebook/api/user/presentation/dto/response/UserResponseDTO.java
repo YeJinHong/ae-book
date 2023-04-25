@@ -6,7 +6,7 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserResponeDTO {
+public class UserResponseDTO {
 
     @Schema(description = "변경한 닉네임", defaultValue = "aebook")
     private String nickname;
@@ -15,7 +15,7 @@ public class UserResponeDTO {
     private String profileUrl;
 
     @Builder
-    public UserResponeDTO(String nickname, String profileUrl) {
+    public UserResponseDTO(String nickname, String profileUrl) {
         this.nickname = nickname;
         this.profileUrl = profileUrl;
     }
