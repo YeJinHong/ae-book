@@ -1,9 +1,8 @@
 package com.c201.aebook.api.user.presentation.controller;
 
 import com.c201.aebook.api.common.BaseResponse;
-import com.c201.aebook.api.user.persistence.entity.UserEntity;
 import com.c201.aebook.api.user.presentation.dto.request.UserUpdateRequestDTO;
-import com.c201.aebook.api.user.presentation.dto.response.UserResponeDTO;
+import com.c201.aebook.api.user.presentation.dto.response.UserResponseDTO;
 import com.c201.aebook.api.user.service.impl.UserServiceImpl;
 import com.c201.aebook.api.vo.UserSO;
 import com.c201.aebook.auth.CustomUserDetails;
@@ -15,16 +14,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Tag(name="회원관리")
 @Slf4j
@@ -72,9 +66,9 @@ public class UserController {
 
         // 3. 사용자 정보 수정
         UserSO userSO = userConverter.toUserSO(userUpdateRequestDTO.getNickname(), profileUrl);
-        UserResponeDTO userResponeDTO = userService.updateUserInfo(userId, userSO);
+        UserResponseDTO userResponseDTO = userService.updateUserInfo(userId, userSO);
 
-        return new BaseResponse<>(userResponeDTO, HttpStatus.OK.value(), "사용자 정보 변경");
+        return new BaseResponse<>(userResponseDTO, HttpStatus.OK.value(), "사용자 정보 변경");
     }
 
 
