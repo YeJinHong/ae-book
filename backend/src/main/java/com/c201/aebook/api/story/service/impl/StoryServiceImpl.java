@@ -92,5 +92,6 @@ public class StoryServiceImpl implements StoryService {
 		UserEntity userEntity = userRepository.findById(storyDeleteSO.getUserId())
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
+		storyRepository.deleteById(storyDeleteSO.getStoryId());
 	}
 }
