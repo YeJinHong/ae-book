@@ -16,4 +16,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Long countByNicknameStartingWith(String nickname);
 
     boolean existsByNickname(String nickname);
+
+    String findProfileUrlById(long userId);
 }
