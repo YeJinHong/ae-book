@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.c201.aebook.api.book.presentation.dto.response.BookResponseDTO;
 import com.c201.aebook.api.book.presentation.dto.response.BookSearchResponseDTO;
+import com.c201.aebook.api.book.presentation.dto.response.BookSimpleResponseDTO;
 
 public interface BookService {
 
@@ -17,5 +18,8 @@ public interface BookService {
 	public List<String> getAutocompleteTitle(String keyword);
 
 	// 3. 도서 통합 검색 결과 반환
-	public Page<BookSearchResponseDTO> searchBookList(String keyword, boolean[] searchType, Pageable pageable);
+	public Page<BookSearchResponseDTO> searchBookList(String keyword, String[] searchTarget, Pageable pageable);
+
+	// 4. 최신 도서 조회
+	public List<BookSimpleResponseDTO> getNewBookList();
 }
