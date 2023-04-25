@@ -12,7 +12,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.httpclient.HttpClient;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
@@ -43,12 +42,11 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 	private final String SUB_SEARCH_TARGET = "Book";
 	private final String outputType = "xml";
 	private final int maxResults = 50;
+	private final String queryType = "ItemNewAll";
 	@Value("${aladin.api.key}")
 	private String API_KEY;
 	private int nextIndex = 0;
 	private List<BookEntity> bookList;
-
-	private final String queryType = "ItemNewAll";
 
 	/*
 	 * 알라딘 api에서 책 정보를 읽어옴
@@ -94,7 +92,6 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 				.queryParam("OptResult", "usedList")
 				.queryParam("Output", outputType);
 
-
 			ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, null,
 				String.class);
 			String responseBody = response.getBody();
@@ -129,7 +126,17 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 
 		int price = Integer.parseInt(getChildText(itemNode, "priceSales"));
 
-		String aladinUrl = getAladinUrl(itemNode);
+		NodeList nodeList = itemNode.getChildNodes();
+		Node subInfoNode = getChildNode(nodeList, "subInfo");
+
+		NodeList usedList = subInfoNode.getChildNodes();
+		Node usedListNode = getChildNode(usedList, "usedList");
+
+		NodeList userUsedList = usedListNode.getChildNodes();
+		Node userUsedNode = getChildNode(userUsedList, "userUsed");
+
+		String aladinUrl = getChildText(userUsedNode, "link");
+
 		long bookId = Integer.parseInt(itemNode.getAttributes().getNamedItem("itemId").getTextContent());
 
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -148,41 +155,21 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 			.price(price)
 			.build();
 
-
-
 		return book;
 	}
 
-	private String getAladinUrl(Node itemNode){
-		NodeList nodeList = itemNode.getChildNodes();
-		for (int i = 0; i < nodeList.getLength(); i++) {
-			Node node = nodeList.item(i);
-			if(node.getNodeName().equals("subInfo")){//subInfo > usedList > userUsed > link 가져옴
-				NodeList subInfoList = node.getChildNodes();
-				for(int j = 0; j < subInfoList.getLength(); j++){
-					Node subInfoNode = subInfoList.item(j);
-					if(subInfoNode.getNodeName().equals("usedList")){
-						NodeList usedList = subInfoNode.getChildNodes();
-						for(int k = 0; k < usedList.getLength(); k++){
-							Node usedListNode = usedList.item(k);
-							if(usedListNode.getNodeName().equals("userUsed")){
-								NodeList userUsedList = usedListNode.getChildNodes();
-								for(int m = 0; m < userUsedList.getLength(); m++){
-									Node userUsedNode = userUsedList.item(m);
-									if(userUsedNode.getNodeName().equals("link")){
-										return userUsedNode.getTextContent();
-									}
-								}
-							}
-						}
-					}
-				}
+	private Node getChildNode(NodeList itemNode, String tagName){
+		for (int i = 0; i < itemNode.getLength(); i++) {
+			Node node = itemNode.item(i);
+			if(tagName.equals(node.getNodeName())){
+				return node;
 			}
 		}
 
-
 		return null;
 	}
+
+	
 
 	private String getChildText(Node itemNode, String tagName) {
 		NodeList nodeList = itemNode.getChildNodes();
