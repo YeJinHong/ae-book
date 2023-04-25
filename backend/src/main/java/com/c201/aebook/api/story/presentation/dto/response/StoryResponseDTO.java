@@ -28,20 +28,20 @@ public class StoryResponseDTO {
 	private String imgUrl;
 
 	@Schema(description = "동화 작성 시간", defaultValue = "2023-04-14 10:30:15")
-	private LocalDateTime createAt;
+	private LocalDateTime createdAt;
 
 	@Schema(description = "동화 수정 시간", defaultValue = "2023-04-17 10:30:15")
-	private LocalDateTime updateAt;
+	private LocalDateTime updatedAt;
 
 	@Builder
 	public StoryResponseDTO(Long storyId, String storyAuthorNickname, String title, String content, String imgUrl,
-		LocalDateTime createAt, LocalDateTime updateAt) {
+		LocalDateTime createdAt, LocalDateTime updatedAt) {
 		this.storyId = storyId;
 		this.storyAuthorNickname = storyAuthorNickname;
 		this.title = title;
 		this.content = content;
 		this.imgUrl = imgUrl;
-		this.createAt = createAt;
-		this.updateAt = updateAt;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
 	}
 }
