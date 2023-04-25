@@ -14,5 +14,5 @@ public interface BookRepository extends JpaRepository<BookEntity, Long> {
 
 	public List<BookEntity> findTop5ByTitleContaining(String keyword);
 
-	public List<BookEntity> findTop14ByOrderByUpdatedAtDesc();
+	public List<BookEntity> findTop16ByOrderByUpdatedAtDesc();
 }
