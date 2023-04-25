@@ -2,9 +2,15 @@ package com.c201.aebook.api.painting.presentation.controller;
 
 import java.io.IOException;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -13,7 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.c201.aebook.api.common.BaseResponse;
 import com.c201.aebook.api.common.constants.ApplicationConstants;
+import com.c201.aebook.api.painting.persistence.entity.PaintingType;
 import com.c201.aebook.api.painting.presentation.dto.request.PaintingRequestDTO;
+import com.c201.aebook.api.painting.presentation.dto.response.PaintingResponseDTO;
 import com.c201.aebook.api.painting.presentation.validator.PaintingValidator;
 import com.c201.aebook.api.painting.service.impl.PaintingServiceImpl;
 import com.c201.aebook.api.vo.PaintingSO;
@@ -69,5 +77,17 @@ public class PaintingController {
 	// TODO : updatePaintingTitle
 	// TODO : getPaintingDetails
 	// TODO : getPaintingList
+	@Operation(summary = "로그인한 유저의 그림 리스트", description = "로그인한 유저의 그림 리스트를 반환합니다.")
+	@GetMapping("/{type}")
+	public BaseResponse<?> getPaintingList(
+		@PathVariable(name = "type") PaintingType type,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails,
+		@PageableDefault(size = 8, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+	) {
+		Long userId = Long.parseLong(customUserDetails.getUsername());
+		Page<PaintingResponseDTO> paintingList = paintingService.getPaintingList(userId, type, pageable);
+
+		return new BaseResponse<>(paintingList, HttpStatus.OK.value(), ApplicationConstants.SUCCESS);
+	}
 
 }

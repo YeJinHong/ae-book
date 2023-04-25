@@ -1,9 +1,13 @@
 package com.c201.aebook.api.painting.service.impl;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.c201.aebook.api.painting.persistence.entity.PaintingEntity;
+import com.c201.aebook.api.painting.persistence.entity.PaintingType;
 import com.c201.aebook.api.painting.persistence.repository.PaintingRepository;
+import com.c201.aebook.api.painting.presentation.dto.response.PaintingResponseDTO;
 import com.c201.aebook.api.painting.service.PaintingService;
 import com.c201.aebook.api.user.persistence.entity.UserEntity;
 import com.c201.aebook.api.user.persistence.repository.UserRepository;
@@ -31,5 +35,15 @@ public class PaintingServiceImpl implements PaintingService {
 			.type(paintingSO.getType())
 			.user(user)
 			.build());
+	}
+
+	@Override
+	public Page<PaintingResponseDTO> getPaintingList(Long userId, PaintingType type, Pageable pageable) {
+		UserEntity userEntity = userRepository.findById(userId)
+			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		Page<PaintingEntity> paintingEntities = paintingRepository.findAllByUserIdAndType(userId, type, pageable);
+		Page<PaintingResponseDTO> result = paintingEntities.map(
+			painting -> paintingConverter.toPaintingResponseDTO(painting));
+		return result;
 	}
 }
