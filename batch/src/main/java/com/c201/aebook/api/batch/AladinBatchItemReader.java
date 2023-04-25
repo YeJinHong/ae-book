@@ -94,6 +94,7 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 				.queryParam("OptResult", "usedList")
 				.queryParam("Output", outputType);
 
+
 			ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, null,
 				String.class);
 			String responseBody = response.getBody();
@@ -124,18 +125,20 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 		String coverUrl = getChildText(itemNode, "cover");
 		String description = getChildText(itemNode, "description");
 		String isbn13 = getChildText(itemNode, "isbn13");
+		String isbn = getChildText(itemNode, "isbn");
 
 		int price = Integer.parseInt(getChildText(itemNode, "priceSales"));
 
 		String aladinUrl = getAladinUrl(itemNode);
-
+		long bookId = Integer.parseInt(itemNode.getAttributes().getNamedItem("itemId").getTextContent());
 
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = format.parse(pubDate);
 
 		BookEntity book = BookEntity.builder()
+			.id(bookId)
 			.coverImageUrl(coverUrl)
-			.isbn(isbn13)
+			.isbn(isbn)
 			.publishDate(date)
 			.publisher(publisher)
 			.title(title)
@@ -144,6 +147,8 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 			.description(description)
 			.price(price)
 			.build();
+
+
 
 		return book;
 	}

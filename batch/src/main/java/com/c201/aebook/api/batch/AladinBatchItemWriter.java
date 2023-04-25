@@ -23,13 +23,11 @@ public class AladinBatchItemWriter implements ItemWriter<BookEntity> {
 
 	@Override
 	public void write(List<? extends BookEntity> items) throws Exception {
-
 		for(BookEntity item : items){
-			Optional<BookEntity> book = bookRepository.findByIsbn(item.getIsbn());
+			Optional<BookEntity> book = bookRepository.findById(item.getId());
 			if(book.isPresent()){
-				//최저가만 갱신
+				//가격만 갱신
 				BookEntity updateBook = book.get();
-				updateBook.setAladinUrl(item.getAladinUrl());
 				updateBook.setPrice(item.getPrice());
 
 				bookRepository.save(updateBook);
@@ -37,7 +35,6 @@ public class AladinBatchItemWriter implements ItemWriter<BookEntity> {
 				bookRepository.save(item);
 			}
 		}
-
 	}
 
 }
