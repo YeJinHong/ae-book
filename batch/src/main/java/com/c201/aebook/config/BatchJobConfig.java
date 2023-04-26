@@ -14,42 +14,45 @@ import org.springframework.web.client.RestTemplate;
 import com.c201.aebook.api.batch.AladinBatchItemReader;
 import com.c201.aebook.api.batch.AladinBatchItemWriter;
 import com.c201.aebook.api.book.persistence.entity.BookEntity;
+import com.c201.aebook.api.listener.job.BookIntegrationJobListener;
+import com.c201.aebook.api.listener.step.BookIntegrationStepListener;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
-@EnableBatchProcessing
+@RequiredArgsConstructor
 public class BatchJobConfig {
 
 	private static final int CHUNK_SIZE = 10;
 	private final JobBuilderFactory jobBuilderFactory;
 	private final StepBuilderFactory stepBuilderFactory;
+	
+	private final BookIntegrationJobListener bookIntegrationJobListener;
+	private final BookIntegrationStepListener bookIntegrationStepListener;
+	
 	private final AladinBatchItemReader aladinBatchItemReader;
-
 	private final AladinBatchItemWriter aladinBatchItemWriter;
-
-	@Autowired
-	public BatchJobConfig(JobBuilderFactory jobBuilderFactory,
-		StepBuilderFactory stepBuilderFactory, AladinBatchItemReader aladinBatchItemReader,
-		AladinBatchItemWriter aladinBatchItemWriter) {
-		this.jobBuilderFactory = jobBuilderFactory;
-		this.stepBuilderFactory = stepBuilderFactory;
-		this.aladinBatchItemReader = aladinBatchItemReader;
-		this.aladinBatchItemWriter = aladinBatchItemWriter;
-	}
-
+	
+	// job, step naming
+	private static final String BOOK_INTEGRATION_JOB = "bookIntegrationJob";
+	private static final String BOOK_INTEGRATION_STEP = "bookIntegrationStep";
+	
 	@Bean
 	public Job job() {
-		return jobBuilderFactory.get("batch job")
+		return jobBuilderFactory.get(BOOK_INTEGRATION_JOB)
 			.incrementer(new RunIdIncrementer())
 			.start(step())
+			.listener(bookIntegrationJobListener)
 			.build();
 	}
 
 	@Bean
 	public Step step() {
-		return stepBuilderFactory.get("batch step")
+		return stepBuilderFactory.get(BOOK_INTEGRATION_STEP)
 			.<BookEntity, BookEntity>chunk(CHUNK_SIZE)
 			.reader(aladinBatchItemReader)
 			.writer(aladinBatchItemWriter)
+			.listener(bookIntegrationStepListener)
 			.build();
 	}
 
