@@ -1,5 +1,6 @@
 package com.c201.aebook.config;
 
+import org.apache.commons.httpclient.ConnectionPoolTimeoutException;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -9,6 +10,7 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.dao.DataAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import com.c201.aebook.api.batch.AladinBatchItemReader;
@@ -23,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BatchJobConfig {
 
-	private static final int CHUNK_SIZE = 10;
+	private static final int CHUNK_SIZE = 1000;
 	private final JobBuilderFactory jobBuilderFactory;
 	private final StepBuilderFactory stepBuilderFactory;
 	
