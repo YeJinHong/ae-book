@@ -47,6 +47,7 @@ public class BatchJobConfig {
 	@Bean
 	public Step step() {
 		return stepBuilderFactory.get("batch step")
+			.startLimit(5) //재시작 5번 가능
 			.<BookEntity, BookEntity>chunk(CHUNK_SIZE)
 			.reader(aladinBatchItemReader)
 			.writer(aladinBatchItemWriter)
