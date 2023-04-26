@@ -98,7 +98,7 @@ public class PaintingController {
 	) {
 		Long userId = Long.parseLong(customUserDetails.getUsername());
 		paintingService.deletePainting(paintingId, userId);
-		return new BaseResponse<>(null, HttpStatus.OK.value(), ApplicationConstants.SUCCESS);
+		return new BaseResponse<>(paintingId, HttpStatus.OK.value(), ApplicationConstants.SUCCESS);
 	}
 
 	@Operation(summary = "그림 제목 수정", description = "특정 그림의 제목을 수정합니다.")
@@ -117,9 +117,9 @@ public class PaintingController {
 		PaintingPatchSO paintingPatchSO = paintingConverter.toPaintingPatchSO(paintingId, userId,
 			paintingTitleRequestDTO);
 		// 그림 제목 수정
-		paintingService.updatePaintingTitle(paintingPatchSO);
+		PaintingResponseDTO paintingResponseDTO = paintingService.updatePaintingTitle(paintingPatchSO);
 
-		return new BaseResponse<>(null, HttpStatus.OK.value(), ApplicationConstants.SUCCESS);
+		return new BaseResponse<>(paintingResponseDTO, HttpStatus.OK.value(), ApplicationConstants.SUCCESS);
 	}
 
 	@Operation(summary = "특정 그림 조회", description = "특정 그림 상세 정보를 반환합니다.")
