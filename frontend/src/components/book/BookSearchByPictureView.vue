@@ -17,7 +17,7 @@ export default {
   methods: {
     // 이거 다른 곳에서도 계속 쓰는거라 .... 흠 어떻게 해야될지 .... ㅠㅅㅠ
     getBookReviewList () {
-      axios.get(`/reviews/${this.isbn}`).then((result) => {
+      axios.get(`/api/reviews/${this.isbn}`).then((result) => {
         console.log(result)
       }).catch((err) => {
         console.log(err)

@@ -18,22 +18,28 @@ export default {
   },
   methods: {
     getMyReviewList () {
-      // const res = axios({
-      //   method: 'get',
-      //   url: `http://localhost:8082/reviews?page=${this.page}&size=${this.size}&sort=${this.sort}`,
-      //   headers: {
-      //     'Authorization': `Bearer ${this.jwtToken}`,
-      //     'Content-Type': 'application/json;charset=utf-8'
-      //   }
-      // })
-      // console.log(res)
-
-      console.log('getMyReviewList')
-      axios.get(`/reviews?page=${this.page}&size=${this.size}&sort=${this.sort}`).then((result) => {
+      const accessToken = localStorage.getItem('accessToken')
+      const refreshToken = localStorage.getItem('refreshToken')
+      axios({
+        method: 'get',
+        url: `/api/reviews?page=${this.page}&size=${this.size}&sort=${this.sort}`,
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Refresh': `Bearer ${refreshToken}`,
+          'Content-Type': 'application/json;charset=utf-8'
+        }
+      }).then((result) => {
         console.log(result)
       }).catch((err) => {
         console.log(err)
       })
+
+      // console.log('getMyReviewList')
+      // axios.get(`/api/reviews?page=${this.page}&size=${this.size}&sort=${this.sort}`).then((result) => {
+      //   console.log(result)
+      // }).catch((err) => {
+      //   console.log(err)
+      // })
     }
   }
 }
