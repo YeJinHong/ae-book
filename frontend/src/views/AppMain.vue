@@ -6,16 +6,19 @@
     <!-- TODO : 새로 들어온 책 콘텐츠 케러셀 컴포넌트-->
     <!-- TODO : 최근 리뷰 컨텐츠 케러셀 컴포넌트 -->
     <!-- TODO : 우리 아이들 작품(만든 동화) 리스트 컴포넌트 -->
+    <footer-info></footer-info>
   </div>
 </template>
 
 <script>
 import HeaderNavbarMain from '@/components/HeaderNavbarMain'
+import FooterInfo from '@/components/FooterInfo'
 
 export default {
   name: 'AppMain',
   components: {
-    HeaderNavbarMain
+    HeaderNavbarMain,
+    FooterInfo
   }
 }
 
