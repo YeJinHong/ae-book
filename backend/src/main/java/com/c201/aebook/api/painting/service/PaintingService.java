@@ -18,4 +18,6 @@ public interface PaintingService {
 	public String downloadPainting(Long paintingId, Long userId);
 
 	public void updatePaintingTitle(PaintingPatchSO paintingPatchSO);
+
+	public PaintingResponseDTO getPaintingDetails(Long userId, Long paintingId);
 }
