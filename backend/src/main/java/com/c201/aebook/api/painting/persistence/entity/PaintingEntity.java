@@ -39,6 +39,7 @@ public class PaintingEntity extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private UserEntity user;
+	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "type", nullable = false)
 	private PaintingType type;
