@@ -47,7 +47,7 @@ public class UserEntity extends BaseEntity {
         this.profileUrl = profileUrl;
     }
 
-    public void deleteUserEntity(Long kakaoId, String phone, String nickname, int status) {
+    public void invalidateUserEntity(Long kakaoId, String phone, String nickname, int status) {
         this.kakaoId = kakaoId;
         this.phone = phone;
         this.nickname = nickname;
