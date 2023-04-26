@@ -30,7 +30,7 @@ export default {
         url: `/api/reviews?page=${this.page}&size=${this.size}&sort=${this.sort}`
       }).then((result) => {
         console.log(result)
-      }).then((err) => {
+      }).catch((err) => {
         console.log(err)
       })
     }
