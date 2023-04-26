@@ -9,6 +9,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -73,10 +74,20 @@ public class PaintingController {
 	}
 
 	// TODO : downloadPainting
-	// TODO : deletePainting
+
+	@Operation(summary = "그림 삭제", description = "그림을 삭제합니다.")
+	@DeleteMapping("/{paintingId}")
+	public BaseResponse<?> deletePainting(
+		@PathVariable(name = "paintingId") Long paintingId,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails
+	) {
+		Long userId = Long.parseLong(customUserDetails.getUsername());
+		paintingService.deletePainting(paintingId, userId);
+		return new BaseResponse<>(null, 200, ApplicationConstants.SUCCESS);
+	}
+
 	// TODO : updatePaintingTitle
 	// TODO : getPaintingDetails
-	// TODO : getPaintingList
 	@Operation(summary = "로그인한 유저의 그림 리스트", description = "로그인한 유저의 그림 리스트를 반환합니다.")
 	@GetMapping("/{type}")
 	public BaseResponse<?> getPaintingList(
