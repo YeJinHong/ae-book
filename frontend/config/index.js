@@ -10,7 +10,18 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      // /api로 시작하는 요청을 프록시합니다.
+      '/api': {
+        // 프록시 대상 주소입니다.
+        target: 'http://localhost:8082/api',
+        changeOrigin: true,
+        // 프록시할 요청 경로를 변경합니다.
+        pathRewrite: {
+          '^/api': ''
+        }
+      }
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST

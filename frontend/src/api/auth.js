@@ -5,9 +5,7 @@ import axios from 'axios'
  * 토큰 만료시 재발행
  * axios 인스턴스 생성
  */
-const api = axios.create({
-  baseURL: 'http://localhost:8082'
-})
+const api = axios.create()
 
 // 요청 인터셉터 설정
 api.interceptors.request.use(
