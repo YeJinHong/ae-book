@@ -42,7 +42,7 @@ public class PaintingServiceImpl implements PaintingService {
 	public Page<PaintingResponseDTO> getPaintingList(Long userId, PaintingType type, Pageable pageable) {
 		UserEntity userEntity = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		Page<PaintingEntity> paintingEntities = paintingRepository.findAllByUserIdAndType(userId, type, pageable);
+		Page<PaintingEntity> paintingEntities = paintingRepository.findByUserIdAndType(userId, type, pageable);
 		Page<PaintingResponseDTO> result = paintingEntities.map(
 			painting -> paintingConverter.toPaintingResponseDTO(painting));
 		return result;

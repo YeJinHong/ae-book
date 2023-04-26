@@ -10,7 +10,7 @@ import com.c201.aebook.api.painting.persistence.entity.PaintingType;
 
 @Repository
 public interface PaintingRepository extends JpaRepository<PaintingEntity, Long> {
-	public Page<PaintingEntity> findAllByUserIdAndType(Long userId, PaintingType type, Pageable pageable);
+	public Page<PaintingEntity> findByUserIdAndType(Long userId, PaintingType type, Pageable pageable);
 
 	public void delete(PaintingEntity paintingEntity);
 }
