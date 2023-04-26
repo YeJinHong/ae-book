@@ -37,3 +37,5 @@ out/
 .vscode/
 
 application-key.yml
+application-db.yml
+/.metadata/
