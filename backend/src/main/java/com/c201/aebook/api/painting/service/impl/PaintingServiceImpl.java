@@ -50,52 +50,20 @@ public class PaintingServiceImpl implements PaintingService {
 
 	@Override
 	public void deletePainting(Long paintingId, Long userId) {
-		// 1. 사용자 유효성 검사
-		UserEntity userEntity = userRepository.findById(userId)
-			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
-		// 2. 그림 유효성 검사
-		PaintingEntity paintingEntity = paintingRepository.findById(paintingId)
-			.orElseThrow(() -> new CustomException(ErrorCode.PAINTING_NOT_FOUND));
-
-		// 3. 작성자와 로그인한 사용자가 일치하는지 검사
-		if (paintingEntity.getUser().getId() != userEntity.getId()) {
-			throw new CustomException(ErrorCode.FORBIDDEN_USER);
-		}
+		PaintingEntity paintingEntity = getOwnPainting(userId, paintingId);
 		paintingRepository.delete(paintingEntity);
 	}
 
 	@Override
 	public String downloadPainting(Long paintingId, Long userId) {
-		// 1. 사용자 유효성 검사
-		UserEntity userEntity = userRepository.findById(userId)
-			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
-		// 2. 그림 유효성 검사
-		PaintingEntity paintingEntity = paintingRepository.findById(paintingId)
-			.orElseThrow(() -> new CustomException(ErrorCode.PAINTING_NOT_FOUND));
-
-		// 3. 작성자와 로그인한 사용자가 일치하는지 검사
-		if (paintingEntity.getUser().getId() != userEntity.getId()) {
-			throw new CustomException(ErrorCode.FORBIDDEN_USER);
-		}
+		PaintingEntity paintingEntity = getOwnPainting(userId, paintingId);
 		return paintingEntity.getFileUrl().substring(53);
 	}
 
 	@Override
 	public void updatePaintingTitle(PaintingPatchSO paintingPatchSO) {
-		// 1. 사용자 유효성 검사
-		UserEntity userEntity = userRepository.findById(paintingPatchSO.getUserId())
-			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
-		// 2. 그림 유효성 검사
-		PaintingEntity paintingEntity = paintingRepository.findById(paintingPatchSO.getPaintingId())
-			.orElseThrow(() -> new CustomException(ErrorCode.PAINTING_NOT_FOUND));
-
-		// 3. 작성자와 로그인한 사용자가 일치하는지 검사
-		if (paintingEntity.getUser().getId() != userEntity.getId()) {
-			throw new CustomException(ErrorCode.FORBIDDEN_USER);
-		}
+		PaintingEntity paintingEntity = getOwnPainting(paintingPatchSO.getUserId(),
+			paintingPatchSO.getPaintingId());
 		paintingEntity.updatePainting(paintingPatchSO.getTitle());
 
 		paintingRepository.save(paintingEntity);
@@ -103,6 +71,13 @@ public class PaintingServiceImpl implements PaintingService {
 
 	@Override
 	public PaintingResponseDTO getPaintingDetails(Long userId, Long paintingId) {
+		PaintingEntity paintingEntity = getOwnPainting(userId, paintingId);
+		PaintingResponseDTO paintingResponseDTO = paintingConverter.toPaintingResponseDTO(paintingEntity);
+		return paintingResponseDTO;
+	}
+
+	// 그림 작성자와 로그인한 사용자가 일치하는지 확인하는 함수
+	public PaintingEntity getOwnPainting(Long userId, Long paintingId) {
 		// 1. 사용자 유효성 검사
 		UserEntity userEntity = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -115,8 +90,6 @@ public class PaintingServiceImpl implements PaintingService {
 		if (paintingEntity.getUser().getId() != userEntity.getId()) {
 			throw new CustomException(ErrorCode.FORBIDDEN_USER);
 		}
-
-		PaintingResponseDTO paintingResponseDTO = paintingConverter.toPaintingResponseDTO(paintingEntity);
-		return paintingResponseDTO;
+		return paintingEntity;
 	}
 }
