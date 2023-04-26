@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -137,9 +138,9 @@ public class PaintingController {
 	}
 
 	@Operation(summary = "로그인한 유저의 그림 리스트", description = "로그인한 유저의 그림 리스트를 반환합니다.")
-	@GetMapping("/list/{type}")
+	@GetMapping()
 	public BaseResponse<?> getPaintingList(
-		@PathVariable(name = "type") PaintingType type,
+		@RequestParam(name = "type") PaintingType type,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails,
 		@PageableDefault(size = 8, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
 	) {
