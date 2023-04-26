@@ -63,4 +63,21 @@ public class PaintingServiceImpl implements PaintingService {
 		}
 		paintingRepository.delete(paintingEntity);
 	}
+
+	@Override
+	public String downloadPainting(Long paintingId, Long userId) {
+		// 1. 사용자 유효성 검사
+		UserEntity userEntity = userRepository.findById(userId)
+			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+		// 2. 그림 유효성 검사
+		PaintingEntity paintingEntity = paintingRepository.findById(paintingId)
+			.orElseThrow(() -> new CustomException(ErrorCode.PAINTING_NOT_FOUND));
+
+		// 3. 작성자와 로그인한 사용자가 일치하는지 검사
+		if (paintingEntity.getUser().getId() != userEntity.getId()) {
+			throw new CustomException(ErrorCode.FORBIDDEN_USER);
+		}
+		return paintingEntity.getFileUrl().substring(53);
+	}
 }

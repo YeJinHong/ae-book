@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +29,7 @@ import com.c201.aebook.api.painting.service.impl.PaintingServiceImpl;
 import com.c201.aebook.api.vo.PaintingSO;
 import com.c201.aebook.auth.CustomUserDetails;
 import com.c201.aebook.converter.PaintingConverter;
+import com.c201.aebook.utils.S3Downloader;
 import com.c201.aebook.utils.S3Uploader;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,8 +47,8 @@ public class PaintingController {
 	private final PaintingConverter paintingConverter;
 	private final PaintingValidator paintingValidator;
 	private final S3Uploader s3Uploader;
+	private final S3Downloader s3Downloader;
 
-	// TODO : savePainting
 	@Operation(summary = "그림 저장", description = "그림을 저장합니다.")
 	@PostMapping(
 		path = "",
@@ -73,7 +75,16 @@ public class PaintingController {
 		return new BaseResponse<>(null, HttpStatus.OK.value(), ApplicationConstants.SUCCESS);
 	}
 
-	// TODO : downloadPainting
+	@Operation(summary = "그림 다운로드", description = "그림을 다운로드합니다.")
+	@GetMapping("/download/{paintingId}")
+	public ResponseEntity<?> downloadPainting(
+		@PathVariable(name = "paintingId") Long paintingId,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails
+	) throws IOException {
+		Long userId = Long.parseLong(customUserDetails.getUsername());
+		String filePath = paintingService.downloadPainting(paintingId, userId);
+		return s3Downloader.download(filePath);
+	}
 
 	@Operation(summary = "그림 삭제", description = "그림을 삭제합니다.")
 	@DeleteMapping("/{paintingId}")
