@@ -1,18 +1,29 @@
 from fastapi import FastAPI,File,UploadFile
 from fastapi.responses import JSONResponse
+from review_star_prediction import *
+from isbn_ocr import *
+from caption import *
 from dotenv import load_dotenv
 import os
 import openai
 import io
 import base64
 import cv2
+import sys
+import requests
 import numpy as np
+from PIL import Image
 
 app = FastAPI()
 
-#open api key
+#constant
+STT_URL = "https://naveropenapi.apigw.ntruss.com/recog/v1/stt?lang=Kor"
+
+#api key
 load_dotenv()
 openai.api_key = os.getenv("SECRET_KEY")
+client_id = os.getenv("CLIENT_ID")
+client_secret = os.getenv("CLIENT_SECRET")
 
 @app.get("/")
 async def root():
@@ -23,6 +34,31 @@ async def root():
 @app.get("/hello/{name}")
 async def say_hello(name: str):
     return {"message":f"Hello {name}"}
+
+
+"""
+input:mp3 file(keyword)
+output:text
+"""
+@app.post("/reviews/sound")
+async def sound_to_text(sound: UploadFile = File(...)):
+    
+    #read mp3 file to byte string
+    data = await sound.read()
+    
+    headers = {
+        "X-NCP-APIGW-API-KEY-ID": client_id,
+        "X-NCP-APIGW-API-KEY": client_secret,
+        "Content-Type": "application/octet-stream"
+    }
+    
+    response = requests.post(STT_URL,  data=data, headers=headers)
+    rescode = response.status_code
+    
+    if(rescode == 200):
+        return response.text
+    else:
+        return "Error : " + response.text
 
 
 @app.post("/reviews/gpt")
@@ -61,6 +97,34 @@ async def create_review(title:str, words: str, writer=None, char=None):
     #chatgpt response
     return completion.choices[0].message
 
+#prediction review star point
+"""
+input: chatgpt review
+output: string of star point(one of 1,2,3,4,5)
+"""
+@app.post("/reviews/point")
+async def predict_star_point(review: str):
+
+    #simple preprocessing review
+    review = review.strip("\n").strip(" ")
+
+    #transform review
+    transform_review = tokenizer.batch_encode_plus([review],max_length=128,pad_to_max_length=True)
+
+    #prepare input data
+    token_ids = torch.tensor(transform_review['input_ids']).long()
+    attention_mask = torch.tensor(transform_review['attention_mask']).long()
+
+    #prediction
+    output = star_model(token_ids, attention_mask)
+
+    #for confidence
+    #percentage_output = F.softmax(output, dim = 1)
+
+    #get maximum confidence class 
+    pred = output.cpu().detach().numpy()
+    sorted_pred = np.argsort(pred,axis = 1)
+    return str(sorted_pred[0][-1]+1)
 
 #convert image to sketch
 @app.post("/paintings/sketch")
@@ -103,5 +167,94 @@ async def image_to_sketch(image: UploadFile = File(...)):
     
     #return json response
     return JSONResponse(decoded)
+
+
+"""
+input: isbn image
+output: isbn string
+"""
+@app.post("/books/isbn")
+async def isbn_detection(image: UploadFile = File(...)):
     
+    #read image data
+    img = await image.read()
     
+    #convert image to byte string
+    img = np.fromstring(img,dtype=np.uint8)
+    
+    #read image
+    img = cv2.imdecode(img,cv2.IMREAD_COLOR)
+    
+    #detect
+    result = ocr.ocr(img,cls = True)
+    
+    #find isbn string
+    for idx in range(len(result)):
+        res = result[idx]
+        for line in res:
+            
+            data = line[1][0]
+            
+            #success
+            if 'ISBN' in data:
+                
+                #simple cleansing
+                
+                #case1 : ISBN 979-11-6050-443-9 (with white space)
+                if data[4] == ' ':
+                    
+                    data = data[5:].replace('-','').strip()
+                
+                #case2 : ISBN979-11-6050-443-9 (no white space)
+                elif data[4] >= '0' and data[4] <= '9':
+                    
+                    data = data[4:].replace('-','').strip()
+                                
+                return {"status":1, "data":data} 
+    
+    #fail
+    return {"status":0, "data":""} 
+
+"""
+input: image
+output: caption text
+"""
+@app.post("/stories/words")
+async def image_caption(image: UploadFile = File(...)):
+    
+    #read image & open image
+    img = await image.read()
+    img = io.BytesIO(img)
+    img = Image.open(img)
+    
+    #preprocessing image
+    img = preprocess(img).unsqueeze(0).to(device)
+    
+    #simple captioning
+    with torch.no_grad():
+        prefix = clip_model.encode_image(img).to(device, dtype=torch.float32)
+        prefix_embed = caption_model.clip_project(prefix).reshape(1, prefix_length, -1)
+        generated_text_prefix = generate(caption_model, tokenizer2, embed=prefix_embed)
+
+    return {"data":generated_text_prefix}
+
+"""
+input: caption text
+output: chatgpt story
+"""
+@app.post("/stories/gpt")
+async def create_story(text: str):
+    
+    #chatgpt query
+    query = f"{text}로 동화를 만들어줘"
+    
+    #chatgpt request
+    completion = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "user", "content": query}
+    ]
+    )
+    
+    #chatgpt response
+    return completion.choices[0].message

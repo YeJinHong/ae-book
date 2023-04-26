@@ -12,13 +12,38 @@ spring:
         format_sql: true # JPA의 구현체인 Hibernate가 동작하면서 발생한 SQL의 가독성을 높여준다.
     open-in-view: false
 
+  data:
+    redis:
+      host: # 운영 redis 적어야 함
+      port: 6379
+
+
 server:
   port: 8082
   servlet:
-    context-path: /
+    context-path: /api
 
 logging:
   level:
     web: INFO
     com: INFO
     root: INFO
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+    display-request-duration: true
+    tags-sorter: alpha
+    operations-sorter: alpha
+    doc-expansion: none
+    syntax-highlight:
+      theme: nord
+    urls-primary-name: TEST API
+    persist-authorization: false
+    query-config-enabled: true
+  pre-loading-enabled: true
+  packages-to-scan: com.c201.book
+
