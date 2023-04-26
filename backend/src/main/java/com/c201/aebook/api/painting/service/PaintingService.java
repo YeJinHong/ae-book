@@ -15,7 +15,7 @@ public interface PaintingService {
 
 	public void deletePainting(Long paintingId, Long userId);
 
-	public String downloadPainting(Long paintingId, Long userId);
+	public String getFilePath(Long paintingId, Long userId);
 
 	public PaintingResponseDTO updatePaintingTitle(PaintingPatchSO paintingPatchSO);
 

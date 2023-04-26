@@ -86,7 +86,7 @@ public class PaintingController {
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) throws IOException {
 		Long userId = Long.parseLong(customUserDetails.getUsername());
-		String filePath = paintingService.downloadPainting(paintingId, userId);
+		String filePath = paintingService.getFilePath(paintingId, userId);
 		return s3Downloader.download(filePath);
 	}
 
@@ -97,6 +97,8 @@ public class PaintingController {
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
 		Long userId = Long.parseLong(customUserDetails.getUsername());
+		String filePath = paintingService.getFilePath(paintingId, userId);
+		s3Downloader.delete(filePath);
 		paintingService.deletePainting(paintingId, userId);
 		return new BaseResponse<>(paintingId, HttpStatus.OK.value(), ApplicationConstants.SUCCESS);
 	}

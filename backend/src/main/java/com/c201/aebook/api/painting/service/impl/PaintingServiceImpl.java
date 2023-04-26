@@ -55,7 +55,7 @@ public class PaintingServiceImpl implements PaintingService {
 	}
 
 	@Override
-	public String downloadPainting(Long paintingId, Long userId) {
+	public String getFilePath(Long paintingId, Long userId) {
 		PaintingEntity paintingEntity = getOwnPainting(userId, paintingId);
 		return paintingEntity.getFileUrl().substring(53);
 	}
