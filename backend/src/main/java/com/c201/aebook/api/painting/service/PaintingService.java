@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.c201.aebook.api.painting.persistence.entity.PaintingType;
 import com.c201.aebook.api.painting.presentation.dto.response.PaintingResponseDTO;
+import com.c201.aebook.api.vo.PaintingPatchSO;
 import com.c201.aebook.api.vo.PaintingSO;
 
 public interface PaintingService {
@@ -15,4 +16,6 @@ public interface PaintingService {
 	public void deletePainting(Long paintingId, Long userId);
 
 	public String downloadPainting(Long paintingId, Long userId);
+
+	public void updatePaintingTitle(PaintingPatchSO paintingPatchSO);
 }

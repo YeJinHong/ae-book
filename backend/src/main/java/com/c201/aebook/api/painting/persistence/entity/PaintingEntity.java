@@ -50,4 +50,8 @@ public class PaintingEntity extends BaseEntity {
 		this.user = user;
 		this.type = type;
 	}
+
+	public void updatePainting(String title) {
+		this.title = title;
+	}
 }

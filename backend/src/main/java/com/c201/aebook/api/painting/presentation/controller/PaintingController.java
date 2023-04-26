@@ -12,8 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,9 +25,11 @@ import com.c201.aebook.api.common.BaseResponse;
 import com.c201.aebook.api.common.constants.ApplicationConstants;
 import com.c201.aebook.api.painting.persistence.entity.PaintingType;
 import com.c201.aebook.api.painting.presentation.dto.request.PaintingRequestDTO;
+import com.c201.aebook.api.painting.presentation.dto.request.PaintingTitleRequestDTO;
 import com.c201.aebook.api.painting.presentation.dto.response.PaintingResponseDTO;
 import com.c201.aebook.api.painting.presentation.validator.PaintingValidator;
 import com.c201.aebook.api.painting.service.impl.PaintingServiceImpl;
+import com.c201.aebook.api.vo.PaintingPatchSO;
 import com.c201.aebook.api.vo.PaintingSO;
 import com.c201.aebook.auth.CustomUserDetails;
 import com.c201.aebook.converter.PaintingConverter;
@@ -94,10 +98,30 @@ public class PaintingController {
 	) {
 		Long userId = Long.parseLong(customUserDetails.getUsername());
 		paintingService.deletePainting(paintingId, userId);
-		return new BaseResponse<>(null, 200, ApplicationConstants.SUCCESS);
+		return new BaseResponse<>(null, HttpStatus.OK.value(), ApplicationConstants.SUCCESS);
 	}
 
-	// TODO : updatePaintingTitle
+	@Operation(summary = "그림 제목 수정", description = "특정 그림의 제목을 수정합니다.")
+	@PatchMapping(
+		path = "/{paintingId}",
+		consumes = MediaType.APPLICATION_JSON_VALUE
+	)
+	public BaseResponse<?> updatePaintingTitle(
+		@PathVariable(name = "paintingId") Long paintingId,
+		@RequestBody PaintingTitleRequestDTO paintingTitleRequestDTO,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails
+	) {
+		Long userId = Long.parseLong(customUserDetails.getUsername());
+		// DTO NOT NULL 검증
+		paintingValidator.validatePaintingTitleRequestDTO(paintingTitleRequestDTO);
+		PaintingPatchSO paintingPatchSO = paintingConverter.toPaintingPatchSO(paintingId, userId,
+			paintingTitleRequestDTO);
+		// 그림 제목 수정
+		paintingService.updatePaintingTitle(paintingPatchSO);
+
+		return new BaseResponse<>(null, HttpStatus.OK.value(), ApplicationConstants.SUCCESS);
+	}
+
 	// TODO : getPaintingDetails
 	@Operation(summary = "로그인한 유저의 그림 리스트", description = "로그인한 유저의 그림 리스트를 반환합니다.")
 	@GetMapping("/{type}")
