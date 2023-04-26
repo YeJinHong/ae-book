@@ -11,4 +11,6 @@ public interface PaintingService {
 	public void savePainting(PaintingSO paintingSO);
 
 	public Page<PaintingResponseDTO> getPaintingList(Long userId, PaintingType type, Pageable pageable);
+
+	public void deletePainting(Long paintingId, Long userId);
 }
