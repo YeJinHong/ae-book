@@ -61,12 +61,13 @@ public class PaintingServiceImpl implements PaintingService {
 	}
 
 	@Override
-	public void updatePaintingTitle(PaintingPatchSO paintingPatchSO) {
+	public PaintingResponseDTO updatePaintingTitle(PaintingPatchSO paintingPatchSO) {
 		PaintingEntity paintingEntity = getOwnPainting(paintingPatchSO.getUserId(),
 			paintingPatchSO.getPaintingId());
 		paintingEntity.updatePainting(paintingPatchSO.getTitle());
-
 		paintingRepository.save(paintingEntity);
+		PaintingResponseDTO paintingResponseDTO = paintingConverter.toPaintingResponseDTO(paintingEntity);
+		return paintingResponseDTO;
 	}
 
 	@Override
