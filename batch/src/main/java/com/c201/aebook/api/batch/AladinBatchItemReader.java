@@ -99,7 +99,6 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 				.queryParam("SubSearchTarget", SUB_SEARCH_TARGET)
 				.queryParam("OptResult", "usedList")
 				.queryParam("Output", outputType);
-			
 
 			NodeList itemNodes = getItemElementByUrl(builder);
 
@@ -232,6 +231,7 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 		IOException,
 		SAXException,
 		ParserConfigurationException {
+
 		ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, null,
 			String.class);
 		String responseBody = response.getBody();
@@ -270,7 +270,8 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 	}
 
 	private String getChildText(Node itemNode, String tagName) {
-		if(itemNode == null) return null;
+		if (itemNode == null)
+			return null;
 
 		NodeList nodeList = itemNode.getChildNodes();
 		for (int i = 0; i < nodeList.getLength(); i++) {
