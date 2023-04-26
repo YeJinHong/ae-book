@@ -13,10 +13,6 @@ import com.c201.aebook.api.batch.AladinBatchItemReader;
 @SpringBootApplication
 public class AebookApplication {
 
-	static {
-		System.setProperty("com.amazonaws.sdk.disableEc2Metadata", "true");
-	}
-
 	public static void main(String[] args) {
 		SpringApplication.run(AebookApplication.class, args);
 	}
