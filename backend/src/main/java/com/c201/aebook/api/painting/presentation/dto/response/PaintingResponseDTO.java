@@ -13,6 +13,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class PaintingResponseDTO {
+	@Schema(description = "그림 ID", defaultValue = "1")
+	private Long id;
 	@Schema(description = "그림 제목", defaultValue = "내가 그린 공룡 그림")
 	private String title;
 
@@ -21,8 +23,8 @@ public class PaintingResponseDTO {
 	@Schema(description = "그림 타입", defaultValue = "COLOR")
 	private PaintingType type;
 	@Schema(description = "그림 저장 시각", defaultValue = "2023-04-14 10:30:15")
-	private LocalDateTime createAt;
+	private LocalDateTime createdAt;
 
 	@Schema(description = "그림 제목 수정 시각", defaultValue = "2023-04-17 10:30:15")
-	private LocalDateTime updateAt;
+	private LocalDateTime updatedAt;
 }
