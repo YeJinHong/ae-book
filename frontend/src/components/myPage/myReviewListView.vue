@@ -5,8 +5,7 @@
 </template>
 
 <script>
-import http from '@/util/http-common'
-// import axios from 'axios'
+import axios from 'axios'
 
 export default {
   name: 'MyReviewListView',
@@ -30,7 +29,7 @@ export default {
       // console.log(res)
 
       console.log('getMyReviewList')
-      http.get(`/reviews?page=${this.page}&size=${this.size}&sort=${this.sort}`).then((result) => {
+      axios.get(`/reviews?page=${this.page}&size=${this.size}&sort=${this.sort}`).then((result) => {
         console.log(result)
       }).catch((err) => {
         console.log(err)

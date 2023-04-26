@@ -5,7 +5,8 @@
 </template>
 
 <script>
-import http from '@/util/http-common'
+import axios from 'axios'
+
 export default {
   name: 'BookSearchView',
   data () {
@@ -15,7 +16,7 @@ export default {
   },
   methods: {
     getBookReviewList () {
-      http.get(`/reviews/${this.isbn}`).then((result) => {
+      axios.get(`/api/reviews/${this.isbn}`).then((result) => {
         console.log(result)
       }).catch((err) => {
         console.log(err)
