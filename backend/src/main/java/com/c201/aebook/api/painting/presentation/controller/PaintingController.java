@@ -122,9 +122,20 @@ public class PaintingController {
 		return new BaseResponse<>(null, HttpStatus.OK.value(), ApplicationConstants.SUCCESS);
 	}
 
-	// TODO : getPaintingDetails
+	@Operation(summary = "특정 그림 조회", description = "특정 그림 상세 정보를 반환합니다.")
+	@GetMapping("/{paintingId}")
+	public BaseResponse<?> getPaintingDetails(
+		@PathVariable(name = "paintingId") Long paintingId,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails
+	) {
+		Long userId = Long.parseLong(customUserDetails.getUsername());
+		PaintingResponseDTO painting = paintingService.getPaintingDetails(userId, paintingId);
+
+		return new BaseResponse<>(painting, HttpStatus.OK.value(), ApplicationConstants.SUCCESS);
+	}
+
 	@Operation(summary = "로그인한 유저의 그림 리스트", description = "로그인한 유저의 그림 리스트를 반환합니다.")
-	@GetMapping("/{type}")
+	@GetMapping("/list/{type}")
 	public BaseResponse<?> getPaintingList(
 		@PathVariable(name = "type") PaintingType type,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails,
