@@ -26,11 +26,12 @@ public class AladinBatchItemWriter implements ItemWriter<BookEntity> {
 		for(BookEntity item : items){
 			Optional<BookEntity> book = bookRepository.findById(item.getId());
 			if(book.isPresent()){
-				//가격만 갱신
+				//기존 db 가격과 비교하여 최저가인 경우 가격만 갱신
 				BookEntity updateBook = book.get();
-				updateBook.setPrice(item.getPrice());
-
-				bookRepository.save(updateBook);
+				if(item.getPrice() < updateBook.getPrice()){
+					updateBook.setPrice(item.getPrice());
+					bookRepository.save(updateBook);
+				}
 			}else{
 				bookRepository.save(item);
 			}

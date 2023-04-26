@@ -49,7 +49,7 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 	@Value("${aladin.api.key}")
 	private String API_KEY;
 	private int nextIndex = 0;
-	private List<BookEntity> bookList;
+	private List<BookEntity> bookList = new ArrayList<>();
 
 	@Autowired
 	public AladinBatchItemReader(RestTemplate restTemplate) {
@@ -62,7 +62,7 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 	@Override
 	public BookEntity read() {
 
-		if (bookList == null) {
+		if (bookList.size() == 0) {
 			try {
 				bookList = getDataFromApi();
 				log.info("list size=" + bookList.size());
@@ -99,6 +99,7 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 				.queryParam("SubSearchTarget", SUB_SEARCH_TARGET)
 				.queryParam("OptResult", "usedList")
 				.queryParam("Output", outputType);
+			
 
 			NodeList itemNodes = getItemElementByUrl(builder);
 
@@ -269,6 +270,8 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 	}
 
 	private String getChildText(Node itemNode, String tagName) {
+		if(itemNode == null) return null;
+
 		NodeList nodeList = itemNode.getChildNodes();
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			Node node = nodeList.item(i);
