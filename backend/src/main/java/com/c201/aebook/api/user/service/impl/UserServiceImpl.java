@@ -61,6 +61,6 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         // 2. 사용자 탈퇴처리(카카오 아이디와 전화번호는 null로 변경, 닉네임은 '탈퇴한 사용자'로 변경, status는 0으로 변경)
-        user.deleteUserEntity(null, null, "탈퇴한 사용자", 0);
+        user.invalidateUserEntity(null, null, "탈퇴한 사용자", 0);
     }
 }
