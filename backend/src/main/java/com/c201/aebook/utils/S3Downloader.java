@@ -9,11 +9,16 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
+import com.c201.aebook.api.common.BaseResponse;
+import com.c201.aebook.api.common.constants.ApplicationConstants;
 
 import io.jsonwebtoken.io.IOException;
 import lombok.RequiredArgsConstructor;
@@ -58,6 +63,19 @@ public class S3Downloader {
 			default:
 				return MediaType.APPLICATION_OCTET_STREAM;
 		}
+	}
+
+	public BaseResponse<?> delete(String filePath) {
+		try {
+			amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, filePath));
+		} catch (AmazonServiceException e) {
+			return new BaseResponse<>("AmazonServiceException", HttpStatus.INTERNAL_SERVER_ERROR.value(),
+				ApplicationConstants.FAIL);
+		} catch (SdkClientException e) {
+			return new BaseResponse<>("SdkClientException", HttpStatus.INTERNAL_SERVER_ERROR.value(),
+				ApplicationConstants.FAIL);
+		}
+		return new BaseResponse<>("SUCCESS", HttpStatus.OK.value(), ApplicationConstants.SUCCESS);
 	}
 
 }
