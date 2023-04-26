@@ -8,6 +8,8 @@ import com.c201.aebook.api.vo.UserSO;
 import com.c201.aebook.auth.CustomUserDetails;
 import com.c201.aebook.converter.UserConverter;
 import com.c201.aebook.utils.S3Uploader;
+import com.c201.aebook.utils.exception.CustomException;
+import com.c201.aebook.utils.exception.ErrorCode;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -69,6 +71,22 @@ public class UserController {
         UserResponseDTO userResponseDTO = userService.updateUserInfo(userId, userSO);
 
         return new BaseResponse<>(userResponseDTO, HttpStatus.OK.value(), "사용자 정보 변경");
+    }
+
+    @Operation(summary = "사용자 탈퇴", description = "사용자가 탈퇴합니다.")
+    @DeleteMapping()
+    public BaseResponse<?> deleteUserInfo(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
+        // token 정보가 없을 경우 에러 반환
+        if(customUserDetails == null) {
+            throw new CustomException(ErrorCode.INVALID_CLIENT_TOKEN);
+        }
+
+        Long userId = Long.parseLong(customUserDetails.getUsername());
+        userService.deleteUserInfo(userId);
+
+        return new BaseResponse<>(null, HttpStatus.OK.value(), "탈퇴 완료");
     }
 
 
