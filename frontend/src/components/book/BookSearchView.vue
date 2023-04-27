@@ -1,6 +1,23 @@
 <template>
   <div class="container">책 검색
-    <button @click="getBookReviewList">특정 도서의 서평 리스트</button>
+    <input type="text" v-model="keyword">
+    <input type="checkbox" v-model="searchTargets" value="TITLE" checked>제목
+    <input type="checkbox" v-model="searchTargets" value="AUTHOR" checked>지은이
+    <input type="checkbox" v-model="searchTargets" value="PUBLISHER" checked>출판사
+    <button @click="getSearchList">검색</button>
+    <div>
+      <div
+        class="list-group-item"
+        v-for="book in bookList"
+        :key="book.isbn"
+      >
+      <img v-bind:src="book.coverImageUrl" class="book-image" />
+      {{ book.title }}
+      현재 최저가 {{ book.price }}원
+      {{ book.author }} | {{ book.publisher }} | {{ book.publishDate }}
+      <button type="button" @click="onClickRedirect(book.aladinUrl)">구매하러가기</button>
+    </div>
+  </div>
   </div>
 </template>
 
@@ -11,16 +28,21 @@ export default {
   name: 'BookSearchView',
   data () {
     return {
-      isbn: '9788932916378'
+      keyword: '',
+      searchTargets: [],
+      bookList: []
     }
   },
   methods: {
-    getBookReviewList () {
-      axios.get(`/api/reviews/${this.isbn}`).then((result) => {
-        console.log(result)
+    getSearchList () {
+      axios.get(`/api/books?keyword=${this.keyword}&searchTargets=${this.searchTargets}`).then((result) => {
+        this.bookList = result.data.result.content
       }).catch((err) => {
         console.log(err)
       })
+    },
+    onClickRedirect (url) {
+      window.open(url, 'blank')
     }
   }
 }
@@ -29,5 +51,9 @@ export default {
 <style scoped>
 .container {
   padding: 0 100px;
+}
+
+.book-image {
+  width: 160px;
 }
 </style>
