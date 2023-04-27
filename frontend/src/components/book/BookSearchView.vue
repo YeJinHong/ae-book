@@ -11,7 +11,9 @@
         v-for="book in bookList"
         :key="book.isbn"
       >
-      <img v-bind:src="book.coverImageUrl" class="book-image" />
+      <router-link :to="{ name: 'BookDetail', params: { isbn: book.isbn } }">
+        <img v-bind:src="book.coverImageUrl" class="book-image" />
+      </router-link>
       {{ book.title }}
       현재 최저가 {{ book.price }}원
       {{ book.author }} | {{ book.publisher }} | {{ book.publishDate }}

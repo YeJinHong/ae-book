@@ -47,6 +47,12 @@ export default new Router({
           path: 'searchbypicture',
           name: 'BookSearchByPicture',
           component: () => import('@/components/book/BookSearchByPictureView')
+        },
+        {
+          path: 'detail/:isbn',
+          name: 'BookDetail',
+          component: () => import('@/components/book/BookDetailView'),
+          props: true
         }
       ]
     },
