@@ -14,10 +14,6 @@
 import axios from 'axios'
 import HeaderNavbarMain from '@/components/HeaderNavbarMain'
 
-// 로그인 기능 생성 전 테스트용 토큰
-localStorage.setItem('accessToken', 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2IiwiZXhwIjoxNjgzMDc4OTM2fQ.SrAoFJY5peY6zNeGx7IHN2dqkQNztNKWleraEorOwDR1iERuHZxLQkpezcTZDxS4sHnO5sO4vDWpWQtu5himvA')
-localStorage.setItem('refreshToken', 'eyJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2ODM2ODM3MzZ9.aZ7Y-HjrOIVKOvjG_FXLiqQA_kElZ0Z4l9OPnoV_YwrTH_4oSAwo9ldw4ut0JbDYgB_mpGCuafLTdW6SK3aQTQ')
-
 export default {
   name: 'AppMain',
   components: {
@@ -25,7 +21,7 @@ export default {
   },
   methods: {
     getLatestReviewList () {
-      axios.get(`/reviews/latest`).then((result) => {
+      axios.get(`/api/reviews/latest`).then((result) => {
         console.log(result)
       }).catch((err) => {
         console.log(err)
