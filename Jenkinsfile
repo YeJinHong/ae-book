@@ -19,7 +19,7 @@ pipeline
 			steps {
 				echo 'Environment Settings Start'
 				sh 'docker-compose -f env-config/docker-compose-env.yml down'
-				sh 'docker-compose -f env-config/docker-compose-env.yml up -d'
+				sh 'docker-compose -f --env-file=./.env env-config/docker-compose-env.yml up -d'
 				echo 'Environment Settings End'
 			}
 		}
