@@ -19,4 +19,6 @@ config/dev.env.js
 *.njsproj
 *.sln
 package-lock.json
+frontend/config/dev.env.js
 .env
+
