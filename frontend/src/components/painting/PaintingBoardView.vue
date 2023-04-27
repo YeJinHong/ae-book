@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <input type="text" placeholder="제목을 입력하셔요" v-model="title">
     <canvas id="canvas"
       ref="canvas"
       @mousemove="onMove"
@@ -35,12 +36,13 @@
     </div>
     <div>
       <button>종료</button>
-      <button>저장</button>
+      <button @click="onSaveClick">저장</button>
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
 
 export default {
   name: 'PaintingBoardView',
@@ -51,7 +53,8 @@ export default {
       isPainting: false,
       mode: 'brush',
       colorOptions1: ['#ff0000', '#ff8c00', '#ffff00', '#008000'],
-      colorOptions2: ['#0000ff', '#800080', '#000080', '#000000']
+      colorOptions2: ['#0000ff', '#800080', '#000080', '#000000'],
+      title: ''
     }
   },
   mounted () {
@@ -97,6 +100,52 @@ export default {
     onResetClick () {
       this.ctx.clearRect(0, 0, 800, 500)
       this.ctx.beginPath()
+    },
+    dataURLtoBlob (dataURL) {
+      // data:image/png;base64,iVBORw0KGgo...
+      // base64 데이터 디코딩
+      const byteString = atob(dataURL.split(',')[1])
+
+      const ab = new ArrayBuffer(byteString.length)
+      const ia = new Uint8Array(ab)
+      for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i)
+      }
+      return new Blob([ab], {type: 'image/png'})
+    },
+    onSaveClick () {
+      // canvas 그림 -> dataURL
+      const paintingFile = this.canvas.toDataURL()
+      // dataURL -> blob
+      var blob = this.dataURLtoBlob(paintingFile)
+      // 이미지 이름이 겹치지 않도록 현재 시간을 구한다.
+      const timestamp = Date.now()
+      // blob -> file
+      var file = new File([blob], `painting_${timestamp}.png`)
+
+      const formData = new FormData()
+      formData.append('paintingFile', file)
+      const request = {
+        title: this.title,
+        type: 'COLOR'
+      }
+
+      formData.append('data', new Blob([JSON.stringify(request)], {type: 'application/json'}))
+
+      axios.post('/api/paintings', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2IiwiZXhwIjoxNjgzMDA0MTUyfQ._ASkNE7_635FluEbf5wGQL8JPUwjbUuxilgWTUNzob4Rz5XKfWX1JdPllkMNQe7dyKBwxarfAERxChze6zy8_g'
+        }
+      })
+        .then(response => {
+          alert('저장에 성공했습니다.')
+          console.log(response)
+        })
+        .catch(error => {
+          alert('저장에 실패했습니다.')
+          console.error(error)
+        })
     }
   }
 }
