@@ -1,4 +1,4 @@
-import { searchByISBN } from '@/api/book';
+import { searchByISBN } from '@/api/book'
 
 const bookStore = {
   namespaced: true,
@@ -13,10 +13,10 @@ const bookStore = {
   */
   getters: {
     getBook: state => {
-      return state.book;
+      return state.book
     },
     getBookList: state => {
-      return state.bookList;
+      return state.bookList
     }
   },
   /*
@@ -25,10 +25,10 @@ const bookStore = {
   */
   mutations: {
     SET_BOOK: (state, data) => {
-      state.book = data;
+      state.book = data
     },
     SET_BOOK_LIST: (state, data) => {
-      state.bookList = data;
+      state.bookList = data
     }
   },
   /*
@@ -39,14 +39,14 @@ const bookStore = {
     getBookDetail ({ commit }, isbn) {
       searchByISBN(isbn)
         .then(({ data }) => {
-          commit('SET_BOOK', data.result);
-          console.log(data.result);
+          commit('SET_BOOK', data.result)
+          console.log(data.result)
         })
         .catch(error => {
-          console.log(error);
-        });
+          console.log(error)
+        })
     }
   }
-};
+}
 
-export default bookStore;
+export default bookStore
