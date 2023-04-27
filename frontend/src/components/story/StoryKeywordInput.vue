@@ -2,7 +2,8 @@
   <div>
     <input type="text" v-model="inputValue" />
     <button @click="sendInputValue">전송</button>
-    <StoryChatGptView :storyResult="storyResult"></StoryChatGptView>
+    <div>{{storyResult}}</div>
+    <!-- <StoryChatGptView :storyResult="storyResult"></StoryChatGptView> -->
   </div>
 </template>
 
