@@ -8,7 +8,8 @@
     <router-link :to="{ name: 'ReviewCreate'}">
       create
     </router-link>
-    <router-link :to="{ name: 'ReviewDetail'}">
+    <!-- <router-link :to="{ name: 'ReviewDetail', params: { reviewId: review.reviewId}}"> -->
+    <router-link :to="{ name: 'ReviewDetail', params: { reviewId: 1} }">
       detail
     </router-link>
     <router-link :to="{ name: 'ReviewModify'}">
