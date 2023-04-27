@@ -1,0 +1,27 @@
+<template>
+  <div>
+    <header-navbar></header-navbar>
+    <div>This is User(login)</div>
+    <login></login>
+    <oauth></oauth>
+  </div>
+</template>
+
+<script>
+import HeaderNavbar from '../components/HeaderNavbar.vue'
+import Login from '../components/user/Login.vue'
+import Oauth from '../components/user/Oauth.vue'
+
+export default {
+  name: 'AppMyPage',
+  components: {
+    HeaderNavbar,
+    Login,
+    Oauth
+  }
+}
+</script>
+
+<style>
+
+</style>
