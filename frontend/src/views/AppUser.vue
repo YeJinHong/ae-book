@@ -12,7 +12,7 @@ import Login from '../components/user/Login.vue'
 import Oauth from '../components/user/Oauth.vue'
 
 export default {
-  name: 'AppMyPage',
+  name: 'AppUser',
   components: {
     HeaderNavbar,
     Login,
