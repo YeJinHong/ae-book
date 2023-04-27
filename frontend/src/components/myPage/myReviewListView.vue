@@ -6,13 +6,7 @@
 </template>
 
 <script>
-// import axios from 'axios'
 import api from '@/api/auth'
-
-// 로그인 완성 전 테스트 토큰
-// 희주 계정임 ㅎㅎ;;
-localStorage.setItem('accessToken', 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzIiwiZXhwIjoxNjgzMTMyMzYzfQ.WPLUo-Z_VA76PZQuI2q0xweAeysV22810zmkwXS_ZOrfa7YCgFPeqLkTkSClKjkGy8jWmflUXg_cCsPGQ4q-qQ')
-localStorage.setItem('refreshToken', 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2ODM3MzcxNjN9.CRd4wSz32lYp7qee7vVqEBrnO_aZNYvzWzrcniw9BxJrwAqkmdk61Cc_xAKkqjU7f9Zb0hiimc17QqMwCGDW4g')
 
 export default {
   name: 'MyReviewListView',
