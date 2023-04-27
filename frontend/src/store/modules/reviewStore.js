@@ -1,4 +1,4 @@
-import { getReview } from '../../api/review'
+import { getReview, getLatestReviewList } from '../../api/review'
 
 const reviewStore = {
   namespaced: true,
@@ -20,7 +20,7 @@ const reviewStore = {
     getMainReviewList: state => {
       return state.mainReviewList
     },
-    getMYReviewList: state => {
+    getMyReviewList: state => {
       return state.myReviewList
     },
     getBookReviewList: state => {
@@ -56,6 +56,15 @@ const reviewStore = {
         .then(({data}) => {
           commit('SET_REVIEW', data.result)
           console.log(data.result)
+        }).catch((err) => {
+          console.log(err)
+        })
+    },
+    getMainReviewListAction ({ commit }) {
+      getLatestReviewList()
+        .then(({data}) => {
+          commit('SET_MAIN_REVIEW_LIST', data.result)
+          console.log('MAIN_REVIEW_LIST : ' + data.result)
         }).catch((err) => {
           console.log(err)
         })
