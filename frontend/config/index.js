@@ -21,7 +21,16 @@ module.exports = {
         pathRewrite: {
           '^/api': ''
         }
+      },
+
+      '/fast' : {
+        target:'http://localhost:8000',
+        changeOrigin:true,
+        pathRewrite:{
+          '^/fast':''
+        }
       }
+
     },
 
     // Various Dev Server settings
