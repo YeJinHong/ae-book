@@ -1,4 +1,4 @@
-import { getReview, getLatestReviewList } from '../../api/review'
+import { getReview, getLatestReviewList, getBookReviewList } from '../../api/review'
 
 const reviewStore = {
   namespaced: true,
@@ -65,6 +65,15 @@ const reviewStore = {
         .then(({data}) => {
           commit('SET_MAIN_REVIEW_LIST', data.result)
           console.log('MAIN_REVIEW_LIST : ' + data.result)
+        }).catch((err) => {
+          console.log(err)
+        })
+    },
+    getBookReviewListAction ({ commit }, isbn) {
+      getBookReviewList(isbn)
+        .then(({data}) => {
+          commit('SET_BOOK_REVIEW_LIST', data.result)
+          console.log('BOOK_REVIEW_LIST :' + data.result)
         }).catch((err) => {
           console.log(err)
         })

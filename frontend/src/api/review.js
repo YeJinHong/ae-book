@@ -16,6 +16,7 @@ const modifyReview = reviewId => api.patch(`/api/reviews/${reviewId}`)
 const getLatestReviewList = () => axios.get(`/api/reviews/latest`)
 
 // 6. 특정 도서의 서평 리스트 by ISBN
+const getBookReviewList = isbn => axios.get(`/api/reviews/${isbn}`)
 
 // 7. 로그인한 사용자의 서평 리스트
 
@@ -23,4 +24,4 @@ const getLatestReviewList = () => axios.get(`/api/reviews/latest`)
  * const searchByISBN = isbn => axios.get(`/api/books/${isbn}`)
  * const requestLogin = (payload) => api.post("/api/users/login", payload);
  */
-export { saveReview, getReview, modifyReview, getLatestReviewList }
+export { saveReview, getReview, modifyReview, getLatestReviewList, getBookReviewList }
