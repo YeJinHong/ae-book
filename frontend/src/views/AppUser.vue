@@ -1,7 +1,6 @@
 <template>
   <div>
     <header-navbar></header-navbar>
-    <div>This is User(login)</div>
     <login></login>
     <oauth></oauth>
   </div>
