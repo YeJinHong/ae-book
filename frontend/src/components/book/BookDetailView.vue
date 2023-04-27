@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex'
 const bookStore = 'bookStore'
 
 export default {
