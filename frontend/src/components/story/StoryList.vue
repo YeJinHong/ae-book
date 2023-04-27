@@ -6,18 +6,16 @@
 import axios from 'axios'
 
 export default {
-
+  headers: {Authorization: accessToken}}
   name: 'StroyList',
-  data () {
+  data(){
     return {
 
     }
   },
   methods: {
-    showList () {
-      axios.get().then()
-    }
-  }
+
+  },
 }
 </script>
 
