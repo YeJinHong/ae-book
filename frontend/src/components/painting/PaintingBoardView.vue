@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <input type="text" v-model="title" placeholder="제목이요">
     <canvas id="canvas"
       ref="canvas"
       @mousemove="onMove"
@@ -35,12 +36,13 @@
     </div>
     <div>
       <button>종료</button>
-      <button>저장</button>
+      <button @click="onSaveClick">저장</button>
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
 
 export default {
   name: 'PaintingBoardView',
@@ -51,7 +53,8 @@ export default {
       isPainting: false,
       mode: 'brush',
       colorOptions1: ['#ff0000', '#ff8c00', '#ffff00', '#008000'],
-      colorOptions2: ['#0000ff', '#800080', '#000080', '#000000']
+      colorOptions2: ['#0000ff', '#800080', '#000080', '#000000'],
+      title: ''
     }
   },
   mounted () {
@@ -97,6 +100,46 @@ export default {
     onResetClick () {
       this.ctx.clearRect(0, 0, 800, 500)
       this.ctx.beginPath()
+    },
+    DataUrlToFile () {
+
+    },
+    onSaveClick () {
+      // canvas -> dataURL
+      let imgBase64 = this.canvas.toDataURL('image/png')
+
+      var byteString = window.atob(imgBase64.split(',')[1])
+      var array = []
+      // unicode로 변환
+      for (var i = 0; i < byteString.length; i++) {
+        array.push(byteString.charCodeAt(i))
+      }
+      // dataURL -> blob
+      let blob = new Blob([new ArrayBuffer(array)], {type: 'image/png'})
+      // blob -> file
+      let paintingFile = new File([blob], 'painting_' + new Date().getMilliseconds() + '.png')
+
+      let data = {
+        title: this.title,
+        type: 'COLOR'
+      }
+
+      let formData = new FormData()
+      formData.append('paintingFile', paintingFile)
+      formData.append('data', new Blob([JSON.stringify(data)], {type: 'application/json'}))
+
+      axios.post('/api/paintings', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2IiwiZXhwIjoxNjgzMDA0MTUyfQ._ASkNE7_635FluEbf5wGQL8JPUwjbUuxilgWTUNzob4Rz5XKfWX1JdPllkMNQe7dyKBwxarfAERxChze6zy8_g'
+        }
+      }).then(({ data }) => {
+        alert('성공')
+      })
+        .catch(error => {
+          alert(error)
+          console.log(error)
+        })
     }
   }
 }
