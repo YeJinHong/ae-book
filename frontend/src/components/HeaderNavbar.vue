@@ -22,12 +22,12 @@
                     </router-link>
                 </b-nav-item>
                 <b-nav-item>
-                    <router-link to="/searchbookbypicture">
+                    <router-link to="/book/searchbypicture">
                             사진으로 책 검색
                     </router-link>
                 </b-nav-item>
                 <b-nav-item>
-                    <router-link to="/searchbook">
+                    <router-link to="/book/search">
                             제목으로 책 검색
                     </router-link>
                 </b-nav-item>
