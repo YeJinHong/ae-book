@@ -60,16 +60,6 @@ const reviewStore = {
           console.log(err)
         })
     }
-    // getBookDetail ({ commit }, isbn) {
-    //   searchByISBN(isbn)
-    //     .then(({ data }) => {
-    //       commit('SET_BOOK', data.result)
-    //       console.log(data.result)
-    //     })
-    //     .catch(error => {
-    //       console.log(error)
-    //     })
-    // }
   }
 }
 
