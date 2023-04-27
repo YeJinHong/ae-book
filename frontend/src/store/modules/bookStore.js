@@ -1,4 +1,4 @@
-import { searchByISBN } from '@/api/book';
+import { searchByISBN, getSearchList } from '@/api/book'
 
 const bookStore = {
   namespaced: true,
@@ -13,10 +13,10 @@ const bookStore = {
   */
   getters: {
     getBook: state => {
-      return state.book;
+      return state.book
     },
     getBookList: state => {
-      return state.bookList;
+      return state.bookList
     }
   },
   /*
@@ -25,10 +25,13 @@ const bookStore = {
   */
   mutations: {
     SET_BOOK: (state, data) => {
-      state.book = data;
+      state.book = data
     },
     SET_BOOK_LIST: (state, data) => {
-      state.bookList = data;
+      state.bookList = data
+    },
+    RESET_BOOK_LIST (state) {
+      state.bookList = []
     }
   },
   /*
@@ -36,17 +39,27 @@ const bookStore = {
   - Actions에서는 비동기적 작업을 Mutations에서는 동기적 작업만을 함.
   */
   actions: {
-    getBookDetail ({ commit }, isbn) {
-      searchByISBN(isbn)
+    async getBookDetail ({ commit }, isbn) {
+      await searchByISBN(isbn)
         .then(({ data }) => {
-          commit('SET_BOOK', data.result);
-          console.log(data.result);
+          commit('SET_BOOK', data.result)
+          console.log(data.result)
         })
         .catch(error => {
-          console.log(error);
-        });
+          console.log(error)
+        })
+    },
+    async getSearchList ({ commit }, request) {
+      await getSearchList(request)
+        .then(({ data }) => {
+          console.log(data.result.content)
+          commit('SET_BOOK_LIST', data.result.content)
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
   }
-};
+}
 
-export default bookStore;
+export default bookStore
