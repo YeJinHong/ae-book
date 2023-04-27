@@ -36,7 +36,7 @@
                 <b-navbar-nav class="ml-auto">
                     <b-nav-form>
                         <!-- TODO : 로그인 모달창 작성 및 연결 -->
-                        <b-button size="sm">로그인</b-button>
+                        <b-button size="sm" @click="login">로그인</b-button>
                     </b-nav-form>
                 </b-navbar-nav>
             </b-collapse>
@@ -47,7 +47,13 @@
 <script>
 // TODO: 메인페이지 Navbar 배치 및 디자인 변경
 export default {
-  name: 'HeaderNavbarMain'
+  name: 'HeaderNavbarMain',
+
+  methods: {
+    login () {
+      this.$router.push({ name: 'Login' })
+    }
+  }
 }
 </script>
 
