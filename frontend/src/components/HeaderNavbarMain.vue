@@ -51,7 +51,6 @@ export default {
 
   methods: {
     login () {
-      console.log('로그인')
       this.$router.push({ name: 'Login' })
     }
   }
