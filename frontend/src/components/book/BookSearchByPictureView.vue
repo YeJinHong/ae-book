@@ -1,6 +1,10 @@
 <template>
-  <div>사진으로 책 검색
-    <!-- <button @click="">사진으로 책 검색</button> -->
+  <div>사진(ISBN)으로 책 검색
+    <input type="text" v-model="isbn">
+    <button @click="searchISBN">검색</button>
+    <div>
+      {{ book.isbn }} | {{ book.title }}
+  </div>
   </div>
 </template>
 
@@ -11,14 +15,15 @@ export default {
   name: 'BookSearchByPictureView',
   data () {
     return {
-      isbn: '9788932916378'
+      isbn: '9788932916483',
+      book: Object
     }
   },
   methods: {
-    // 이거 다른 곳에서도 계속 쓰는거라 .... 흠 어떻게 해야될지 .... ㅠㅅㅠ
-    getBookReviewList () {
-      axios.get(`/api/reviews/${this.isbn}`).then((result) => {
-        console.log(result)
+    searchISBN () {
+      axios.get(`/api/books/${this.isbn}`).then((result) => {
+        this.book = result.data.result
+        console.log(this.book)
       }).catch((err) => {
         console.log(err)
       })
