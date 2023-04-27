@@ -2,16 +2,19 @@
   <div>
   <header-navbar></header-navbar>
   <div> This is Story page</div>
+  <story-keyword-input></story-keyword-input>
 </div>
 </template>
 
 <script>
 import HeaderNavbar from '@/components/HeaderNavbar'
+import StoryKeywordInput from '../components/story/StoryKeywordInput.vue'
 
 export default {
   name: 'AppStory',
   components: {
-    HeaderNavbar
+    HeaderNavbar,
+    StoryKeywordInput
   }
 }
 
