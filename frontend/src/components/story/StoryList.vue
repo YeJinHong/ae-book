@@ -3,22 +3,31 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { searchStory } from '@/api/story'
 
 export default {
-  headers: {Authorization: accessToken}}
   name: 'StroyList',
-  data(){
+  data () {
     return {
-
+      page: {
+        page: 0,
+        size: 1,
+        sort: ['']
+      },
+      storyList: []
     }
   },
-  methods: {
-
-  },
+  mounted () {
+    searchStory(this.page)
+      .then(response => {
+        this.storyList = response.data
+        console.log(this.storyList)
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }
 }
 </script>
 
-<style>
-
-</style>
+<style></style>
