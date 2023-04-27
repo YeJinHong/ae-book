@@ -1,6 +1,6 @@
 <template>
   <div>
-    <input type="text" v-model="inputValue">
+    <input type="text" v-model="inputValue" />
     <button @click="sendInputValue">전송</button>
     <StoryChatGptView :storyResult="storyResult"></StoryChatGptView>
   </div>
@@ -17,17 +17,20 @@ export default {
   data () {
     return {
       inputValue: '',
-      storyResult: String
+      storyResult: ''
     }
   },
   methods: {
     sendInputValue () {
-      axios.post(`/stories/gpt`, {value: this.inputValue}).then((result) => {
-        console.log(result)
-        this.storyResult = result
-      }).catch((err) => {
-        console.log(err)
-      })
+      axios
+        .post(`/stories/gpt`, { value: this.inputValue })
+        .then(result => {
+          console.log(result)
+          this.storyResult = result.data
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
   }
 }
