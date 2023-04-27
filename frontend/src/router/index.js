@@ -6,6 +6,7 @@ import AppPainting from '@/views/AppPainting'
 import AppBook from '@/views/AppBook'
 import AppMyPage from '@/views/AppMyPage'
 import AppUser from '@/views/AppUser'
+import AppReview from '@/views/AppReview'
 
 Vue.use(Router)
 
@@ -48,6 +49,12 @@ export default new Router({
           path: 'searchbypicture',
           name: 'BookSearchByPicture',
           component: () => import('@/components/book/BookSearchByPictureView')
+        },
+        {
+          path: 'detail/:isbn',
+          name: 'BookDetail',
+          component: () => import('@/components/book/BookDetailView'),
+          props: true
         }
       ]
     },
@@ -80,6 +87,28 @@ export default new Router({
         }
       ]
 
+    },
+    {
+      path: '/review',
+      name: 'Review',
+      component: AppReview,
+      children: [
+        {
+          path: 'create',
+          name: 'ReviewCreate',
+          component: () => import('@/components/review/ReviewCreateView')
+        },
+        {
+          path: 'detail',
+          name: 'ReviewDetail',
+          component: () => import('@/components/review/ReviewDetailView')
+        },
+        {
+          path: 'modify',
+          name: 'ReviewModify',
+          component: () => import('@/components/review/ReviewModifyView')
+        }
+      ]
     }
   ]
 })

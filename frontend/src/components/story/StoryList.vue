@@ -3,8 +3,10 @@
 </template>
 
 <script>
+import axios from 'axios'
 
 export default {
+
   name: 'StroyList',
   data () {
     return {
@@ -13,7 +15,7 @@ export default {
   },
   methods: {
     showList () {
-
+      axios.get().then()
     }
   }
 }
