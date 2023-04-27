@@ -1,12 +1,13 @@
 import axios from 'axios'
 
 /*
- * 나도 뭐가 뭔지 모름 ...
+ * 나도 뭐가 뭔지 모름 ...]
+ * 암튼 로컬 스토리지에 accessToken, refreshToken 둘 다 있어야함 !!
  * 토큰 만료시 재발행
  * axios 인스턴스 생성
  */
 const api = axios.create({
-  baseURL: 'http://localhost:8082'
+  baseURL: 'http://localhost:3000'
 })
 
 // 요청 인터셉터 설정
@@ -15,6 +16,7 @@ api.interceptors.request.use(
     // 요청이 전달되기 전에 작업 수행
     const accessToken = localStorage.getItem('accessToken')
     const refreshToken = localStorage.getItem('refreshToken')
+
     if (accessToken && refreshToken) {
       config.headers['Authorization'] = accessToken
       config.headers['refresh'] = refreshToken
