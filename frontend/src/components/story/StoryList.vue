@@ -10,9 +10,9 @@ export default {
   data () {
     return {
       page: {
-        page: 0,
-        size: 1,
-        sort: ['']
+        page: 1,
+        size: 8,
+        sort: 'id'
       },
       storyList: []
     }
