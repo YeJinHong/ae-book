@@ -5,6 +5,7 @@ import AppStory from '@/views/AppStory'
 import AppPainting from '@/views/AppPainting'
 import AppBook from '@/views/AppBook'
 import AppMyPage from '@/views/AppMyPage'
+import AppUser from '@/views/AppUser'
 
 Vue.use(Router)
 
@@ -61,6 +62,24 @@ export default new Router({
           component: () => import('@/components/myPage/MyReviewListView')
         }
       ]
+    },
+    {
+      path: '/user',
+      name: 'User',
+      component: AppUser,
+      children: [
+        {
+          path: 'login',
+          name: 'Login',
+          component: () => import('@/components/user/Login')
+        },
+        {
+          path: 'oauth',
+          name: 'Oauth',
+          component: () => import('@/components/user/Oauth')
+        }
+      ]
+
     }
   ]
 })
