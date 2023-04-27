@@ -7,20 +7,20 @@
     <!-- TODO : 최근 리뷰 컨텐츠 케러셀 컴포넌트 -->
     <button @click="getLatestReviewList">최신 리뷰 리스트</button>
     <!-- TODO : 우리 아이들 작품(만든 동화) 리스트 컴포넌트 -->
-    <footer-info></footer-info>
+    <the-footer></the-footer>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
 import HeaderNavbarMain from '@/components/HeaderNavbarMain'
-import FooterInfo from '@/components/FooterInfo'
+import TheFooter from '@/components/TheFooter'
 
 export default {
   name: 'AppMain',
   components: {
     HeaderNavbarMain,
-    FooterInfo
+    TheFooter
   },
   methods: {
     getLatestReviewList () {
