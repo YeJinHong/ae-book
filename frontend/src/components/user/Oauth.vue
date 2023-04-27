@@ -6,6 +6,10 @@
 
 <script>
 import axios from 'axios'
+
+// import { mapState, mapActions } from 'vuex'
+// const userStore = 'userStore'
+
 export default {
   name: 'oauth',
   data () {
@@ -35,6 +39,16 @@ export default {
       })
     }
   }
+  // computed: {
+  //   ...mapState(userStore, ['isLogin', 'isLoginError', 'user'])
+  // },
+  // methods: {
+  //   ...mapActions(userStore, ['userConfirm']),
+  //   async confirm () {
+  //     await this.userConfirm(this.kakaoCode.code)
+  //     this.$router.push({ name: 'Main' })
+  //   }
+  // }
 
 }
 </script>
