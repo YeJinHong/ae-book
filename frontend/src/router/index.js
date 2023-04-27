@@ -21,7 +21,14 @@ export default new Router({
     {
       path: '/story',
       name: 'Story',
-      component: AppStory
+      component: AppStory,
+      children: [
+        {
+          path: 'list',
+          name: 'StroyList',
+          component: () => import('@/components/story/StoryList')
+        }
+      ]
     },
     {
       path: '/painting',
