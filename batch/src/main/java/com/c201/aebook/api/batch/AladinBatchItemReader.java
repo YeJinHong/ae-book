@@ -100,7 +100,7 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 				.queryParam("OptResult", "usedList")
 				.queryParam("Output", outputType);
 
-			NodeList itemNodes = getItemElementByUrl(builder);
+			NodeList itemNodes = getItemElementByUrl(builder, "item");
 
 			for (int i = 0; i < itemNodes.getLength(); i++) {
 				Node itemNode = itemNodes.item(i);
@@ -206,7 +206,7 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 				.queryParam("output", outputType)
 				.queryParam("Version", "20131101");
 
-			NodeList itemNodes = getItemElementByUrl(builder);
+			NodeList itemNodes = getItemElementByUrl(builder, "item");
 
 			isbn = getChildText(itemNodes.item(0), "isbn13");
 		}
@@ -227,7 +227,7 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 		return book;
 	}
 
-	private NodeList getItemElementByUrl(UriComponentsBuilder builder) throws
+	private NodeList getItemElementByUrl(UriComponentsBuilder builder, String tagName) throws
 		IOException,
 		SAXException,
 		ParserConfigurationException {
@@ -241,7 +241,7 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 		InputSource inputSource = new InputSource(new StringReader(responseBody));
 		Document document = documentBuilder.parse(inputSource);
 
-		return document.getElementsByTagName("item");
+		return document.getElementsByTagName(tagName);
 	}
 
 	/*
@@ -258,6 +258,9 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 		return prices.stream().filter(Objects::nonNull).min(Integer::compareTo).orElse(0);
 	}
 
+	/*
+	* 해당 태그 이름에 해당하는 노드 가져옴
+	* */
 	private Node getChildNode(NodeList itemNode, String tagName) {
 		for (int i = 0; i < itemNode.getLength(); i++) {
 			Node node = itemNode.item(i);
@@ -269,6 +272,9 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 		return null;
 	}
 
+	/*
+	* 해당 태그의 text를 가져옴
+	* */
 	private String getChildText(Node itemNode, String tagName) {
 		if (itemNode == null)
 			return null;

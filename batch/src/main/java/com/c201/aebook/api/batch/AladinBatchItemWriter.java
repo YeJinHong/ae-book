@@ -30,6 +30,7 @@ public class AladinBatchItemWriter implements ItemWriter<BookEntity> {
 				BookEntity updateBook = book.get();
 				if(item.getPrice() < updateBook.getPrice()){
 					updateBook.setPrice(item.getPrice());
+					updateBook.setAladinUrl(item.getAladinUrl());
 					bookRepository.save(updateBook);
 				}
 			}else{
