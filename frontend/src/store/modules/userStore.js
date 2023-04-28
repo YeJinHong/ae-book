@@ -1,11 +1,11 @@
-import { login } from '@/api/user'
+import { login, logout } from '@/api/user'
 
 const userStore = {
   namespaced: true,
   state: {
     isLogin: false,
     isLoginError: false,
-    user: null,
+    user: {},
     isValidToken: false
   },
   getter: {
@@ -29,30 +29,52 @@ const userStore = {
     }
   },
   actions: {
-    async userConfirm ({commit}, kakaoCode) {
-      await login(
-        kakaoCode,
-        ({ data }) => {
-          if (data.statusText === 'OK') {
-            let accessToken = data['authorization']
-            let refreshToken = data['refresh']
+    async userLogin ({ commit }, kakaoCode) {
+      try {
+        const data = await login(kakaoCode)
+        if (data.statusText === 'OK') {
+          let accessToken = data.headers['authorization']
+          let refreshToken = data.headers['refresh']
 
-            commit('SET_USER_INFO', data)
-            commit('SET_IS_LOGIN', true)
-            commit('SET_IS_LOGIN_ERROR', false)
-            commit('SET_IS_VALID_TOKEN', true)
-
-            localStorage.setItem('authorization', accessToken)
-            localStorage.setItem('refresh', refreshToken)
-          } else {
-            commit('SET_IS_LOGIN', false)
-            commit('SET_IS_LOGIN_ERROR', true)
-            commit('SET_IS_VALID_TOKEN', false)
+          const user = {
+            userId: data.data.userId,
+            nickname: data.data.nickname,
+            profileUrl: data.data.profileUrl
           }
-        },
-        (error) => {
-          console.log(error)
-        })
+          commit('SET_USER_INFO', user)
+          commit('SET_IS_LOGIN', true)
+          commit('SET_IS_LOGIN_ERROR', false)
+
+          localStorage.setItem('accessToken', accessToken)
+          localStorage.setItem('refreshToken', refreshToken)
+          this.$router.push({ name: 'Main' })
+        } else {
+          commit('SET_IS_LOGIN', false)
+          commit('SET_IS_LOGIN_ERROR', true)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async userLogout ({ commit }) {
+      try {
+        const data = await logout()
+        if (data.statusText === 'OK') {
+          console.log(data)
+          commit('SET_USER_INFO', null)
+          commit('SET_IS_LOGIN', false)
+
+          localStorage.removeItem('accessToken')
+          localStorage.removeItem('refreshToken')
+
+          this.$router.push({ name: 'Main' })
+        } else {
+          console.log('로그아웃 오류')
+          commit('SET_IS_LOGIN', true)
+        }
+      } catch (error) {
+        console.log(error)
+      }
     }
 
   }
