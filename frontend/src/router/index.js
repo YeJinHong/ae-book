@@ -34,11 +34,22 @@ export default new Router({
       path: '/painting',
       name: 'Painting',
       component: AppPainting,
+      redirect: '/painting/list',
       children: [
         {
           path: 'board',
           name: 'paintingboard',
           component: () => import('@/components/painting/PaintingBoardView')
+        },
+        {
+          path: 'list',
+          name: 'paintinglist',
+          component: () => import('@/components/painting/PaintingListView')
+        },
+        {
+          path: 'generate',
+          name: 'generatesketche',
+          component: () => import('@/components/painting/GenerateSketcheView')
         }
       ]
     },
