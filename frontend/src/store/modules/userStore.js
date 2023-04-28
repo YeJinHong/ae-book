@@ -54,7 +54,7 @@ const userStore = {
           commit('SET_IS_LOGIN', false)
           commit('SET_IS_LOGIN_ERROR', true)
 
-          sessionStorage.setItem('IsLogin', false)
+          sessionStorage.setItem('isLoginUser', false)
         }
       } catch (error) {
         console.log(error)
