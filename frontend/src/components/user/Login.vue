@@ -24,9 +24,6 @@ export default {
     this.kakaoCode = this.$route.query
   },
   methods: {
-    kakaoLogin () {
-      console.log(this.kakaoCode.code)
-    }
   }
 
 }
