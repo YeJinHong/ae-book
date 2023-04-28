@@ -53,7 +53,7 @@
 
 <script>
 // TODO: 메인페이지 Navbar 배치 및 디자인 변경
-import { mapState, mapActions, mapGetters } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 const userStore = 'userStore'
 
 export default {
@@ -65,14 +65,13 @@ export default {
     }
   },
   created () {
-    this.isLoginUser = localStorage.getItem('IsLogin')
+    this.isLoginUser = localStorage.getItem('isLoginUser')
   },
   computed: {
     ...mapState(userStore, ['isLogin', 'isLoginError', 'user']),
     user () {
       return JSON.parse(localStorage.getItem('userInfo'))
-    },
-    ...mapGetters(['checkUserInfo'])
+    }
   },
 
   methods: {

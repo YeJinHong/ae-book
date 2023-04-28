@@ -47,7 +47,7 @@ const userStore = {
 
           localStorage.setItem('accessToken', accessToken)
           localStorage.setItem('refreshToken', refreshToken)
-          localStorage.setItem('IsLogin', true)
+          localStorage.setItem('isLoginUser', true)
           localStorage.setItem('userInfo', JSON.stringify(user))
           this.$router.push({ name: 'Main' })
         } else {
