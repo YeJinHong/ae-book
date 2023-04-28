@@ -65,12 +65,12 @@ export default {
     }
   },
   created () {
-    this.isLoginUser = localStorage.getItem('isLoginUser')
+    this.isLoginUser = sessionStorage.getItem('isLoginUser')
   },
   computed: {
     ...mapState(userStore, ['isLogin', 'isLoginError', 'user']),
     user () {
-      return JSON.parse(localStorage.getItem('userInfo'))
+      return JSON.parse(sessionStorage.getItem('userInfo'))
     }
   },
 
@@ -78,7 +78,7 @@ export default {
     ...mapActions(userStore, ['userLogout']),
     logout () {
       if (window.confirm('로그아웃  하시겠습니까?')) {
-        this.userlogout().then(() => {
+        this.userLogout().then(() => {
           window.location.href = this.kakaoLogOutLink
         })
       }
