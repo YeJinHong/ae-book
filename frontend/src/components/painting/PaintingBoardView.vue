@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <input type="text" v-model="title" placeholder="제목이요">
+    <input type="text" v-model="title" placeholder="제목을 꼭">
     <canvas id="canvas"
       ref="canvas"
       @mousemove="onMove"
@@ -107,21 +107,21 @@ export default {
       // canvas -> dataURL
       let imgBase64 = canvas.toDataURL('image/png')
 
-      var byteString = window.atob(imgBase64.split(',')[1])
-      var array = []
-      // unicode로 변환
-      for (var i = 0; i < byteString.length; i++) {
-        array.push(byteString.charCodeAt(i))
+      const byteString = atob(imgBase64.split(',')[1])
+      const ab = new ArrayBuffer(byteString.length)
+      const ia = new Uint8Array(ab)
+      for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i)
       }
-      // dataURL -> blob
-      let blob = new Blob([new ArrayBuffer(array)], {type: 'image/png'})
+      const blob = new Blob([ab], { type: 'image/png' })
+
       // blob -> file
-      let paintingFile = new File([blob], 'painting_' + new Date().getMilliseconds() + '.png')
+      const paintingFile = new File([blob], 'painting_' + new Date().getMilliseconds() + '.png', { type: 'image/png' })
 
       return paintingFile
     },
     onSaveClick () {
-      let paintingFile = this.canvasToFile(this.canvas)
+      const paintingFile = this.canvasToFile(this.canvas)
 
       let data = {
         title: this.title,
@@ -138,12 +138,12 @@ export default {
       //     'Content-Type': 'multipart/form-data'
       //   }
       // })
-        .then(({ data }) => {
+        .then(
           alert('그림 저장에 성공했습니다.')
-          console.log(data)
-        })
+        )
         .catch(error => {
           alert('그림 저장에 실패했습니다.')
+          console.log('에러?')
           console.log(error)
         })
     }
