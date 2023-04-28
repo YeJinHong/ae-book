@@ -101,12 +101,9 @@ export default {
       this.ctx.clearRect(0, 0, 800, 500)
       this.ctx.beginPath()
     },
-    DataUrlToFile () {
-
-    },
-    onSaveClick () {
+    canvasToFile (canvas) {
       // canvas -> dataURL
-      let imgBase64 = this.canvas.toDataURL('image/png')
+      let imgBase64 = canvas.toDataURL('image/png')
 
       var byteString = window.atob(imgBase64.split(',')[1])
       var array = []
@@ -118,6 +115,11 @@ export default {
       let blob = new Blob([new ArrayBuffer(array)], {type: 'image/png'})
       // blob -> file
       let paintingFile = new File([blob], 'painting_' + new Date().getMilliseconds() + '.png')
+
+      return paintingFile
+    },
+    onSaveClick () {
+      let paintingFile = this.canvasToFile(this.canvas)
 
       let data = {
         title: this.title,
@@ -134,10 +136,11 @@ export default {
           Authorization: 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2IiwiZXhwIjoxNjgzMDA0MTUyfQ._ASkNE7_635FluEbf5wGQL8JPUwjbUuxilgWTUNzob4Rz5XKfWX1JdPllkMNQe7dyKBwxarfAERxChze6zy8_g'
         }
       }).then(({ data }) => {
-        alert('성공')
+        alert('그림 저장에 성공했습니다.')
+        console.log(data)
       })
         .catch(error => {
-          alert(error)
+          alert('그림 저장에 실패했습니다.')
           console.log(error)
         })
     }
@@ -161,7 +164,7 @@ export default {
 #palette {
   display: flex;
   flex-direction: row;
-  background-color: pink;
+  /* background-color: pink; */
   width: 200px;
 }
 
