@@ -10,7 +10,6 @@ RUN npm run build
 EXPOSE 3000
 CMD ["npm", "run", "start"]
 
-
 # =================== frontend nginx 적용 시 ============================
 # FROM nginx:alpine
 # COPY --from=builder /app/dist /usr/share/nginx/html
