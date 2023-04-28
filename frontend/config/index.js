@@ -3,6 +3,7 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 
 const path = require('path')
+require('dotenv').config()
 
 module.exports = {
   dev: {
@@ -10,7 +11,27 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      // /api로 시작하는 요청을 프록시합니다.
+      '/api': {
+        // 프록시 대상 주소입니다.
+        target: 'http://localhost:8082/api',
+        changeOrigin: true,
+        // 프록시할 요청 경로를 변경합니다.
+        pathRewrite: {
+          '^/api': ''
+        }
+      },
+
+      '/fast' : {
+        target:'http://localhost:8000',
+        changeOrigin:true,
+        pathRewrite:{
+          '^/fast':''
+        }
+      }
+
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
