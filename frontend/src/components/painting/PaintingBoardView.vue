@@ -42,7 +42,8 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { mapActions } from 'vuex'
+const paintingStore = 'paintingStore'
 
 export default {
   name: 'PaintingBoardView',
@@ -65,6 +66,7 @@ export default {
     this.ctx.lineWidth = 10
   },
   methods: {
+    ...mapActions(paintingStore, ['savePainting']),
     onMove (event) {
       if (this.isPainting) {
         if (this.mode === 'brush') {
@@ -130,15 +132,16 @@ export default {
       formData.append('paintingFile', paintingFile)
       formData.append('data', new Blob([JSON.stringify(data)], {type: 'application/json'}))
 
-      axios.post('/api/paintings', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2IiwiZXhwIjoxNjgzMDA0MTUyfQ._ASkNE7_635FluEbf5wGQL8JPUwjbUuxilgWTUNzob4Rz5XKfWX1JdPllkMNQe7dyKBwxarfAERxChze6zy8_g'
-        }
-      }).then(({ data }) => {
-        alert('그림 저장에 성공했습니다.')
-        console.log(data)
-      })
+      this.savePainting(formData)
+      // axios.post('/api/paintings', formData, {
+      //   headers: {
+      //     'Content-Type': 'multipart/form-data'
+      //   }
+      // })
+        .then(({ data }) => {
+          alert('그림 저장에 성공했습니다.')
+          console.log(data)
+        })
         .catch(error => {
           alert('그림 저장에 실패했습니다.')
           console.log(error)
