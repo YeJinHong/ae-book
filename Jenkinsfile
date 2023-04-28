@@ -148,18 +148,18 @@ pipeline
 			}
 		}
 		// batch는 build 될 때마다 데이터가 들어가기 때문에 변경사항있다고 run하는건 아닌 듯...
-		stage('deploy-batch-api') {
-			when {
-				anyOf {
-					changeset "batch/**/*"
-				}
-			}
-			steps {
-				echo 'Deploy Start "${APP_BATCH_API}"'
-				sh 'docker run -it -d --rm -p 8084:8082 --name back-batch --network env-config_ae-book_network back-batch-img'
-				echo 'Deploy End "${APP_BATCH_API}"'
-			}
-		}
+		// stage('deploy-batch-api') {
+		// 	when {
+		// 		anyOf {
+		// 			changeset "batch/**/*"
+		// 		}
+		// 	}
+		// 	steps {
+		// 		echo 'Deploy Start "${APP_BATCH_API}"'
+		// 		sh 'docker run -it -d --rm -p 8084:8082 --name back-batch --network env-config_ae-book_network back-batch-img'
+		// 		echo 'Deploy End "${APP_BATCH_API}"'
+		// 	}
+		// }
 		stage('deploy-ai-api') {
 			when {
 				anyOf {
