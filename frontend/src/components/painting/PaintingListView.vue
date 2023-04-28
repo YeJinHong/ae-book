@@ -4,6 +4,7 @@
     <button @click="getPaintingList('LINE')">선화</button>
     <button @click="getPaintingList('COLOR')">그림</button>
     <router-link to="/painting/generate"><button>선화 만들기</button></router-link>
+    <router-link to="/painting/board"><button>임시 그림판</button></router-link>
     <div
         v-for="painting in paintingList"
         :key="painting.id"
