@@ -25,8 +25,8 @@ export default new Router({
       children: [
         {
           path: 'list',
-          name: 'StroyList',
-          component: () => import('@/components/story/StoryList')
+          name: 'StoryListView',
+          component: () => import('@/components/story/StoryListView')
         }
       ]
     },
