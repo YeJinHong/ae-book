@@ -51,8 +51,8 @@ const reviewStore = {
   - commit은 mutation명을 쓰면 됨
   */
   actions: {
-    getReviewAction ({ commit }, reviewId) {
-      getReview(reviewId)
+    async getReviewAction ({ commit }, reviewId) {
+      await getReview(reviewId)
         .then(({data}) => {
           commit('SET_REVIEW', data.result)
           console.log(data.result)
@@ -60,8 +60,8 @@ const reviewStore = {
           console.log(err)
         })
     },
-    getMainReviewListAction ({ commit }) {
-      getLatestReviewList()
+    async getMainReviewListAction ({ commit }) {
+      await getLatestReviewList()
         .then(({data}) => {
           commit('SET_MAIN_REVIEW_LIST', data.result)
           console.log('MAIN_REVIEW_LIST : ' + data.result)
@@ -69,8 +69,8 @@ const reviewStore = {
           console.log(err)
         })
     },
-    getBookReviewListAction ({ commit }, isbn) {
-      getBookReviewList(isbn)
+    async getBookReviewListAction ({ commit }, isbn) {
+      await getBookReviewList(isbn)
         .then(({data}) => {
           commit('SET_BOOK_REVIEW_LIST', data.result)
           console.log('BOOK_REVIEW_LIST :' + data.result)
@@ -78,10 +78,11 @@ const reviewStore = {
           console.log(err)
         })
     },
-    modifyReviewAction ({ commit }, payload) {
-      modifyReview(payload)
+    async modifyReviewAction ({ commit }, payload) {
+      console.log('modifyReviewAction')
+      await modifyReview(payload)
         .then(({data}) => {
-          return getReview(payload.reviewId) // 수정된 리뷰를 가져옴
+          console.log('Review Modify Complete')
         })
         .catch((err) => {
           console.log(err)
