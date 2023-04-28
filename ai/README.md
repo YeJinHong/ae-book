@@ -13,8 +13,15 @@ python -m venv venv
 source venv/Scripts/activate
 
 3. 패키지 설치
-
 pip install -r requirements.txt
+
+pip install git+https://github.com/openai/CLIP.git
+
+pip install git+https://git@github.com/SKTBrain/KoBERT.git@master
+
+pip install 'git+https://github.com/SKTBrain/KoBERT.git#egg=kobert_tokenizer&subdirectory=kobert_hf'
+
+pip install torch==1.13.1
 
 4. 서버 실행
 uvicorn main:app --reload
