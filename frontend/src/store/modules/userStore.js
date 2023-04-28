@@ -47,10 +47,14 @@ const userStore = {
 
           localStorage.setItem('accessToken', accessToken)
           localStorage.setItem('refreshToken', refreshToken)
+          localStorage.setItem('isLoginUser', true)
+          localStorage.setItem('userInfo', JSON.stringify(user))
           this.$router.push({ name: 'Main' })
         } else {
           commit('SET_IS_LOGIN', false)
           commit('SET_IS_LOGIN_ERROR', true)
+
+          localStorage.setItem('IsLogin', false)
         }
       } catch (error) {
         console.log(error)
@@ -66,11 +70,14 @@ const userStore = {
 
           localStorage.removeItem('accessToken')
           localStorage.removeItem('refreshToken')
+          localStorage.setItem('IsLogin', false)
 
           this.$router.push({ name: 'Main' })
         } else {
           console.log('로그아웃 오류')
           commit('SET_IS_LOGIN', true)
+
+          localStorage.setItem('IsLogin', true)
         }
       } catch (error) {
         console.log(error)

@@ -33,7 +33,7 @@
                 </b-nav-item>
             </b-navbar-nav>
             <!-- 로그인 후, 보여주는 정보는 추후 다시 결정, 마이페이지는 임시 배치 -->
-            <b-navbar-nav class="ml-auto" v-if=isLogin>
+            <b-navbar-nav class="ml-auto" v-if=isLoginUser>
                     <b-nav-form>
                         {{ user.userId }} | {{ user.nickname }}
                         <b-button size="sm" @click="logout">로그아웃</b-button>
@@ -60,14 +60,18 @@ export default {
   name: 'HeaderNavbar',
   data () {
     return {
-      kakaoLogOutLink: `https://kauth.kakao.com/oauth/logout?client_id=${process.env.VUE_APP_REST_API_KEY}&logout_redirect_uri=${process.env.VUE_APP_LOGOUT_REDIRECT_URI}`
+      kakaoLogOutLink: `https://kauth.kakao.com/oauth/logout?client_id=${process.env.VUE_APP_REST_API_KEY}&logout_redirect_uri=${process.env.VUE_APP_LOGOUT_REDIRECT_URI}`,
+      isLoginUser: false
     }
   },
   created () {
-    // console.log(this.isLogin)
+    this.isLoginUser = localStorage.getItem('isLoginUser')
   },
   computed: {
-    ...mapState(userStore, ['isLogin', 'isLoginError', 'user'])
+    ...mapState(userStore, ['isLogin', 'isLoginError', 'user']),
+    user () {
+      return JSON.parse(localStorage.getItem('userInfo'))
+    }
   },
 
   methods: {
