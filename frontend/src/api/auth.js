@@ -14,8 +14,8 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     // 요청이 전달되기 전에 작업 수행
-    const accessToken = localStorage.getItem('accessToken')
-    const refreshToken = localStorage.getItem('refreshToken')
+    const accessToken = sessionStorage.getItem('accessToken')
+    const refreshToken = sessionStorage.getItem('refreshToken')
 
     if (accessToken && refreshToken) {
       config.headers['Authorization'] = accessToken
@@ -47,17 +47,17 @@ api.interceptors.response.use(
         url: '/auth/access-token',
         method: 'POST',
         headers: {
-          Authorization: localStorage.getItem('accessToken'),
-          refresh: localStorage.getItem('refreshToken')
+          Authorization: sessionStorage.getItem('accessToken'),
+          refresh: sessionStorage.getItem('refreshToken')
         }
       })
         .then((res) => {
           // 정상 요청되면 새로 받은 토큰 저장
           if (res.status === 200) {
-            localStorage.removeItem('accessToken')
-            localStorage.removeItem('refreshToken')
-            localStorage.setItem('accessToken', res.headers.authorization)
-            localStorage.setItem('refreshToken', res.headers.refresh)
+            sessionStorage.removeItem('accessToken')
+            sessionStorage.removeItem('refreshToken')
+            sessionStorage.setItem('accessToken', res.headers.authorization)
+            sessionStorage.setItem('refreshToken', res.headers.refresh)
             // 원래 요청 재시도
             return api(originalRequest)
           } else {
