@@ -26,15 +26,6 @@ export default {
   methods: {
     kakaoLogin () {
       console.log(this.kakaoCode.code)
-
-      // axios.get(`/api/auth/login?code=${this.kakaoCode.code}`).then((result) => {
-      //   console.log(result)
-      //   // console.log(result.headers.authorization)
-      //   // console.log(result.headers.refresh)
-      //   localStorage.setItem('authorization', result.headers.authorization)
-      //   localStorage.setItem('refresh', result.headers.refresh)
-      //   this.$router.push({ name: 'Main' })
-      // })
     }
   }
 
