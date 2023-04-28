@@ -78,15 +78,12 @@ const reviewStore = {
           console.log(err)
         })
     },
-    modifyReviewAction ({ commit }, reviewId, payload) {
-      modifyReview(reviewId, payload)
+    modifyReviewAction ({ commit }, payload) {
+      modifyReview(payload)
         .then(({data}) => {
-          console.log(data.config.headers)
-          console.log(data)
-          // 만약 백에서 return을 변경된 값으로 주면 바로 SET_REVIEW
-        }).then(getReview(reviewId))
+          return getReview(payload.reviewId) // 수정된 리뷰를 가져옴
+        })
         .catch((err) => {
-          console.log(err.config.headers)
           console.log(err)
         })
     }
