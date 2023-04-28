@@ -18,11 +18,8 @@ pipeline
 			}
 			steps {
 				echo 'Environment Settings Start'
-				sh 'cd env-config'
-				sh 'pwd && ls -al'
-				sh 'docker-compose -f docker-compose-env.yml down'
-				sh 'docker-compose -f docker-compose-env.yml up -d'
-				sh 'cd ..'
+				sh 'docker-compose -f env-config/docker-compose-env.yml down'
+				sh 'docker-compose -f env-config/docker-compose-env.yml up -d'
 				echo 'Environment Settings End'
 			}
 		}
