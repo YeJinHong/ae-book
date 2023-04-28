@@ -78,7 +78,7 @@ export default {
     ...mapActions(userStore, ['userLogout']),
     logout () {
       if (window.confirm('로그아웃  하시겠습니까?')) {
-        this.userlogout().then(() => {
+        this.userLogout().then(() => {
           window.location.href = this.kakaoLogOutLink
         })
       }
