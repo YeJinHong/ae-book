@@ -1,4 +1,4 @@
-import { getReview, getLatestReviewList, getBookReviewList } from '../../api/review'
+import { getReview, getLatestReviewList, getBookReviewList, modifyReview } from '../../api/review'
 
 const reviewStore = {
   namespaced: true,
@@ -75,6 +75,18 @@ const reviewStore = {
           commit('SET_BOOK_REVIEW_LIST', data.result)
           console.log('BOOK_REVIEW_LIST :' + data.result)
         }).catch((err) => {
+          console.log(err)
+        })
+    },
+    modifyReviewAction ({ commit }, reviewId, payload) {
+      modifyReview(reviewId, payload)
+        .then(({data}) => {
+          console.log(data.config.headers)
+          console.log(data)
+          // 만약 백에서 return을 변경된 값으로 주면 바로 SET_REVIEW
+        }).then(getReview(reviewId))
+        .catch((err) => {
+          console.log(err.config.headers)
           console.log(err)
         })
     }
