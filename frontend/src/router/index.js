@@ -111,9 +111,10 @@ export default new Router({
           component: () => import('@/components/review/ReviewCreateView')
         },
         {
-          path: 'detail',
+          path: 'detail/:reviewId',
           name: 'ReviewDetail',
-          component: () => import('@/components/review/ReviewDetailView')
+          component: () => import('@/components/review/ReviewDetailView'),
+          props: true
         },
         {
           path: 'modify',
