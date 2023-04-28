@@ -45,16 +45,16 @@ const userStore = {
           commit('SET_IS_LOGIN', true)
           commit('SET_IS_LOGIN_ERROR', false)
 
-          localStorage.setItem('accessToken', accessToken)
-          localStorage.setItem('refreshToken', refreshToken)
-          localStorage.setItem('isLoginUser', true)
-          localStorage.setItem('userInfo', JSON.stringify(user))
+          sessionStorage.setItem('accessToken', accessToken)
+          sessionStorage.setItem('refreshToken', refreshToken)
+          sessionStorage.setItem('isLoginUser', true)
+          sessionStorage.setItem('userInfo', JSON.stringify(user))
           this.$router.push({ name: 'Main' })
         } else {
           commit('SET_IS_LOGIN', false)
           commit('SET_IS_LOGIN_ERROR', true)
 
-          localStorage.setItem('IsLogin', false)
+          sessionStorage.setItem('IsLogin', false)
         }
       } catch (error) {
         console.log(error)
@@ -68,16 +68,16 @@ const userStore = {
           commit('SET_USER_INFO', null)
           commit('SET_IS_LOGIN', false)
 
-          localStorage.removeItem('accessToken')
-          localStorage.removeItem('refreshToken')
-          localStorage.setItem('IsLogin', false)
+          sessionStorage.removeItem('accessToken')
+          sessionStorage.removeItem('refreshToken')
+          sessionStorage.setItem('IsLogin', false)
 
           this.$router.push({ name: 'Main' })
         } else {
           console.log('로그아웃 오류')
           commit('SET_IS_LOGIN', true)
 
-          localStorage.setItem('IsLogin', true)
+          sessionStorage.setItem('IsLogin', true)
         }
       } catch (error) {
         console.log(error)
