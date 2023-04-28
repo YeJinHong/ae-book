@@ -15,7 +15,7 @@
 import { searchStory } from '@/api/story'
 
 export default {
-  name: 'StroyList',
+  name: 'StoryListView',
   data () {
     return {
       page: {
