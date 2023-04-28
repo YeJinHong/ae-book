@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="book">
     {{ book.title }}
     {{ book.author }} | {{ book.publisher }} | {{ book.publishDate }}
     <img v-bind:src="book.coverImageUrl" class="book-image" />
@@ -13,19 +13,14 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 const bookStore = 'bookStore'
 
 export default {
   name: 'BookDetailView',
   props: ['isbn'],
-  data () {
-    return {
-      book: Object
-    }
-  },
   computed: {
-    ...mapGetters(bookStore, ['getBook'])
+    ...mapState(bookStore, ['book'])
   },
   mounted () {
     this.getBookDetail(this.isbn)
