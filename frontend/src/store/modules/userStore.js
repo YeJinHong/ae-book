@@ -70,14 +70,15 @@ const userStore = {
 
           sessionStorage.removeItem('accessToken')
           sessionStorage.removeItem('refreshToken')
-          sessionStorage.setItem('IsLogin', false)
+          sessionStorage.removeItem('userInfo')
+          sessionStorage.removeItem('isLoginUser')
 
           this.$router.push({ name: 'Main' })
         } else {
           console.log('로그아웃 오류')
           commit('SET_IS_LOGIN', true)
 
-          sessionStorage.setItem('IsLogin', true)
+          sessionStorage.setItem('isLoginUser', true)
         }
       } catch (error) {
         console.log(error)
