@@ -23,8 +23,9 @@ services:
     volumes:
       - /home/docker/ae-book/volume-data/mariadb:/var/lib/mariadb
     command:
-      --character-set-server=utf8mb4
-      --collation-server=utf8mb4_unicode_ci
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --lower_case_table_names=1
     networks:
       - ae-book_network
 
