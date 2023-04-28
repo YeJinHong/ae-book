@@ -11,7 +11,7 @@ import HeaderNavbar from '../components/HeaderNavbar.vue'
 import Oauth from '../components/user/Oauth.vue'
 
 export default {
-  name: 'AppMyPage',
+  name: 'AppOauth',
   components: {
     HeaderNavbar,
     Oauth
