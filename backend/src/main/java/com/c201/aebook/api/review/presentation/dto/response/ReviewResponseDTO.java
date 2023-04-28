@@ -25,19 +25,19 @@ public class ReviewResponseDTO {
 	private String content;
 
 	@Schema(description = "서평 작성 시간", defaultValue = "2023-04-14 10:30:15")
-	private LocalDateTime createAt;
+	private LocalDateTime createdAt;
 
 	@Schema(description = "서평 수정 시간", defaultValue = "2023-04-17 10:30:15")
-	private LocalDateTime updateAt;
+	private LocalDateTime updatedAt;
 
 	@Builder
-	public ReviewResponseDTO(Long reviewId, String reviewerNickname, int score, String content, LocalDateTime createAt,
-		LocalDateTime updateAt) {
+	public ReviewResponseDTO(Long reviewId, String reviewerNickname, int score, String content, LocalDateTime createdAt,
+		LocalDateTime updatedAt) {
 		this.reviewId = reviewId;
 		this.reviewerNickname = reviewerNickname;
 		this.score = score;
 		this.content = content;
-		this.createAt = createAt;
-		this.updateAt = updateAt;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
 	}
 }

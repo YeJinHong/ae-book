@@ -1,8 +1,9 @@
 <template>
   <div>
-  <header-navbar></header-navbar>
-  <div> This is Story page</div>
-</div>
+    <header-navbar></header-navbar>
+    <div>This is Story page</div>
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
@@ -14,8 +15,6 @@ export default {
     HeaderNavbar
   }
 }
-
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
