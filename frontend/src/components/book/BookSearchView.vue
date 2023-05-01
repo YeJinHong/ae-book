@@ -20,36 +20,46 @@
       <button type="button" @click="onClickRedirect(book.aladinUrl)">구매하러가기</button>
     </div>
   </div>
+  <pagination :pageSetting="bookPageSetting" @paging="paging"></pagination>
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
+import Pagination from '../common/Pagination.vue'
 const bookStore = 'bookStore'
 
 export default {
+  components: { Pagination },
   name: 'BookSearchView',
   data () {
     return {
       keyword: '',
-      searchTargets: []
+      searchTargets: [],
+      request: null
     }
   },
   computed: {
-    ...mapState(bookStore, ['bookList']),
+    ...mapState(bookStore, ['bookList', 'bookPageSetting']),
     ...mapGetters(bookStore, ['getBookList'])
   },
   methods: {
-    ...mapActions(bookStore, ['getSearchList']),
+    ...mapActions(bookStore, ['getSearchList', 'getPage']),
     onClickSearch () {
-      let request = {
+      this.request = {
         keyword: this.keyword,
         searchTargets: this.searchTargets
       }
-      this.getSearchList(request)
+      this.getSearchList(this.request)
     },
     onClickRedirect (url) {
       window.open(url, 'blank')
+    },
+    paging (page) {
+      console.log(page + '페이지 이동!!')
+      this.request['page'] = page - 1
+      console.log(this.request)
+      this.getSearchList(this.request)
     }
   }
 }
