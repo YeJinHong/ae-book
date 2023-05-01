@@ -18,7 +18,9 @@
 import { searchStory } from '@/api/story'
 import ModalView from '@/components/common/ModalView'
 import StoryDetailView from '@/components/story/StoryDetailView'
-import { mapMutations } from 'vuex'
+import { mapMutations, mapGetters } from 'vuex'
+
+const storyStore = 'storyStore'
 
 export default {
   name: 'StoryListView',
@@ -47,11 +49,14 @@ export default {
         alert('정상적으로 조회하지 못했습니다. ' + error)
       })
   },
+  computed: {
+    ...mapGetters(storyStore, ['getStoryId'])
+  },
   methods: {
-    ...mapMutations('story', ['setStoryId', 'clearStoryId']),
+    ...mapMutations(storyStore, ['setStoryId', 'clearStoryId']),
     showModal (storyId) {
-      this.isModalVisible = true
       this.setStoryId(storyId)
+      this.isModalVisible = true
     },
     closeModal () {
       this.isModalVisible = false

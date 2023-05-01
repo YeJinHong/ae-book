@@ -1,10 +1,10 @@
 <template>
   <div>
-    <h3>{{ story.title }}</h3>
-    <p>{{ story.content }}</p>
-    <img v-bind:src="story.imgUrl" alt="story image" />
-    <p>작성자: {{ story.storyAuthorNickname }}</p>
-    <p>작성일: {{ story.createdAt }}</p>
+    <h3 v-if="story">{{ story.title }}</h3>
+    <p v-if="story">{{ story.content }}</p>
+    <img v-bind:src="story.imgUrl" alt="story image" v-if="story" />
+    <p v-if="story">작성자: {{ story.storyAuthorNickname }}</p>
+    <p v-if="story">작성일: {{ story.createdAt }}</p>
   </div>
 </template>
 
@@ -28,8 +28,8 @@ export default {
     }
   },
   mounted () {
-    console.log(this.getStoryId)
     this.storyId = this.getStoryId
+
     searchDetailStory(this.storyId)
       .then(response => {
         this.story = response.data.result
