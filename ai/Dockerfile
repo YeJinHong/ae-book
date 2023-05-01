@@ -9,5 +9,8 @@ RUN pip install 'git+https://github.com/SKTBrain/KoBERT.git#egg=kobert_tokenizer
 
 RUN pip install torch==1.13.1
 
+RUN apt-get update
+RUN apt-get -y install libgl1-mesa-glx
+
 EXPOSE 8000
 CMD ["uvicorn","main:app","--reload", "--host", "0.0.0.0", "--port", "8000"]
