@@ -23,7 +23,40 @@ pipeline
 				echo 'Environment Settings End'
 			}
 		}
-		//===================================== Build =====================================
+		//===================================== Front app =====================================
+		stage('build-front') {
+			when {
+				changeset "frontend/**/*"
+			}
+			steps {
+				echo 'Build Start Front App'
+				sh 'docker build -t front-img frontend/. --no-cache'
+				echo 'Build End Front App'
+			}
+			post {
+				success {
+					echo 'Front container stop Start'
+					sh '''
+					if (docker ps | grep "front-app"); then docker stop front-app;
+					fi
+					'''
+					echo 'Front container stop Success';
+				}
+			}
+		}
+		stage('deploy-front') {
+			when {
+				changeset "frontend/**/*"
+			}
+			steps {
+				echo 'Deploy Start Front App'
+				sh '''
+					docker run -it -d --rm -p 3000:3000 --name front-app --network env-config_ae-book_network front-img 
+				'''
+				echo 'Deploy End Front App'
+			}
+		}
+		//===================================== Spring API =====================================
 		stage('build-spring-api') {
 			when {
 				anyOf {
@@ -51,26 +84,19 @@ pipeline
 				}
 			}
 		}
-		stage('build-front') {
+		stage('deploy-spring-api') {
 			when {
-				changeset "frontend/**/*"
-			}
-			steps {
-				echo 'Build Start Front App'
-				sh 'docker build -t front-img frontend/. --no-cache'
-				echo 'Build End Front App'
-			}
-			post {
-				success {
-					echo 'Front container stop Start'
-					sh '''
-					if (docker ps | grep "front-app"); then docker stop front-app;
-					fi
-					'''
-					echo 'Front container stop Success';
+				anyOf {
+					changeset "backend/**/*"
 				}
 			}
+			steps {
+				echo 'Deploy Start "${APP_SPRING_API}"'
+				sh 'docker run -it -d --rm -p 8082:8082 --name back-spring-api --network env-config_ae-book_network back-spring-api-img'
+				echo 'Deploy End "${APP_SPRING_API}"'
+			}
 		}
+		//===================================== Batch =====================================
 		stage('build-batch') {
 			when {
 				anyOf {
@@ -97,6 +123,20 @@ pipeline
 				}
 			}
 		}
+		// batch는 build 될 때마다 데이터가 들어가기 때문에 변경사항있다고 run하는건 아닌 듯...
+		// stage('deploy-batch-api') {
+		// 	when {
+		// 		anyOf {
+		// 			changeset "batch/**/*"
+		// 		}
+		// 	}
+		// 	steps {
+		// 		echo 'Deploy Start "${APP_BATCH_API}"'
+		// 		sh 'docker run -it -d --rm -p 8084:8082 --name back-batch --network env-config_ae-book_network back-batch-img'
+		// 		echo 'Deploy End "${APP_BATCH_API}"'
+		// 	}
+		// }
+		//===================================== AI =====================================
 		stage('build-ai-api') {
 			when {
 				anyOf {
@@ -105,9 +145,7 @@ pipeline
 			}
 			steps {
 				echo 'Build Start "${APP_AI_API}"'
-				sh 'chmod +x ${APP_AI_API}/gradlew'
 				sh '''
-					${APP_AI_API}/gradlew -p ${APP_AI_API} build -x test
 					docker build -t back-ai-api-img ${APP_AI_API}/. --no-cache
 				'''
 				echo 'Build End "${APP_AI_API}"'
@@ -123,44 +161,6 @@ pipeline
 				}
 			}
 		}
-		//===================================== Deploy (Docker run) =====================================
-		stage('deploy-spring-api') {
-			when {
-				anyOf {
-					changeset "backend/**/*"
-				}
-			}
-			steps {
-				echo 'Deploy Start "${APP_SPRING_API}"'
-				sh 'docker run -it -d --rm -p 8082:8082 --name back-spring-api --network env-config_ae-book_network back-spring-api-img'
-				echo 'Deploy End "${APP_SPRING_API}"'
-			}
-		}
-		stage('deploy-front') {
-			when {
-				changeset "frontend/**/*"
-			}
-			steps {
-				echo 'Deploy Start Front App'
-				sh '''
-					docker run -it -d --rm -p 3000:3000 --name front-app --network env-config_ae-book_network front-img 
-				'''
-				echo 'Deploy End Front App'
-			}
-		}
-		// batch는 build 될 때마다 데이터가 들어가기 때문에 변경사항있다고 run하는건 아닌 듯...
-		// stage('deploy-batch-api') {
-		// 	when {
-		// 		anyOf {
-		// 			changeset "batch/**/*"
-		// 		}
-		// 	}
-		// 	steps {
-		// 		echo 'Deploy Start "${APP_BATCH_API}"'
-		// 		sh 'docker run -it -d --rm -p 8084:8082 --name back-batch --network env-config_ae-book_network back-batch-img'
-		// 		echo 'Deploy End "${APP_BATCH_API}"'
-		// 	}
-		// }
 		stage('deploy-ai-api') {
 			when {
 				anyOf {
