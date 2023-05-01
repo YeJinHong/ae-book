@@ -9,6 +9,7 @@ const story = {
 
   mutations: {
     setStoryId (state, id) {
+      console.log(id)
       state.storyId = id
     },
     clearStoryId (state) {
