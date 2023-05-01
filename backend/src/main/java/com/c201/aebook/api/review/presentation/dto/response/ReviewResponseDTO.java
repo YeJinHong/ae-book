@@ -13,7 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ReviewResponseDTO {
 	@Schema(description = "서평 ID", defaultValue = "1")
-	private Long reviewId;
+	private Long id;
 
 	@Schema(description = "서평 작성자 닉네임", defaultValue = "아응앵")
 	private String reviewerNickname;
@@ -24,6 +24,9 @@ public class ReviewResponseDTO {
 	@Schema(description = "서평 내용", defaultValue = "절경이고요 장관이네요")
 	private String content;
 
+	@Schema(description = "isbn", defaultValue = "9788932916378")
+	private String isbn;
+
 	@Schema(description = "서평 작성 시간", defaultValue = "2023-04-14 10:30:15")
 	private LocalDateTime createdAt;
 
@@ -31,12 +34,14 @@ public class ReviewResponseDTO {
 	private LocalDateTime updatedAt;
 
 	@Builder
-	public ReviewResponseDTO(Long reviewId, String reviewerNickname, int score, String content, LocalDateTime createdAt,
+	public ReviewResponseDTO(Long id, String reviewerNickname, int score, String content, String isbn,
+		LocalDateTime createdAt,
 		LocalDateTime updatedAt) {
-		this.reviewId = reviewId;
+		this.id = id;
 		this.reviewerNickname = reviewerNickname;
 		this.score = score;
 		this.content = content;
+		this.isbn = isbn;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 	}
