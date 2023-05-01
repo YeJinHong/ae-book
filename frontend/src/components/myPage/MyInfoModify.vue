@@ -20,6 +20,7 @@
             class="form-control"
             name="profileUrl"
             id="profileUrl"
+            ref="fileInput"
             accept="image/*"
           />
         </div>
@@ -34,7 +35,7 @@
             수정
           </b-button>
           &nbsp;
-          <router-link :to="{ name: 'MyPage' }" class="link"><b-button variant="secondary" type="button">취소</b-button></router-link>
+          <router-link :to="{ name: 'MyInfo' }" class="link"><b-button variant="secondary" type="button">취소</b-button></router-link>
         </div>
       </form>
     </div>
@@ -43,7 +44,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 const userStore = 'userStore'
 
 export default {
@@ -55,12 +56,12 @@ export default {
     }
   },
   created () {
-    // console.log(this.isLogin)
     this.isLoginUser = sessionStorage.getItem('isLoginUser')
     this.nickname = this.user.nickname
   },
   computed: {
     ...mapState(userStore, ['isLogin', 'isLoginError', 'user']),
+    ...mapGetters(userStore, ['getUserInfo']),
     user () {
       return JSON.parse(sessionStorage.getItem('userInfo'))
     }
@@ -68,8 +69,20 @@ export default {
 
   methods: {
     ...mapActions(userStore, ['userUpdate']),
-    modifyUser () {
+    async modifyUser () {
       console.log('정보수정')
+
+      let data = {
+        nickname: this.user.nickname
+      }
+
+      let formData = new FormData()
+      formData.append('imgUrl', this.$refs.fileInput.files[0])
+      formData.append('content', new Blob([JSON.stringify(data)], {type: 'application/json'}))
+
+      console.log(formData)
+      await this.userUpdate(formData)
+      this.$router.push({ name: 'MyInfo' })
     }
   }
 
