@@ -1,6 +1,8 @@
 package com.c201.aebook.api.user.persistence.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.c201.aebook.api.user.persistence.entity.UserEntity;
@@ -17,5 +19,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     boolean existsByNickname(String nickname);
 
-    String findProfileUrlById(long userId);
+    @Query("select u.profileUrl from UserEntity u where u.id = :userId")
+    String findProfileUrlById(@Param("userId") long userId);
 }
