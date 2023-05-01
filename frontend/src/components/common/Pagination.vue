@@ -1,27 +1,28 @@
 <template>
     <div>
     <div class="page-list">
-      <button
-        class="pagebtn pre"
-        v-if="!pageSetting.first"
-        @click="sendPage(pageSetting.pageNumber-1)"
-      >이전</button>
       <ul>
         <li
+        class="pagebtn pre"
+        :class="{ disabled: pageSetting.first }"
+        @click="sendPage(pageSetting.pageable.pageNumber)"
+      >◀</li>
+        <li
           class="pagebtn"
-          :class="{ active: page === pageSetting.pageNumber }"
-          v-for="page in pageSetting.totalPages"
+          :class="{ active: page-1 === pageSetting.pageable.pageNumber }"
+          v-for="page in computedPages"
           :key="page"
           @click="sendPage(page)"
         >
           {{ page }}
         </li>
-      </ul>
-      <button
+        <li
         class="pagebtn next"
-        v-if="!pageSetting.last"
-        @click="sendPage(pageSetting.pageNumber+1)"
-      >다음</button>
+        :class="{ disabled: pageSetting.last }"
+        @click="sendPage(pageSetting.pageable.pageNumber+2)"
+      >▶</li>
+      </ul>
+
     </div>
   </div>
 </template>
@@ -30,8 +31,25 @@
 export default {
   name: 'Pagination',
   props: ['pageSetting'],
-  mounted () {
-    console.log(this.pageSetting)
+  computed: {
+    computedPages () {
+      const currentPage = this.pageSetting.pageable.pageNumber + 1
+      const totalPages = this.pageSetting.totalPages
+
+      if (totalPages <= 10) {
+      // 전체 페이지 수가 10 이하일 경우
+        console.log('1')
+        return Array.from({ length: totalPages }, (v, i) => i + 1)
+      } else if (currentPage <= 10) {
+      // 현재 페이지가 10 이하일 경우
+        console.log('2')
+        return Array.from({ length: 10 }, (v, i) => i + 1)
+      } else if (currentPage > totalPages - 10) {
+      // 현재 페이지가 끝에서 10 이하일 경우
+        console.log('3')
+        return Array.from({ length: totalPages % 10 }, (v, i) => Math.floor(totalPages / 10) * 10 + i + 1)
+      }
+    }
   },
   methods: {
     sendPage (page) {
@@ -42,11 +60,4 @@ export default {
 </script>
 
 <style scoped>
-.pagebtn {
-  width: 30px;
-  height: 30px;
-  border: 1px solid black;
-  border-radius: 5px;
-  list-style: none;
-}
 </style>
