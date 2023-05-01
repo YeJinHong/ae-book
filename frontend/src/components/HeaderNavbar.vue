@@ -65,12 +65,12 @@ export default {
     }
   },
   created () {
-    this.isLoginUser = localStorage.getItem('isLoginUser')
+    this.isLoginUser = sessionStorage.getItem('isLoginUser')
   },
   computed: {
     ...mapState(userStore, ['isLogin', 'isLoginError', 'user']),
     user () {
-      return JSON.parse(localStorage.getItem('userInfo'))
+      return JSON.parse(sessionStorage.getItem('userInfo'))
     }
   },
 
