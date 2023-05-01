@@ -9,7 +9,8 @@
     <button>알림신청</button>
     <button type="button" @click="onClickRedirect(book.aladinUrl)">구매하러가기</button>
     <p>{{ book.description }}</p>
-    <h3>isbn은 .. {{ this.isbn }}이다 ..</h3>
+    <!-- TODO: 별점 및 서평 등록 -->
+    <!-- TODO: 서평 수정 및 삭제 -->
     <div>
       <review-book-list-view :isbn="isbn"></review-book-list-view>
 
