@@ -1,13 +1,14 @@
-import { getReview, getLatestReviewList, getBookReviewList, modifyReview, deleteReview } from '../../api/review'
+import { getReview, getReviewMainList, getReviewBookList, modifyReview, deleteReview } from '../../api/review'
 
 const reviewStore = {
   namespaced: true,
   // state: 변수들의 집합
   state: {
     review: null,
-    mainReviewList: [],
-    myReviewList: [],
-    bookReviewList: []
+    reviewMainList: [],
+    reviewMyList: [],
+    reviewBookList: [],
+    reviewBookPageSetting: null
   },
   /*
   Gettes: state의 변수들을 get하는역할을 한다.
@@ -17,14 +18,17 @@ const reviewStore = {
     getReview: state => {
       return state.review
     },
-    getMainReviewList: state => {
-      return state.mainReviewList
+    getReviewMainList: state => {
+      return state.reviewMainList
     },
-    getMyReviewList: state => {
-      return state.myReviewList
+    getReviewMyList: state => {
+      return state.reviewMyList
     },
-    getBookReviewList: state => {
-      return state.bookReviewList
+    getReviewBookList: state => {
+      return state.reviewBookList
+    },
+    getReviewBookPageSetting: state => {
+      return state.reviewBookPageSetting
     }
   },
   /*
@@ -35,14 +39,14 @@ const reviewStore = {
     SET_REVIEW: (state, data) => {
       state.review = data
     },
-    SET_MAIN_REVIEW_LIST: (state, data) => {
-      state.mainReviewList = data
+    SET_REVIEW_MAIN_LIST: (state, data) => {
+      state.reviewMainList = data
     },
-    SET_MY_REVIEW_LIST: (state, data) => {
-      state.myReviewList = data
+    SET_REVIEW_MY_LIST: (state, data) => {
+      state.reviewMyList = data
     },
-    SET_BOOK_REVIEW_LIST: (state, data) => {
-      state.bookReviewList = data
+    SET_REVIEW_BOOK_LIST: (state, data) => {
+      state.reviewBookList = data
     },
     RESET_REVIEW (state) {
       state.review = null
@@ -63,20 +67,20 @@ const reviewStore = {
           console.log(err)
         })
     },
-    async getMainReviewListAction ({ commit }) {
-      await getLatestReviewList()
+    async getReviewMainListAction ({ commit }) {
+      await getReviewMainList()
         .then(({data}) => {
-          commit('SET_MAIN_REVIEW_LIST', data.result)
-          console.log('MAIN_REVIEW_LIST : ' + data.result)
+          commit('SET_REVIEW_MAIN_LIST', data.result)
+          console.log('REVIEW_MAIN_LIST : ' + data.result)
         }).catch((err) => {
           console.log(err)
         })
     },
-    async getBookReviewListAction ({ commit }, isbn) {
-      await getBookReviewList(isbn)
+    async getReviewBookListAction ({ commit }, isbn) {
+      await getReviewBookList(isbn)
         .then(({data}) => {
-          commit('SET_BOOK_REVIEW_LIST', data.result)
-          console.log('BOOK_REVIEW_LIST :' + data.result)
+          commit('SET_REVIEW_BOOK_LIST', data.result)
+          console.log('REVIEW_BOOK_LIST :' + data.result)
         }).catch((err) => {
           console.log(err)
         })
