@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <input type="text" v-model="title" placeholder="제목을 꼭">
     <canvas id="canvas"
       ref="canvas"
       @mousemove="onMove"
@@ -35,12 +36,14 @@
     </div>
     <div>
       <button>종료</button>
-      <button>저장</button>
+      <button @click="onSaveClick">저장</button>
     </div>
   </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+const paintingStore = 'paintingStore'
 
 export default {
   name: 'PaintingBoardView',
@@ -51,7 +54,8 @@ export default {
       isPainting: false,
       mode: 'brush',
       colorOptions1: ['#ff0000', '#ff8c00', '#ffff00', '#008000'],
-      colorOptions2: ['#0000ff', '#800080', '#000080', '#000000']
+      colorOptions2: ['#0000ff', '#800080', '#000080', '#000000'],
+      title: ''
     }
   },
   mounted () {
@@ -62,6 +66,7 @@ export default {
     this.ctx.lineWidth = 10
   },
   methods: {
+    ...mapActions(paintingStore, ['savePainting']),
     onMove (event) {
       if (this.isPainting) {
         if (this.mode === 'brush') {
@@ -97,6 +102,50 @@ export default {
     onResetClick () {
       this.ctx.clearRect(0, 0, 800, 500)
       this.ctx.beginPath()
+    },
+    canvasToFile (canvas) {
+      // canvas -> dataURL
+      let imgBase64 = canvas.toDataURL('image/png')
+
+      const byteString = atob(imgBase64.split(',')[1])
+      const ab = new ArrayBuffer(byteString.length)
+      const ia = new Uint8Array(ab)
+      for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i)
+      }
+      const blob = new Blob([ab], { type: 'image/png' })
+
+      // blob -> file
+      const paintingFile = new File([blob], 'painting_' + new Date().getMilliseconds() + '.png', { type: 'image/png' })
+
+      return paintingFile
+    },
+    onSaveClick () {
+      const paintingFile = this.canvasToFile(this.canvas)
+
+      let data = {
+        title: this.title,
+        type: 'COLOR'
+      }
+
+      let formData = new FormData()
+      formData.append('paintingFile', paintingFile)
+      formData.append('data', new Blob([JSON.stringify(data)], {type: 'application/json'}))
+
+      this.savePainting(formData)
+      // axios.post('/api/paintings', formData, {
+      //   headers: {
+      //     'Content-Type': 'multipart/form-data'
+      //   }
+      // })
+        .then(
+          alert('그림 저장에 성공했습니다.')
+        )
+        .catch(error => {
+          alert('그림 저장에 실패했습니다.')
+          console.log('에러?')
+          console.log(error)
+        })
     }
   }
 }
@@ -118,7 +167,7 @@ export default {
 #palette {
   display: flex;
   flex-direction: row;
-  background-color: pink;
+  /* background-color: pink; */
   width: 200px;
 }
 

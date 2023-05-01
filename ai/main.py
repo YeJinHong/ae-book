@@ -2,7 +2,6 @@ from fastapi import FastAPI,File,UploadFile
 from fastapi.responses import JSONResponse
 from review_star_prediction import *
 from isbn_ocr import *
-from caption import *
 from dotenv import load_dotenv
 import os
 import openai
@@ -60,7 +59,10 @@ async def sound_to_text(sound: UploadFile = File(...)):
     else:
         return "Error : " + response.text
 
-
+"""
+input: title, words
+output: review, star point
+"""
 @app.post("/reviews/gpt")
 async def create_review(title:str, words: str, writer=None, char=None):
     
@@ -68,7 +70,7 @@ async def create_review(title:str, words: str, writer=None, char=None):
     if writer != None and char != None:
         
         #default number of character value
-        char = max(100,char)
+        char = max(100,int(char))
             
         m = f"제목:{title}, 키워드:{words}, 작가:{writer}, 서평 {char}자 이내"
     
@@ -78,13 +80,13 @@ async def create_review(title:str, words: str, writer=None, char=None):
         if char == None:
             char = 100
         else:
-            char = max(100,char)
+            char = max(100,int(char))
         
         m = f"제목:{title}, 키워드:{words}, 서평 {char}자 이내"
     
     elif char == None:
         
-        m = f"제목:{title}, 키워드:{words}, 작가:{writer}, 서평 80자 이내"
+        m = f"제목:{title}, 키워드:{words}, 작가:{writer}, 서평 100자 이내"
     
     #chatgpt request
     completion = openai.ChatCompletion.create(
@@ -95,36 +97,12 @@ async def create_review(title:str, words: str, writer=None, char=None):
     )
     
     #chatgpt response
-    return completion.choices[0].message
-
-#prediction review star point
-"""
-input: chatgpt review
-output: string of star point(one of 1,2,3,4,5)
-"""
-@app.post("/reviews/point")
-async def predict_star_point(review: str):
-
-    #simple preprocessing review
-    review = review.strip("\n").strip(" ")
-
-    #transform review
-    transform_review = tokenizer.batch_encode_plus([review],max_length=128,pad_to_max_length=True)
-
-    #prepare input data
-    token_ids = torch.tensor(transform_review['input_ids']).long()
-    attention_mask = torch.tensor(transform_review['attention_mask']).long()
-
-    #prediction
-    output = star_model(token_ids, attention_mask)
-
-    #for confidence
-    #percentage_output = F.softmax(output, dim = 1)
-
-    #get maximum confidence class 
-    pred = output.cpu().detach().numpy()
-    sorted_pred = np.argsort(pred,axis = 1)
-    return str(sorted_pred[0][-1]+1)
+    response = completion.choices[0].message['content']
+    
+    #predicted star point
+    star = predict_star_point(response)
+    
+    return {"review":response, "star":star}
 
 #convert image to sketch
 @app.post("/paintings/sketch")
@@ -213,33 +191,10 @@ async def isbn_detection(image: UploadFile = File(...)):
                 return {"status":1, "data":data} 
     
     #fail
-    return {"status":0, "data":""} 
+    return {"status":0, "data":""}
 
 """
-input: image
-output: caption text
-"""
-@app.post("/stories/words")
-async def image_caption(image: UploadFile = File(...)):
-    
-    #read image & open image
-    img = await image.read()
-    img = io.BytesIO(img)
-    img = Image.open(img)
-    
-    #preprocessing image
-    img = preprocess(img).unsqueeze(0).to(device)
-    
-    #simple captioning
-    with torch.no_grad():
-        prefix = clip_model.encode_image(img).to(device, dtype=torch.float32)
-        prefix_embed = caption_model.clip_project(prefix).reshape(1, prefix_length, -1)
-        generated_text_prefix = generate(caption_model, tokenizer2, embed=prefix_embed)
-
-    return {"data":generated_text_prefix}
-
-"""
-input: caption text
+input: story keyword
 output: chatgpt story
 """
 @app.post("/stories/gpt")
