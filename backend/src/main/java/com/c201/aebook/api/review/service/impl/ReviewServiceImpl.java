@@ -68,13 +68,13 @@ public class ReviewServiceImpl implements ReviewService {
 		// 2. Review List
 		Page<ReviewEntity> reviews = reviewRepository.findByBookId(bookEntity.getId(), pageable);
 
-		return reviews.map(r -> ReviewResponseDTO.builder()
-			.reviewId(r.getId())
-			.reviewerNickname(r.getUser().getNickname())
-			.score(r.getScore())
-			.content(r.getContent())
-			.createAt(r.getCreatedAt())
-			.updateAt(r.getUpdatedAt())
+		return reviews.map(review -> ReviewResponseDTO.builder()
+			.reviewId(review.getId())
+			.reviewerNickname(review.getUser().getNickname())
+			.score(review.getScore())
+			.content(review.getContent())
+			.createdAt(review.getCreatedAt())
+			.updatedAt(review.getUpdatedAt())
 			.build());
 	}
 
@@ -82,13 +82,13 @@ public class ReviewServiceImpl implements ReviewService {
 	public Page<ReviewResponseDTO> getMyReviewList(String userId, Pageable pageable) {
 		Page<ReviewEntity> reviews = reviewRepository.findByUserId(Long.valueOf(userId), pageable);
 
-		return reviews.map(r -> ReviewResponseDTO.builder()
-			.reviewId(r.getId())
-			.reviewerNickname(r.getUser().getNickname())
-			.score(r.getScore())
-			.content(r.getContent())
-			.createAt(r.getCreatedAt())
-			.updateAt(r.getUpdatedAt())
+		return reviews.map(review -> ReviewResponseDTO.builder()
+			.reviewId(review.getId())
+			.reviewerNickname(review.getUser().getNickname())
+			.score(review.getScore())
+			.content(review.getContent())
+			.createdAt(review.getCreatedAt())
+			.updatedAt(review.getUpdatedAt())
 			.build());
 	}
 
@@ -101,8 +101,8 @@ public class ReviewServiceImpl implements ReviewService {
 			.reviewerNickname(review.getUser().getNickname())
 			.score(review.getScore())
 			.content(review.getContent())
-			.createAt(review.getCreatedAt())
-			.updateAt(review.getUpdatedAt())
+			.createdAt(review.getCreatedAt())
+			.updatedAt(review.getUpdatedAt())
 			.build();
 	}
 
@@ -145,13 +145,13 @@ public class ReviewServiceImpl implements ReviewService {
 		List<ReviewEntity> reviews = reviewRepository.findTop12ByOrderByIdDesc();
 
 		return reviews.stream()
-			.map(r -> ReviewResponseDTO.builder()
-				.reviewId(r.getId())
-				.reviewerNickname(r.getUser().getNickname())
-				.score(r.getScore())
-				.content(r.getContent())
-				.createAt(r.getCreatedAt())
-				.updateAt(r.getUpdatedAt())
+			.map(review -> ReviewResponseDTO.builder()
+				.reviewId(review.getId())
+				.reviewerNickname(review.getUser().getNickname())
+				.score(review.getScore())
+				.content(review.getContent())
+				.createdAt(review.getCreatedAt())
+				.updatedAt(review.getUpdatedAt())
 				.build())
 			.collect(Collectors.toList());
 	}

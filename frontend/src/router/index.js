@@ -5,6 +5,8 @@ import AppStory from '@/views/AppStory'
 import AppPainting from '@/views/AppPainting'
 import AppBook from '@/views/AppBook'
 import AppMyPage from '@/views/AppMyPage'
+import AppUser from '@/views/AppUser'
+import AppReview from '@/views/AppReview'
 
 Vue.use(Router)
 
@@ -19,17 +21,35 @@ export default new Router({
     {
       path: '/story',
       name: 'Story',
-      component: AppStory
+      component: AppStory,
+      children: [
+        {
+          path: 'list',
+          name: 'StoryListView',
+          component: () => import('@/components/story/StoryListView')
+        }
+      ]
     },
     {
       path: '/painting',
       name: 'Painting',
       component: AppPainting,
+      redirect: '/painting/list',
       children: [
         {
           path: 'board',
           name: 'paintingboard',
           component: () => import('@/components/painting/PaintingBoardView')
+        },
+        {
+          path: 'list',
+          name: 'paintinglist',
+          component: () => import('@/components/painting/PaintingListView')
+        },
+        {
+          path: 'generate',
+          name: 'generatesketche',
+          component: () => import('@/components/painting/GenerateSketcheView')
         }
       ]
     },
@@ -47,6 +67,12 @@ export default new Router({
           path: 'searchbypicture',
           name: 'BookSearchByPicture',
           component: () => import('@/components/book/BookSearchByPictureView')
+        },
+        {
+          path: 'detail/:isbn',
+          name: 'BookDetail',
+          component: () => import('@/components/book/BookDetailView'),
+          props: true
         }
       ]
     },
@@ -59,6 +85,47 @@ export default new Router({
           path: 'review',
           name: 'MyReview',
           component: () => import('@/components/myPage/MyReviewListView')
+        }
+      ]
+    },
+    {
+      path: '/user',
+      name: 'User',
+      component: AppUser,
+      children: [
+        {
+          path: 'login',
+          name: 'Login',
+          component: () => import('@/components/user/Login')
+        },
+        {
+          path: 'oauth',
+          name: 'Oauth',
+          component: () => import('@/components/user/Oauth')
+        }
+      ]
+
+    },
+    {
+      path: '/review',
+      name: 'Review',
+      component: AppReview,
+      children: [
+        {
+          path: 'create',
+          name: 'ReviewCreate',
+          component: () => import('@/components/review/ReviewCreateView')
+        },
+        {
+          path: 'detail/:reviewId',
+          name: 'ReviewDetail',
+          component: () => import('@/components/review/ReviewDetailView'),
+          props: true
+        },
+        {
+          path: 'modify',
+          name: 'ReviewModify',
+          component: () => import('@/components/review/ReviewModifyView')
         }
       ]
     }

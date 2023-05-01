@@ -17,6 +17,7 @@ import gluonnlp as nlp
 import numpy as np
 from transformers import BertModel
 from kobert_tokenizer import KoBERTTokenizer
+import openai
 
 """# load pretrained model"""
 tokenizer = KoBERTTokenizer.from_pretrained('skt/kobert-base-v1')
@@ -56,3 +57,75 @@ resume = "./star/model.pth"
 checkpoint = torch.load(resume, map_location=torch.device('cpu'))
 
 star_model.load_state_dict(checkpoint)
+
+#prediction review star point
+"""
+input: chatgpt review
+output: string of star point(one of 1,2,3,4,5)
+"""
+def predict_star_point(review):
+    
+    #simple preprocessing review
+    review = review.strip("\n").strip(" ")
+
+    #transform review
+    transform_review = tokenizer.batch_encode_plus([review],max_length=128,pad_to_max_length=True)
+
+    #prepare input data
+    token_ids = torch.tensor(transform_review['input_ids']).long()
+    attention_mask = torch.tensor(transform_review['attention_mask']).long()
+
+    #prediction
+    output = star_model(token_ids, attention_mask)
+
+    #for confidence
+    #percentage_output = F.softmax(output, dim = 1)
+
+    #get maximum confidence class
+    pred = output.cpu().detach().numpy()
+    sorted_pred = np.argsort(pred,axis = 1)
+    return str(sorted_pred[0][-1]+1)
+
+"""
+input: title, words
+output: review, star point
+"""
+def create_gpt_review(title:str, words: str, writer=None, char=None):
+    
+    # message 구성
+    if writer != None and char != None:
+        
+        #default number of character value
+        char = max(100,int(char))
+            
+        m = f"제목:{title}, 키워드:{words}, 작가:{writer}, 서평 {char}자 이내"
+    
+    elif writer == None:
+        
+        #default number of character value
+        if char == None:
+            char = 100
+        else:
+            char = max(100,int(char))
+        
+        m = f"제목:{title}, 키워드:{words}, 서평 {char}자 이내"
+    
+    elif char == None:
+        
+        m = f"제목:{title}, 키워드:{words}, 작가:{writer}, 서평 100자 이내"
+    
+    #chatgpt request
+    completion = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "user", "content": m}
+    ]
+    )
+    
+    #chatgpt response
+    response = completion.choices[0].message['content']
+    
+    #predicted star point
+    star = predict_star_point(response)
+    
+    return {"review":response, "star":star}

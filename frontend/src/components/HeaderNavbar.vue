@@ -32,13 +32,20 @@
                     </router-link>
                 </b-nav-item>
             </b-navbar-nav>
-            <!-- TODO : 로그인 여부(세션에 JWT 정보 확인)에 따라(v-if) 로그인/마이페이지로 출력 바꾸기-->
-            <b-navbar-nav class="ml-auto">
+            <!-- 로그인 후, 보여주는 정보는 추후 다시 결정, 마이페이지는 임시 배치 -->
+            <b-navbar-nav class="ml-auto" v-if=isLoginUser>
                     <b-nav-form>
-                        <!-- TODO : 로그인 모달창 작성 및 연결 -->
-                        <b-button size="sm">로그인</b-button>
+                        {{ user.userId }} | {{ user.nickname }}
+                        <b-button size="sm" @click="logout">로그아웃</b-button>
+                        <router-link :to="{ name: 'MyPage' }" class="link"><b-button size="sm">마이페이지</b-button></router-link>
                     </b-nav-form>
-                </b-navbar-nav>
+            </b-navbar-nav>
+            <!-- 로그인 전 -->
+            <b-navbar-nav class="ml-auto" v-else>
+                <b-nav-form>
+                    <router-link :to="{ name: 'Login' }" class="link"><b-button size="sm">로그인</b-button></router-link>
+                </b-nav-form>
+            </b-navbar-nav>
             </b-collapse>
         </b-navbar>
     </div>
@@ -46,8 +53,37 @@
 
 <script>
 // TODO: 메인페이지 Navbar 배치 변경.
+import { mapState, mapActions } from 'vuex'
+const userStore = 'userStore'
+
 export default {
-  name: 'HeaderNavbar'
+  name: 'HeaderNavbar',
+  data () {
+    return {
+      kakaoLogOutLink: `https://kauth.kakao.com/oauth/logout?client_id=${process.env.VUE_APP_REST_API_KEY}&logout_redirect_uri=${process.env.VUE_APP_LOGOUT_REDIRECT_URI}`,
+      isLoginUser: false
+    }
+  },
+  created () {
+    this.isLoginUser = sessionStorage.getItem('isLoginUser')
+  },
+  computed: {
+    ...mapState(userStore, ['isLogin', 'isLoginError', 'user']),
+    user () {
+      return JSON.parse(sessionStorage.getItem('userInfo'))
+    }
+  },
+
+  methods: {
+    ...mapActions(userStore, ['userLogout']),
+    logout () {
+      if (window.confirm('로그아웃을 하시겠습니까?')) {
+        this.userLogout().then(() => {
+          window.location.href = this.kakaoLogOutLink
+        })
+      }
+    }
+  }
 }
 </script>
 
