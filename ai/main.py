@@ -9,6 +9,7 @@ import io
 import base64
 import cv2
 import sys
+import urllib.request
 import requests
 import numpy as np
 from PIL import Image
