@@ -10,14 +10,20 @@
     <button type="button" @click="onClickRedirect(book.aladinUrl)">구매하러가기</button>
     <p>{{ book.description }}</p>
     <h3>isbn은 .. {{ this.isbn }}이다 ..</h3>
-    <review-book-list-view :isbn="isbn"></review-book-list-view>
+    <div>
+      <review-book-list-view :isbn="isbn"></review-book-list-view>
+
+    </div>
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from 'vuex'
+
 import ReviewBookListView from '../review/ReviewBookListView.vue'
+
 const bookStore = 'bookStore'
+const reviewStore = 'reviewStore'
 
 export default {
   name: 'BookDetailView',
@@ -26,7 +32,8 @@ export default {
     ReviewBookListView
   },
   computed: {
-    ...mapState(bookStore, ['book'])
+    ...mapState(bookStore, ['book']),
+    ...mapState(reviewStore, ['reviewBookList', 'reviewBookPageSetting'])
   },
   mounted () {
     this.getBookDetail(this.isbn)
@@ -41,6 +48,9 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+.pagination-container {
+  display:flex;
+  justify-content: center;
+}
 </style>
