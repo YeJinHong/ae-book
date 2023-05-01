@@ -3,6 +3,7 @@
     <input type="text" v-model="inputValue" />
     <button @click="sendInputValue">전송</button>
     <div>{{storyResult}}</div>
+    <div>{{ inputValue }}</div>
     <!-- <StoryChatGptView :storyResult="storyResult"></StoryChatGptView> -->
   </div>
 </template>
@@ -23,8 +24,11 @@ export default {
   },
   methods: {
     sendInputValue () {
+      console.log(typeof this.inputValue)
       axios
-        .post(`/stories/gpt`, { value: this.inputValue })
+        .post(`http://127.0.0.1:8000/stories/gpt`, {
+          text: this.inputValue
+        })
         .then(result => {
           console.log(result)
           this.storyResult = result.data
