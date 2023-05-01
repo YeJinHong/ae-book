@@ -4,6 +4,7 @@ import bookStore from '@/store/modules/bookStore.js'
 import paintingStore from '@/store/modules/paintingStore.js'
 import reviewStore from './modules/reviewStore'
 import userStore from './modules/userStore'
+import storyStore from './modules/storyStore'
 
 Vue.use(Vuex)
 
@@ -12,7 +13,8 @@ const store = new Vuex.Store({
     bookStore,
     paintingStore,
     reviewStore,
-    userStore
+    userStore,
+    storyStore
   }
 })
 
