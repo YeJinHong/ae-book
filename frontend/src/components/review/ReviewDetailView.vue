@@ -57,16 +57,18 @@ export default {
     },
     onSubmit (event) {
       console.log('onSubmit')
-      const data = {
-        content: this.review.content,
-        score: this.review.score
+
+      const payload = {
+        reviewId: this.review.reviewId,
+        data: {
+          content: this.review.content,
+          score: this.review.score
+        }
       }
 
-      console.log('data : ' + JSON.stringify(data))
-      console.log(typeof JSON.stringify(data))
       event.preventDefault()
-      this.modifyReviewAction(this.review.reviewId, JSON.stringify(data))
-      // this.modifyReviewAction(this.review.reviewId, data)
+      this.modifyReviewAction(payload)
+      this.getReviewAction(this.review.reviewId)
     },
     onReset (event) {
       event.preventDefault()

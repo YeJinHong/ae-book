@@ -8,11 +8,7 @@ const saveReview = (isbn, payload) => api.post(`/api/reviews/${isbn}`, payload)
 const getReview = reviewId => api.get(`/api/reviews/detail/${reviewId}`)
 
 // 3. 서평 수정
-const modifyReview = (reviewId, payload) => api.patch(`/api/reviews/${reviewId}`, payload, {
-  headers: {
-    'Content-Type': 'application/json'
-  }
-})
+const modifyReview = (payload) => api.patch(`/api/reviews/${payload.reviewId}`, payload.data, { headers: {'Content-Type': 'application/json'} })
 
 // 4. 서평 삭제
 
