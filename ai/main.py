@@ -2,7 +2,6 @@ from fastapi import FastAPI,File,UploadFile
 from fastapi.responses import JSONResponse
 from review_star_prediction import *
 from isbn_ocr import *
-from caption import *
 from dotenv import load_dotenv
 import os
 import openai
@@ -213,30 +212,7 @@ async def isbn_detection(image: UploadFile = File(...)):
                 return {"status":1, "data":data} 
     
     #fail
-    return {"status":0, "data":""} 
-
-"""
-input: image
-output: caption text
-"""
-@app.post("/stories/words")
-async def image_caption(image: UploadFile = File(...)):
-    
-    #read image & open image
-    img = await image.read()
-    img = io.BytesIO(img)
-    img = Image.open(img)
-    
-    #preprocessing image
-    img = preprocess(img).unsqueeze(0).to(device)
-    
-    #simple captioning
-    with torch.no_grad():
-        prefix = clip_model.encode_image(img).to(device, dtype=torch.float32)
-        prefix_embed = caption_model.clip_project(prefix).reshape(1, prefix_length, -1)
-        generated_text_prefix = generate(caption_model, tokenizer2, embed=prefix_embed)
-
-    return {"data":generated_text_prefix}
+    return {"status":0, "data":""}
 
 """
 input: caption text
