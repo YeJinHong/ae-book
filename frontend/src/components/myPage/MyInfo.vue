@@ -11,17 +11,19 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 const userStore = 'userStore'
 
 export default {
   name: 'MyInfo',
   created () {
-    // console.log(this.isLogin)
     this.isLoginUser = sessionStorage.getItem('isLoginUser')
+    this.user = this.getUserInfo
+    console.log(this.user)
   },
   computed: {
     ...mapState(userStore, ['isLogin', 'isLoginError', 'user']),
+    ...mapGetters(userStore, ['getUserInfo']),
     user () {
       return JSON.parse(sessionStorage.getItem('userInfo'))
     }
