@@ -33,6 +33,7 @@ pipeline
 			steps {
 				echo 'Build Start "${APP_SPRING_API}"'
 				sh 'chmod +x ${APP_SPRING_API}/gradlew'
+				sh '${APP_SPRING_API}/gradlew -p ${APP_SPRING_API} cleanQuerydslSourceDir'
 				sh '''
 					${APP_SPRING_API}/gradlew -p ${APP_SPRING_API} build -x test
 					docker build -t back-spring-api-img ${APP_SPRING_API}/. --no-cache
