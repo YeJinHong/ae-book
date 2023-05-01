@@ -21,17 +21,35 @@ export default new Router({
     {
       path: '/story',
       name: 'Story',
-      component: AppStory
+      component: AppStory,
+      children: [
+        {
+          path: 'list',
+          name: 'StoryListView',
+          component: () => import('@/components/story/StoryListView')
+        }
+      ]
     },
     {
       path: '/painting',
       name: 'Painting',
       component: AppPainting,
+      redirect: '/painting/list',
       children: [
         {
           path: 'board',
           name: 'paintingboard',
           component: () => import('@/components/painting/PaintingBoardView')
+        },
+        {
+          path: 'list',
+          name: 'paintinglist',
+          component: () => import('@/components/painting/PaintingListView')
+        },
+        {
+          path: 'generate',
+          name: 'generatesketche',
+          component: () => import('@/components/painting/GenerateSketcheView')
         }
       ]
     },
@@ -99,9 +117,10 @@ export default new Router({
           component: () => import('@/components/review/ReviewCreateView')
         },
         {
-          path: 'detail',
+          path: 'detail/:reviewId',
           name: 'ReviewDetail',
-          component: () => import('@/components/review/ReviewDetailView')
+          component: () => import('@/components/review/ReviewDetailView'),
+          props: true
         },
         {
           path: 'modify',

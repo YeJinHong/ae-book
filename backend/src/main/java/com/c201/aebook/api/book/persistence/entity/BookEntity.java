@@ -26,13 +26,13 @@ public class BookEntity extends BaseEntity {
 	@Column(name = "id")
 	private Long id;
 
-	@Column(name = "title", nullable = false, length = 100)
+	@Column(name = "title", nullable = false)
 	private String title;
 
 	@Column(name = "description", length = 1000)
 	private String description;
 
-	@Column(name = "author", nullable = false, length = 50)
+	@Column(name = "author", nullable = false)
 	private String author;
 
 	@Column(name = "publisher", length = 50)
@@ -43,9 +43,6 @@ public class BookEntity extends BaseEntity {
 
 	@Column(name = "isbn", nullable = false, length = 40)
 	private String isbn;
-
-	@Column(name = "page")
-	private int page;
 
 	@Column(name = "price", nullable = false)
 	private int price;
@@ -65,14 +62,13 @@ public class BookEntity extends BaseEntity {
 
 	@Builder
 	public BookEntity(String title, String description, String author, String publisher, Date publishDate, String isbn,
-		int page, int price, String aladinUrl, String coverImageUrl, int scoreSum, int reviewCount) {
+		int price, String aladinUrl, String coverImageUrl, int scoreSum, int reviewCount) {
 		this.title = title;
 		this.description = description;
 		this.author = author;
 		this.publisher = publisher;
 		this.publishDate = publishDate;
 		this.isbn = isbn;
-		this.page = page;
 		this.price = price;
 		this.aladinUrl = aladinUrl;
 		this.coverImageUrl = coverImageUrl;
