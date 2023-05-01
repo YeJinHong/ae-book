@@ -77,7 +77,11 @@ export default {
       }
 
       let formData = new FormData()
-      formData.append('imgUrl', this.$refs.fileInput.files[0])
+      if (!this.$refs.fileInput.files[0]) {
+        formData.append('imgUrl', this.$refs.fileInput.files[0])
+      } else {
+        formData.append('imgUrl', null)
+      }
       formData.append('content', new Blob([JSON.stringify(data)], {type: 'application/json'}))
 
       console.log(formData)
