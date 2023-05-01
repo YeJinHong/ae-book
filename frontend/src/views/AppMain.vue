@@ -5,6 +5,7 @@
     <!-- TODO : 각기 다음에 필요한 컴포넌트는 components/{domain} 하위에 작성 -->
     <!-- TODO : 새로 들어온 책 콘텐츠 케러셀 컴포넌트-->
     <!-- TODO : 최근 리뷰 컨텐츠 케러셀 컴포넌트 -->
+    <carousel v-model="selectedReview" :reviews="mainReviewList"></carousel>
     <div class='main-review-container'>
       <div class='main-review-item' v-for="(item, index) in mainReviewList" :key="index">
         <p>reviewId: {{ item.reviewId }}</p>
@@ -15,6 +16,7 @@
         <p>updatedAt: {{ item.updatedAt }}</p>
       </div>
     </div>
+
     <!-- TODO : 우리 아이들 작품(만든 동화) 리스트 컴포넌트 -->
     <the-footer></the-footer>
   </div>
@@ -23,6 +25,7 @@
 <script>
 import HeaderNavbarMain from '@/components/HeaderNavbarMain'
 import TheFooter from '@/components/TheFooter'
+import Carousel from '@/components/CarouselView'
 import { mapState, mapActions } from 'vuex'
 
 const reviewStore = 'reviewStore'
@@ -31,7 +34,13 @@ export default {
   name: 'AppMain',
   components: {
     HeaderNavbarMain,
-    TheFooter
+    TheFooter,
+    Carousel
+  },
+  data () {
+    return {
+      selectedReview: null // 선택된 리뷰 리스트
+    }
   },
   methods: {
     ...mapActions(reviewStore, ['getMainReviewListAction'])
