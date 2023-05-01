@@ -33,7 +33,6 @@ export default {
   },
   mounted () {
     this.getReviewMainListAction()
-    console.log('여기유 : ' + this.reviewMainList)
   }
 }
 
