@@ -59,7 +59,10 @@ async def sound_to_text(sound: UploadFile = File(...)):
     else:
         return "Error : " + response.text
 
-
+"""
+input: title, words
+output: review, star point
+"""
 @app.post("/reviews/gpt")
 async def create_review(title:str, words: str, writer=None, char=None):
     
@@ -94,36 +97,12 @@ async def create_review(title:str, words: str, writer=None, char=None):
     )
     
     #chatgpt response
-    return completion.choices[0].message
-
-#prediction review star point
-"""
-input: chatgpt review
-output: string of star point(one of 1,2,3,4,5)
-"""
-@app.post("/reviews/point")
-async def predict_star_point(review: str):
-
-    #simple preprocessing review
-    review = review.strip("\n").strip(" ")
-
-    #transform review
-    transform_review = tokenizer.batch_encode_plus([review],max_length=128,pad_to_max_length=True)
-
-    #prepare input data
-    token_ids = torch.tensor(transform_review['input_ids']).long()
-    attention_mask = torch.tensor(transform_review['attention_mask']).long()
-
-    #prediction
-    output = star_model(token_ids, attention_mask)
-
-    #for confidence
-    #percentage_output = F.softmax(output, dim = 1)
-
-    #get maximum confidence class 
-    pred = output.cpu().detach().numpy()
-    sorted_pred = np.argsort(pred,axis = 1)
-    return str(sorted_pred[0][-1]+1)
+    response = completion.choices[0].message['content']
+    
+    #predicted star point
+    star = predict_star_point(response)
+    
+    return {"review":response, "star":star}
 
 #convert image to sketch
 @app.post("/paintings/sketch")
@@ -215,7 +194,7 @@ async def isbn_detection(image: UploadFile = File(...)):
     return {"status":0, "data":""}
 
 """
-input: caption text
+input: story keyword
 output: chatgpt story
 """
 @app.post("/stories/gpt")
