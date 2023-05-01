@@ -36,19 +36,16 @@ export default {
       const currentPage = this.pageSetting.pageable.pageNumber + 1
       const totalPages = this.pageSetting.totalPages
 
-      if (totalPages <= 10) {
-      // 전체 페이지 수가 10 이하일 경우
-        console.log('1')
-        return Array.from({ length: totalPages }, (v, i) => i + 1)
-      } else if (currentPage <= 10) {
-      // 현재 페이지가 10 이하일 경우
-        console.log('2')
-        return Array.from({ length: 10 }, (v, i) => i + 1)
-      } else if (currentPage > totalPages - 10) {
-      // 현재 페이지가 끝에서 10 이하일 경우
-        console.log('3')
-        return Array.from({ length: totalPages % 10 }, (v, i) => Math.floor(totalPages / 10) * 10 + i + 1)
+      let startIndex = Math.floor((currentPage - 1) / 10) * 10
+      let endIndex = Math.min(startIndex + 9, totalPages - 1)
+
+      let computedPages = []
+
+      for (let i = startIndex; i <= endIndex; i++) {
+        computedPages.push(i + 1)
       }
+
+      return computedPages
     }
   },
   methods: {
