@@ -9,6 +9,7 @@ import io
 import base64
 import cv2
 import sys
+import urllib.request
 import requests
 import numpy as np
 from PIL import Image
@@ -17,6 +18,7 @@ app = FastAPI()
 
 #constant
 STT_URL = "https://naveropenapi.apigw.ntruss.com/recog/v1/stt?lang=Kor"
+TTS_URL = "https://naveropenapi.apigw.ntruss.com/tts-premium/v1/tts"
 
 #api key
 load_dotenv()
@@ -33,31 +35,6 @@ async def root():
 @app.get("/hello/{name}")
 async def say_hello(name: str):
     return {"message":f"Hello {name}"}
-
-
-"""
-input:mp3 file(keyword)
-output:text
-"""
-@app.post("/reviews/sound")
-async def sound_to_text(sound: UploadFile = File(...)):
-    
-    #read mp3 file to byte string
-    data = await sound.read()
-    
-    headers = {
-        "X-NCP-APIGW-API-KEY-ID": client_id,
-        "X-NCP-APIGW-API-KEY": client_secret,
-        "Content-Type": "application/octet-stream"
-    }
-    
-    response = requests.post(STT_URL,  data=data, headers=headers)
-    rescode = response.status_code
-    
-    if(rescode == 200):
-        return response.text
-    else:
-        return "Error : " + response.text
 
 """
 input: title, words
@@ -103,6 +80,38 @@ async def create_review(title:str, words: str, writer=None, char=None):
     star = predict_star_point(response)
     
     return {"review":response, "star":star}
+
+
+"""
+input:mp3 file(keyword), title
+output:review & point prediction
+"""
+@app.post("/reviews/sound")
+async def sound_to_review(title:str, sound: UploadFile = File(...), writer=None, char=None):
+    
+    #read mp3 file to byte string
+    data = await sound.read()
+    
+    headers = {
+        "X-NCP-APIGW-API-KEY-ID": client_id,
+        "X-NCP-APIGW-API-KEY": client_secret,
+        "Content-Type": "application/octet-stream"
+    }
+    
+    response = requests.post(STT_URL,  data=data, headers=headers)
+    rescode = response.status_code
+    
+    if(rescode == 200):
+        
+        words = response.text #stt result
+        
+        review_dict = create_gpt_review(title,words,writer,char) #create review & star
+        
+        return {"review":review_dict["review"], "star":review_dict["star"]}
+    else:
+        return "Error : " + response.text
+    
+    
 
 #convert image to sketch
 @app.post("/paintings/sketch")
@@ -213,3 +222,32 @@ async def create_story(text: str):
     
     #chatgpt response
     return completion.choices[0].message
+
+"""
+input:text
+output:naver clova mp3 response data
+"""
+@app.post("/stories/sound")
+async def text_to_sound(text: str):
+    
+    #create data(default)
+    encText = urllib.parse.quote(text)
+    data = "speaker=nminsang&volume=-5&speed=0&pitch=0&format=wav&text=" + encText
+    
+    #header
+    request = urllib.request.Request(TTS_URL)
+    request.add_header("X-NCP-APIGW-API-KEY-ID",client_id)
+    request.add_header("X-NCP-APIGW-API-KEY",client_secret)
+    
+    #response
+    response = urllib.request.urlopen(request, data=data.encode('utf-8'))
+    rescode = response.getcode()
+    
+    
+    if(rescode==200):
+        
+        #sound byte string    
+        return response
+
+    else:
+        return "Error Code:" + rescode
