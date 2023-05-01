@@ -87,6 +87,11 @@ export default new Router({
           component: () => import('@/components/myPage/MyReviewListView')
         },
         {
+          path: 'info',
+          name: 'MyInfo',
+          component: () => import('@/components/myPage/MyInfo')
+        },
+        {
           path: 'modify',
           name: 'MyInfoModify',
           component: () => import('@/components/myPage/MyInfoModify')
