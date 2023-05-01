@@ -149,8 +149,8 @@ async def image_to_sketch(image: UploadFile = File(...)):
     # encoding byte string to base64
     encoded = base64.b64encode(binary_sketch)
     
-    # decoding base64 to ascii
-    decoded = encoded.decode('ascii')
+    # decoding base64 to utf-8
+    decoded = encoded.decode('utf-8')
     
     #return json response
     return JSONResponse(decoded)
