@@ -70,7 +70,10 @@ export default {
   methods: {
     ...mapActions(userStore, ['userUpdate']),
     async modifyUser () {
-      console.log('정보수정')
+      if (!this.user.nickname) {
+        alert('닉네임은 입력은 필수입니다!')
+        return
+      }
 
       let data = {
         nickname: this.user.nickname
