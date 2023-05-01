@@ -25,6 +25,7 @@ body {
     font-family: 'Nanum Gothic', sans-serif;
     color: var(--ae-navy);
     text-align: center;
+    background-color: var(--main-background);
 }
 
 ul, ol, li {
