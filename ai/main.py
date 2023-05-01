@@ -18,6 +18,7 @@ app = FastAPI()
 
 #constant
 STT_URL = "https://naveropenapi.apigw.ntruss.com/recog/v1/stt?lang=Kor"
+TTS_URL = "https://naveropenapi.apigw.ntruss.com/tts-premium/v1/tts"
 
 #api key
 load_dotenv()
@@ -221,3 +222,32 @@ async def create_story(text: str):
     
     #chatgpt response
     return completion.choices[0].message
+
+"""
+input:text
+output:naver clova mp3 response data
+"""
+@app.post("/stories/sound")
+async def text_to_sound(text: str):
+    
+    #create data(default)
+    encText = urllib.parse.quote(text)
+    data = "speaker=nminsang&volume=-5&speed=0&pitch=0&format=wav&text=" + encText
+    
+    #header
+    request = urllib.request.Request(TTS_URL)
+    request.add_header("X-NCP-APIGW-API-KEY-ID",client_id)
+    request.add_header("X-NCP-APIGW-API-KEY",client_secret)
+    
+    #response
+    response = urllib.request.urlopen(request, data=data.encode('utf-8'))
+    rescode = response.getcode()
+    
+    
+    if(rescode==200):
+        
+        #sound byte string    
+        return response
+
+    else:
+        return "Error Code:" + rescode
