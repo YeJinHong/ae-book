@@ -8,18 +8,25 @@
       <p>작성자: {{ story.storyAuthorNickname }}</p>
       <p>작성일: {{ story.createdAt }}</p>
     </div>
-    <ModalView :modalShow="isModalVisible" @close-modal="closeModal"></ModalView>
+    <ModalView :modalShow="isModalVisible" @close-modal="closeModal">
+      <StoryDetailView />
+    </ModalView>
   </div>
 </template>
 
 <script>
 import { searchStory } from '@/api/story'
 import ModalView from '@/components/common/ModalView'
+import StoryDetailView from '@/components/story/StoryDetailView'
+import { mapMutations, mapGetters } from 'vuex'
+
+const storyStore = 'storyStore'
 
 export default {
   name: 'StoryListView',
   components: {
-    ModalView
+    ModalView,
+    StoryDetailView
   },
   data () {
     return {
@@ -32,6 +39,7 @@ export default {
       isModalVisible: false
     }
   },
+
   mounted () {
     searchStory(this.page)
       .then(response => {
@@ -41,13 +49,18 @@ export default {
         alert('정상적으로 조회하지 못했습니다. ' + error)
       })
   },
+  computed: {
+    ...mapGetters(storyStore, ['getStoryId'])
+  },
   methods: {
+    ...mapMutations(storyStore, ['setStoryId', 'clearStoryId']),
     showModal (storyId) {
+      this.setStoryId(storyId)
       this.isModalVisible = true
-      this.$emit('show-modal', storyId)
     },
     closeModal () {
       this.isModalVisible = false
+      this.clearStoryId()
     }
   }
 }

@@ -1,11 +1,12 @@
 <template>
   <div class="modal-overlay">
-    <b-modal v-model="modalShow" @hidden="onHidden"> </b-modal>
+    <b-modal v-model="visible" @hidden="onHidden">
+      <slot></slot>
+    </b-modal>
   </div>
 </template>
 
 <script>
-
 export default {
   name: 'ModalView',
   props: {
@@ -22,6 +23,21 @@ export default {
   methods: {
     onHidden () {
       this.$emit('close-modal')
+    }
+  },
+  watch: {
+    modalShow (newValue) {
+      this.visible = newValue
+    }
+  },
+  computed: {
+    visible: {
+      get () {
+        return this.modalShow
+      },
+      set (newValue) {
+        this.$emit('update:modalShow', newValue)
+      }
     }
   }
 }
