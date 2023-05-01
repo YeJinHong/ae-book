@@ -1,4 +1,4 @@
-import { getReview, getLatestReviewList, getBookReviewList, modifyReview } from '../../api/review'
+import { getReview, getLatestReviewList, getBookReviewList, modifyReview, deleteReview } from '../../api/review'
 
 const reviewStore = {
   namespaced: true,
@@ -43,6 +43,9 @@ const reviewStore = {
     },
     SET_BOOK_REVIEW_LIST: (state, data) => {
       state.bookReviewList = data
+    },
+    RESET_REVIEW (state) {
+      state.review = null
     }
   },
   /*
@@ -86,6 +89,13 @@ const reviewStore = {
         })
         .catch((err) => {
           console.log(err)
+        })
+    },
+    async deleteReviewAction ({ commit }, reviewId) {
+      await deleteReview(reviewId)
+        .then(({data}) => {
+          commit('RESET_REVIEW')
+          console.log('Review Delete Complete')
         })
     }
   }
