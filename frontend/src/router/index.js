@@ -85,6 +85,11 @@ export default new Router({
           path: 'review',
           name: 'MyReview',
           component: () => import('@/components/myPage/MyReviewListView')
+        },
+        {
+          path: 'painting',
+          name: 'mypainting',
+          component: () => import('@/components/myPage/MyPaintingListView')
         }
       ]
     },
