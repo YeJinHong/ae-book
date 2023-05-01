@@ -24,8 +24,6 @@ source venv/Scripts/activate
 
 pip install -r requirements.txt
 
-pip install git+https://github.com/openai/CLIP.git
-
 pip install git+https://git@github.com/SKTBrain/KoBERT.git@master
 
 pip install 'git+https://github.com/SKTBrain/KoBERT.git#egg=kobert_tokenizer&subdirectory=kobert_hf'
