@@ -26,9 +26,6 @@ const reviewStore = {
     },
     getReviewBookList: state => {
       return state.reviewBookList
-    },
-    getReviewBookPageSetting: state => {
-      return state.reviewBookPageSetting
     }
   },
   /*
@@ -47,6 +44,10 @@ const reviewStore = {
     },
     SET_REVIEW_BOOK_LIST: (state, data) => {
       state.reviewBookList = data
+    },
+    SET_REVIEW_BOOK_PAGE_SETTING: (state, data) => {
+      const { pageable, last, first, totalPages, size, totalElements, numberOfElements, empty } = data
+      state.reviewBookPageSetting = { pageable, last, first, totalPages, size, totalElements, numberOfElements, empty }
     },
     RESET_REVIEW (state) {
       state.review = null
@@ -76,12 +77,26 @@ const reviewStore = {
           console.log(err)
         })
     },
-    async getReviewBookListAction ({ commit }, isbn) {
-      await getReviewBookList(isbn)
+    async getReviewBookListAction ({ commit }, request) {
+      await getReviewBookList(request)
         .then(({data}) => {
-          commit('SET_REVIEW_BOOK_LIST', data.result)
-          console.log('REVIEW_BOOK_LIST :' + data.result)
+          console.log('getReviewBookListAction')
+          console.log(data.result.content)
+          commit('SET_REVIEW_BOOK_LIST', data.result.content)
+          commit('SET_REVIEW_BOOK_PAGE_SETTING', data.result)
         }).catch((err) => {
+          console.log(err)
+        })
+    },
+    async getReviewBookPageAction ({ commit }, request) {
+      await getReviewBookList(request)
+        .then(({ data }) => {
+          console.log('getReviewBookPage')
+          console.log(data.result.content)
+          commit('SET_REVIEW_BOOK_LIST', data.result.content)
+          commit('SET_REVIEW_BOOK_PAGE_SETTING', data.result)
+        })
+        .catch((err) => {
           console.log(err)
         })
     },
