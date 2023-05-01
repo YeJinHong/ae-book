@@ -35,7 +35,7 @@ export default {
         isbn: this.isbn,
         page: 0,
         size: 3,
-        sort: 'id',
+        sort: 'createdAt',
         direction: 'DESC'
       }
     }
@@ -56,7 +56,7 @@ export default {
       isbn: this.isbn,
       page: 0,
       size: 3,
-      sort: 'id',
+      sort: 'createdAt',
       direction: 'DESC'
     }
     this.getReviewBookListAction(request)
