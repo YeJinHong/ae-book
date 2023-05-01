@@ -1,26 +1,65 @@
 <template>
   <div class="container">책 검색
-    <button @click="getBookReviewList">특정 도서의 서평 리스트</button>
+    <input type="text" v-model="keyword" @keyup.enter="onClickSearch">
+    <input type="checkbox" v-model="searchTargets" value="TITLE" checked>제목
+    <input type="checkbox" v-model="searchTargets" value="AUTHOR" checked>지은이
+    <input type="checkbox" v-model="searchTargets" value="PUBLISHER" checked>출판사
+    <button @click="onClickSearch">검색</button>
+    <div>
+      <div
+        class="list-group-item"
+        v-for="book in bookList"
+        :key="book.isbn"
+      >
+      <router-link :to="{ name: 'BookDetail', params: { isbn: book.isbn } }">
+        <img v-bind:src="book.coverImageUrl" class="book-image" />
+      </router-link>
+      {{ book.title }}
+      현재 최저가 {{ book.price }}원
+      {{ book.author }} | {{ book.publisher }} | {{ book.publishDate }}
+      <button type="button" @click="onClickRedirect(book.aladinUrl)">구매하러가기</button>
+    </div>
+  </div>
+  <pagination :pageSetting="bookPageSetting" @paging="paging"></pagination>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
+import { mapActions, mapGetters, mapState } from 'vuex'
+import Pagination from '../common/Pagination.vue'
+const bookStore = 'bookStore'
 
 export default {
+  components: { Pagination },
   name: 'BookSearchView',
   data () {
     return {
-      isbn: '9788932916378'
+      keyword: '',
+      searchTargets: [],
+      request: null
     }
   },
+  computed: {
+    ...mapState(bookStore, ['bookList', 'bookPageSetting']),
+    ...mapGetters(bookStore, ['getBookList'])
+  },
   methods: {
-    getBookReviewList () {
-      axios.get(`/api/reviews/${this.isbn}`).then((result) => {
-        console.log(result)
-      }).catch((err) => {
-        console.log(err)
-      })
+    ...mapActions(bookStore, ['getSearchList', 'getPage']),
+    onClickSearch () {
+      this.request = {
+        keyword: this.keyword,
+        searchTargets: this.searchTargets
+      }
+      this.getSearchList(this.request)
+    },
+    onClickRedirect (url) {
+      window.open(url, 'blank')
+    },
+    paging (page) {
+      console.log(page + '페이지 이동!!')
+      this.request['page'] = page - 1
+      console.log(this.request)
+      this.getSearchList(this.request)
     }
   }
 }
@@ -29,5 +68,9 @@ export default {
 <style scoped>
 .container {
   padding: 0 100px;
+}
+
+.book-image {
+  width: 160px;
 }
 </style>
