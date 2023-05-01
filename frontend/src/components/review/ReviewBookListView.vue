@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- TODO: 정렬 -->
     <div
       class="list-group-item"
       v-for="review in reviewBookList"

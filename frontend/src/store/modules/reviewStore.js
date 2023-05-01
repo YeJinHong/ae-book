@@ -63,6 +63,7 @@ const reviewStore = {
       await getReview(reviewId)
         .then(({data}) => {
           commit('SET_REVIEW', data.result)
+          console.log('getReview')
           console.log(data.result)
         }).catch((err) => {
           console.log(err)
@@ -72,7 +73,8 @@ const reviewStore = {
       await getReviewMainList()
         .then(({data}) => {
           commit('SET_REVIEW_MAIN_LIST', data.result)
-          console.log('REVIEW_MAIN_LIST : ' + data.result)
+          console.log('REVIEW_MAIN_LIST')
+          console.log(data.result)
         }).catch((err) => {
           console.log(err)
         })
