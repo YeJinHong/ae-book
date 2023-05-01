@@ -9,16 +9,22 @@
     <button>알림신청</button>
     <button type="button" @click="onClickRedirect(book.aladinUrl)">구매하러가기</button>
     <p>{{ book.description }}</p>
+    <h3>isbn은 .. {{ this.isbn }}이다 ..</h3>
+    <review-book-list-view :isbn="isbn"></review-book-list-view>
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from 'vuex'
+import ReviewBookListView from '../review/ReviewBookListView.vue'
 const bookStore = 'bookStore'
 
 export default {
   name: 'BookDetailView',
   props: ['isbn'],
+  components: {
+    ReviewBookListView
+  },
   computed: {
     ...mapState(bookStore, ['book'])
   },
