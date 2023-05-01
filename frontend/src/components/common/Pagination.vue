@@ -1,27 +1,28 @@
 <template>
     <div>
     <div class="page-list">
-      <button
-        class="pagebtn pre"
-        v-if="!pageSetting.first"
-        @click="sendPage(pageSetting.pageNumber-1)"
-      >이전</button>
       <ul>
         <li
+        class="pagebtn pre"
+        :class="{ disabled: pageSetting.first }"
+        @click="sendPage(pageSetting.pageable.pageNumber)"
+      >◀</li>
+        <li
           class="pagebtn"
-          :class="{ active: page === pageSetting.pageNumber }"
-          v-for="page in pageSetting.totalPages"
+          :class="{ active: page-1 === pageSetting.pageable.pageNumber }"
+          v-for="page in computedPages"
           :key="page"
           @click="sendPage(page)"
         >
           {{ page }}
         </li>
-      </ul>
-      <button
+        <li
         class="pagebtn next"
-        v-if="!pageSetting.last"
-        @click="sendPage(pageSetting.pageNumber+1)"
-      >다음</button>
+        :class="{ disabled: pageSetting.last }"
+        @click="sendPage(pageSetting.pageable.pageNumber+2)"
+      >▶</li>
+      </ul>
+
     </div>
   </div>
 </template>
@@ -30,8 +31,22 @@
 export default {
   name: 'Pagination',
   props: ['pageSetting'],
-  mounted () {
-    console.log(this.pageSetting)
+  computed: {
+    computedPages () {
+      const currentPage = this.pageSetting.pageable.pageNumber + 1
+      const totalPages = this.pageSetting.totalPages
+
+      let startIndex = Math.floor((currentPage - 1) / 10) * 10
+      let endIndex = Math.min(startIndex + 9, totalPages - 1)
+
+      let computedPages = []
+
+      for (let i = startIndex; i <= endIndex; i++) {
+        computedPages.push(i + 1)
+      }
+
+      return computedPages
+    }
   },
   methods: {
     sendPage (page) {
@@ -42,11 +57,4 @@ export default {
 </script>
 
 <style scoped>
-.pagebtn {
-  width: 30px;
-  height: 30px;
-  border: 1px solid black;
-  border-radius: 5px;
-  list-style: none;
-}
 </style>

@@ -20,7 +20,9 @@
       <button type="button" @click="onClickRedirect(book.aladinUrl)">구매하러가기</button>
     </div>
   </div>
-  <pagination :pageSetting="bookPageSetting" @paging="paging"></pagination>
+    <div class="pagination-container">
+      <pagination :pageSetting="bookPageSetting" @paging="paging"></pagination>
+    </div>
   </div>
 </template>
 
@@ -56,9 +58,7 @@ export default {
       window.open(url, 'blank')
     },
     paging (page) {
-      console.log(page + '페이지 이동!!')
       this.request['page'] = page - 1
-      console.log(this.request)
       this.getSearchList(this.request)
     }
   }
@@ -67,10 +67,16 @@ export default {
 
 <style scoped>
 .container {
+  width: 100%;
   padding: 0 100px;
 }
 
 .book-image {
   width: 160px;
+}
+
+.pagination-container {
+  display:flex;
+  justify-content: center;
 }
 </style>
