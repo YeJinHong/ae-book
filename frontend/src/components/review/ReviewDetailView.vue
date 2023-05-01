@@ -1,16 +1,16 @@
 <template>
   <div>
     <div>ReviewDetail components</div>
-    <div v-if="review">
-    <div>
-     작성자 : {{ review.reviewerNickname }} <br/>
-     작성일 : {{ review.createdAt }} <br />
-     수정일 : {{ review.updatedAt }}
-    </div>
-      <b-form-group id="input-group-1" label="Content" label-for="input-2">
+      <div v-if="review">
+        <div>
+          작성자: {{ review.reviewerNickname }} <br/>
+          작성일: {{ review.createdAt }} <br />
+          수정일: {{ review.updatedAt }}
+        </div>
+        <b-form-group id="input-group-1" label="Content" label-for="input-2">
         <b-form-textarea
           id="input-1"
-          v-model="review.content"
+          v-model=review.content
           placeholder="Enter Content"
           rows="3"
           required
@@ -32,10 +32,15 @@
       </div>
       <b-button @click="onSubmit" type="submit" variant="primary">Submit</b-button>
       <b-button @click="onReset" type="reset" variant="danger">Reset</b-button>
+      <b-button @click="onDelete" type="button" variant="warning">Delete</b-button>
     <!-- 리뷰 디테일 -->
     <button @click="modifyReview">수?정</button>
+      </div>
+      <div v-else>
+        해당 리뷰가 존재하지 않다고 하네요 ~
+      </div>
+
     </div>
-  </div>
 </template>
 
 <script>
@@ -43,6 +48,7 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 const reviewStore = 'reviewStore'
 
 export default {
+
   name: 'ReviewDetailView',
   props: ['reviewId'],
   data () {
@@ -51,7 +57,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(reviewStore, ['getReviewAction', 'modifyReviewAction']),
+    ...mapActions(reviewStore, ['getReviewAction', 'modifyReviewAction', 'deleteReviewAction']),
     modifyReview () {
       console.log('modify Review')
     },
@@ -59,7 +65,7 @@ export default {
       console.log('onSubmit')
 
       const payload = {
-        reviewId: this.review.reviewId,
+        reviewId: this.review.id,
         data: {
           content: this.review.content,
           score: this.review.score
@@ -68,7 +74,7 @@ export default {
 
       event.preventDefault()
       this.modifyReviewAction(payload)
-      this.getReviewAction(this.review.reviewId)
+      this.getReviewAction(this.review.id)
     },
     onReset (event) {
       event.preventDefault()
@@ -80,6 +86,15 @@ export default {
       this.$nextTick(() => {
         this.show = true
       })
+    },
+    onDelete (event) {
+      event.preventDefault()
+      if (confirm('리얼루다가 삭제하시것슴니까 ?!?!?!?!!!?')) {
+        this.deleteReviewAction(this.review.id)
+      }
+
+      // TODO: 도서 상세라면 서평 리스트 다시 얻기
+      this.$router.push({ name: 'Review' })
     },
     check (index) {
       console.log(index)
@@ -94,6 +109,7 @@ export default {
     this.getReviewAction(this.reviewId)
   },
   created () {
+
   }
 }
 </script>
