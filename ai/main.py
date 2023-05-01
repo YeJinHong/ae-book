@@ -68,7 +68,7 @@ async def create_review(title:str, words: str, writer=None, char=None):
     if writer != None and char != None:
         
         #default number of character value
-        char = max(100,char)
+        char = max(100,int(char))
             
         m = f"제목:{title}, 키워드:{words}, 작가:{writer}, 서평 {char}자 이내"
     
@@ -78,13 +78,13 @@ async def create_review(title:str, words: str, writer=None, char=None):
         if char == None:
             char = 100
         else:
-            char = max(100,char)
+            char = max(100,int(char))
         
         m = f"제목:{title}, 키워드:{words}, 서평 {char}자 이내"
     
     elif char == None:
         
-        m = f"제목:{title}, 키워드:{words}, 작가:{writer}, 서평 80자 이내"
+        m = f"제목:{title}, 키워드:{words}, 작가:{writer}, 서평 100자 이내"
     
     #chatgpt request
     completion = openai.ChatCompletion.create(
