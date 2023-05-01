@@ -17,6 +17,7 @@ import gluonnlp as nlp
 import numpy as np
 from transformers import BertModel
 from kobert_tokenizer import KoBERTTokenizer
+import openai
 
 """# load pretrained model"""
 tokenizer = KoBERTTokenizer.from_pretrained('skt/kobert-base-v1')
@@ -84,3 +85,47 @@ def predict_star_point(review):
     pred = output.cpu().detach().numpy()
     sorted_pred = np.argsort(pred,axis = 1)
     return str(sorted_pred[0][-1]+1)
+
+"""
+input: title, words
+output: review, star point
+"""
+def create_gpt_review(title:str, words: str, writer=None, char=None):
+    
+    # message 구성
+    if writer != None and char != None:
+        
+        #default number of character value
+        char = max(100,int(char))
+            
+        m = f"제목:{title}, 키워드:{words}, 작가:{writer}, 서평 {char}자 이내"
+    
+    elif writer == None:
+        
+        #default number of character value
+        if char == None:
+            char = 100
+        else:
+            char = max(100,int(char))
+        
+        m = f"제목:{title}, 키워드:{words}, 서평 {char}자 이내"
+    
+    elif char == None:
+        
+        m = f"제목:{title}, 키워드:{words}, 작가:{writer}, 서평 100자 이내"
+    
+    #chatgpt request
+    completion = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "user", "content": m}
+    ]
+    )
+    
+    #chatgpt response
+    response = completion.choices[0].message['content']
+    
+    #predicted star point
+    star = predict_star_point(response)
+    
+    return {"review":response, "star":star}

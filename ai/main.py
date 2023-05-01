@@ -34,31 +34,6 @@ async def root():
 async def say_hello(name: str):
     return {"message":f"Hello {name}"}
 
-
-"""
-input:mp3 file(keyword)
-output:text
-"""
-@app.post("/reviews/sound")
-async def sound_to_text(sound: UploadFile = File(...)):
-    
-    #read mp3 file to byte string
-    data = await sound.read()
-    
-    headers = {
-        "X-NCP-APIGW-API-KEY-ID": client_id,
-        "X-NCP-APIGW-API-KEY": client_secret,
-        "Content-Type": "application/octet-stream"
-    }
-    
-    response = requests.post(STT_URL,  data=data, headers=headers)
-    rescode = response.status_code
-    
-    if(rescode == 200):
-        return response.text
-    else:
-        return "Error : " + response.text
-
 """
 input: title, words
 output: review, star point
@@ -103,6 +78,38 @@ async def create_review(title:str, words: str, writer=None, char=None):
     star = predict_star_point(response)
     
     return {"review":response, "star":star}
+
+
+"""
+input:mp3 file(keyword), title
+output:review & point prediction
+"""
+@app.post("/reviews/sound")
+async def sound_to_review(title:str, sound: UploadFile = File(...), writer=None, char=None):
+    
+    #read mp3 file to byte string
+    data = await sound.read()
+    
+    headers = {
+        "X-NCP-APIGW-API-KEY-ID": client_id,
+        "X-NCP-APIGW-API-KEY": client_secret,
+        "Content-Type": "application/octet-stream"
+    }
+    
+    response = requests.post(STT_URL,  data=data, headers=headers)
+    rescode = response.status_code
+    
+    if(rescode == 200):
+        
+        words = response.text #stt result
+        
+        review_dict = create_gpt_review(title,words,writer,char) #create review & star
+        
+        return {"review":review_dict["review"], "star":review_dict["star"]}
+    else:
+        return "Error : " + response.text
+    
+    
 
 #convert image to sketch
 @app.post("/paintings/sketch")
