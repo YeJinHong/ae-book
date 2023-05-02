@@ -43,6 +43,7 @@ export default {
   methods: {
     ...mapActions(paintingStore, ['getPaintingList', 'getPaintingDetail']),
     showModal (paintingId) {
+      console.log('열었어요')
       this.getPaintingDetail(paintingId)
       this.isModalVisible = true
     },
