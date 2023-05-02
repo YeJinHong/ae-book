@@ -19,13 +19,13 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
 	public ReviewEntity findByUserIdAndBookId(Long userId, Long bookId);
 
 	@Query(value = "SELECT re FROM ReviewEntity re LEFT JOIN FETCH re.user WHERE re.book.id = :bookId",
-		countQuery = "select count(re) from ReviewEntity re")
+		countQuery = "SELECT COUNT(re) FROM ReviewEntity re WHERE re.book.id = :bookId")
 	public Page<ReviewEntity> findByBookId(Long bookId, Pageable pageable);
 
 	public Optional<ReviewEntity> findByIdAndUserId(Long reviewId, Long userId);
 
-	@Query(value = "SELECT re FROM ReviewEntity re LEFT JOIN FETCH re.user LEFT JOIN FETCH re.book WHERE re.user.id = :userId",
-		countQuery = "select count(re) from ReviewEntity re")
+	@Query(value = "SELECT re FROM ReviewEntity re LEFT JOIN FETCH re.user LEFT JOIN FETCH  re.book WHERE re.user.id = :userId",
+		countQuery = "select count(re) from ReviewEntity re WHERE re.user.id = :userId")
 	public Page<ReviewEntity> findByUserId(Long userId, Pageable pageable);
 
 	@Query(value = "SELECT re FROM ReviewEntity re LEFT JOIN FETCH re.user LEFT JOIN FETCH re.book",
