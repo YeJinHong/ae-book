@@ -4,6 +4,20 @@
     <div>
     <b-form @submit="onSubmit" @reset="onReset" v-if="show">
       <b-form-group
+        id="input-group-0"
+        label="Review title"
+        label-for="input-0"
+      >
+        <b-form-input
+          id="input-0"
+          v-model="form.title"
+          type="text"
+          placeholder="Enter title"
+          required
+        ></b-form-input>
+      </b-form-group>
+
+      <b-form-group
         id="input-group-1"
         label="Review Keyword"
         label-for="input-1"
@@ -15,6 +29,7 @@
           placeholder="Enter Keyword"
           required
         ></b-form-input>
+        <button @click="createAIReview">자동 작성</button>
       </b-form-group>
 
       <b-form-group
@@ -38,7 +53,6 @@
           v-model="form.content"
           placeholder="Enter Content"
           rows="3"
-
           required
         ></b-form-textarea>
       </b-form-group>
@@ -67,6 +81,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import { mapActions } from 'vuex'
 
 const reviewStore = 'reviewStore'
@@ -77,7 +92,10 @@ export default {
   data () {
     return {
       form: {
+        title: '',
         keyword: '',
+        writer: null,
+        char: null,
         isbn: this.isbn,
         content: '',
         score: 5
@@ -86,6 +104,23 @@ export default {
     }
   },
   methods: {
+    async createAIReview () {
+      axios
+        .post(`http://127.0.0.1:8000/reviews/gpt`, {
+          title: this.form.title,
+          keyword: this.form.keyword,
+          writer: this.form.writer,
+          char: this.form.char
+        })
+        .then(result => {
+          console.log(result)
+          this.form.content = result.data.review
+          this.form.score = result.data.star
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
     ...mapActions(reviewStore, ['saveReviewAction', 'getReviewBookListAction']),
     onSubmit (event) {
       event.preventDefault()
