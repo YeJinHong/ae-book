@@ -140,18 +140,11 @@ export default {
       formData.append('data', new Blob([JSON.stringify(data)], {type: 'application/json'}))
 
       this.savePainting(formData)
-      // axios.post('/api/paintings', formData, {
-      //   headers: {
-      //     'Content-Type': 'multipart/form-data'
-      //   }
-      // })
         .then(
           alert('그림 저장에 성공했습니다.')
         )
         .catch(error => {
-          alert('그림 저장에 실패했습니다.')
-          console.log('에러?')
-          console.log(error)
+          alert('그림 저장에 실패했습니다.' + error)
         })
     }
   }
