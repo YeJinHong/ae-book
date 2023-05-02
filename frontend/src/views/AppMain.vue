@@ -4,7 +4,7 @@
     <div>아동 도서 콘텐츠 서비스</div>
     <!-- TODO : 각기 다음에 필요한 컴포넌트는 components/{domain} 하위에 작성 -->
     <!-- TODO : 새로 들어온 책 콘텐츠 케러셀 컴포넌트-->
-    <carousel :items="mainReviewList"></carousel>
+    <carousel :items="reviewMainList"></carousel>
     <!-- TODO : 우리 아이들 작품(만든 동화) 리스트 컴포넌트 -->
     <the-footer></the-footer>
   </div>
@@ -26,13 +26,13 @@ export default {
     Carousel
   },
   methods: {
-    ...mapActions(reviewStore, ['getMainReviewListAction'])
+    ...mapActions(reviewStore, ['getReviewMainListAction'])
   },
   computed: {
-    ...mapState(reviewStore, ['mainReviewList'])
+    ...mapState(reviewStore, ['reviewMainList'])
   },
   mounted () {
-    this.getMainReviewListAction()
+    this.getReviewMainListAction()
   }
 }
 
