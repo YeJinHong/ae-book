@@ -24,7 +24,7 @@
         <b-carousel-slide :key="index" img-blank img-alt="Blank image">
           <div class="d-flex">
             <!-- key를 요소에 맞춰 설정 -->
-            <div v-for="item in itemsChunk" :key="item.id" class="chunk w-50">
+            <div v-for="item in itemsChunk" :key="item.id" class="chunk w-50"  @click="moveTo(item.id)">
               <!-- ListItem -->
               <list-item :item="item"></list-item>
               <!-- ListItem -->
@@ -69,6 +69,9 @@ export default {
     },
     next () {
       this.$refs.myCarousel.next()
+    },
+    moveTo (id) {
+      this.$emit('moveTo', id)
     }
   },
   computed: {
@@ -91,6 +94,7 @@ export default {
   justify-content: center;
   align-items: center;
 }
+
 .chunk {
   width: 210px!important;
   height: 350px;
