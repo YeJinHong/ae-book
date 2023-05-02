@@ -28,5 +28,5 @@ public interface ReviewService {
 	public void deleteReview(Long reviewId, String userId);
 
 	// 7. getNewReviewList : 최신 서평 12개
-	public List<ReviewResponseDTO> getLatestReviewList();
+	public List<ReviewResponseDTO> getLatestReviewList(Pageable pageable);
 }
