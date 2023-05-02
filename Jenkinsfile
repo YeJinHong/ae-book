@@ -114,12 +114,12 @@ pipeline
 			}
 			post {
 				success {
-					echo 'Back-batch-api container stop Start.'
+					echo 'Back-batch container stop Start.'
 					sh '''
-					if (docker ps | grep "back-batch-api"); then docker stop back-batch-api;
+					if (docker ps | grep "back-batch"); then docker stop back-batch;
 					fi
 					'''
-					echo 'Back-batch-api container stop Success';
+					echo 'Back-batch container stop Success';
 				}
 			}
 		}
@@ -169,7 +169,7 @@ pipeline
 			}
 			steps {
 				echo 'Deploy Start "${APP_SPRING_API}"'
-				sh 'docker run -it -d --rm -p 8086:8000 --name back-ai-api --network env-config_ae-book_network back-ai-api-img'
+				sh 'docker run -it -d --rm -p 8000:8000 --name back-ai-api --network env-config_ae-book_network back-ai-api-img'
 				echo 'Deploy End "${APP_SPRING_API}"'
 			}
 		}
