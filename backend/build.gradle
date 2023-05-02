@@ -38,7 +38,7 @@ dependencies {
     // querydsl
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
     implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
-    
+
     implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.6.9'
 
     //jwt
@@ -56,8 +56,8 @@ dependencies {
     // Spring Cloud Starter AWS
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
-	// redis
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 }
 
@@ -68,6 +68,7 @@ tasks.named('test') {
 def querydslDir = "$buildDir/generated/querydsl"
 
 querydsl {
+    library = "com.querydsl:querydsl-apt:4.2.1"
     jpa = true
     querydslSourcesDir = querydslDir
 }
@@ -86,3 +87,11 @@ configurations {
 compileQuerydsl {
     options.annotationProcessorPath = configurations.querydsl
 }
+
+jar {
+    enabled = false
+}
+
+// clean {
+// 	delete file(querydslSrcDir)
+// }

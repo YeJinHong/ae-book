@@ -13,12 +13,29 @@ import urllib.request
 import requests
 import numpy as np
 from PIL import Image
+from typing import Dict,Any
+
+from starlette.middleware.cors import CORSMiddleware
+
+origins = [
+    "http://127.0.0.1",
+    "http://127.0.0.1:3000",
+    "http://localhost:3000"
+]
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 #constant
 STT_URL = "https://naveropenapi.apigw.ntruss.com/recog/v1/stt?lang=Kor"
-TTS_URL = "https://naveropenapi.apigw.ntruss.com/tts-premium/v1/tts"
+TTS_URL = "httxps://naveropenapi.apigw.ntruss.com/tts-premium/v1/tts"
 
 #api key
 load_dotenv()
@@ -43,14 +60,14 @@ output: review, star point
 @app.post("/reviews/gpt")
 async def create_review(title:str, words: str, writer=None, char=None):
     
+    # {작가}의 {제목} 책을 읽고 {키워드}를 키워드로 해서 서평을 {char} 자 이내로 써줘.
     # message 구성
     if writer != None and char != None:
         
         #default number of character value
         char = max(100,int(char))
-            
-        m = f"제목:{title}, 키워드:{words}, 작가:{writer}, 서평 {char}자 이내"
-    
+
+        m = f"너는 출판사에서 일하는 직원이야. {writer}의 {title} 책을 읽고 {words}를 키워드로 해서 서평을 {char}자 이내로 써줘"
     elif writer == None:
         
         #default number of character value
@@ -59,11 +76,11 @@ async def create_review(title:str, words: str, writer=None, char=None):
         else:
             char = max(100,int(char))
         
-        m = f"제목:{title}, 키워드:{words}, 서평 {char}자 이내"
+        m = f"너는 출판사에서 일하는 직원이야. {title} 책을 읽고 {words}를 키워드로 해서 서평을 {char}자 이내로 써줘"
     
     elif char == None:
         
-        m = f"제목:{title}, 키워드:{words}, 작가:{writer}, 서평 100자 이내"
+        m = f"너는 출판사에서 일하는 직원이야. {writer}의 {title} 책을 읽고 {words}를 키워드로 해서 서평을 100자 이내로 써줘"
     
     #chatgpt request
     completion = openai.ChatCompletion.create(
@@ -149,8 +166,8 @@ async def image_to_sketch(image: UploadFile = File(...)):
     # encoding byte string to base64
     encoded = base64.b64encode(binary_sketch)
     
-    # decoding base64 to ascii
-    decoded = encoded.decode('ascii')
+    # decoding base64 to utf-8
+    decoded = encoded.decode('utf-8')
     
     #return json response
     return JSONResponse(decoded)
@@ -207,10 +224,14 @@ input: story keyword
 output: chatgpt story
 """
 @app.post("/stories/gpt")
-async def create_story(text: str):
+async def create_story(text:Dict[Any,Any]):
+    
+    print(text)
     
     #chatgpt query
-    query = f"{text}로 동화를 만들어줘"
+    query = f"너는 동화 작가야. 8세 이하의 아동을 위해서 {text['text']}로 귀여운 동화를 만들어야 해. 아이들이 쉽게 이해할 수 있는 말로 구성해줘."
+    
+    print(query)
     
     #chatgpt request
     completion = openai.ChatCompletion.create(
@@ -221,7 +242,7 @@ async def create_story(text: str):
     )
     
     #chatgpt response
-    return completion.choices[0].message
+    return {'data':completion.choices[0].message['content']}
 
 """
 input:text
