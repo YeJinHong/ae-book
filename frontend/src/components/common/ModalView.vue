@@ -1,7 +1,8 @@
 <template>
   <div class="modal-overlay">
-    <b-modal v-model="visible" @hidden="onHidden">
+    <b-modal v-model="visible" @hidden="onHidden" hide-footer>
       <slot></slot>
+
     </b-modal>
   </div>
 </template>
@@ -14,6 +15,8 @@ export default {
       type: Boolean,
       required: true
     }
+  },
+  components: {
   },
   data () {
     return {

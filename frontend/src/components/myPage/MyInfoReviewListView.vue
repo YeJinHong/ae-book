@@ -1,20 +1,20 @@
 <template>
   <div>
+    마이페이지 리뷰 리스트
     <!-- TODO: 정렬 -->
     <div
       class="list-group-item"
-      v-for="review in reviewBookList"
+      v-for="review in reviewMyList"
       :key="review.id"
-    >
+      >
       <div>
-        {{ review.id }} |
         {{ review.reviewerNickname }} |
         {{ review.content }} |
         {{ review.score }}
       </div>
     </div>
     <div class="pagination-container">
-      <pagination :pageSetting="reviewBookPageSetting" @paging="paging"></pagination>
+      <pagination :pageSetting="reviewMyPageSetting" @paging="paging"></pagination>
     </div>
   </div>
 </template>
@@ -26,15 +26,13 @@ import Pagination from '../common/Pagination.vue'
 const reviewStore = 'reviewStore'
 
 export default {
-  name: 'ReviewBookListView',
+  name: 'MyInfoReviewListView',
   components: {
     Pagination
   },
-  props: ['isbn'],
   data () {
     return {
       request: {
-        isbn: this.isbn,
         page: 0,
         size: 3,
         sort: 'createdAt',
@@ -43,31 +41,25 @@ export default {
     }
   },
   methods: {
-    ...mapActions(reviewStore, ['getReviewBookListAction']),
+    ...mapActions(reviewStore, ['getReviewMyListAction']),
     paging (page) {
       this.request['page'] = page - 1
       this.getReviewBookListAction(this.request)
     }
   },
   computed: {
-    ...mapState(reviewStore, ['reviewBookList', 'reviewBookPageSetting'])
+    ...mapState(reviewStore, ['reviewMyList', 'reviewMyPageSetting'])
   },
   mounted () {
     const request = {
-      isbn: this.isbn,
       page: 0,
       size: 3,
       sort: 'createdAt',
       direction: 'DESC'
     }
-    this.getReviewBookListAction(request)
+    this.getReviewMyListAction(request)
   }
 }
 </script>
 
-<style scoped>
-.pagination-container {
-  display:flex;
-  justify-content: center;
-}
-</style>
+<style scoped></style>

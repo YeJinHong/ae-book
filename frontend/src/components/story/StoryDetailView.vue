@@ -5,19 +5,20 @@
     <img v-bind:src="story.imgUrl" alt="story image" v-if="story" />
     <p v-if="story">작성자: {{ story.storyAuthorNickname }}</p>
     <p v-if="story">작성일: {{ story.createdAt }}</p>
+    <StoryModalButton></StoryModalButton>
   </div>
 </template>
 
 <script>
 import { searchDetailStory } from '@/api/story'
 import { mapGetters } from 'vuex'
-
+import StoryModalButton from '@/components/story/StoryModalButton'
 const storyStore = 'storyStore'
 
 export default {
   name: 'StoryDetailView',
   components: {
-
+    StoryModalButton
   },
   computed: {
     ...mapGetters(storyStore, ['getStoryId'])
