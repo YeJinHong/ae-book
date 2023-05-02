@@ -22,9 +22,8 @@ export default {
   computed: {
     ...mapState(bookStore, ['book'])
   },
-  mounted () {
+  created () {
     this.getBookDetail(this.isbn)
-    this.book = this.getBook
   },
   methods: {
     ...mapActions(bookStore, ['getBookDetail']),
