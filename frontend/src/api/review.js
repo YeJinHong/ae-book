@@ -2,7 +2,7 @@ import axios from 'axios'
 import api from '@/api/auth'
 
 // 1. 서평 등록
-const saveReview = (isbn, payload) => api.post(`/api/reviews/${isbn}`, payload)
+const saveReview = (payload) => api.post(`/api/reviews/${payload.isbn}`, payload.data)
 
 // 2. 서평 상세 조회
 const getReview = reviewId => api.get(`/api/reviews/detail/${reviewId}`)

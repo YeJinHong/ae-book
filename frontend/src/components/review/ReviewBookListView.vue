@@ -7,6 +7,7 @@
       :key="review.id"
     >
       <div>
+        {{ review.id }} |
         {{ review.reviewerNickname }} |
         {{ review.content }} |
         {{ review.score }}
