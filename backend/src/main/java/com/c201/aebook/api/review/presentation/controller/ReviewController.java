@@ -80,7 +80,7 @@ public class ReviewController {
 		)
 	public BaseResponse<?> getBookReviewList(
 		@PathVariable String isbn,
-		@PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+		@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
 	) {
 		// isbn 검증
 		regexValidator.validateIsbn(isbn);
@@ -95,7 +95,7 @@ public class ReviewController {
 	@GetMapping
 	public BaseResponse<?> getMyReviewList(
 		@AuthenticationPrincipal CustomUserDetails customUserDetails,
-		@PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+		@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
 	) {
 		Page<ReviewResponseDTO> reviews = reviewService.getMyReviewList(customUserDetails.getUsername(), pageable);
 
@@ -153,8 +153,10 @@ public class ReviewController {
 	@GetMapping(
 		path = "/latest"
 	)
-	public BaseResponse<?> getLatestReviewList() {
-		List<ReviewResponseDTO> reviews = reviewService.getLatestReviewList();
+	public BaseResponse<?> getLatestReviewList(
+		@PageableDefault(size = 12, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+	) {
+		List<ReviewResponseDTO> reviews = reviewService.getLatestReviewList(pageable);
 
 		return new BaseResponse<>(reviews, 200, ApplicationConstants.SUCCESS);
 	}

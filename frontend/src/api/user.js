@@ -32,4 +32,15 @@ const modifyUser = async (formData) => {
   }
 }
 
-export { login, logout, modifyUser }
+const deleteUser = async () => {
+  try {
+    console.log('사용자 탈퇴')
+    const response = api.delete(`/api/users`)
+    return response
+  } catch (error) {
+    console.log(error)
+    throw new Error('사용자 탈퇴에 실패하였습니다.')
+  }
+}
+
+export { login, logout, modifyUser, deleteUser }
