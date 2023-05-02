@@ -27,6 +27,11 @@ export default new Router({
           path: 'list',
           name: 'StoryListView',
           component: () => import('@/components/story/StoryListView')
+        },
+        {
+          path: 'keyword',
+          name: 'StoryKeywordInput',
+          component: () => import('@/components/story/StoryKeywordInput')
         }
       ]
     },
@@ -84,7 +89,7 @@ export default new Router({
         {
           path: 'review',
           name: 'MyReview',
-          component: () => import('@/components/myPage/MyReviewListView')
+          component: () => import('@/components/myPage/MyInfoReviewListView')
         },
         {
           path: 'info',

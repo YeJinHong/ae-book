@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2>나의 동화 목록</h2>
-    <div v-for="story in storyList" :key="story.storyId">
+    <div horizontal v-for="story in storyList" :key="story.storyId">
       <h3 @click="showModal(story.storyId)">{{ story.title }}</h3>
       <p>{{ story.content }}</p>
       <img v-bind:src="story.imgUrl" alt="story image" />

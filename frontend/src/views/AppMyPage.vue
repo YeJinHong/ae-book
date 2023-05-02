@@ -3,6 +3,7 @@
     <header-navbar></header-navbar>
     <div>This is MyPage</div>
     <my-page-menu @goTo="goTo"></my-page-menu>
+     <router-link :to="{ name: 'MyReview'}">마이 서평</router-link>
     <router-view></router-view>
   </div>
 </template>

@@ -143,8 +143,8 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 
 	@Override
-	public List<ReviewResponseDTO> getLatestReviewList() {
-		List<ReviewEntity> reviews = reviewRepository.findTop12ByOrderByIdDesc();
+	public List<ReviewResponseDTO> getLatestReviewList(Pageable pageable) {
+		List<ReviewEntity> reviews = reviewRepository.findTop12ByOrderByIdDesc(pageable);
 
 		return reviews.stream()
 			.map(review -> ReviewResponseDTO.builder()
