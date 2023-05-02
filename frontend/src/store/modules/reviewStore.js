@@ -1,4 +1,4 @@
-import { getReview, getReviewMainList, getReviewBookList, modifyReview, deleteReview, getReviewMyList } from '../../api/review'
+import { saveReview, getReview, getReviewMainList, getReviewBookList, getReviewMyList, modifyReview, deleteReview } from '../../api/review'
 
 const reviewStore = {
   namespaced: true,
@@ -7,9 +7,7 @@ const reviewStore = {
     review: null,
     reviewMainList: [],
     reviewMyList: [],
-    reviewBookList: [],
-    reviewBookPageSetting: null,
-    reviewMyPageSetting: null
+    reviewBookList: []
   },
   /*
   Gettes: state의 변수들을 get하는역할을 한다.
@@ -43,16 +41,8 @@ const reviewStore = {
     SET_REVIEW_MY_LIST: (state, data) => {
       state.reviewMyList = data
     },
-    SET_REVIEW_MY_PAGE_SETTING: (state, data) => {
-      const { pageable, last, first, totalPages, size, totalElements, numberOfElements, empty } = data
-      state.reviewMyPageSetting = { pageable, last, first, totalPages, size, totalElements, numberOfElements, empty }
-    },
     SET_REVIEW_BOOK_LIST: (state, data) => {
       state.reviewBookList = data
-    },
-    SET_REVIEW_BOOK_PAGE_SETTING: (state, data) => {
-      const { pageable, last, first, totalPages, size, totalElements, numberOfElements, empty } = data
-      state.reviewBookPageSetting = { pageable, last, first, totalPages, size, totalElements, numberOfElements, empty }
     },
     RESET_REVIEW (state) {
       state.review = null
@@ -64,6 +54,16 @@ const reviewStore = {
   - commit은 mutation명을 쓰면 됨
   */
   actions: {
+    async saveReviewAction ({ commit }, payload) {
+      console.log('saveReviewAction')
+      await saveReview(payload)
+        .then(({ data }) => {
+          console.log('Review Save Complete')
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
     async getReviewAction ({ commit }, reviewId) {
       await getReview(reviewId)
         .then(({ data }) => {

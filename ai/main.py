@@ -14,9 +14,9 @@ import requests
 import numpy as np
 from PIL import Image
 from typing import Dict,Any
-
 from starlette.middleware.cors import CORSMiddleware
 
+##setting cors origin
 origins = [
     "http://127.0.0.1",
     "http://127.0.0.1:3000",
@@ -36,6 +36,8 @@ app.add_middleware(
 #constant
 STT_URL = "https://naveropenapi.apigw.ntruss.com/recog/v1/stt?lang=Kor"
 TTS_URL = "httxps://naveropenapi.apigw.ntruss.com/tts-premium/v1/tts"
+ADJECTIVE = ["아름다운","이해하기 쉬운","재미있는","슬픈","교훈을 주는","상상력을 자극하는",
+             "감동을 주는","어린이가 좋아할 만한","사실적인"]
 
 #api key
 load_dotenv()
@@ -58,16 +60,23 @@ input: title, words
 output: review, star point
 """
 @app.post("/reviews/gpt")
-async def create_review(title:str, words: str, writer=None, char=None):
+async def create_review(data:Dict[Any,Any]):
     
     # {작가}의 {제목} 책을 읽고 {키워드}를 키워드로 해서 서평을 {char} 자 이내로 써줘.
+    
+    #unpack data
+    title = data["title"]
+    words = data["keyword"]
+    writer = data["writer"]
+    char = data["char"]
+    
     # message 구성
     if writer != None and char != None:
         
         #default number of character value
         char = max(100,int(char))
 
-        m = f"너는 출판사에서 일하는 직원이야. {writer}의 {title} 책을 읽고 {words}를 키워드로 해서 서평을 {char}자 이내로 써줘"
+        m = f"너는 {writer}의 {title}이라는 책을 읽은 사람이야. 자기소개는 하지 말고 {words}를 키워드로 해서 서평을 {char}자 이내로 써줘"
     elif writer == None:
         
         #default number of character value
@@ -76,11 +85,11 @@ async def create_review(title:str, words: str, writer=None, char=None):
         else:
             char = max(100,int(char))
         
-        m = f"너는 출판사에서 일하는 직원이야. {title} 책을 읽고 {words}를 키워드로 해서 서평을 {char}자 이내로 써줘"
+        m = f"너는 {title}이라는 책을 읽은 사람이야. 자기소개는 하지 말고 {words}를 키워드로 해서 서평을 {char}자 이내로 써줘"
     
     elif char == None:
         
-        m = f"너는 출판사에서 일하는 직원이야. {writer}의 {title} 책을 읽고 {words}를 키워드로 해서 서평을 100자 이내로 써줘"
+        m = f"너는 {writer}의 {title}이라는 책을 읽은 사람이야. 자기소개는 하지 말고 {words}를 키워드로 해서 서평을 100자 이내로 써줘"
     
     #chatgpt request
     completion = openai.ChatCompletion.create(
@@ -226,13 +235,9 @@ output: chatgpt story
 @app.post("/stories/gpt")
 async def create_story(text:Dict[Any,Any]):
     
-    print(text)
-    
     #chatgpt query
-    query = f"너는 동화 작가야. 8세 이하의 아동을 위해서 {text['text']}로 귀여운 동화를 만들어야 해. 아이들이 쉽게 이해할 수 있는 말로 구성해줘."
-    
-    print(query)
-    
+    query = f"너는 동화작가야. 자기소개는 하지 말고 어린이를 위해서 {text['text']}로 {np.random.choice(ADJECTIVE)} 동화를 만들어줘."
+        
     #chatgpt request
     completion = openai.ChatCompletion.create(
     model="gpt-3.5-turbo",
@@ -269,6 +274,5 @@ async def text_to_sound(text: str):
         
         #sound byte string    
         return response
-
     else:
         return "Error Code:" + rescode
