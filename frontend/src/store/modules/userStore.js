@@ -1,4 +1,4 @@
-import { login, logout } from '@/api/user'
+import { login, logout, modifyUser } from '@/api/user'
 
 const userStore = {
   namespaced: true,
@@ -9,7 +9,7 @@ const userStore = {
     isValidToken: false
   },
   getter: {
-    checkUserInfo: function (state) {
+    getUserInfo: function (state) {
       return state.user
     }
   },
@@ -26,6 +26,7 @@ const userStore = {
     SET_USER_INFO: (state, user) => {
       state.isLogin = true
       state.user = user
+      console.log(state.user)
     }
   },
   actions: {
@@ -79,6 +80,32 @@ const userStore = {
           commit('SET_IS_LOGIN', true)
 
           sessionStorage.setItem('isLoginUser', true)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async userUpdate ({ commit }, formdata) {
+      try {
+        const data = await modifyUser(formdata)
+        if (data.statusText === 'OK') {
+          console.log(data.data.result)
+
+          const userInfo = JSON.parse(sessionStorage.getItem('userInfo'))
+
+          const user = {
+            userId: userInfo.userId,
+            nickname: data.data.result.nickname,
+            profileUrl: data.data.result.profileUrl
+          }
+          console.log(user)
+          commit('SET_USER_INFO', user)
+
+          const updatedUserInfo = Object.assign(userInfo, user)
+          console.log(updatedUserInfo)
+          sessionStorage.setItem('userInfo', JSON.stringify(updatedUserInfo))
+        } else {
+          console.log('로그아웃 오류')
         }
       } catch (error) {
         console.log(error)

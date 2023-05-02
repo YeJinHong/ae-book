@@ -1,4 +1,4 @@
-import { getReview, getLatestReviewList, getBookReviewList, modifyReview } from '../../api/review'
+import { getReview, getLatestReviewList, getBookReviewList, modifyReview, deleteReview } from '../../api/review'
 
 const reviewStore = {
   namespaced: true,
@@ -43,6 +43,9 @@ const reviewStore = {
     },
     SET_BOOK_REVIEW_LIST: (state, data) => {
       state.bookReviewList = data
+    },
+    RESET_REVIEW (state) {
+      state.review = null
     }
   },
   /*
@@ -51,8 +54,8 @@ const reviewStore = {
   - commit은 mutation명을 쓰면 됨
   */
   actions: {
-    getReviewAction ({ commit }, reviewId) {
-      getReview(reviewId)
+    async getReviewAction ({ commit }, reviewId) {
+      await getReview(reviewId)
         .then(({data}) => {
           commit('SET_REVIEW', data.result)
           console.log(data.result)
@@ -60,8 +63,8 @@ const reviewStore = {
           console.log(err)
         })
     },
-    getMainReviewListAction ({ commit }) {
-      getLatestReviewList()
+    async getMainReviewListAction ({ commit }) {
+      await getLatestReviewList()
         .then(({data}) => {
           commit('SET_MAIN_REVIEW_LIST', data.result)
           console.log('MAIN_REVIEW_LIST : ' + data.result)
@@ -69,8 +72,8 @@ const reviewStore = {
           console.log(err)
         })
     },
-    getBookReviewListAction ({ commit }, isbn) {
-      getBookReviewList(isbn)
+    async getBookReviewListAction ({ commit }, isbn) {
+      await getBookReviewList(isbn)
         .then(({data}) => {
           commit('SET_BOOK_REVIEW_LIST', data.result)
           console.log('BOOK_REVIEW_LIST :' + data.result)
@@ -78,16 +81,21 @@ const reviewStore = {
           console.log(err)
         })
     },
-    modifyReviewAction ({ commit }, reviewId, payload) {
-      modifyReview(reviewId, payload)
+    async modifyReviewAction ({ commit }, payload) {
+      console.log('modifyReviewAction')
+      await modifyReview(payload)
         .then(({data}) => {
-          console.log(data.config.headers)
-          console.log(data)
-          // 만약 백에서 return을 변경된 값으로 주면 바로 SET_REVIEW
-        }).then(getReview(reviewId))
+          console.log('Review Modify Complete')
+        })
         .catch((err) => {
-          console.log(err.config.headers)
           console.log(err)
+        })
+    },
+    async deleteReviewAction ({ commit }, reviewId) {
+      await deleteReview(reviewId)
+        .then(({data}) => {
+          commit('RESET_REVIEW')
+          console.log('Review Delete Complete')
         })
     }
   }
