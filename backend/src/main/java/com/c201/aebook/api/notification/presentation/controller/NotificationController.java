@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/notification")
+@RequestMapping("/notifications")
 public class NotificationController {
 
     private final NotificationValidator notificationValidator;
