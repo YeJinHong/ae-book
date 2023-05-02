@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { mapActions, mapState, mapGetters } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import Pagination from '../common/Pagination.vue'
 
 const reviewStore = 'reviewStore'
@@ -42,15 +42,14 @@ export default {
     }
   },
   methods: {
-    ...mapActions(reviewStore, ['getReviewBookListAction', 'getReviewBookPageAction']),
+    ...mapActions(reviewStore, ['getReviewBookListAction']),
     paging (page) {
       this.request['page'] = page - 1
       this.getReviewBookListAction(this.request)
     }
   },
   computed: {
-    ...mapState(reviewStore, ['reviewBookList', 'reviewBookPageSetting']),
-    ...mapGetters(reviewStore, ['getReviewBookList'])
+    ...mapState(reviewStore, ['reviewBookList', 'reviewBookPageSetting'])
   },
   mounted () {
     const request = {
