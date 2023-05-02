@@ -1,4 +1,4 @@
-import { login, logout, modifyUser } from '@/api/user'
+import { login, logout, modifyUser, deleteUser } from '@/api/user'
 
 const userStore = {
   namespaced: true,
@@ -33,7 +33,7 @@ const userStore = {
     async userLogin ({ commit }, kakaoCode) {
       try {
         const data = await login(kakaoCode)
-        if (data.statusText === 'OK') {
+        if (data.status === 200) {
           let accessToken = data.headers['authorization']
           let refreshToken = data.headers['refresh']
 
@@ -64,7 +64,7 @@ const userStore = {
     async userLogout ({ commit }) {
       try {
         const data = await logout()
-        if (data.statusText === 'OK') {
+        if (data.status === 200) {
           console.log(data)
           commit('SET_USER_INFO', null)
           commit('SET_IS_LOGIN', false)
@@ -88,7 +88,7 @@ const userStore = {
     async userUpdate ({ commit }, formdata) {
       try {
         const data = await modifyUser(formdata)
-        if (data.statusText === 'OK') {
+        if (data.status === 200) {
           console.log(data.data.result)
 
           const userInfo = JSON.parse(sessionStorage.getItem('userInfo'))
@@ -106,6 +106,18 @@ const userStore = {
           sessionStorage.setItem('userInfo', JSON.stringify(updatedUserInfo))
         } else {
           console.log('로그아웃 오류')
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async userDelete ({ commit }) {
+      try {
+        const data = await deleteUser()
+        if (data.status === 200) {
+          console.log('사용자 탈퇴')
+        } else {
+          console.log('사용자 탈퇴 오류')
         }
       } catch (error) {
         console.log(error)
