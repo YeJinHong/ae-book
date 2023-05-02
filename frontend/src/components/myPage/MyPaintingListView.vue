@@ -43,12 +43,10 @@ export default {
   methods: {
     ...mapActions(paintingStore, ['getPaintingList', 'getPaintingDetail']),
     showModal (paintingId) {
-      console.log('열었어요')
       this.getPaintingDetail(paintingId)
       this.isModalVisible = true
     },
     closeModal () {
-      console.log('닫았어요')
       this.isModalVisible = false
       // this.clearStoryId()
     }
