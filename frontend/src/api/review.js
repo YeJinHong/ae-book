@@ -14,10 +14,15 @@ const modifyReview = (payload) => api.patch(`/api/reviews/${payload.reviewId}`, 
 const deleteReview = reviewId => api.delete(`/api/reviews/${reviewId}`)
 
 // 5. 최신 서평 리스트 - 메인페이지 전용, 12개
-const getLatestReviewList = () => axios.get(`/api/reviews/latest`)
+const getReviewMainList = () => axios.get(`/api/reviews/latest`)
 
 // 6. 특정 도서의 서평 리스트 by ISBN
-const getBookReviewList = isbn => axios.get(`/api/reviews/${isbn}`)
+const getReviewBookList = (request) => axios.get(`/api/reviews/${request.isbn}?page=${request.page}&size=${request.size}&sort=${request.sort}&direction=${request.direction}`)
+// /reviews/{isbn}?page=int&size=5&sort=key,direction
+// sort 종류
+// 1. id, DESC // LATEST
+// 2. score, DESC // SCORE_HIGHEST
+// 3. score, ASC // SCORE_LOWEST
 
 // 7. 로그인한 사용자의 서평 리스트
 
@@ -25,4 +30,4 @@ const getBookReviewList = isbn => axios.get(`/api/reviews/${isbn}`)
  * const searchByISBN = isbn => axios.get(`/api/books/${isbn}`)
  * const requestLogin = (payload) => api.post("/api/users/login", payload);
  */
-export { saveReview, getReview, modifyReview, deleteReview, getLatestReviewList, getBookReviewList }
+export { saveReview, getReview, modifyReview, deleteReview, getReviewMainList, getReviewBookList }
