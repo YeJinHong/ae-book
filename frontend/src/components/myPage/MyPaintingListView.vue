@@ -1,13 +1,13 @@
 <template>
   <div>
     <h1>그림장</h1>
-    <ModalView v-if="isModalViewd" @close-model="isModalViewd=false">
-    <Content/>
+    <ModalView :modalShow="isModalVisible" @close-modal="closeModal">
+    <PaintingDetailView/>
     </ModalView>
     <div
         v-for="painting in paintingList"
         :key="painting.id"
-        @click="isModalViewd=true"
+        @click="showModal(painting.id)"
       >
       <img v-bind:src="painting.fileUrl" class="painting-image">
       {{ painting.title }}
@@ -18,19 +18,19 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
-import Content from './contents/Painting'
-import ModalView from './ModalView.vue'
+import PaintingDetailView from '@/components/painting/PaintingDetailView.vue'
+import ModalView from '@/components/common/ModalView.vue'
 const paintingStore = 'paintingStore'
 
 export default {
   name: 'MyPaintingListView',
   components: {
-    Content,
-    ModalView
+    ModalView,
+    PaintingDetailView
   },
   data () {
     return {
-      isModalViewd: false
+      isModalVisible: false
     }
   },
   computed: {
@@ -40,7 +40,15 @@ export default {
     this.getPaintingList('COLOR')
   },
   methods: {
-    ...mapActions(paintingStore, ['getPaintingList'])
+    ...mapActions(paintingStore, ['getPaintingList', 'getPaintingDetail']),
+    showModal (paintingId) {
+      this.getPaintingDetail(paintingId)
+      this.isModalVisible = true
+    },
+    closeModal () {
+      this.isModalVisible = false
+      // this.clearStoryId()
+    }
   }
 }
 </script>
