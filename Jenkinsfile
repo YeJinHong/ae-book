@@ -169,7 +169,7 @@ pipeline
 			}
 			steps {
 				echo 'Deploy Start "${APP_SPRING_API}"'
-				sh 'docker run -it -d --rm -p 8086:8000 --name back-ai-api --network env-config_ae-book_network back-ai-api-img'
+				sh 'docker run -it -d --rm -p 8000:8000 --name back-ai-api --network env-config_ae-book_network back-ai-api-img'
 				echo 'Deploy End "${APP_SPRING_API}"'
 			}
 		}
