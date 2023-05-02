@@ -1,4 +1,4 @@
-import { getReview, getReviewMainList, getReviewBookList, modifyReview, deleteReview } from '../../api/review'
+import { getReview, getReviewMainList, getReviewBookList, modifyReview, deleteReview, saveReview } from '../../api/review'
 
 const reviewStore = {
   namespaced: true,
@@ -97,6 +97,16 @@ const reviewStore = {
           console.log(data.result.content)
           commit('SET_REVIEW_BOOK_LIST', data.result.content)
           commit('SET_REVIEW_BOOK_PAGE_SETTING', data.result)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    async saveReviewAction ({ commit }, payload) {
+      console.log('saveReviewAction')
+      await saveReview(payload)
+        .then(({ data }) => {
+          console.log('Review Save Complete')
         })
         .catch((err) => {
           console.log(err)
