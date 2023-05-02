@@ -67,15 +67,18 @@
 </template>
 
 <script>
-import api from '@/api/auth'
+import { mapActions } from 'vuex'
+
+const reviewStore = 'reviewStore'
 
 export default {
   name: 'ReviewCreateView',
+  props: ['isbn'],
   data () {
     return {
       form: {
         keyword: '',
-        isbn: '',
+        isbn: this.isbn,
         content: '',
         score: 5
       },
@@ -83,23 +86,36 @@ export default {
     }
   },
   methods: {
-    async createReview () {
-      await api({
-        method: 'POST',
-        url: `/api/reviews/${this.form.isbn}`,
-        data: {
-          'content': this.form.content,
-          'score': this.form.score
-        }
-      }).then((result) => {
-        console.log(result)
-      }).catch((err) => {
-        console.log(err)
-      })
-    },
+    ...mapActions(reviewStore, ['saveReviewAction', 'getReviewBookListAction']),
     onSubmit (event) {
       event.preventDefault()
-      this.createReview()
+
+      const payload = {
+        isbn: this.isbn,
+        data: {
+          content: this.form.content,
+          score: this.form.score
+        }
+      }
+
+      const request = {
+        isbn: this.isbn,
+        page: 0,
+        size: 3,
+        sort: 'createdAt',
+        direction: 'DESC'
+      }
+
+      this.saveReviewAction(payload)
+        .then(() => {
+          return this.getReviewBookListAction(request)
+        })
+        .then(() => {
+          this.$emit('close-modal')
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     },
     onReset (event) {
       event.preventDefault()
