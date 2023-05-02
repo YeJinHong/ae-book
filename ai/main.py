@@ -60,9 +60,16 @@ input: title, words
 output: review, star point
 """
 @app.post("/reviews/gpt")
-async def create_review(title:str, words: str, writer=None, char=None):
+async def create_review(data:Dict[Any,Any]):
     
     # {작가}의 {제목} 책을 읽고 {키워드}를 키워드로 해서 서평을 {char} 자 이내로 써줘.
+    
+    #unpack data
+    title = data["title"]
+    words = data["keyword"]
+    writer = data["writer"]
+    char = data["char"]
+    
     # message 구성
     if writer != None and char != None:
         
@@ -267,6 +274,5 @@ async def text_to_sound(text: str):
         
         #sound byte string    
         return response
-
     else:
         return "Error Code:" + rescode
