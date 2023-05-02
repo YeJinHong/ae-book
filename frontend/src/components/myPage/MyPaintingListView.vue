@@ -2,16 +2,9 @@
   <div>
     <h1>그림장</h1>
     <ModalView :modalShow="isModalVisible" @close-modal="closeModal">
-    <PaintingDetailView/>
+    <painting-detail-view/>
     </ModalView>
-    <div
-        v-for="painting in paintingList"
-        :key="painting.id"
-        @click="showModal(painting.id)"
-      >
-      <img v-bind:src="painting.fileUrl" class="painting-image">
-      {{ painting.title }}
-    </div>
+    <img-carousel-view :items="paintingList" :chunkSize="3"></img-carousel-view>
 </div>
 
 </template>
@@ -20,13 +13,15 @@
 import { mapActions, mapState } from 'vuex'
 import PaintingDetailView from '@/components/painting/PaintingDetailView.vue'
 import ModalView from '@/components/common/ModalView.vue'
+import ImgCarouselView from '@/components/common/list/ImgCarouselView.vue'
 const paintingStore = 'paintingStore'
 
 export default {
   name: 'MyPaintingListView',
   components: {
     ModalView,
-    PaintingDetailView
+    PaintingDetailView,
+    ImgCarouselView
   },
   data () {
     return {
