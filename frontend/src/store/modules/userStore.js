@@ -1,4 +1,4 @@
-import { login, logout, modifyUser } from '@/api/user'
+import { login, logout, modifyUser, deleteUser } from '@/api/user'
 
 const userStore = {
   namespaced: true,
@@ -106,6 +106,18 @@ const userStore = {
           sessionStorage.setItem('userInfo', JSON.stringify(updatedUserInfo))
         } else {
           console.log('로그아웃 오류')
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async userDelete ({ commit }) {
+      try {
+        const data = await deleteUser()
+        if (data.statusText === 'OK') {
+          console.log('사용자 탈퇴')
+        } else {
+          console.log('사용자 탈퇴 오류')
         }
       } catch (error) {
         console.log(error)
