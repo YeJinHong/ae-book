@@ -100,6 +100,11 @@ export default new Router({
           path: 'modify',
           name: 'MyInfoModify',
           component: () => import('@/components/myPage/MyInfoModify')
+        },
+        {
+          path: 'painting',
+          name: 'mypainting',
+          component: () => import('@/components/myPage/MyPaintingListView')
         }
       ]
     },

@@ -1,4 +1,5 @@
 import { savePainting, getPaintingList, convertSketch } from '@/api/painting'
+import { getPaintingDetail } from '../../api/painting'
 
 const paintingStore = {
   namespaced: true,
@@ -55,6 +56,16 @@ const paintingStore = {
         .then(({ data }) => {
           // console.log(data)
           commit('SET_SKETCH', data)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    async getPaintingDetail ({ commit }, request) {
+      await getPaintingDetail(request)
+        .then(({ data }) => {
+          console.log(data.result)
+          commit('SET_PAINTING', data.result)
         })
         .catch(error => {
           console.log(error)
