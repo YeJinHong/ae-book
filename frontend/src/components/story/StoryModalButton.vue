@@ -2,10 +2,10 @@
   <div class="modal-footer">
     <!-- Emulate built in modal footer ok and cancel button actions -->
     <b-button size="sm" variant="success" @click="ok()">
-      OK
+      수정
     </b-button>
-    <b-button size="sm" variant="danger" @click="cancel()">
-      Cancel
+    <b-button size="sm" variant="danger" @click="deleteStoryById()">
+      삭제
     </b-button>
     <!-- Button with custom close trigger value -->
     <b-button size="sm" variant="outline-secondary">
@@ -14,13 +14,14 @@
   </div>
 </template>
 <script>
+
+import { deleteStory } from '@/api/story'
+import { mapGetters } from 'vuex'
+
+const storyStore = 'storyStore'
+
 export default {
-  props: {
-    modalShow: {
-      type: Boolean,
-      required: true
-    }
-  },
+
   components: {
   },
   data () {
@@ -29,24 +30,24 @@ export default {
     }
   },
   methods: {
-    onHidden () {
-      this.$emit('close-modal')
+
+    deleteStoryById () {
+      this.storyId = this.getStoryId
+      deleteStory(this.storyId)
+        .then(response => {
+          console.log(response)
+          if (response.data.resultCode === 200) {
+            alert('정상적으로 삭제했습니다.')
+          }
+        })
+        .catch(error => {
+          alert('정상적으로 삭제하지 못했습니다. ' + error)
+        })
     }
   },
-  watch: {
-    modalShow (newValue) {
-      this.visible = newValue
-    }
-  },
+
   computed: {
-    visible: {
-      get () {
-        return this.modalShow
-      },
-      set (newValue) {
-        this.$emit('update:modalShow', newValue)
-      }
-    }
+    ...mapGetters(storyStore, ['getStoryId'])
   }
 }
 </script>
