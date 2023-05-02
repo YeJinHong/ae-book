@@ -6,11 +6,7 @@
       v-for="review in reviewBookList"
       :key="review.id"
     >
-      <div>
-        {{ review.reviewerNickname }} |
-        {{ review.content }} |
-        {{ review.score }}
-      </div>
+      <review-book-item-view :review=review></review-book-item-view>
     </div>
     <div class="pagination-container">
       <pagination :pageSetting="reviewBookPageSetting" @paging="paging"></pagination>
@@ -21,13 +17,15 @@
 <script>
 import { mapActions, mapState } from 'vuex'
 import Pagination from '../common/Pagination.vue'
+import ReviewBookItemView from './ReviewBookItemView.vue'
 
 const reviewStore = 'reviewStore'
 
 export default {
   name: 'ReviewBookListView',
   components: {
-    Pagination
+    Pagination,
+    ReviewBookItemView
   },
   props: ['isbn'],
   data () {
@@ -65,6 +63,10 @@ export default {
 </script>
 
 <style scoped>
+.list-group-item {
+  display: flex;
+  justify-content: center;
+}
 .pagination-container {
   display:flex;
   justify-content: center;
