@@ -72,11 +72,10 @@ export default {
 
       this.savePainting(formData)
         .then(
-          console.log('그림 저장에 성공했습니다.')
+          alert('그림 저장에 성공했습니다.')
         )
         .catch(error => {
-          console.log('그림 저장에 실패했습니다.')
-          console.log(error)
+          alert('그림 저장에 실패했습니다.' + error)
         })
 
       this.$router.push('/painting/board')

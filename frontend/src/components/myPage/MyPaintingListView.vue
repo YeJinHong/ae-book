@@ -1,10 +1,14 @@
 <template>
   <div>
-    <h1>그림장</h1>
-    <ModalView :modalShow="isModalVisible" @close-modal="closeModal">
+    <h1 class="subject">그림장</h1>
+    <div style="height:2px; background-color: #E0E0E0;"></div>
+    <ModalView :modalShow="isModalVisible">
     <painting-detail-view/>
+    <painting-modal-button @close-modal="closeModal"></painting-modal-button>
     </ModalView>
-    <img-carousel-view :items="paintingList" :chunkSize="3"></img-carousel-view>
+    <div class="carousel-container">
+      <img-carousel-view :items="paintingList" :chunkSize="3" @moveTo="showModal"></img-carousel-view>
+    </div>
 </div>
 
 </template>
@@ -14,6 +18,7 @@ import { mapActions, mapState } from 'vuex'
 import PaintingDetailView from '@/components/painting/PaintingDetailView.vue'
 import ModalView from '@/components/common/ModalView.vue'
 import ImgCarouselView from '@/components/common/list/ImgCarouselView.vue'
+import PaintingModalButton from '../painting/PaintingModalButton.vue'
 const paintingStore = 'paintingStore'
 
 export default {
@@ -21,7 +26,8 @@ export default {
   components: {
     ModalView,
     PaintingDetailView,
-    ImgCarouselView
+    ImgCarouselView,
+    PaintingModalButton
   },
   data () {
     return {
@@ -48,6 +54,10 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+.subject{
+  text-align: left;
+  font-size: 24px;
+  font-weight: 800;
+}
 </style>
