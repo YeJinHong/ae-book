@@ -1,5 +1,4 @@
-import { savePainting, getPaintingList, convertSketch } from '@/api/painting'
-import { getPaintingDetail } from '../../api/painting'
+import { savePainting, getPaintingList, getPaintingDetail, deletePainting, updatePaintingTitle, downloadPainting, convertSketch } from '@/api/painting'
 
 const paintingStore = {
   namespaced: true,
@@ -63,6 +62,37 @@ const paintingStore = {
     },
     async getPaintingDetail ({ commit }, request) {
       await getPaintingDetail(request)
+        .then(({ data }) => {
+          console.log(data.result)
+          commit('SET_PAINTING', data.result)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    async downloadPainting ({ commit }, paintingId) {
+      await downloadPainting(paintingId)
+        .then(({ data }) => {
+          console.log(data.result)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    async deletePainting ({ commit }, paintingId) {
+      await deletePainting(paintingId)
+        .then(({ data }) => {
+          alert('그림을 성공적으로 삭제했습니다.')
+          console.log(data)
+          commit('SET_PAINTING', null)
+        })
+        .catch(error => {
+          alert('그림 삭제에 실패했습니다.')
+          console.log(error)
+        })
+    },
+    async updatePaintingTitle ({ commit }, request) {
+      await updatePaintingTitle(request)
         .then(({ data }) => {
           console.log(data.result)
           commit('SET_PAINTING', data.result)

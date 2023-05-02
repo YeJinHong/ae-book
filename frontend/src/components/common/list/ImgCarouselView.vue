@@ -13,7 +13,7 @@
       :interval="5000"
       indicators
       img-width="1024"
-      img-height="300"
+      img-height="500"
       @sliding-start="onSlideStart"
       @sliding-end="onSlideEnd"
     >
@@ -71,6 +71,7 @@ export default {
       this.$refs.myCarousel.next()
     },
     moveTo (id) {
+      console.log('어떤 하나의 아이템을 클릭했을 때 수행할 함수에요^^')
       this.$emit('moveTo', id)
     }
   },
@@ -94,7 +95,6 @@ export default {
   justify-content: center;
   align-items: center;
 }
-
 .chunk {
   width: 210px!important;
   height: 350px;
