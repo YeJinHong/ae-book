@@ -1,10 +1,11 @@
-import { savePainting, getPaintingList } from '@/api/painting'
+import { savePainting, getPaintingList, convertSketch } from '@/api/painting'
 
 const paintingStore = {
   namespaced: true,
   state: {
     painting: null,
-    paintingList: []
+    paintingList: [],
+    sketch: ''
   },
   getters: {
     getPainting: state => {
@@ -23,6 +24,9 @@ const paintingStore = {
     },
     RESET_PAINTING_LIST (state) {
       state.paintingList = []
+    },
+    SET_SKETCH: (state, data) => {
+      state.sketch = 'data:image/jpeg;base64,' + data
     }
   },
   actions: {
@@ -41,6 +45,16 @@ const paintingStore = {
         .then(({ data }) => {
           console.log(data.result.content)
           commit('SET_PAINTING_LIST', data.result.content)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    async convertSketch ({ commit }, request) {
+      await convertSketch(request)
+        .then(({ data }) => {
+          // console.log(data)
+          commit('SET_SKETCH', data)
         })
         .catch(error => {
           console.log(error)
