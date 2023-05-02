@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3 v-if="story">
-      <b-form-input v-model="story.title" placeholder="Enter your name">{{ story.title }}</b-form-input>
+      <b-form-input v-model="story.title" placeholder="Enter your name"></b-form-input>
     </h3>
     <p v-if="story">{{ story.content }}</p>
     <img v-bind:src="story.imgUrl" alt="story image" v-if="story" />

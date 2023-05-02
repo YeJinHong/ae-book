@@ -23,11 +23,7 @@ export default new Router({
       name: 'Story',
       component: AppStory,
       children: [
-        {
-          path: 'list',
-          name: 'StoryListView',
-          component: () => import('@/components/story/StoryListView')
-        },
+
         {
           path: 'keyword',
           name: 'StoryKeywordInput',
@@ -105,6 +101,11 @@ export default new Router({
           path: 'painting',
           name: 'mypainting',
           component: () => import('@/components/myPage/MyPaintingListView')
+        },
+        {
+          path: 'story',
+          name: 'StoryListView',
+          component: () => import('@/components/story/StoryListView')
         }
       ]
     },
