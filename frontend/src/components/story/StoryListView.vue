@@ -8,8 +8,8 @@
       <p>작성자: {{ story.storyAuthorNickname }}</p>
       <p>작성일: {{ story.createdAt }}</p>
     </div>
-    <ModalView :modalShow="isModalVisible">
-      <StoryDetailView @close-modal="closeModal"/>
+    <ModalView :modalShow="isModalVisible" @close-modal="closeModal">
+      <StoryDetailView />
     </ModalView>
   </div>
 </template>
