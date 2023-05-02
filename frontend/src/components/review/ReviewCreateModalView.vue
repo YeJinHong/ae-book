@@ -1,22 +1,19 @@
 <template>
   <div class="modal-overlay">
-    <b-modal v-model="visible" size="lg" @hidden="onHidden" hide-footer>
+    <b-modal v-model="visible" @hidden="onHidden" hide-footer>
       <slot></slot>
-
     </b-modal>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'ModalView',
+  name: 'ReviewCreateModalView',
   props: {
     modalShow: {
       type: Boolean,
       required: true
     }
-  },
-  components: {
   },
   data () {
     return {
