@@ -1,15 +1,20 @@
-<template>
-  <div class="modal-overlay">
-    <b-modal v-model="visible" @hidden="onHidden" hide-footer>
-      <slot></slot>
-
-    </b-modal>
+<template #modal-footer>
+  <div class="modal-footer">
+    <!-- Emulate built in modal footer ok and cancel button actions -->
+    <b-button size="sm" variant="success" @click="ok()">
+      OK
+    </b-button>
+    <b-button size="sm" variant="danger" @click="cancel()">
+      Cancel
+    </b-button>
+    <!-- Button with custom close trigger value -->
+    <b-button size="sm" variant="outline-secondary">
+      Forget it
+    </b-button>
   </div>
 </template>
-
 <script>
 export default {
-  name: 'ModalView',
   props: {
     modalShow: {
       type: Boolean,
@@ -46,5 +51,6 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
+
 </style>

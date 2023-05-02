@@ -27,6 +27,11 @@ export default new Router({
           path: 'list',
           name: 'StoryListView',
           component: () => import('@/components/story/StoryListView')
+        },
+        {
+          path: 'keyword',
+          name: 'StoryKeywordInput',
+          component: () => import('@/components/story/StoryKeywordInput')
         }
       ]
     },
