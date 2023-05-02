@@ -13,7 +13,7 @@
       :interval="5000"
       indicators
       img-width="1024"
-      img-height="300"
+      img-height="500"
       @sliding-start="onSlideStart"
       @sliding-end="onSlideEnd"
     >
@@ -24,7 +24,7 @@
         <b-carousel-slide :key="index" img-blank img-alt="Blank image">
           <div class="d-flex">
             <!-- key를 요소에 맞춰 설정 -->
-            <div v-for="item in itemsChunk" :key="item.id" class="chunk w-50">
+            <div v-for="item in itemsChunk" :key="item.id" class="chunk w-50"  @click="moveTo(item.id)">
               <!-- ListItem -->
               <list-item :item="item"></list-item>
               <!-- ListItem -->
@@ -69,6 +69,10 @@ export default {
     },
     next () {
       this.$refs.myCarousel.next()
+    },
+    moveTo (id) {
+      // 어떤 하나의 아이템을 클릭했을 때 수행할 함수
+      this.$emit('moveTo', id)
     }
   },
   computed: {
