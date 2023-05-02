@@ -1,10 +1,14 @@
 <template>
   <div>
     <header-navbar></header-navbar>
-    <div>This is MyPage</div>
-    <my-page-menu @goTo="goTo"></my-page-menu>
-     <router-link :to="{ name: 'MyReview'}">마이 서평</router-link>
-    <router-view></router-view>
+    <div class="container">
+    <div class="left">
+      <my-page-menu @goTo="goTo"></my-page-menu>
+    </div>
+    <div class="right">
+      <router-view></router-view>
+    </div>
+  </div>
   </div>
 </template>
 
@@ -27,5 +31,20 @@ export default {
 </script>
 
 <style>
+.container {
+  display: flex;
+  flex-direction: row;
+  margin-top: 50px;
+}
 
+.left {
+  width: 20%;
+  background-color: #ccc;
+  margin-right: 50px;
+}
+
+.right {
+  width: 80%;
+  background-color: #eee;
+}
 </style>
