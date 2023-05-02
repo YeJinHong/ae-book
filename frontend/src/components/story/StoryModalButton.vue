@@ -1,21 +1,17 @@
 <template #modal-footer>
   <div class="modal-footer">
     <!-- Emulate built in modal footer ok and cancel button actions -->
-    <b-button size="sm" variant="success" @click="ok()">
+    <b-button size="sm" variant="success" @click="updateTitle()">
       수정
     </b-button>
     <b-button size="sm" variant="danger" @click="deleteStoryById()">
       삭제
     </b-button>
-    <!-- Button with custom close trigger value -->
-    <b-button size="sm" variant="outline-secondary">
-      Forget it
-    </b-button>
   </div>
 </template>
 <script>
 
-import { deleteStory } from '@/api/story'
+import { deleteStory, updateStoryTitle } from '@/api/story'
 import { mapGetters } from 'vuex'
 
 const storyStore = 'storyStore'
@@ -28,6 +24,9 @@ export default {
     return {
 
     }
+  },
+  props: {
+    title: String
   },
   methods: {
 
@@ -42,6 +41,23 @@ export default {
         })
         .catch(error => {
           alert('정상적으로 삭제하지 못했습니다. ' + error)
+        })
+    },
+    updateTitle () {
+      this.storyId = this.getStoryId
+      this.request = {
+        'title': this.title
+      }
+
+      updateStoryTitle(this.storyId, this.request)
+        .then(response => {
+          if (response.data.resultCode === 200) {
+            alert('정상적으로 수정했습니다.')
+          } else {
+            alert('정상적으로 수정하지 못했습니다.')
+          }
+        }).catch(error => {
+          alert('정상적으로 수정하지 못했습니다. ' + error)
         })
     }
   },
