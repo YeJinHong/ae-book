@@ -69,21 +69,26 @@ const paintingStore = {
     },
     async downloadPainting ({ commit }, paintingId) {
       await downloadPainting(paintingId)
-        .then(({ data }) => {
+        .then(({ response }) => {
           // byte 배열을 Blob 객체로 변환
+          const blob = new Blob([response], { type: 'image/png' })
+
           // 다운로드 링크 생성
           const downloadLink = document.createElement('a')
-          downloadLink.href = URL.createObjectURL(new Blob([data]))
+          downloadLink.href = URL.createObjectURL(blob)
 
           // 파일 이름 설정
-          const fileName = 'image.jpg'
+          const fileName = 'painting.png'
           downloadLink.download = fileName
 
           // 링크 클릭하여 다운로드 시작
           downloadLink.click()
+
+          // 메모리 누수 방지
+          URL.revokeObjectURL(downloadLink.href)
         })
         .catch(error => {
-          alert(error)
+          alert('그림 다운로드에 실패했습니다.' + error)
         })
     },
     async deletePainting ({ commit }, paintingId) {
