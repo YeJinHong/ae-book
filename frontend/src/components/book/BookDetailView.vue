@@ -13,7 +13,6 @@
     <!-- TODO: 서평 수정 및 삭제 -->
     <div>
       <review-book-list-view :isbn="isbn"></review-book-list-view>
-
     </div>
   </div>
 </template>
