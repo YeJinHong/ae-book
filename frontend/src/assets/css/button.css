@@ -1,0 +1,20 @@
+.ae-btn {
+  border-radius: 7px;
+  border: 1px solid var(--ae-navy);
+  background-color: white;
+  color: var(--ae-navy);
+  padding: 0.42rem 1rem;
+  font-size: 0.95rem;
+}
+
+.btn-red {
+  border: 1px solid var(--ae-red);
+  background-color: var(--ae-red);
+  color: white;
+}
+
+.btn-navy {
+  border: 1px solid var(--ae-navy);
+  background-color: var(--ae-navy);
+  color: white;
+}
