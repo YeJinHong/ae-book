@@ -1,4 +1,4 @@
-import { getReview, getReviewMainList, getReviewBookList, modifyReview, deleteReview } from '../../api/review'
+import { getReview, getReviewMainList, getReviewBookList, modifyReview, deleteReview, getReviewMyList } from '../../api/review'
 
 const reviewStore = {
   namespaced: true,
@@ -8,7 +8,8 @@ const reviewStore = {
     reviewMainList: [],
     reviewMyList: [],
     reviewBookList: [],
-    reviewBookPageSetting: null
+    reviewBookPageSetting: null,
+    reviewMyPageSetting: null
   },
   /*
   Gettes: state의 변수들을 get하는역할을 한다.
@@ -42,6 +43,10 @@ const reviewStore = {
     SET_REVIEW_MY_LIST: (state, data) => {
       state.reviewMyList = data
     },
+    SET_REVIEW_MY_PAGE_SETTING: (state, data) => {
+      const { pageable, last, first, totalPages, size, totalElements, numberOfElements, empty } = data
+      state.reviewMyPageSetting = { pageable, last, first, totalPages, size, totalElements, numberOfElements, empty }
+    },
     SET_REVIEW_BOOK_LIST: (state, data) => {
       state.reviewBookList = data
     },
@@ -61,7 +66,7 @@ const reviewStore = {
   actions: {
     async getReviewAction ({ commit }, reviewId) {
       await getReview(reviewId)
-        .then(({data}) => {
+        .then(({ data }) => {
           commit('SET_REVIEW', data.result)
           console.log('getReview')
           console.log(data.result)
@@ -69,9 +74,26 @@ const reviewStore = {
           console.log(err)
         })
     },
+    async modifyReviewAction ({ commit }, payload) {
+      console.log('modifyReviewAction')
+      await modifyReview(payload)
+        .then(({ data }) => {
+          console.log('Review Modify Complete')
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    async deleteReviewAction ({ commit }, reviewId) {
+      await deleteReview(reviewId)
+        .then(({ data }) => {
+          commit('RESET_REVIEW')
+          console.log('Review Delete Complete')
+        })
+    },
     async getReviewMainListAction ({ commit }) {
       await getReviewMainList()
-        .then(({data}) => {
+        .then(({ data }) => {
           commit('SET_REVIEW_MAIN_LIST', data.result)
           console.log('REVIEW_MAIN_LIST')
           console.log(data.result)
@@ -81,7 +103,7 @@ const reviewStore = {
     },
     async getReviewBookListAction ({ commit }, request) {
       await getReviewBookList(request)
-        .then(({data}) => {
+        .then(({ data }) => {
           console.log('getReviewBookListAction')
           console.log(data.result.content)
           commit('SET_REVIEW_BOOK_LIST', data.result.content)
@@ -90,33 +112,14 @@ const reviewStore = {
           console.log(err)
         })
     },
-    async getReviewBookPageAction ({ commit }, request) {
-      await getReviewBookList(request)
+    async getReviewMyListAction ({ commit }, request) {
+      await getReviewMyList(request)
         .then(({ data }) => {
-          console.log('getReviewBookPage')
+          console.log('getReviewMyListAction')
+          console.log(data.result)
           console.log(data.result.content)
-          commit('SET_REVIEW_BOOK_LIST', data.result.content)
-          commit('SET_REVIEW_BOOK_PAGE_SETTING', data.result)
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-    },
-    async modifyReviewAction ({ commit }, payload) {
-      console.log('modifyReviewAction')
-      await modifyReview(payload)
-        .then(({data}) => {
-          console.log('Review Modify Complete')
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-    },
-    async deleteReviewAction ({ commit }, reviewId) {
-      await deleteReview(reviewId)
-        .then(({data}) => {
-          commit('RESET_REVIEW')
-          console.log('Review Delete Complete')
+          commit('SET_REVIEW_MY_LIST', data.result.content)
+          commit('SET_REVIEW_MY_PAGE_SETTING', data.result)
         })
     }
   }
