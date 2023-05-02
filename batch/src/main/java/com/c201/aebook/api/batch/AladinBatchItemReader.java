@@ -99,14 +99,17 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 				.queryParam("SubSearchTarget", SUB_SEARCH_TARGET)
 				.queryParam("OptResult", "usedList")
 				.queryParam("Output", outputType);
-			
 
 			NodeList itemNodes = getItemElementByUrl(builder);
 
 			for (int i = 0; i < itemNodes.getLength(); i++) {
 				Node itemNode = itemNodes.item(i);
 				BookEntity entity = parseBook(itemNode);
-				books.add(entity);
+
+				if(entity != null) {
+					books.add(entity);
+				}
+
 			}
 
 		}
@@ -119,6 +122,7 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 		ParserConfigurationException,
 		IOException,
 		SAXException {
+
 		String title = getChildText(itemNode, "title");
 		String author = getChildText(itemNode, "author");
 		String publisher = getChildText(itemNode, "publisher");
@@ -171,12 +175,16 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 
 		String isbn;
 		String aladinUrl;
-		long newUsedBookId = Integer.parseInt(itemNode.getAttributes().getNamedItem("itemId").getTextContent());
+
+		long newUsedBookId = 0;
+		if (itemNode.getAttributes().getNamedItem("itemId").getTextContent() != null) {
+			newUsedBookId = Integer.parseInt(itemNode.getAttributes().getNamedItem("itemId").getTextContent());
+		}
 
 		Node newBookParentNode = getChildNode(subInfoList, "newBookList");
 		NodeList newBookList = newBookParentNode.getChildNodes();
 		Node newBookNode = getChildNode(newBookList, "newBook");
-		long usedBookId = Integer.parseInt(getChildText(newBookNode, "itemId"));
+		long usedBookId = parseToInteger(newBookNode, "itemId");
 
 		long minPriceBookId;
 
@@ -211,6 +219,8 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 
 			isbn = getChildText(itemNodes.item(0), "isbn13");
 		}
+
+		if(minPriceBookId == 0 || isbn == null || aladinUrl == null || author == null || minPriceResult == 0) return null;
 
 		BookEntity book = BookEntity.builder()
 			.id(minPriceBookId)
@@ -248,7 +258,10 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 	 * 해당 태그의 값을 Integer로 변환
 	 * */
 	private int parseToInteger(Node nodeItem, String tagName) {
-		return Integer.parseInt(getChildText(nodeItem, tagName));
+		if (getChildText(nodeItem, tagName) != null) {
+			return Integer.parseInt(getChildText(nodeItem, tagName));
+		}
+		return 0;
 	}
 
 	/*
@@ -270,7 +283,8 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 	}
 
 	private String getChildText(Node itemNode, String tagName) {
-		if(itemNode == null) return null;
+		if (itemNode == null)
+			return null;
 
 		NodeList nodeList = itemNode.getChildNodes();
 		for (int i = 0; i < nodeList.getLength(); i++) {

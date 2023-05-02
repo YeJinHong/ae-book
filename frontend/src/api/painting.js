@@ -1,4 +1,5 @@
 import api from '@/api/auth.js'
+import axios from 'axios'
 
 // 그림 저장
 const savePainting = formData => api.post('/api/paintings', formData, {headers: {'Content-Type': 'multipart/form-data'}})
@@ -12,5 +13,7 @@ const deletePainting = paintingId => api.delete(`/api/paintings/${paintingId}`)
 const updatePaintingTitle = (request) => api.patch(`/api/paintings/${request.paintingId}`, request.title)
 // 그림 다운로드
 const downloadPainting = paintingId => api.get(`/api/paintings/download/${paintingId}`)
+// 선화로 만들기
+const convertSketch = formData => axios.post(`/fast/paintings/sketch`, formData, {headers: {'Content-Type': 'multipart/form-data'}})
 
-export { savePainting, getPaintingList, getPaintingDetail, deletePainting, updatePaintingTitle, downloadPainting }
+export { savePainting, getPaintingList, getPaintingDetail, deletePainting, updatePaintingTitle, downloadPainting, convertSketch }
