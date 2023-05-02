@@ -118,7 +118,6 @@ public class StoryController {
 
 		StoryPatchSO storyPatchSO = storyConverter.toStoryPatchSO(customUserDetails.getUsername(), storyId,
 			storyPatchRequestDTO);
-
 		storyService.updateStoryTitle(storyPatchSO);
 
 		return new BaseResponse<>(null, HttpStatus.OK.value(), "특정 동화의 제목이 정상적으로 변경되었습니다.");
