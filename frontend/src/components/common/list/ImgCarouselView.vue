@@ -71,7 +71,7 @@ export default {
       this.$refs.myCarousel.next()
     },
     moveTo (id) {
-      console.log('어떤 하나의 아이템을 클릭했을 때 수행할 함수에요^^')
+      // 어떤 하나의 아이템을 클릭했을 때 수행할 함수
       this.$emit('moveTo', id)
     }
   },
