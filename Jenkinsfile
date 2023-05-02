@@ -114,12 +114,12 @@ pipeline
 			}
 			post {
 				success {
-					echo 'Back-batch-api container stop Start.'
+					echo 'Back-batch container stop Start.'
 					sh '''
-					if (docker ps | grep "back-batch-api"); then docker stop back-batch-api;
+					if (docker ps | grep "back-batch"); then docker stop back-batch;
 					fi
 					'''
-					echo 'Back-batch-api container stop Success';
+					echo 'Back-batch container stop Success';
 				}
 			}
 		}
