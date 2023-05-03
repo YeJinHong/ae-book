@@ -6,19 +6,7 @@
     <input type="checkbox" v-model="searchTargets" value="PUBLISHER" checked>출판사
     <button @click="onClickSearch">검색</button>
     <div>
-      <div
-        class="list-group-item"
-        v-for="book in bookList"
-        :key="book.isbn"
-      >
-      <router-link :to="{ name: 'BookDetail', params: { isbn: book.isbn } }">
-        <img v-bind:src="book.coverImageUrl" class="book-image" />
-      </router-link>
-      {{ book.title }}
-      현재 최저가 {{ book.price }}원
-      {{ book.author }} | {{ book.publisher }} | {{ book.publishDate }}
-      <button type="button" @click="onClickRedirect(book.aladinUrl)">구매하러가기</button>
-    </div>
+      <book-search-item v-for="book in bookList" :key="book.isbn" :book="book"></book-search-item>
   </div>
     <div class="pagination-container">
       <pagination :pageSetting="bookPageSetting" @paging="paging"></pagination>
@@ -29,10 +17,11 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
 import Pagination from '../common/Pagination.vue'
+import BookSearchItem from './BookSearchItem.vue'
 const bookStore = 'bookStore'
 
 export default {
-  components: { Pagination },
+  components: { Pagination, BookSearchItem },
   name: 'BookSearchView',
   data () {
     return {
@@ -53,9 +42,6 @@ export default {
         searchTargets: this.searchTargets
       }
       this.getSearchList(this.request)
-    },
-    onClickRedirect (url) {
-      window.open(url, 'blank')
     },
     paging (page) {
       this.request['page'] = page - 1
