@@ -11,6 +11,9 @@
     <ModalView :modalShow="isModalVisible" @close-modal="closeModal">
       <StoryDetailView />
     </ModalView>
+    <div class="carousel-container">
+      <img-carousel-view :items="storyList" :chunkSize="3" @moveTo="showModal"></img-carousel-view>
+    </div>
   </div>
 </template>
 
@@ -19,6 +22,7 @@ import { searchStory } from '@/api/story'
 import ModalView from '@/components/common/ModalView'
 import StoryDetailView from '@/components/story/StoryDetailView'
 import { mapMutations, mapGetters } from 'vuex'
+import ImgCarouselView from '@/components/common/list/ImgCarouselView.vue'
 
 const storyStore = 'storyStore'
 
@@ -26,7 +30,8 @@ export default {
   name: 'StoryListView',
   components: {
     ModalView,
-    StoryDetailView
+    StoryDetailView,
+    ImgCarouselView
   },
   data () {
     return {
@@ -56,6 +61,7 @@ export default {
     ...mapMutations(storyStore, ['setStoryId', 'clearStoryId']),
     showModal (storyId) {
       this.setStoryId(storyId)
+      console.log(storyId)
       this.isModalVisible = true
     },
     closeModal () {
