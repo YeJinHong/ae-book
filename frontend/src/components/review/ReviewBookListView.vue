@@ -6,7 +6,7 @@
       v-for="review in reviewBookList"
       :key="review.id"
     >
-      <review-book-item-view :review=review></review-book-item-view>
+      <review-book-item-view :review=review :page=request.page @paging="paging"></review-book-item-view>
     </div>
     <div class="pagination-container">
       <pagination :pageSetting="reviewBookPageSetting" @paging="paging"></pagination>
@@ -64,6 +64,8 @@ export default {
 
 <style scoped>
 .list-group-item {
+  background: none;
+  border: none;
   display: flex;
   justify-content: center;
 }
