@@ -48,9 +48,8 @@ export default {
     ...mapState(bookStore, ['book']),
     ...mapState(reviewStore, ['reviewBookList', 'reviewBookPageSetting'])
   },
-  mounted () {
+  created () {
     this.getBookDetail(this.isbn)
-    this.book = this.getBook
   },
   methods: {
     ...mapActions(bookStore, ['getBookDetail']),
