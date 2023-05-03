@@ -2,5 +2,6 @@ import axios from 'axios'
 
 const searchByISBN = isbn => axios.get(`/api/books/${isbn}`)
 const getSearchList = (request) => axios.get(`/api/books?keyword=${request.keyword}&searchTargets=${request.searchTargets}&page=${request.page}`)
-
-export { searchByISBN, getSearchList }
+const getISBNfromPicture = formData => axios.post(`/fast/books/isbn`, formData, {headers: {'Content-Type': 'multipart/form-data'}})
+const getNewBookList = request => axios.get(`/api/books/new`)
+export { searchByISBN, getSearchList, getISBNfromPicture, getNewBookList }
