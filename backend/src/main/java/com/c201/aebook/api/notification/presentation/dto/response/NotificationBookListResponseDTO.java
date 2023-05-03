@@ -17,6 +17,13 @@ public class NotificationBookListResponseDTO {
     @Schema(description = "사용자 상한가", defaultValue = "1000")
     private int upperLimit;
 
+    /**
+     * S는 사용자가 가격을 지정한 경우(selected),
+     * D는 사용자가 가격을 지정하지 않은 경우(default)
+     */
+    @Schema(description = "알림 타입", defaultValue = "S")
+    private String notificationType;
+
     @Schema(description = "도서 제목", defaultValue = "철학이 필요한 시간 - 강신주의 인문학 카운슬링")
     private String title;
 
@@ -30,9 +37,10 @@ public class NotificationBookListResponseDTO {
     private String coverImageUrl;
 
     @Builder
-    public NotificationBookListResponseDTO(Long id, int upperLimit, String title, String isbn, int price, String coverImageUrl) {
+    public NotificationBookListResponseDTO(Long id, int upperLimit, String notificationType, String title, String isbn, int price, String coverImageUrl) {
         this.id = id;
         this.upperLimit = upperLimit;
+        this.notificationType = notificationType;
         this.title = title;
         this.isbn = isbn;
         this.price = price;
