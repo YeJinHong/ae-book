@@ -118,4 +118,14 @@ public class NotificationServiceImpl implements NotificationService {
 
         return notificationUpdateResponseDTO;
     }
+
+    @Override
+    public void deleteNotification(String userId, Long notificationId) {
+        // 1. notificaionId 유효성 검증 및 사용자 일치 여부 확인
+        NotificationEntity notificationEntity = notificationRepository.findByIdAndUserId(notificationId, Long.valueOf(userId))
+                .orElseThrow(() -> new CustomException(ErrorCode.NOTIFICATION_NOT_FOUND));
+
+        // 2. 알림 삭제
+        notificationRepository.delete(notificationEntity);
+    }
 }
