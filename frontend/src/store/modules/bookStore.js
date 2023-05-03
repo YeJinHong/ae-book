@@ -1,4 +1,4 @@
-import { searchByISBN, getSearchList } from '@/api/book'
+import { searchByISBN, getSearchList, getNewBookList } from '@/api/book'
 
 const bookStore = {
   namespaced: true,
@@ -49,32 +49,38 @@ const bookStore = {
       await searchByISBN(isbn)
         .then(({ data }) => {
           commit('SET_BOOK', data.result)
-          console.log(data.result)
         })
         .catch(error => {
-          console.log(error)
+          alert(error)
         })
     },
     async getSearchList ({ commit }, request) {
       await getSearchList(request)
         .then(({ data }) => {
-          console.log(data.result.content)
           commit('SET_BOOK_LIST', data.result.content)
           commit('SET_PAGE_SETTING', data.result)
         })
         .catch(error => {
-          console.log(error)
+          alert(error)
         })
     },
     async getPage ({ commit }, request) {
       await getSearchList(request)
         .then(({ data }) => {
-          console.log(data.result.content)
           commit('SET_BOOK_LIST', data.result.content)
           commit('SET_PAGE_SETTING', data.result)
         })
         .catch(error => {
-          console.log(error)
+          alert(error)
+        })
+    },
+    async getNewBookList ({ commit }, request) {
+      await getNewBookList(request)
+        .then(({ data }) => {
+          commit('SET_BOOK_LIST', data.result)
+        })
+        .catch(error => {
+          alert(error)
         })
     }
   }
