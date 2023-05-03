@@ -17,7 +17,7 @@ public class BookIntegrationStepListener implements StepExecutionListener {
 	 */
 	@Override
 	public void beforeStep(StepExecution stepExecution) {
-		// TODO Auto-generated method stub
+		log.info("before step execution");
 		
 	}
 
@@ -26,8 +26,11 @@ public class BookIntegrationStepListener implements StepExecutionListener {
 	 */
 	@Override
 	public ExitStatus afterStep(StepExecution stepExecution) {
-		// TODO Auto-generated method stub
-		return null;
+		log.info("after step execution");
+		String stepName = stepExecution.getStepName();
+		ExitStatus exitStatus = stepExecution.getExitStatus();
+
+		return exitStatus;
 	}
 
 }
