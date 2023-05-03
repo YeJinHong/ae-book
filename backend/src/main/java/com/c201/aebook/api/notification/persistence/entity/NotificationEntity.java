@@ -22,7 +22,7 @@ public class NotificationEntity extends BaseEntity {
     @Column(name ="upper_limt")
     private int upperLimit;
 
-    @Column(name = "notification_type", nullable = false, length = 100)
+    @Column(name = "notification_type", nullable = false, length = 10)
     private String notificationType;
 
     @ManyToOne(fetch = FetchType.LAZY)
