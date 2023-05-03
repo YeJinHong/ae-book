@@ -1,6 +1,7 @@
 package com.c201.aebook.api.notification.presentation.vaildator;
 
 import com.c201.aebook.api.notification.presentation.dto.request.NotificationRequestDTO;
+import com.c201.aebook.api.notification.presentation.dto.request.NotificationUpdateRequestDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 @Component
@@ -26,5 +27,9 @@ public class NotificationValidator {
 		if (StringUtils.isBlank(value)) {
 			throw new IllegalArgumentException(name + "은/는 필수 입력값입니다.");
 		}
+	}
+
+	public void validateNotificationUpdateRequestDTO(NotificationUpdateRequestDTO notificationUpdateRequestDTO) {
+		checkIntType(notificationUpdateRequestDTO.getUpperLimit(), "금액 상한선");
 	}
 }

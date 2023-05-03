@@ -2,9 +2,9 @@
   <div>
     <h1 class="subject">그림장</h1>
     <div style="height:2px; background-color: #E0E0E0;"></div>
-    <ModalView :modalShow="isModalVisible">
+    <ModalView :modalShow="isModalVisible" @close-modal="closeModal">
     <painting-detail-view/>
-    <painting-modal-button @close-modal="closeModal"></painting-modal-button>
+    <painting-modal-button @close="closeModal"></painting-modal-button>
     </ModalView>
     <div class="carousel-container">
       <img-carousel-view :items="paintingList" :chunkSize="3" @moveTo="showModal"></img-carousel-view>

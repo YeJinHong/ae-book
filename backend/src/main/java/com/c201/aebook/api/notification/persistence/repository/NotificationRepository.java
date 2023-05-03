@@ -20,4 +20,6 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
 
     @Query("SELECT n FROM NotificationEntity n LEFT JOIN FETCH n.user LEFT JOIN FETCH n.book WHERE n.id = :notificationId")
     Optional<NotificationEntity> findByNotificationId(Long notificationId);
+
+    Optional<NotificationEntity> findByIdAndUserId(Long notificationId, Long userId);
 }
