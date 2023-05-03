@@ -1,7 +1,10 @@
 package com.c201.aebook.api.notification.presentation.controller;
 
 import com.c201.aebook.api.common.BaseResponse;
+import com.c201.aebook.api.common.constants.ApplicationConstants;
 import com.c201.aebook.api.notification.presentation.dto.request.NotificationRequestDTO;
+import com.c201.aebook.api.notification.presentation.dto.response.NotificationBookDetailResponseDTO;
+import com.c201.aebook.api.notification.presentation.dto.response.NotificationBookListResponseDTO;
 import com.c201.aebook.api.notification.presentation.vaildator.NotificationValidator;
 import com.c201.aebook.api.notification.service.impl.NotificationServiceImpl;
 import com.c201.aebook.api.vo.NotificationSO;
@@ -13,6 +16,10 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -48,6 +55,30 @@ public class NotificationController {
         notificationService.saveNotification(customUserDetails.getUsername(), notificationSO);
 
         return new BaseResponse<>(null, HttpStatus.OK.value(), "알림 신청 성공");
+    }
+
+    @Operation(summary = "알림 신청한 책 목록", description = "사용자가 알림 신청한 책의 목록을 출력합니다.")
+    @SecurityRequirement(name = "bearerAuth")
+    @GetMapping()
+    public BaseResponse<?> getNotificationBookList(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PageableDefault(size = 6, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        // 1. 사용자가 알림 신청한 책 목록 가져오기
+        Page<NotificationBookListResponseDTO> notificationBookList = notificationService.getMyNotificationBookList(customUserDetails.getUsername(), pageable);
+        return new BaseResponse<>(notificationBookList, HttpStatus.OK.value(), ApplicationConstants.SUCCESS);
+    }
+
+    @Operation(summary = "알림 상세조회", description = "사용자가 신청한 알림에 대한 상세조회를 합니다.")
+    @SecurityRequirement(name = "bearerAuth")
+    @GetMapping("/{notificationId}")
+    public BaseResponse<?> getNotificationBookDetail(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable(name = "notificationId") Long notificationId
+    ) {
+        // 1. 사용자가 신청한 알림에 대한 상세조회(알림 자체 정보와 책 정보를 결합)
+        NotificationBookDetailResponseDTO notificationBookDetail = notificationService.getMyNotificationBookDetail(notificationId);
+        return new BaseResponse<>(notificationBookDetail, HttpStatus.OK.value(), ApplicationConstants.SUCCESS);
     }
 
 }
