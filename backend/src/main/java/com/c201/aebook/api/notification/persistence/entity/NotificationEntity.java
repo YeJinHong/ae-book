@@ -22,6 +22,9 @@ public class NotificationEntity extends BaseEntity {
     @Column(name ="upper_limt")
     private int upperLimit;
 
+    @Column(name = "notification_type", nullable = false, length = 100)
+    private String notificationType;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity user;
@@ -31,9 +34,10 @@ public class NotificationEntity extends BaseEntity {
     private BookEntity book;
 
     @Builder
-    public NotificationEntity(Long id, int upperLimit, UserEntity user, BookEntity book) {
+    public NotificationEntity(Long id, int upperLimit, String notificationType, UserEntity user, BookEntity book) {
         this.id = id;
         this.upperLimit = upperLimit;
+        this.notificationType = notificationType;
         this.user = user;
         this.book = book;
     }
