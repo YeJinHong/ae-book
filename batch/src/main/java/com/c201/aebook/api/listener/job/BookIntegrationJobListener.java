@@ -1,5 +1,6 @@
 package com.c201.aebook.api.listener.job;
 
+import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.stereotype.Component;
@@ -15,8 +16,7 @@ public class BookIntegrationJobListener implements JobExecutionListener {
 	 */
 	@Override
 	public void beforeJob(JobExecution jobExecution) {
-		// TODO Auto-generated method stub
-
+		log.info("before job execution = " + jobExecution);
 	}
 
 	/**
@@ -24,8 +24,15 @@ public class BookIntegrationJobListener implements JobExecutionListener {
 	 */
 	@Override
 	public void afterJob(JobExecution jobExecution) {
-		// TODO Auto-generated method stub
+		log.info("after job execution = " + jobExecution);
 
+		if(jobExecution.getStatus() == BatchStatus.COMPLETED){
+			//job success
+			log.info("job success => " + jobExecution.getJobInstance().getJobName());
+		}else{
+			//job failure
+			log.info("job failed =>" + jobExecution.getJobInstance().getJobName());
+		}
 	}
 
 }
