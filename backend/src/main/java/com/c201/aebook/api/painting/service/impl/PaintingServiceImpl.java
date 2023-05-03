@@ -1,5 +1,8 @@
 package com.c201.aebook.api.painting.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -75,6 +78,15 @@ public class PaintingServiceImpl implements PaintingService {
 		PaintingEntity paintingEntity = getOwnPainting(userId, paintingId);
 		PaintingResponseDTO paintingResponseDTO = paintingConverter.toPaintingResponseDTO(paintingEntity);
 		return paintingResponseDTO;
+	}
+
+	@Override
+	public List<PaintingResponseDTO> getNewPaintingList() {
+		List<PaintingEntity> paintingEntities = paintingRepository.findTop20ByOrderByUpdatedAtDesc();
+		List<PaintingResponseDTO> result = paintingEntities.stream().map(
+				painting -> paintingConverter.toPaintingResponseDTO(painting))
+			.collect(Collectors.toList());
+		return result;
 	}
 
 	// 그림 작성자와 로그인한 사용자가 일치하는지 확인하는 함수
