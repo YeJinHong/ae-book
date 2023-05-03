@@ -3,7 +3,7 @@
     <ul>
         <li class="mypage-btn" @click="goTo('#')">알림설정한 책</li>
         <li class="mypage-btn" @click="goTo('mypainting')">그림장</li>
-        <li class="mypage-btn" @click="goTo('#')">동화책</li>
+        <li class="mypage-btn" @click="goTo('StoryListView')">동화책</li>
         <li class="mypage-btn" @click="goTo('MyReview')">작성한 서평</li>
         <li class="mypage-btn" @click="goTo('#')">탈퇴하기</li>
       </ul>

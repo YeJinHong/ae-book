@@ -1,18 +1,11 @@
 <template>
   <div>
     <h2>나의 동화 목록</h2>
-    <div horizontal v-for="story in storyList" :key="story.storyId">
-      <h3 @click="showModal(story.storyId)">{{ story.title }}</h3>
-      <p>{{ story.content }}</p>
-      <img v-bind:src="story.imgUrl" alt="story image" />
-      <p>작성자: {{ story.storyAuthorNickname }}</p>
-      <p>작성일: {{ story.createdAt }}</p>
-    </div>
     <ModalView :modalShow="isModalVisible" @close-modal="closeModal">
       <StoryDetailView />
     </ModalView>
     <div class="carousel-container">
-      <img-carousel-view :items="storyList" :chunkSize="3" @moveTo="showModal"></img-carousel-view>
+      <StoryCarouselView :items="storyList" :chunkSize="3" @moveTo="showModal"></StoryCarouselView>
     </div>
   </div>
 </template>
@@ -22,7 +15,7 @@ import { searchStory } from '@/api/story'
 import ModalView from '@/components/common/ModalView'
 import StoryDetailView from '@/components/story/StoryDetailView'
 import { mapMutations, mapGetters } from 'vuex'
-import ImgCarouselView from '@/components/common/list/ImgCarouselView.vue'
+import StoryCarouselView from '@/components/story/StoryCarouselView'
 
 const storyStore = 'storyStore'
 
@@ -31,7 +24,7 @@ export default {
   components: {
     ModalView,
     StoryDetailView,
-    ImgCarouselView
+    StoryCarouselView
   },
   data () {
     return {
@@ -61,7 +54,6 @@ export default {
     ...mapMutations(storyStore, ['setStoryId', 'clearStoryId']),
     showModal (storyId) {
       this.setStoryId(storyId)
-      console.log(storyId)
       this.isModalVisible = true
     },
     closeModal () {
