@@ -82,7 +82,7 @@ public class PaintingServiceImpl implements PaintingService {
 
 	@Override
 	public List<PaintingResponseDTO> getNewPaintingList() {
-		List<PaintingEntity> paintingEntities = paintingRepository.findTop20ByOrderByUpdatedAtDesc();
+		List<PaintingEntity> paintingEntities = paintingRepository.findTop12ByOrderByCreatedAtDesc();
 		List<PaintingResponseDTO> result = paintingEntities.stream().map(
 				painting -> paintingConverter.toPaintingResponseDTO(painting))
 			.collect(Collectors.toList());

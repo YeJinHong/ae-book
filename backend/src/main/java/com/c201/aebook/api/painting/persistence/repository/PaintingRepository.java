@@ -16,5 +16,5 @@ public interface PaintingRepository extends JpaRepository<PaintingEntity, Long> 
 
 	public void delete(PaintingEntity paintingEntity);
 
-	public List<PaintingEntity> findTop20ByOrderByUpdatedAtDesc();
+	public List<PaintingEntity> findTop12ByOrderByCreatedAtDesc();
 }
