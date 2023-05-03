@@ -2,6 +2,7 @@
   <div>
     <div class="item-container">
       <img v-if="item.fileUrl" v-bind:src="item.fileUrl" class="item-img">
+      <img v-if="item.imgUrl" v-bind:src="item.imgUrl" class="item-img">
       <img v-if="item.coverImageUrl" v-bind:src="item.coverImageUrl" class="item-img">
     </div>
     <div class="info-container">
