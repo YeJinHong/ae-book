@@ -1,0 +1,38 @@
+/* Default CSS */
+
+/* 폰트 설정 */
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap');
+
+/* 기본 컬러 설정 */
+:root {
+  --main-background: #FFF5DE;
+  --ae-red: #ED553B;
+  --ae-navy: #393280;
+  --menu-blue: #89ABE6;
+  --menu-red: #FF609C;
+  --menu-yellow: #FCBD4B;
+  --menu-green: #88C72E;
+  --main-yellow: #FEE566;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    font-size: 16px;
+    font-family: 'Nanum Gothic', sans-serif;
+    color: var(--ae-navy);
+    text-align: center;
+    background-color: var(--main-background);
+}
+
+ul, ol, li {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+}

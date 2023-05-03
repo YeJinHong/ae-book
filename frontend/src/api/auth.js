@@ -7,7 +7,7 @@ import axios from 'axios'
  * axios 인스턴스 생성
  */
 const api = axios.create({
-  baseURL: 'http://localhost:3000'
+  baseURL: `${process.env.VUE_APP_BASE_URL}`
 })
 
 // 요청 인터셉터 설정

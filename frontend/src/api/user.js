@@ -21,4 +21,26 @@ const logout = async () => {
   }
 }
 
-export { login, logout }
+const modifyUser = async (formData) => {
+  try {
+    console.log('사용자 정보 수정')
+    const response = api.patch(`/api/users/info`, formData, {headers: {'Content-Type': 'multipart/form-data'}})
+    return response
+  } catch (error) {
+    console.log(error)
+    throw new Error('사용자 정보 수정에 실패하였습니다.')
+  }
+}
+
+const deleteUser = async () => {
+  try {
+    console.log('사용자 탈퇴')
+    const response = api.delete(`/api/users`)
+    return response
+  } catch (error) {
+    console.log(error)
+    throw new Error('사용자 탈퇴에 실패하였습니다.')
+  }
+}
+
+export { login, logout, modifyUser, deleteUser }
