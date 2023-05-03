@@ -28,7 +28,7 @@ public class NotificationValidator {
 	}
 
 	public void checkIntType(int value, String name) {
-		if (value <= 0) {
+		if (value < 0) {
 			throw new IllegalArgumentException(name + "은/는 필수 입력값이며 양수 값만 가능합니다.");
 		}
 	}
