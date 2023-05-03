@@ -1,5 +1,7 @@
 package com.c201.aebook.api.painting.service;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -20,4 +22,6 @@ public interface PaintingService {
 	public PaintingResponseDTO updatePaintingTitle(PaintingPatchSO paintingPatchSO);
 
 	public PaintingResponseDTO getPaintingDetails(Long userId, Long paintingId);
+
+	public List<PaintingResponseDTO> getNewPaintingList();
 }
