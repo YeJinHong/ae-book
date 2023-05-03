@@ -37,4 +37,8 @@ public class NotificationEntity extends BaseEntity {
         this.user = user;
         this.book = book;
     }
+
+    public void updateNotificationEntity(int upperLimit) {
+        this.upperLimit = upperLimit;
+    }
 }
