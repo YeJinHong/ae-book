@@ -32,6 +32,8 @@ public enum ErrorCode {
 	REVIEW_NOT_FOUND(NOT_FOUND, "존재하지 않는 서평입니다."), // 희주
 	REFRESH_TOKEN_NOT_FOUND(NOT_FOUND, "로그아웃 된 사용자입니다"),
 	PAINTING_NOT_FOUND(NOT_FOUND, "존재하지 않는 그림입니다."),
+	NOTIFICATION_NOT_FOUND(NOT_FOUND, "존재하지 않는 알림입니다."),
+
 	/* 409 CONFLICT : 클라이언트의 요청이 서버 상태와 충돌하는 경우 */
 	DUPLICATE_RESOURCE(CONFLICT, "데이터가 이미 존재합니다.");
 
