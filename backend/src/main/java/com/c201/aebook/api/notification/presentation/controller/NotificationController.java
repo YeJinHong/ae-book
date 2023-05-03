@@ -103,4 +103,16 @@ public class NotificationController {
         return new BaseResponse<>(notificationUpdateResponseDTO, HttpStatus.OK.value(), ApplicationConstants.SUCCESS);
     }
 
+    @Operation(summary = "알림 삭제", description = "사용자가 신청한 알림을 삭제합니다.")
+    @SecurityRequirement(name = "bearerAuth")
+    @DeleteMapping("/{notificationId}")
+    public BaseResponse<?> deleteNotification(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable(name = "notificationId") Long notificationId
+    ) {
+        // 알림 삭제
+        notificationService.deleteNotification(customUserDetails.getUsername(), notificationId);
+        return new BaseResponse<>(null, HttpStatus.OK.value(), ApplicationConstants.SUCCESS);
+    }
+
 }

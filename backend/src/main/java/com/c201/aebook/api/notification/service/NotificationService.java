@@ -18,4 +18,6 @@ public interface NotificationService {
 
     public NotificationUpdateResponseDTO updateNotification(String userId, Long notificationId, NotificationPatchSO notificationPatchSO);
 
+    public void deleteNotification(String userId, Long notificationId);
+
 }
