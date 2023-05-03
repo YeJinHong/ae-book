@@ -104,11 +104,11 @@ const paintingStore = {
     async updatePaintingTitle ({ commit }, request) {
       await updatePaintingTitle(request)
         .then(({ data }) => {
-          alert(data)
+          alert('그림 제목을 성공적으로 수정했습니다.')
           commit('SET_PAINTING', data.result)
         })
         .catch(error => {
-          alert(error)
+          alert('그림 제목을 수정에 실패했습니다.' + error)
         })
     }
   }
