@@ -17,7 +17,7 @@ export default {
   methods: {
     ...mapActions('paintingStore', ['downloadPainting', 'deletePainting', 'updatePaintingTitle']),
     closeModal () {
-      this.$emit('close-modal')
+      this.$emit('close')
     },
     clickDelete (id) {
       this.deletePainting(id)
