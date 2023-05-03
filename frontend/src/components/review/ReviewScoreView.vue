@@ -4,10 +4,9 @@
       class="star"
       v-for="index in 5"
       :key="index"
-      @click="check(index)"
     >
-      <span v-if="index <= score">🧡</span>
-      <span v-if="index > score">🤍</span>
+      <span v-if="index <= starScore">🧡</span>
+      <span v-if="index > starScore">🤍</span>
     </div>
   </div>
 </template>
@@ -15,7 +14,15 @@
 <script>
 export default {
   name: 'ReviewScoreView',
-  props: ['score']
+  props: ['score', 'isModify'],
+  data () {
+    return {
+      starScore: this.score
+    }
+  },
+  methods: {
+
+  }
 }
 </script>
 
