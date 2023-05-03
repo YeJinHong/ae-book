@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class NotificationPatchSO {
     private int upperLimit;
+    private String notificationType;
 
 }
