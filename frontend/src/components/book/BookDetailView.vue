@@ -94,9 +94,8 @@ export default {
     ...mapState(reviewStore, ['reviewBookList', 'reviewBookPageSetting']),
     ...mapState(notificationStore, ['isNotification'])
   },
-  mounted () {
+  created () {
     this.getBookDetail(this.isbn)
-    this.book = this.getBook
   },
   methods: {
     ...mapActions(bookStore, ['getBookDetail']),

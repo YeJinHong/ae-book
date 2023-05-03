@@ -1,6 +1,7 @@
 package com.c201.aebook.api.painting.presentation.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -147,6 +148,13 @@ public class PaintingController {
 		Long userId = Long.parseLong(customUserDetails.getUsername());
 		Page<PaintingResponseDTO> paintingList = paintingService.getPaintingList(userId, type, pageable);
 
+		return new BaseResponse<>(paintingList, HttpStatus.OK.value(), ApplicationConstants.SUCCESS);
+	}
+
+	@Operation(summary = "메인화면에서 보이는 작품 리스트", description = "메인화면에서 그림 리스트를 반환합니다.")
+	@GetMapping("/new")
+	public BaseResponse<?> getNewPaintingList() {
+		List<PaintingResponseDTO> paintingList = paintingService.getNewPaintingList();
 		return new BaseResponse<>(paintingList, HttpStatus.OK.value(), ApplicationConstants.SUCCESS);
 	}
 
