@@ -112,7 +112,7 @@ export default {
     },
     canvasToFile (canvas) {
       // canvas -> dataURL
-      let imgBase64 = canvas.toDataURL('image/jpeg')
+      let imgBase64 = canvas.toDataURL('image/png')
 
       const byteString = atob(imgBase64.split(',')[1])
       const ab = new ArrayBuffer(byteString.length)
@@ -120,10 +120,10 @@ export default {
       for (let i = 0; i < byteString.length; i++) {
         ia[i] = byteString.charCodeAt(i)
       }
-      const blob = new Blob([ab], { type: 'image/jpeg' })
+      const blob = new Blob([ab], { type: 'image/png' })
 
       // blob -> file
-      const paintingFile = new File([blob], 'painting_' + new Date().getMilliseconds() + '.jpeg', { type: 'image/jpeg' })
+      const paintingFile = new File([blob], 'painting_' + new Date().getMilliseconds() + '.png', { type: 'image/png' })
 
       return paintingFile
     },
