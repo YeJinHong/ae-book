@@ -6,9 +6,11 @@ import com.c201.aebook.api.notification.persistence.entity.NotificationEntity;
 import com.c201.aebook.api.notification.persistence.repository.NotificationRepository;
 import com.c201.aebook.api.notification.presentation.dto.response.NotificationBookDetailResponseDTO;
 import com.c201.aebook.api.notification.presentation.dto.response.NotificationBookListResponseDTO;
+import com.c201.aebook.api.notification.presentation.dto.response.NotificationUpdateResponseDTO;
 import com.c201.aebook.api.notification.service.NotificationService;
 import com.c201.aebook.api.user.persistence.entity.UserEntity;
 import com.c201.aebook.api.user.persistence.repository.UserRepository;
+import com.c201.aebook.api.vo.NotificationPatchSO;
 import com.c201.aebook.api.vo.NotificationSO;
 import com.c201.aebook.converter.NotificationConverter;
 import com.c201.aebook.utils.exception.CustomException;
@@ -18,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -93,5 +96,26 @@ public class NotificationServiceImpl implements NotificationService {
                 .coverImageUrl(notificationEntity.getBook().getCoverImageUrl())
                 .aladinUrl(notificationEntity.getBook().getAladinUrl())
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public NotificationUpdateResponseDTO updateNotification(String userId, Long notificationId, NotificationPatchSO notificationPatchSO) {
+        // 1. userId 유효성 검증
+        UserEntity userEntity = userRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        // 2. notificationId 유효성 검증
+        NotificationEntity notificationEntity = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOTIFICATION_NOT_FOUND));
+
+        // 3. notification 정보(upperLimit) 업데이트
+        notificationEntity.updateNotificationEntity(notificationPatchSO.getUpperLimit());
+
+        // 4. NofiticationUpdateResponseDTO에 담기
+        NotificationUpdateResponseDTO notificationUpdateResponseDTO =
+                notificationConverter.toNotificationUpdateResponseDTO(notificationEntity.getUpperLimit());
+
+        return notificationUpdateResponseDTO;
     }
 }
