@@ -24,7 +24,7 @@ public class AladinBatchItemWriter implements ItemWriter<BookEntity> {
 	@Override
 	public void write(List<? extends BookEntity> items) throws Exception {
 		for(BookEntity item : items){
-			Optional<BookEntity> book = bookRepository.findById(item.getId());
+			Optional<BookEntity> book = bookRepository.findByIsbn(item.getIsbn());
 			if(book.isPresent()){
 				//기존 db 가격과 비교하여 최저가인 경우 가격만 갱신
 				BookEntity updateBook = book.get();

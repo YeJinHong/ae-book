@@ -220,7 +220,7 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 			isbn = getChildText(itemNodes.item(0), "isbn13");
 		}
 
-		if(minPriceBookId == 0 || isbn == null || aladinUrl == null || author == null || minPriceResult == 0) return null;
+		if(minPriceBookId == 0 || isbn == null || isbn.isEmpty() || aladinUrl == null || aladinUrl.isEmpty() || author == null || author.isEmpty() || minPriceResult == 0) return null;
 
 		BookEntity book = BookEntity.builder()
 			.id(minPriceBookId)
