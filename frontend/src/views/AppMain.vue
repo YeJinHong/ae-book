@@ -27,7 +27,7 @@
     <!-- /메인 메뉴 -->
     <div class="clear"></div>
     <div class="subject-line"><div class="subject">새로 들어온 책</div><div class="red-bar"></div></div>
-    <div class="book-container">
+    <div class="carousel-container">
       <book-carousel-view :items="bookList" :chunkSize="4"></book-carousel-view>
     </div>
     <!-- TODO : 각기 다음에 필요한 컴포넌트는 components/{domain} 하위에 작성 -->
@@ -36,6 +36,9 @@
     <carousel :items="reviewMainList"></carousel>
     <!-- TODO : 우리 아이들 작품(만든 동화) 리스트 컴포넌트 -->
     <div class="subject-line"><div class="subject">우리 아이들 작품</div><div class="red-bar"></div></div>
+    <div class="carousel-container">
+      <painting-carousel-view :items="mainPaintingList" :chunkSize="4"></painting-carousel-view>
+    </div>
     <the-footer></the-footer>
   </div>
 </template>
@@ -45,10 +48,12 @@ import HeaderNavbarMain from '@/components/HeaderNavbarMain'
 import TheFooter from '@/components/TheFooter'
 import Carousel from '@/components/CarouselView'
 import BookCarouselView from '@/components/common/list/BookCarouselView.vue'
+import PaintingCarouselView from '@/components/common/list/PaintingCarouselView.vue'
 import { mapState, mapActions } from 'vuex'
 
 const reviewStore = 'reviewStore'
 const bookStore = 'bookStore'
+const paintingStore = 'paintingStore'
 
 export default {
   name: 'AppMain',
@@ -56,19 +61,23 @@ export default {
     HeaderNavbarMain,
     TheFooter,
     Carousel,
-    BookCarouselView
+    BookCarouselView,
+    PaintingCarouselView
   },
   methods: {
     ...mapActions(reviewStore, ['getReviewMainListAction']),
-    ...mapActions(bookStore, ['getNewBookList'])
+    ...mapActions(bookStore, ['getNewBookList']),
+    ...mapActions(paintingStore, ['getNewPainting'])
   },
   computed: {
     ...mapState(reviewStore, ['reviewMainList']),
-    ...mapState(bookStore, ['bookList'])
+    ...mapState(bookStore, ['bookList']),
+    ...mapState(paintingStore, ['mainPaintingList'])
   },
   mounted () {
     this.getReviewMainListAction()
     this.getNewBookList()
+    this.getNewPainting()
   }
 }
 
@@ -91,7 +100,7 @@ export default {
   border: 1px solid gray; /* 경계선 */
 }
 
-.book-container {
+.carousel-container {
   margin: auto;
   height: 500px;
   width: 1000px;
