@@ -6,8 +6,11 @@
       <input type="file" @change="onFileChange" />
       <img :src="imageUrl" v-if="imageUrl" />
     </div>
+    <div>
+      <img :src="sketch"/>
+    </div>
     <button>돌아가기</button>
-    <button>저장하기</button>
+    <button @click="onSaveClick">저장하기</button>
   </div>
 </template>
 
@@ -23,13 +26,16 @@ export default {
     }
   },
   computed: {
-    ...mapState(paintingStore, ['paintingList'])
+    ...mapState(paintingStore, ['paintingList', 'sketch'])
   },
   methods: {
-    ...mapActions(paintingStore, ['getPaintingList']),
+    ...mapActions(paintingStore, ['getPaintingList', 'convertSketch', 'savePainting']),
     onFileChange (e) {
       const file = e.target.files[0]
       this.previewImage(file)
+      const formData = new FormData()
+      formData.append('image', file)
+      this.convertSketch(formData)
     },
     previewImage (file) {
       const reader = new FileReader()
@@ -37,6 +43,42 @@ export default {
       reader.onload = e => {
         this.imageUrl = e.target.result
       }
+    },
+    Base64ToFile (imgBase64) {
+      const byteString = atob(imgBase64.split(',')[1])
+      const ab = new ArrayBuffer(byteString.length)
+      const ia = new Uint8Array(ab)
+      for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i)
+      }
+      const blob = new Blob([ab], { type: 'image/png' })
+
+      // blob -> file
+      const paintingFile = new File([blob], 'painting_' + new Date().getMilliseconds() + '.png', { type: 'image/png' })
+
+      return paintingFile
+    },
+    onSaveClick () {
+      const paintingFile = this.Base64ToFile(this.sketch)
+
+      let data = {
+        title: 'sketch_' + new Date().getMilliseconds(),
+        type: 'LINE'
+      }
+
+      let formData = new FormData()
+      formData.append('paintingFile', paintingFile)
+      formData.append('data', new Blob([JSON.stringify(data)], {type: 'application/json'}))
+
+      this.savePainting(formData)
+        .then(
+          alert('그림 저장에 성공했습니다.')
+        )
+        .catch(error => {
+          alert('그림 저장에 실패했습니다.' + error)
+        })
+
+      this.$router.push('/painting/board')
     }
   }
 }

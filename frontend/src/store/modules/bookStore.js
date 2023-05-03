@@ -5,7 +5,8 @@ const bookStore = {
   // state: 변수들의 집합
   state: {
     book: null,
-    bookList: []
+    bookList: [],
+    bookPageSetting: null
   },
   /*
   Gettes: state의 변수들을 get하는역할을 한다.
@@ -30,8 +31,13 @@ const bookStore = {
     SET_BOOK_LIST: (state, data) => {
       state.bookList = data
     },
-    RESET_BOOK_LIST (state) {
+    RESET_BOOK_SEARCH (state) {
       state.bookList = []
+      state.bookPageSetting = null
+    },
+    SET_PAGE_SETTING: (state, data) => {
+      const { pageable, last, first, totalPages, size, totalElements, numberOfElements, empty } = data
+      state.bookPageSetting = { pageable, last, first, totalPages, size, totalElements, numberOfElements, empty }
     }
   },
   /*
@@ -54,6 +60,18 @@ const bookStore = {
         .then(({ data }) => {
           console.log(data.result.content)
           commit('SET_BOOK_LIST', data.result.content)
+          commit('SET_PAGE_SETTING', data.result)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    async getPage ({ commit }, request) {
+      await getSearchList(request)
+        .then(({ data }) => {
+          console.log(data.result.content)
+          commit('SET_BOOK_LIST', data.result.content)
+          commit('SET_PAGE_SETTING', data.result)
         })
         .catch(error => {
           console.log(error)

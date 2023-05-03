@@ -3,7 +3,7 @@
         <b-navbar toggleable="lg" type="dark" variant="light" class="nav">
             <b-navbar-brand href="#">
                 <router-link to="/">
-                    아이북
+                  <img src="../assets/images/aebook_logo.png" width="100" height="50">
                 </router-link>
             </b-navbar-brand>
 
@@ -37,7 +37,7 @@
                     <b-nav-form>
                         {{ user.userId }} | {{ user.nickname }}
                         <b-button size="sm" @click="logout">로그아웃</b-button>
-                        <router-link :to="{ name: 'MyPage' }" class="link"><b-button size="sm">마이페이지</b-button></router-link>
+                        <router-link :to="{ name: 'MyInfo' }" class="link"><b-button size="sm">마이페이지</b-button></router-link>
                     </b-nav-form>
                 </b-navbar-nav>
                 <!-- 로그인 전 -->

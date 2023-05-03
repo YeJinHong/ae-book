@@ -2,7 +2,6 @@ from fastapi import FastAPI,File,UploadFile
 from fastapi.responses import JSONResponse
 from review_star_prediction import *
 from isbn_ocr import *
-from caption import *
 from dotenv import load_dotenv
 import os
 import openai
@@ -10,14 +9,35 @@ import io
 import base64
 import cv2
 import sys
+import urllib.request
 import requests
 import numpy as np
 from PIL import Image
+from typing import Dict,Any
+from starlette.middleware.cors import CORSMiddleware
+
+##setting cors origin
+origins = [
+    "http://127.0.0.1",
+    "http://127.0.0.1:3000",
+    "http://localhost:3000"
+]
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 #constant
 STT_URL = "https://naveropenapi.apigw.ntruss.com/recog/v1/stt?lang=Kor"
+TTS_URL = "httxps://naveropenapi.apigw.ntruss.com/tts-premium/v1/tts"
+ADJECTIVE = ["아름다운","이해하기 쉬운","재미있는","슬픈","교훈을 주는","상상력을 자극하는",
+             "감동을 주는","어린이가 좋아할 만한","사실적인"]
 
 #api key
 load_dotenv()
@@ -35,13 +55,65 @@ async def root():
 async def say_hello(name: str):
     return {"message":f"Hello {name}"}
 
+"""
+input: title, words
+output: review, star point
+"""
+@app.post("/reviews/gpt")
+async def create_review(data:Dict[Any,Any]):
+    
+    # {작가}의 {제목} 책을 읽고 {키워드}를 키워드로 해서 서평을 {char} 자 이내로 써줘.
+    
+    #unpack data
+    title = data["title"]
+    words = data["keyword"]
+    writer = data["writer"]
+    char = data["char"]
+    
+    # message 구성
+    if writer != None and char != None:
+        
+        #default number of character value
+        char = max(100,int(char))
+
+        m = f"너는 {writer}의 {title}이라는 책을 읽은 사람이야. 자기소개는 하지 말고 {words}를 키워드로 해서 서평을 {char}자 이내로 써줘"
+    elif writer == None:
+        
+        #default number of character value
+        if char == None:
+            char = 100
+        else:
+            char = max(100,int(char))
+        
+        m = f"너는 {title}이라는 책을 읽은 사람이야. 자기소개는 하지 말고 {words}를 키워드로 해서 서평을 {char}자 이내로 써줘"
+    
+    elif char == None:
+        
+        m = f"너는 {writer}의 {title}이라는 책을 읽은 사람이야. 자기소개는 하지 말고 {words}를 키워드로 해서 서평을 100자 이내로 써줘"
+    
+    #chatgpt request
+    completion = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "user", "content": m}
+    ]
+    )
+    
+    #chatgpt response
+    response = completion.choices[0].message['content']
+    
+    #predicted star point
+    star = predict_star_point(response)
+    
+    return {"review":response, "star":star}
+
 
 """
-input:mp3 file(keyword)
-output:text
+input:mp3 file(keyword), title
+output:review & point prediction
 """
 @app.post("/reviews/sound")
-async def sound_to_text(sound: UploadFile = File(...)):
+async def sound_to_review(title:str, sound: UploadFile = File(...), writer=None, char=None):
     
     #read mp3 file to byte string
     data = await sound.read()
@@ -56,75 +128,16 @@ async def sound_to_text(sound: UploadFile = File(...)):
     rescode = response.status_code
     
     if(rescode == 200):
-        return response.text
+        
+        words = response.text #stt result
+        
+        review_dict = create_gpt_review(title,words,writer,char) #create review & star
+        
+        return {"review":review_dict["review"], "star":review_dict["star"]}
     else:
         return "Error : " + response.text
-
-
-@app.post("/reviews/gpt")
-async def create_review(title:str, words: str, writer=None, char=None):
     
-    # message 구성
-    if writer != None and char != None:
-        
-        #default number of character value
-        char = max(100,char)
-            
-        m = f"제목:{title}, 키워드:{words}, 작가:{writer}, 서평 {char}자 이내"
     
-    elif writer == None:
-        
-        #default number of character value
-        if char == None:
-            char = 100
-        else:
-            char = max(100,char)
-        
-        m = f"제목:{title}, 키워드:{words}, 서평 {char}자 이내"
-    
-    elif char == None:
-        
-        m = f"제목:{title}, 키워드:{words}, 작가:{writer}, 서평 80자 이내"
-    
-    #chatgpt request
-    completion = openai.ChatCompletion.create(
-    model="gpt-3.5-turbo",
-    messages=[
-        {"role": "user", "content": m}
-    ]
-    )
-    
-    #chatgpt response
-    return completion.choices[0].message
-
-#prediction review star point
-"""
-input: chatgpt review
-output: string of star point(one of 1,2,3,4,5)
-"""
-@app.post("/reviews/point")
-async def predict_star_point(review: str):
-
-    #simple preprocessing review
-    review = review.strip("\n").strip(" ")
-
-    #transform review
-    transform_review = tokenizer.batch_encode_plus([review],max_length=128,pad_to_max_length=True)
-
-    #prepare input data
-    token_ids = torch.tensor(transform_review['input_ids']).long()
-    attention_mask = torch.tensor(transform_review['attention_mask']).long()
-
-    #prediction
-    output = star_model(token_ids, attention_mask)
-
-    #for confidence
-    #percentage_output = F.softmax(output, dim = 1)
-
-    #get maximum confidence class 
-    pred = output.cpu().detach().numpy()
-    sorted_pred = np.argsort(pred,axis = 1)
-    return str(sorted_pred[0][-1]+1)
 
 #convert image to sketch
 @app.post("/paintings/sketch")
@@ -162,8 +175,8 @@ async def image_to_sketch(image: UploadFile = File(...)):
     # encoding byte string to base64
     encoded = base64.b64encode(binary_sketch)
     
-    # decoding base64 to ascii
-    decoded = encoded.decode('ascii')
+    # decoding base64 to utf-8
+    decoded = encoded.decode('utf-8')
     
     #return json response
     return JSONResponse(decoded)
@@ -213,41 +226,18 @@ async def isbn_detection(image: UploadFile = File(...)):
                 return {"status":1, "data":data} 
     
     #fail
-    return {"status":0, "data":""} 
+    return {"status":0, "data":""}
 
 """
-input: image
-output: caption text
-"""
-@app.post("/stories/words")
-async def image_caption(image: UploadFile = File(...)):
-    
-    #read image & open image
-    img = await image.read()
-    img = io.BytesIO(img)
-    img = Image.open(img)
-    
-    #preprocessing image
-    img = preprocess(img).unsqueeze(0).to(device)
-    
-    #simple captioning
-    with torch.no_grad():
-        prefix = clip_model.encode_image(img).to(device, dtype=torch.float32)
-        prefix_embed = caption_model.clip_project(prefix).reshape(1, prefix_length, -1)
-        generated_text_prefix = generate(caption_model, tokenizer2, embed=prefix_embed)
-
-    return {"data":generated_text_prefix}
-
-"""
-input: caption text
+input: story keyword
 output: chatgpt story
 """
 @app.post("/stories/gpt")
-async def create_story(text: str):
+async def create_story(text:Dict[Any,Any]):
     
     #chatgpt query
-    query = f"{text}로 동화를 만들어줘"
-    
+    query = f"너는 동화작가야. 자기소개는 하지 말고 어린이를 위해서 {text['text']}로 {np.random.choice(ADJECTIVE)} 동화를 만들어줘."
+        
     #chatgpt request
     completion = openai.ChatCompletion.create(
     model="gpt-3.5-turbo",
@@ -257,4 +247,32 @@ async def create_story(text: str):
     )
     
     #chatgpt response
-    return completion.choices[0].message
+    return {'data':completion.choices[0].message['content']}
+
+"""
+input:text
+output:naver clova mp3 response data
+"""
+@app.post("/stories/sound")
+async def text_to_sound(text: str):
+    
+    #create data(default)
+    encText = urllib.parse.quote(text)
+    data = "speaker=nminsang&volume=-5&speed=0&pitch=0&format=wav&text=" + encText
+    
+    #header
+    request = urllib.request.Request(TTS_URL)
+    request.add_header("X-NCP-APIGW-API-KEY-ID",client_id)
+    request.add_header("X-NCP-APIGW-API-KEY",client_secret)
+    
+    #response
+    response = urllib.request.urlopen(request, data=data.encode('utf-8'))
+    rescode = response.getcode()
+    
+    
+    if(rescode==200):
+        
+        #sound byte string    
+        return response
+    else:
+        return "Error Code:" + rescode

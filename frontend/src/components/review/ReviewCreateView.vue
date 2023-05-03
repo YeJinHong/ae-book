@@ -4,6 +4,20 @@
     <div>
     <b-form @submit="onSubmit" @reset="onReset" v-if="show">
       <b-form-group
+        id="input-group-0"
+        label="Review title"
+        label-for="input-0"
+      >
+        <b-form-input
+          id="input-0"
+          v-model="form.title"
+          type="text"
+          placeholder="Enter title"
+          required
+        ></b-form-input>
+      </b-form-group>
+
+      <b-form-group
         id="input-group-1"
         label="Review Keyword"
         label-for="input-1"
@@ -15,6 +29,7 @@
           placeholder="Enter Keyword"
           required
         ></b-form-input>
+        <button @click="createAIReview">자동 작성</button>
       </b-form-group>
 
       <b-form-group
@@ -38,7 +53,6 @@
           v-model="form.content"
           placeholder="Enter Content"
           rows="3"
-
           required
         ></b-form-textarea>
       </b-form-group>
@@ -67,15 +81,22 @@
 </template>
 
 <script>
-import api from '@/api/auth'
+import axios from 'axios'
+import { mapActions } from 'vuex'
+
+const reviewStore = 'reviewStore'
 
 export default {
   name: 'ReviewCreateView',
+  props: ['isbn'],
   data () {
     return {
       form: {
+        title: '',
         keyword: '',
-        isbn: '',
+        writer: null,
+        char: null,
+        isbn: this.isbn,
         content: '',
         score: 5
       },
@@ -83,23 +104,53 @@ export default {
     }
   },
   methods: {
-    async createReview () {
-      await api({
-        method: 'POST',
-        url: `/api/reviews/${this.form.isbn}`,
-        data: {
-          'content': this.form.content,
-          'score': this.form.score
-        }
-      }).then((result) => {
-        console.log(result)
-      }).catch((err) => {
-        console.log(err)
-      })
+    async createAIReview () {
+      axios
+        .post(`http://127.0.0.1:8000/reviews/gpt`, {
+          title: this.form.title,
+          keyword: this.form.keyword,
+          writer: this.form.writer,
+          char: this.form.char
+        })
+        .then(result => {
+          console.log(result)
+          this.form.content = result.data.review
+          this.form.score = result.data.star
+        })
+        .catch(err => {
+          console.log(err)
+        })
     },
+    ...mapActions(reviewStore, ['saveReviewAction', 'getReviewBookListAction']),
     onSubmit (event) {
       event.preventDefault()
-      this.createReview()
+
+      const payload = {
+        isbn: this.isbn,
+        data: {
+          content: this.form.content,
+          score: this.form.score
+        }
+      }
+
+      const request = {
+        isbn: this.isbn,
+        page: 0,
+        size: 3,
+        sort: 'createdAt',
+        direction: 'DESC'
+      }
+
+      this.saveReviewAction(payload)
+        .then(() => {
+          return this.getReviewBookListAction(request)
+        })
+        .then(() => {
+          this.$emit('close-modal')
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     },
     onReset (event) {
       event.preventDefault()

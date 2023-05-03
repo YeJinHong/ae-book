@@ -69,7 +69,7 @@ public class ReviewServiceImpl implements ReviewService {
 		Page<ReviewEntity> reviews = reviewRepository.findByBookId(bookEntity.getId(), pageable);
 
 		return reviews.map(review -> ReviewResponseDTO.builder()
-			.reviewId(review.getId())
+			.id(review.getId())
 			.reviewerNickname(review.getUser().getNickname())
 			.score(review.getScore())
 			.content(review.getContent())
@@ -83,10 +83,11 @@ public class ReviewServiceImpl implements ReviewService {
 		Page<ReviewEntity> reviews = reviewRepository.findByUserId(Long.valueOf(userId), pageable);
 
 		return reviews.map(review -> ReviewResponseDTO.builder()
-			.reviewId(review.getId())
+			.id(review.getId())
 			.reviewerNickname(review.getUser().getNickname())
 			.score(review.getScore())
 			.content(review.getContent())
+			.isbn(review.getBook().getIsbn())
 			.createdAt(review.getCreatedAt())
 			.updatedAt(review.getUpdatedAt())
 			.build());
@@ -97,10 +98,11 @@ public class ReviewServiceImpl implements ReviewService {
 		ReviewEntity review = reviewRepository.findById(reviewId)
 			.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
 		return ReviewResponseDTO.builder()
-			.reviewId(review.getId())
+			.id(review.getId())
 			.reviewerNickname(review.getUser().getNickname())
 			.score(review.getScore())
 			.content(review.getContent())
+			.isbn(review.getBook().getIsbn())
 			.createdAt(review.getCreatedAt())
 			.updatedAt(review.getUpdatedAt())
 			.build();
@@ -141,15 +143,16 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 
 	@Override
-	public List<ReviewResponseDTO> getLatestReviewList() {
-		List<ReviewEntity> reviews = reviewRepository.findTop12ByOrderByIdDesc();
+	public List<ReviewResponseDTO> getLatestReviewList(Pageable pageable) {
+		List<ReviewEntity> reviews = reviewRepository.findTop12ByOrderByIdDesc(pageable);
 
 		return reviews.stream()
 			.map(review -> ReviewResponseDTO.builder()
-				.reviewId(review.getId())
+				.id(review.getId())
 				.reviewerNickname(review.getUser().getNickname())
 				.score(review.getScore())
 				.content(review.getContent())
+				.isbn(review.getBook().getIsbn())
 				.createdAt(review.getCreatedAt())
 				.updatedAt(review.getUpdatedAt())
 				.build())

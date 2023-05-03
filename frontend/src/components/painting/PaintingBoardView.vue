@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 const paintingStore = 'paintingStore'
 
 export default {
@@ -58,12 +58,19 @@ export default {
       title: ''
     }
   },
+  computed: {
+    ...mapState(paintingStore, ['sketch'])
+  },
   mounted () {
     this.canvas = this.$refs.canvas
     this.ctx = this.canvas.getContext('2d')
     this.canvas.width = 800
     this.canvas.height = 500
     this.ctx.lineWidth = 10
+    // base64 문자열 이미지 로드
+    const image = new Image()
+    image.src = this.sketch
+    this.ctx.drawImage(image, 0, 0, 800, 500)
   },
   methods: {
     ...mapActions(paintingStore, ['savePainting']),
@@ -105,7 +112,7 @@ export default {
     },
     canvasToFile (canvas) {
       // canvas -> dataURL
-      let imgBase64 = canvas.toDataURL('image/png')
+      let imgBase64 = canvas.toDataURL('image/jpeg')
 
       const byteString = atob(imgBase64.split(',')[1])
       const ab = new ArrayBuffer(byteString.length)
@@ -113,10 +120,10 @@ export default {
       for (let i = 0; i < byteString.length; i++) {
         ia[i] = byteString.charCodeAt(i)
       }
-      const blob = new Blob([ab], { type: 'image/png' })
+      const blob = new Blob([ab], { type: 'image/jpeg' })
 
       // blob -> file
-      const paintingFile = new File([blob], 'painting_' + new Date().getMilliseconds() + '.png', { type: 'image/png' })
+      const paintingFile = new File([blob], 'painting_' + new Date().getMilliseconds() + '.jpeg', { type: 'image/jpeg' })
 
       return paintingFile
     },
@@ -133,18 +140,11 @@ export default {
       formData.append('data', new Blob([JSON.stringify(data)], {type: 'application/json'}))
 
       this.savePainting(formData)
-      // axios.post('/api/paintings', formData, {
-      //   headers: {
-      //     'Content-Type': 'multipart/form-data'
-      //   }
-      // })
         .then(
           alert('그림 저장에 성공했습니다.')
         )
         .catch(error => {
-          alert('그림 저장에 실패했습니다.')
-          console.log('에러?')
-          console.log(error)
+          alert('그림 저장에 실패했습니다.' + error)
         })
     }
   }
