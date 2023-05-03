@@ -14,28 +14,28 @@
                 <b-nav-item>
                     <router-link to="/story">
                       <div class="nav-menu first">
-                        <b-nav-text>동화책 만들기</b-nav-text>
+                        <span>동화책 만들기</span>
                       </div>
                     </router-link>
                 </b-nav-item>
                 <b-nav-item>
                     <router-link to="/painting">
                       <div class="nav-menu second">
-                        <b-nav-text>색칠공부</b-nav-text>
+                        <span>색칠공부</span>
                       </div>
                     </router-link>
                 </b-nav-item>
                 <b-nav-item>
                     <router-link to="/book/searchbypicture">
                       <div class="nav-menu third">
-                        <b-nav-text>사진으로 책 검색</b-nav-text>
+                        <span>사진으로 책 검색</span>
                       </div>
                     </router-link>
                 </b-nav-item>
                 <b-nav-item>
                     <router-link to="/book/search">
-                      <div class="nav-menu four">
-                        <b-nav-text>제목으로 책 검색</b-nav-text>
+                      <div class="nav-menu fourth">
+                        <span>제목으로 책 검색</span>
                       </div>
                     </router-link>
                 </b-nav-item>
@@ -97,16 +97,23 @@ export default {
 </script>
 
 <style scoped>
+
+#headerNav{
+  background-color: var(--main-yellow);
+  text-decoration: none;
+  font-weight: bold;
+}
+
 .nav-menu{
   width: 200px;
   height: 50px;
   background-color: red;
   border-radius: 30px 30px 0px 0px;
-  border: 10px solid white;
+  border: 5px solid white;
   border-bottom: 0px;
-  position:relative;
-  padding: 0px;
   text-align: center;
+  position:relative;
+  padding : 10px 0;
 }
 
 #navbarNav{
@@ -128,4 +135,5 @@ export default {
 .nav-menu.fourth {
   background-color: var(--menu-green);
 }
+
 </style>
