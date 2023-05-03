@@ -44,7 +44,7 @@ export default {
     ...mapActions(reviewStore, ['getReviewMyListAction']),
     paging (page) {
       this.request['page'] = page - 1
-      this.getReviewBookListAction(this.request)
+      this.getReviewMyListAction(this.request)
     }
   },
   computed: {

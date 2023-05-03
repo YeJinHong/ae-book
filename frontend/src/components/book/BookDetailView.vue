@@ -12,8 +12,7 @@
     <p>{{ book.description }}</p>
     <!-- TODO: 별점 및 서평 등록 -->
     <button @click="showModal()">리뷰 등록</button>
-    <!-- TODO: 서평 수정 및 삭제 -->
-    <div>
+    <div class="review-book-list">
       <review-book-list-view :isbn="isbn"></review-book-list-view>
     </div>
     <review-create-modal-view :modalShow="isModalVisible" @close-modal="closeModal">
@@ -150,6 +149,11 @@ export default {
 </script>
 
 <style scoped>
+.review-book-list {
+  display: flex;
+  width: 50%;
+  margin: auto
+}
 .pagination-container {
   display:flex;
   justify-content: center;
