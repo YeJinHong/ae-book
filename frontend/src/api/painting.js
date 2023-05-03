@@ -15,5 +15,7 @@ const updatePaintingTitle = (request) => api.patch(`/api/paintings/${request.pai
 const downloadPainting = paintingId => api.get(`/api/paintings/download/${paintingId}`, { responseType: 'blob' })
 // 선화로 만들기
 const convertSketch = formData => axios.post(`/fast/paintings/sketch`, formData, {headers: {'Content-Type': 'multipart/form-data'}})
+// 메인 그림 리스트 조회
+const getNewPainting = type => axios.get(`/api/paintings/new`)
 
-export { savePainting, getPaintingList, getPaintingDetail, deletePainting, updatePaintingTitle, downloadPainting, convertSketch }
+export { savePainting, getPaintingList, getPaintingDetail, deletePainting, updatePaintingTitle, downloadPainting, convertSketch, getNewPainting }

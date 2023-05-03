@@ -1,16 +1,11 @@
 <template>
-<!-- 상단 페이지 넘김 버튼 -->
   <div>
-     <div class="my-controls">
-      <button @click="prev" class="carousel-btn">&lt;</button>
-      <button @click="next" class="carousel-btn right">></button>
-    </div>
     <!-- 캐러셀 창 설정 -->
     <b-carousel
       ref="myCarousel"
       id="carousel-1"
       v-model="slide"
-      :interval="5000"
+      :interval="2500"
       indicators
       img-width="1024"
       img-height="450"
@@ -24,11 +19,9 @@
         <b-carousel-slide :key="index" img-blank img-alt="Blank image">
           <div class="list-item-flex">
             <!-- key를 요소에 맞춰 설정 -->
-            <div v-for="item in itemsChunk" :key="item.isbn" class="mychunk">
+            <div v-for="item in itemsChunk" :key="item.id" class="mychunk">
               <!-- ListItem -->
-              <router-link :to="{ name: 'BookDetail', params: { isbn: item.isbn } }">
                 <list-item :item="item"></list-item>
-              </router-link>
               <!-- ListItem -->
             </div>
           </div>

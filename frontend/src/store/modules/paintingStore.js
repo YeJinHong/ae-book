@@ -1,11 +1,12 @@
-import { savePainting, getPaintingList, getPaintingDetail, deletePainting, updatePaintingTitle, downloadPainting, convertSketch } from '@/api/painting'
+import { savePainting, getPaintingList, getPaintingDetail, deletePainting, updatePaintingTitle, downloadPainting, convertSketch, getNewPainting } from '@/api/painting'
 
 const paintingStore = {
   namespaced: true,
   state: {
     painting: null,
     paintingList: [],
-    sketch: ''
+    sketch: '',
+    mainPaintingList: []
   },
   getters: {
     getPainting: state => {
@@ -27,6 +28,9 @@ const paintingStore = {
     },
     SET_SKETCH: (state, data) => {
       state.sketch = 'data:image/jpeg;base64,' + data
+    },
+    SET_MAIN_PAINTING_LIST: (state, data) => {
+      state.mainPaintingList = data
     }
   },
   actions: {
@@ -109,6 +113,15 @@ const paintingStore = {
         })
         .catch(error => {
           alert('그림 제목을 수정에 실패했습니다.' + error)
+        })
+    },
+    async getNewPainting ({ commit }, request) {
+      await getNewPainting(request)
+        .then(({ data }) => {
+          commit('SET_MAIN_PAINTING_LIST', data.result)
+        })
+        .catch(error => {
+          alert(error)
         })
     }
   }
