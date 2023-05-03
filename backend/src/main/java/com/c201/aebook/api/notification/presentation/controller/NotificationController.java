@@ -62,7 +62,7 @@ public class NotificationController {
     @GetMapping()
     public BaseResponse<?> getNotificationBookList(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+            @PageableDefault(size = 6, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         // 1. 사용자가 알림 신청한 책 목록 가져오기
         Page<NotificationBookListResponseDTO> notificationBookList = notificationService.getMyNotificationBookList(customUserDetails.getUsername(), pageable);
