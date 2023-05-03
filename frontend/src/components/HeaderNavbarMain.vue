@@ -3,7 +3,7 @@
         <b-navbar toggleable="lg" type="dark" variant="light" class="nav">
             <b-navbar-brand href="#">
                 <router-link to="/">
-                  <img src="../assets/images/aebook_logo.png" width="100" height="50">
+                  <img src="../assets/images/aebook_logo.png" width="250" height="170">
                 </router-link>
             </b-navbar-brand>
 
