@@ -102,8 +102,8 @@ public class NotificationServiceImpl implements NotificationService {
     @Transactional
     public NotificationUpdateResponseDTO updateNotification(String userId, Long notificationId, NotificationPatchSO notificationPatchSO) {
         // 1. userId 유효성 검증
-        UserEntity userEntity = userRepository.findById(Long.valueOf(userId))
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+//        UserEntity userEntity = userRepository.findById(Long.valueOf(userId))
+//                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         // 2. notificationId 유효성 검증
         NotificationEntity notificationEntity = notificationRepository.findById(notificationId)
