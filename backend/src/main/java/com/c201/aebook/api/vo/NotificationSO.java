@@ -13,5 +13,6 @@ public class NotificationSO {
 
     private String isbn;
     private int upperLimit;
+    private String notificationType;
 
 }
