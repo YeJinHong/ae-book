@@ -7,7 +7,9 @@ const reviewStore = {
     review: null,
     reviewMainList: [],
     reviewMyList: [],
-    reviewBookList: []
+    reviewBookList: [],
+    reviewBookPageSetting: null,
+    reviewMyPageSetting: null
   },
   /*
   Gettes: state의 변수들을 get하는역할을 한다.
@@ -41,8 +43,16 @@ const reviewStore = {
     SET_REVIEW_MY_LIST: (state, data) => {
       state.reviewMyList = data
     },
+    SET_REVIEW_MY_PAGE_SETTING: (state, data) => {
+      const { pageable, last, first, totalPages, size, totalElements, numberOfElements, empty } = data
+      state.reviewMyPageSetting = { pageable, last, first, totalPages, size, totalElements, numberOfElements, empty }
+    },
     SET_REVIEW_BOOK_LIST: (state, data) => {
       state.reviewBookList = data
+    },
+    SET_REVIEW_BOOK_PAGE_SETTING: (state, data) => {
+      const { pageable, last, first, totalPages, size, totalElements, numberOfElements, empty } = data
+      state.reviewBookPageSetting = { pageable, last, first, totalPages, size, totalElements, numberOfElements, empty }
     },
     RESET_REVIEW (state) {
       state.review = null
@@ -111,6 +121,7 @@ const reviewStore = {
         }).catch((err) => {
           console.log(err)
         })
+      console.log('Complete')
     },
     async getReviewMyListAction ({ commit }, request) {
       await getReviewMyList(request)
