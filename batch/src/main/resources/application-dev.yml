@@ -14,7 +14,7 @@ spring:
 
   data:
     redis:
-      host: # 운영 redis 적어야 함
+      host: ae-book_reids # 운영 redis 적어야 함
       port: 6379
 
 

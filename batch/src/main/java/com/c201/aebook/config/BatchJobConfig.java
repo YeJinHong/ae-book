@@ -1,5 +1,7 @@
 package com.c201.aebook.config;
 
+import java.text.ParseException;
+
 import org.apache.commons.httpclient.ConnectionPoolTimeoutException;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -51,9 +53,16 @@ public class BatchJobConfig {
 	@Bean
 	public Step step() {
 		return stepBuilderFactory.get(BOOK_INTEGRATION_STEP)
+			.startLimit(5)//재시작 5번 가능
 			.<BookEntity, BookEntity>chunk(CHUNK_SIZE)
 			.reader(aladinBatchItemReader)
 			.writer(aladinBatchItemWriter)
+			.faultTolerant()
+			.retryLimit(3) //재시도 3번 가능
+			.retry(DataAccessException.class)
+			.retry(ConnectionPoolTimeoutException.class)
+			.skip(Exception.class)
+			.skipLimit(100)
 			.listener(bookIntegrationStepListener)
 			.build();
 	}

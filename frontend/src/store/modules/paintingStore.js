@@ -1,4 +1,4 @@
-import { savePainting, getPaintingList, convertSketch } from '@/api/painting'
+import { savePainting, getPaintingList, getPaintingDetail, deletePainting, updatePaintingTitle, downloadPainting, convertSketch } from '@/api/painting'
 
 const paintingStore = {
   namespaced: true,
@@ -43,21 +43,67 @@ const paintingStore = {
     async getPaintingList ({ commit }, request) {
       await getPaintingList(request)
         .then(({ data }) => {
-          console.log(data.result.content)
           commit('SET_PAINTING_LIST', data.result.content)
         })
         .catch(error => {
-          console.log(error)
+          alert(error)
         })
     },
     async convertSketch ({ commit }, request) {
       await convertSketch(request)
         .then(({ data }) => {
-          // console.log(data)
           commit('SET_SKETCH', data)
         })
         .catch(error => {
-          console.log(error)
+          alert(error)
+        })
+    },
+    async getPaintingDetail ({ commit }, request) {
+      await getPaintingDetail(request)
+        .then(({ data }) => {
+          commit('SET_PAINTING', data.result)
+        })
+        .catch(error => {
+          alert(error)
+        })
+    },
+    async downloadPainting ({ commit }, paintingId) {
+      await downloadPainting(paintingId)
+        .then(({ data }) => {
+          // byte 배열을 Blob 객체로 변환
+          // 다운로드 링크 생성
+          const downloadLink = document.createElement('a')
+          downloadLink.href = URL.createObjectURL(new Blob([data]))
+
+          // 파일 이름 설정
+          const fileName = 'image.jpg'
+          downloadLink.download = fileName
+
+          // 링크 클릭하여 다운로드 시작
+          downloadLink.click()
+        })
+        .catch(error => {
+          alert(error)
+        })
+    },
+    async deletePainting ({ commit }, paintingId) {
+      await deletePainting(paintingId)
+        .then(({ data }) => {
+          alert('그림을 성공적으로 삭제했습니다.')
+          commit('SET_PAINTING', null)
+        })
+        .catch(error => {
+          alert('그림 삭제에 실패했습니다.' + error)
+        })
+    },
+    async updatePaintingTitle ({ commit }, request) {
+      await updatePaintingTitle(request)
+        .then(({ data }) => {
+          alert(data)
+          commit('SET_PAINTING', data.result)
+        })
+        .catch(error => {
+          alert(error)
         })
     }
   }
