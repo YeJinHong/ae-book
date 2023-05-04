@@ -143,7 +143,7 @@ public class PaintingController {
 	public BaseResponse<?> getPaintingList(
 		@RequestParam(name = "type") PaintingType type,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails,
-		@PageableDefault(size = 8, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+		@PageableDefault(size = 4, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
 	) {
 		Long userId = Long.parseLong(customUserDetails.getUsername());
 		Page<PaintingResponseDTO> paintingList = paintingService.getPaintingList(userId, type, pageable);
