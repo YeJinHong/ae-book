@@ -37,7 +37,6 @@ const notificationStore = {
       await saveNotification(data)
         .then(({ data }) => {
           commit('SET_IS_NOTIFICATION', true)
-          sessionStorage.setItem('isNotification', true)
           commit('SET_NOTIFICATION', data.result)
           console.log(data)
         })
