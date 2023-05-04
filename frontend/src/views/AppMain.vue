@@ -10,17 +10,17 @@
       <!-- </router-link> -->
       <router-link :to="{ name: 'Painting' }">
         <div class="main-menu second">
-          <div class="menu-text">색칠공부<br><br><img src="../assets/images/tiger.png" id="paintingIcon"></div>
+          <div class="menu-text">색칠공부<br><br><br><img src="../assets/images/tiger.png" id="paintingIcon"></div>
         </div>
       </router-link>
       <router-link :to="{ name: 'BookSearchByPicture' }">
         <div class="main-menu third">
-          <div class="menu-text">사진으로<br>도서 검색<br><img src="../assets/images/photoCameraIcon.png" id="photoIcon"></div>
+          <div class="menu-text">사진으로<br>도서 검색<br><br><img src="../assets/images/photoCameraIcon.png" id="photoIcon"></div>
         </div>
       </router-link>
       <router-link :to="{ name: 'BookSearch' }">
         <div class="main-menu fourth">
-          <div class="menu-text">제목으로<br>도서 검색<br><img src="../assets/images/bookIcon.png" id="bookIcon"></div>
+          <div class="menu-text">제목으로<br>도서 검색<br><br><img src="../assets/images/bookIcon.png" id="bookIcon"></div>
         </div>
       </router-link>
     </div>
