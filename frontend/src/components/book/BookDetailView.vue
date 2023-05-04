@@ -15,9 +15,10 @@
           <div class="red-bar"></div>
           <p><span style="font-weight:bold">ISBN</span> {{ book.isbn }}</p>
           <p>별별별별별</p>
-          <!-- TODO: 알림 설정  -->
-          <button type="button" class="ae-btn btn-navy" v-if=isNotification>알림 신청중</button>
-          <button type="button" class="ae-btn" v-else v-b-modal.modal-save-notification>알림 신청</button>
+          <!-- TODO: 비로그인시 알림 설정 버튼 안보이도록  -->
+          <button type="button" class="ae-btn btn-navy" v-if=book.notification >알림 신청중</button>
+          <!-- <button type="button" class="ae-btn" v-else v-b-modal.modal-save-notification>알림 신청</button> -->
+          <button type="button" class="ae-btn" v-else @click="checkLoginAndOpenModal">알림 신청</button>
           <button type="button" class="ae-btn btn-red" @click="onClickRedirect(book.aladinUrl)">구매하러가기 ></button>
         </div>
       </div>
@@ -117,17 +118,26 @@ export default {
       isNotificationModalVisible: false,
       upperLimit: 0,
       upperLimitState: null,
-      selected: ''
+      selected: '',
+      isNotifications: false
     }
+  },
+  created () {
+    if (this.book.notification === null) {
+      this.notification = false
+    } else {
+      this.isNotifications = this.book.notification
+    }
+    console.log(this.isNotifications)
   },
   computed: {
     ...mapState(bookStore, ['book']),
-    ...mapState(reviewStore, ['reviewBookList', 'reviewBookPageSetting']),
-    ...mapState(notificationStore, ['isNotification'])
+    ...mapState(reviewStore, ['reviewBookList', 'reviewBookPageSetting'])
   },
   mounted () {
     this.getBookDetail(this.isbn)
     this.book = this.getBook
+    this.isNotifications = this.book.notification
   },
   methods: {
     ...mapActions(bookStore, ['getBookDetail']),
@@ -147,6 +157,15 @@ export default {
     // closeNotificationModal () {
     //   this.isNotificationModalVisible = false
     // },
+    checkLoginAndOpenModal () {
+      const login = sessionStorage.getItem('isLoginUser')
+      if (!login) {
+        alert('로그인이 필요합니다.')
+        this.$router.push('/user/login')
+      } else {
+        this.$refs.modal.show()
+      }
+    },
     checkFormValidity () {
       const valid = this.$refs.form.checkValidity()
       this.upperLimitState = valid
@@ -176,6 +195,7 @@ export default {
       this.notificationSave(data)
         .then(() => {
           alert('알림이 성공적으로 등록되었습니다!')
+          this.getBookDetail(this.book.isbn)
         })
       this.$nextTick(() => {
         this.$bvModal.hide('modal-save-notification')

@@ -36,9 +36,7 @@ const notificationStore = {
     async notificationSave ({ commit }, data) {
       await saveNotification(data)
         .then(({ data }) => {
-          commit('SET_IS_NOTIFICATION', true)
-          commit('SET_NOTIFICATION', data.result)
-          console.log(data)
+          // console.log(data)
         })
         .catch(error => {
           console.log(error)
