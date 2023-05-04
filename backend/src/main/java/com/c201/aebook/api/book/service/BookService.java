@@ -2,6 +2,7 @@ package com.c201.aebook.api.book.service;
 
 import java.util.List;
 
+import com.c201.aebook.auth.CustomUserDetails;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -12,7 +13,7 @@ import com.c201.aebook.api.book.presentation.dto.response.BookSimpleResponseDTO;
 public interface BookService {
 
 	// 1. ISBN으로 도서 상세 정보 조회
-	public BookResponseDTO searchBookDetail(String isbn);
+	public BookResponseDTO searchBookDetail(String isbn, CustomUserDetails customUserDetails);
 
 	// 2. 검색시 책 제목 자동 완성
 	public List<String> getAutocompleteTitle(String keyword);

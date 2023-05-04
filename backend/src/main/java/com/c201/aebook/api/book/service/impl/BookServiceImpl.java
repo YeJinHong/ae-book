@@ -3,6 +3,9 @@ package com.c201.aebook.api.book.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.c201.aebook.api.notification.persistence.repository.NotificationRepository;
+import com.c201.aebook.auth.CustomUserDetails;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,18 +23,30 @@ import com.c201.aebook.utils.exception.ErrorCode;
 
 import lombok.RequiredArgsConstructor;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
 	private final BookRepository bookRepository;
 	private final BookCustomRepository bookCustomRepository;
 	private final BookConverter bookConverter;
+	private final NotificationRepository notificationRepository;
 
 	@Override
-	public BookResponseDTO searchBookDetail(String isbn) {
+	public BookResponseDTO searchBookDetail(String isbn, CustomUserDetails customUserDetails) {
 		BookEntity book = bookRepository.findByIsbn(isbn)
 			.orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
 		BookResponseDTO bookResponseDTO = bookConverter.toBookResponseDTO(book);
+
+		// 사용자 정보 찾기
+		boolean notitication = false;
+		if(customUserDetails != null) {
+			// 사용자Id와 bookId로 알림 정보 찾기
+			notitication = notificationRepository.existsByBookId(book.getId(), Long.valueOf(customUserDetails.getUsername()));
+		}
+
+		bookResponseDTO.setNotification(notitication);
+
 		return bookResponseDTO;
 	}
 
