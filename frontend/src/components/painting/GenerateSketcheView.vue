@@ -3,9 +3,11 @@
     <input type="file" @change="onFileChange" />
     <div class="image-container">
       <div class="before">
+        <p>원본</p>
         <img :src="imageUrl" v-if="imageUrl" />
       </div>
       <div class="after">
+        <p>변환</p>
         <img :src="sketch"/>
       </div>
     </div>
@@ -101,6 +103,11 @@ export default {
 .image-container > div {
   border-radius: 10px;
   border: 1px solid var(--ae-navy);
+}
+
+.image-container p {
+  font-weight: bold;
+  font-size: 20px;
 }
 
 .before {
