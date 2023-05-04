@@ -39,13 +39,11 @@
     <div class="carousel-container">
       <painting-carousel-view :items="mainPaintingList" :chunkSize="4"></painting-carousel-view>
     </div>
-    <the-footer></the-footer>
   </div>
 </template>
 
 <script>
 import HeaderNavbarMain from '@/components/HeaderNavbarMain'
-import TheFooter from '@/components/TheFooter'
 import Carousel from '@/components/CarouselView'
 import BookCarouselView from '@/components/common/list/BookCarouselView.vue'
 import PaintingCarouselView from '@/components/common/list/PaintingCarouselView.vue'
@@ -59,7 +57,6 @@ export default {
   name: 'AppMain',
   components: {
     HeaderNavbarMain,
-    TheFooter,
     Carousel,
     BookCarouselView,
     PaintingCarouselView
