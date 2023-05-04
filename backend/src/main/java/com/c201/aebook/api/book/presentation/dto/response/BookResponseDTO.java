@@ -42,7 +42,7 @@ public class BookResponseDTO {
 	@Schema(description = "알림 신청 여부", defaultValue = "true")
 	private boolean notification;
 
-	@Schema(description = "알림 Id", defaultValue = "true")
+	@Schema(description = "알림 ID", defaultValue = "2")
 	private Long notificationId;
 
 	@Builder
