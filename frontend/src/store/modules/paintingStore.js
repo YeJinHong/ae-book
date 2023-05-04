@@ -6,7 +6,8 @@ const paintingStore = {
     painting: null,
     paintingList: [],
     sketch: '',
-    mainPaintingList: []
+    mainPaintingList: [],
+    paintingPageSetting: null
   },
   getters: {
     getPainting: state => {
@@ -31,6 +32,10 @@ const paintingStore = {
     },
     SET_MAIN_PAINTING_LIST: (state, data) => {
       state.mainPaintingList = data
+    },
+    SET_PAGE_SETTING: (state, data) => {
+      const { pageable, last, first, totalPages, size, totalElements, numberOfElements, empty } = data
+      state.paintingPageSetting = { pageable, last, first, totalPages, size, totalElements, numberOfElements, empty }
     }
   },
   actions: {
@@ -48,6 +53,7 @@ const paintingStore = {
       await getPaintingList(request)
         .then(({ data }) => {
           commit('SET_PAINTING_LIST', data.result.content)
+          commit('SET_PAGE_SETTING', data.result)
         })
         .catch(error => {
           alert(error)
