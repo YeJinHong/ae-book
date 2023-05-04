@@ -8,7 +8,7 @@
 
 <script>
 export default {
-  name: 'ReviewCreateModalView',
+  name: 'NotificationCreateModalView',
   props: {
     modalShow: {
       type: Boolean,
