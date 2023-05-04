@@ -6,7 +6,8 @@ const bookStore = {
   state: {
     book: null,
     bookList: [],
-    bookPageSetting: null
+    bookPageSetting: null,
+    totalSearchCount: 0
   },
   /*
   Gettes: state의 변수들을 get하는역할을 한다.
@@ -34,10 +35,14 @@ const bookStore = {
     RESET_BOOK_SEARCH (state) {
       state.bookList = []
       state.bookPageSetting = null
+      state.totalSearchCount = 0
     },
     SET_PAGE_SETTING: (state, data) => {
       const { pageable, last, first, totalPages, size, totalElements, numberOfElements, empty } = data
       state.bookPageSetting = { pageable, last, first, totalPages, size, totalElements, numberOfElements, empty }
+    },
+    SET_COUNT: (state, data) => {
+      state.totalSearchCount = data
     }
   },
   /*
@@ -58,6 +63,7 @@ const bookStore = {
       await getSearchList(request)
         .then(({ data }) => {
           commit('SET_BOOK_LIST', data.result.content)
+          commit('SET_COUNT', data.result.totalElements)
           commit('SET_PAGE_SETTING', data.result)
         })
         .catch(error => {
