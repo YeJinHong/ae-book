@@ -125,11 +125,11 @@ export default {
 }
 
 .nav-menu.second {
-  background-color: var(--menu-red);
+  background-color: var(--menu-yellow);
 }
 
 .nav-menu.third {
-  background-color: var(--menu-yellow);
+  background-color: var(--menu-red);
 }
 
 .nav-menu.fourth {

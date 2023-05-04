@@ -12,11 +12,15 @@ import com.c201.aebook.api.book.persistence.entity.BookEntity;
 import com.c201.aebook.api.book.persistence.repository.BookRepository;
 import com.c201.aebook.api.review.persistence.entity.ReviewEntity;
 import com.c201.aebook.api.review.persistence.repository.ReviewRepository;
+import com.c201.aebook.api.review.presentation.dto.response.ReviewBookResponseDTO;
+import com.c201.aebook.api.review.presentation.dto.response.ReviewMainResponseDTO;
+import com.c201.aebook.api.review.presentation.dto.response.ReviewMyResponseDTO;
 import com.c201.aebook.api.review.presentation.dto.response.ReviewResponseDTO;
 import com.c201.aebook.api.review.service.ReviewService;
 import com.c201.aebook.api.user.persistence.entity.UserEntity;
 import com.c201.aebook.api.user.persistence.repository.UserRepository;
 import com.c201.aebook.api.vo.ReviewSO;
+import com.c201.aebook.converter.ReviewConverter;
 import com.c201.aebook.utils.exception.CustomException;
 import com.c201.aebook.utils.exception.ErrorCode;
 
@@ -29,10 +33,11 @@ public class ReviewServiceImpl implements ReviewService {
 	private final ReviewRepository reviewRepository;
 	private final UserRepository userRepository;
 	private final BookRepository bookRepository;
+	private final ReviewConverter reviewConverter;
 
 	@Override
 	@Transactional
-	public void saveReview(String userId, String isbn, ReviewSO reviewSO) {
+	public ReviewResponseDTO saveReview(String userId, String isbn, ReviewSO reviewSO) {
 		// 1. isbn 유효성 검증
 		BookEntity bookEntity = bookRepository.findByIsbn(isbn)
 			.orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
@@ -48,7 +53,7 @@ public class ReviewServiceImpl implements ReviewService {
 		}
 
 		// 4. 서평 저장
-		reviewRepository.save(ReviewEntity.builder()
+		reviewEntity = reviewRepository.save(ReviewEntity.builder()
 			.content(reviewSO.getContent())
 			.score(reviewSO.getScore())
 			.user(userEntity)
@@ -57,10 +62,13 @@ public class ReviewServiceImpl implements ReviewService {
 
 		// 5. 도서 별점 정보 갱신
 		bookEntity.updateScoreInfo(reviewSO.getScore(), 1);
+
+		ReviewResponseDTO result = reviewConverter.toReviewResponseDTO(reviewEntity);
+		return result;
 	}
 
 	@Override
-	public Page<ReviewResponseDTO> getBookReviewList(String isbn, Pageable pageable) {
+	public Page<ReviewBookResponseDTO> getBookReviewList(String isbn, Pageable pageable) {
 		// 1. isbn 유효성 검증
 		BookEntity bookEntity = bookRepository.findByIsbn(isbn)
 			.orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
@@ -68,49 +76,30 @@ public class ReviewServiceImpl implements ReviewService {
 		// 2. Review List
 		Page<ReviewEntity> reviews = reviewRepository.findByBookId(bookEntity.getId(), pageable);
 
-		return reviews.map(review -> ReviewResponseDTO.builder()
-			.id(review.getId())
-			.reviewerNickname(review.getUser().getNickname())
-			.score(review.getScore())
-			.content(review.getContent())
-			.createdAt(review.getCreatedAt())
-			.updatedAt(review.getUpdatedAt())
-			.build());
+		Page<ReviewBookResponseDTO> result = reviews.map(review -> reviewConverter.toReviewBookResponseDTO(review));
+		return result;
 	}
 
 	@Override
-	public Page<ReviewResponseDTO> getMyReviewList(String userId, Pageable pageable) {
+	public Page<ReviewMyResponseDTO> getMyReviewList(String userId, Pageable pageable) {
 		Page<ReviewEntity> reviews = reviewRepository.findByUserId(Long.valueOf(userId), pageable);
 
-		return reviews.map(review -> ReviewResponseDTO.builder()
-			.id(review.getId())
-			.reviewerNickname(review.getUser().getNickname())
-			.score(review.getScore())
-			.content(review.getContent())
-			.isbn(review.getBook().getIsbn())
-			.createdAt(review.getCreatedAt())
-			.updatedAt(review.getUpdatedAt())
-			.build());
+		Page<ReviewMyResponseDTO> result = reviews.map(review -> reviewConverter.toReviewMyResponseDTO(review));
+		return result;
 	}
 
 	@Override
 	public ReviewResponseDTO getReview(Long reviewId) {
 		ReviewEntity review = reviewRepository.findById(reviewId)
 			.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
-		return ReviewResponseDTO.builder()
-			.id(review.getId())
-			.reviewerNickname(review.getUser().getNickname())
-			.score(review.getScore())
-			.content(review.getContent())
-			.isbn(review.getBook().getIsbn())
-			.createdAt(review.getCreatedAt())
-			.updatedAt(review.getUpdatedAt())
-			.build();
+
+		ReviewResponseDTO result = reviewConverter.toReviewResponseDTO(review);
+		return result;
 	}
 
 	@Override
 	@Transactional
-	public void modifyReview(Long reviewId, String userId, ReviewSO reviewSO) {
+	public ReviewResponseDTO modifyReview(Long reviewId, String userId, ReviewSO reviewSO) {
 		// 1. reviewId 유효성, 작성자 아이디 일치 검증
 		ReviewEntity reviewEntity = reviewRepository.findByIdAndUserId(reviewId, Long.valueOf(userId))
 			.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
@@ -124,6 +113,9 @@ public class ReviewServiceImpl implements ReviewService {
 		// 3. 서평 수정
 		reviewEntity.updateReviewEntity(reviewSO.getContent(), reviewSO.getScore());
 		reviewRepository.save(reviewEntity);
+
+		ReviewResponseDTO result = reviewConverter.toReviewResponseDTO(reviewEntity);
+		return result;
 	}
 
 	@Override
@@ -143,19 +135,13 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 
 	@Override
-	public List<ReviewResponseDTO> getLatestReviewList(Pageable pageable) {
+	public List<ReviewMainResponseDTO> getLatestReviewList(Pageable pageable) {
 		List<ReviewEntity> reviews = reviewRepository.findTop12ByOrderByIdDesc(pageable);
 
-		return reviews.stream()
-			.map(review -> ReviewResponseDTO.builder()
-				.id(review.getId())
-				.reviewerNickname(review.getUser().getNickname())
-				.score(review.getScore())
-				.content(review.getContent())
-				.isbn(review.getBook().getIsbn())
-				.createdAt(review.getCreatedAt())
-				.updatedAt(review.getUpdatedAt())
-				.build())
+		List<ReviewMainResponseDTO> result = reviews.stream()
+			.map(review -> reviewConverter.toReviewMainResponseDTO(review))
 			.collect(Collectors.toList());
+
+		return result;
 	}
 }
