@@ -3,7 +3,6 @@
     <div>
       <div class="item-gruop-1">
         <div class="item-user-info">
-          <!-- TODO: 유저 프로필 사진 받아야 함 -->
           <img class="item-user-img" :src=review.reviewerImg />
           <div>
             <div class="user-nickname">
@@ -122,7 +121,6 @@ export default {
       }
     },
     modifyReview () {
-      console.log('modifyComment : ' + this.review.id)
       if (!this.isModify) {
         this.isModify = true
       }
@@ -132,10 +130,8 @@ export default {
     },
     modifyScore (newScore) {
       this.updateScore = newScore
-      console.log('updateScroe : ' + this.updateScore)
     },
     async deleteReview () {
-      console.log('?@#?!@#!@$?')
       if (confirm('리얼루다가 삭제하시것슴니까 ?!?!?!?!!!?')) {
         await this.deleteReviewAction(this.review.id)
       }
@@ -143,15 +139,12 @@ export default {
       this.$emit('paging', this.page + 1)
     },
     check (index) {
-      console.log(index)
       this.review.score = index
     },
 
     // 더보기
     truncateContent () {
       if (this.getContentLength() < 116) {
-        console.log('content length : ' + this.getContentLength())
-        console.log(this.isTruncated)
         return
       }
       this.isTruncated = true
