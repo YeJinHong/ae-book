@@ -1,15 +1,17 @@
 <template>
     <div>
         <b-navbar toggleable="lg" type="dark" variant="light" class="nav">
-            <b-navbar-brand href="#">
-                <router-link to="/">
-                  <img src="../assets/images/aebook_logo.png" width="250" height="170">
-                </router-link>
-            </b-navbar-brand>
-
-            <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
             <b-collapse id="nav-collapse" is-nav>
+
+                <b-navbar-nav class="ml-auto">
+                  <b-navbar-brand href="#" align="center">
+                    <router-link to="/">
+                      <img src="../assets/images/main_logo.png" width="250" height="170">
+                    </router-link>
+                  </b-navbar-brand>
+
+                </b-navbar-nav>
                 <!-- 로그인 후, 보여주는 정보는 추후 다시 결정, 마이페이지는 임시 배치 -->
                 <b-navbar-nav class="ml-auto" v-if=isLoginUser>
                     <b-nav-form>
