@@ -3,7 +3,7 @@
     <h1>그림 목록</h1>
     <button @click="onClickList('LINE')" class="ae-btn">선화</button>
     <button @click="onClickList('COLOR')" class="ae-btn">그림</button>
-    <router-link to="/painting/generate"><button class="ae-btn btn-red">선화 만들기</button></router-link>
+    <router-link to="/painting/generate"><button class="ae-btn btn-red">선화 만들러 가기</button></router-link>
     <div class="painting-container">
       <list-item
           v-for="painting in paintingList"
