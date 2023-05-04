@@ -6,6 +6,7 @@ import com.c201.aebook.api.notification.presentation.dto.request.NotificationReq
 import com.c201.aebook.api.notification.presentation.dto.request.NotificationUpdateRequestDTO;
 import com.c201.aebook.api.notification.presentation.dto.response.NotificationBookDetailResponseDTO;
 import com.c201.aebook.api.notification.presentation.dto.response.NotificationBookListResponseDTO;
+import com.c201.aebook.api.notification.presentation.dto.response.NotificationResponseDTO;
 import com.c201.aebook.api.notification.presentation.dto.response.NotificationUpdateResponseDTO;
 import com.c201.aebook.api.notification.presentation.vaildator.NotificationValidator;
 import com.c201.aebook.api.notification.service.impl.NotificationServiceImpl;
@@ -55,9 +56,10 @@ public class NotificationController {
 
         // 3. 알림 등록
         NotificationSO notificationSO = notificationConverter.toNotificationSO(notificationRequestDTO);
-        notificationService.saveNotification(customUserDetails.getUsername(), notificationSO);
+        NotificationResponseDTO notificationResponseDTO =
+                notificationService.saveNotification(customUserDetails.getUsername(), notificationSO);
 
-        return new BaseResponse<>(null, HttpStatus.OK.value(), "알림 신청 성공");
+        return new BaseResponse<>(notificationResponseDTO, HttpStatus.OK.value(), "알림 신청 성공");
     }
 
     @Operation(summary = "알림 신청한 책 목록", description = "사용자가 알림 신청한 책의 목록을 출력합니다.")
