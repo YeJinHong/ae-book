@@ -46,7 +46,7 @@
       <button id="brush-btn" @click="onBrushClick">브러쉬</button>
     </div>
     <div>
-      <button class="ae-btn btn-navy">종료</button>
+      <button @click="goBack" class="ae-btn btn-navy">종료</button>
       <button @click="onSaveClick" class="ae-btn btn-red">저장</button>
     </div>
   </div>
@@ -175,6 +175,9 @@ export default {
         .catch(error => {
           alert('그림 저장에 실패했습니다.' + error)
         })
+    },
+    goBack () {
+      window.history.back()
     }
   }
 }
