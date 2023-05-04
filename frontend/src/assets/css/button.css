@@ -5,6 +5,7 @@
   color: var(--ae-navy);
   padding: 0.42rem 1rem;
   font-size: 0.95rem;
+  margin: 0px 5px;
 }
 
 .btn-red {
@@ -18,3 +19,16 @@
   background-color: var(--ae-navy);
   color: white;
 }
+
+.btn-white {
+  background-color: white;
+  color: var(--ae-red);
+  width: 130px;
+  border: 3px solid var(--ae-red);
+  border-radius: 20px;
+  height: 45px;
+  margin: 10px;
+}
+
+
+

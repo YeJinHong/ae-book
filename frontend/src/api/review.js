@@ -17,7 +17,7 @@ const deleteReview = reviewId => api.delete(`/api/reviews/${reviewId}`)
 const getReviewMainList = () => axios.get(`/api/reviews/latest`)
 
 // 6. 특정 도서의 서평 리스트 by ISBN
-const getReviewBookList = (request) => axios.get(`/api/reviews/${request.isbn}?page=${request.page}&size=${request.size}&sort=${request.sort}&direction=${request.direction}`)
+const getReviewBookList = (request) => axios.get(`/api/reviews/${request.isbn}?page=${request.page}&size=${request.size}&sort=${request.sort},${request.direction}`)
 // /reviews/{isbn}?page=int&size=5&sort=key,direction
 // sort 종류
 // 1. id, DESC // LATEST
@@ -25,7 +25,7 @@ const getReviewBookList = (request) => axios.get(`/api/reviews/${request.isbn}?p
 // 3. score, ASC // SCORE_LOWEST
 
 // 7. 로그인한 사용자의 서평 리스트
-const getReviewMyList = (request) => api.get(`/api/reviews?page=${request.page}&size=${request.size}&sort=${request.sort}&direction=${request.direction}`)
+const getReviewMyList = (request) => api.get(`/api/reviews?page=${request.page}&size=${request.size}&sort=${request.sort},${request.direction}`)
 
 /* 예시
  * const searchByISBN = isbn => axios.get(`/api/books/${isbn}`)

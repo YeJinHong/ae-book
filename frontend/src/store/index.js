@@ -5,6 +5,7 @@ import paintingStore from '@/store/modules/paintingStore.js'
 import reviewStore from './modules/reviewStore'
 import userStore from './modules/userStore'
 import storyStore from './modules/storyStore'
+import notificationStore from './modules/notificationStore'
 
 Vue.use(Vuex)
 
@@ -14,7 +15,8 @@ const store = new Vuex.Store({
     paintingStore,
     reviewStore,
     userStore,
-    storyStore
+    storyStore,
+    notificationStore
   }
 })
 
