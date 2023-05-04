@@ -3,7 +3,7 @@
         <b-navbar toggleable="lg" id="headerNav">
             <b-navbar-brand href="#">
                 <router-link to="/">
-                  <img src="../assets/images/aebook_logo.png" width="100" height="50">
+                  <img src="../assets/images/main_logo.png" width="100" height="60">
                 </router-link>
             </b-navbar-brand>
 
@@ -117,7 +117,7 @@ export default {
 }
 
 #navbarNav{
-  margin-bottom: -24px;
+  margin-bottom: -33px;
 }
 
 .nav-menu.first {
