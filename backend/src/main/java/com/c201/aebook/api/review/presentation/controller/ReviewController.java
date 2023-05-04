@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.c201.aebook.api.common.BaseResponse;
 import com.c201.aebook.api.common.constants.ApplicationConstants;
 import com.c201.aebook.api.review.presentation.dto.request.ReviewRequestDTO;
+import com.c201.aebook.api.review.presentation.dto.response.ReviewBookResponseDTO;
+import com.c201.aebook.api.review.presentation.dto.response.ReviewMainResponseDTO;
+import com.c201.aebook.api.review.presentation.dto.response.ReviewMyResponseDTO;
 import com.c201.aebook.api.review.presentation.dto.response.ReviewResponseDTO;
 import com.c201.aebook.api.review.presentation.validator.ReviewValidator;
 import com.c201.aebook.api.review.service.impl.ReviewServiceImpl;
@@ -67,10 +70,10 @@ public class ReviewController {
 
 		ReviewSO reviewSO = reviewConverter.toReviewSO(reviewRequestDTO);
 		// 서평 등록
-		reviewService.saveReview(customUserDetails.getUsername(), isbn,
+		ReviewResponseDTO reviewResponseDTO = reviewService.saveReview(customUserDetails.getUsername(), isbn,
 			reviewSO);
 
-		return new BaseResponse<>(null, 200, "서평 작성 완료");
+		return new BaseResponse<>(reviewResponseDTO, 200, "서평 작성 완료");
 	}
 
 	@Operation(summary = "특정 도서의 서평 리스트", description = "도서 상세 페이지에서 보여줄 서평 리스트입니다.")
@@ -86,7 +89,7 @@ public class ReviewController {
 		regexValidator.validateIsbn(isbn);
 
 		// 해당 도서 서평 리스트 찾기
-		Page<ReviewResponseDTO> reviews = reviewService.getBookReviewList(isbn, pageable);
+		Page<ReviewBookResponseDTO> reviews = reviewService.getBookReviewList(isbn, pageable);
 
 		return new BaseResponse<>(reviews, 200, "해당 책의 서평 리스트가 도착했읍니다 ^_^b");
 	}
@@ -97,7 +100,7 @@ public class ReviewController {
 		@AuthenticationPrincipal CustomUserDetails customUserDetails,
 		@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
 	) {
-		Page<ReviewResponseDTO> reviews = reviewService.getMyReviewList(customUserDetails.getUsername(), pageable);
+		Page<ReviewMyResponseDTO> reviews = reviewService.getMyReviewList(customUserDetails.getUsername(), pageable);
 
 		return new BaseResponse<>(reviews, 200, ApplicationConstants.SUCCESS);
 	}
@@ -130,9 +133,10 @@ public class ReviewController {
 		ReviewSO reviewSO = reviewConverter.toReviewSO(reviewRequestDTO);
 
 		// 서평 수정
-		reviewService.modifyReview(reviewId, customUserDetails.getUsername(), reviewSO);
+		ReviewResponseDTO reviewResponseDTO = reviewService.modifyReview(reviewId, customUserDetails.getUsername(),
+			reviewSO);
 
-		return new BaseResponse<>(null, 200, ApplicationConstants.SUCCESS);
+		return new BaseResponse<>(reviewResponseDTO, 200, ApplicationConstants.SUCCESS);
 	}
 
 	@Operation(summary = "특정 서평 삭제", description = "선택한 서평을 삭제합니다.")
@@ -156,7 +160,7 @@ public class ReviewController {
 	public BaseResponse<?> getLatestReviewList(
 		@PageableDefault(size = 12, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
 	) {
-		List<ReviewResponseDTO> reviews = reviewService.getLatestReviewList(pageable);
+		List<ReviewMainResponseDTO> reviews = reviewService.getLatestReviewList(pageable);
 
 		return new BaseResponse<>(reviews, 200, ApplicationConstants.SUCCESS);
 	}
