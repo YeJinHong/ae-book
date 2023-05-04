@@ -7,14 +7,12 @@
 </template>
 
 <script>
-import TheFooter from '@/components/TheFooter'
 import HeaderNavbar from '@/components/HeaderNavbar'
 
 export default {
   name: 'AppBook',
   components: {
-    HeaderNavbar,
-    TheFooter
+    HeaderNavbar
   }
 }
 </script>
