@@ -55,7 +55,8 @@ export default {
       mode: 'brush',
       colorOptions1: ['#ff0000', '#ff8c00', '#ffff00', '#008000'],
       colorOptions2: ['#0000ff', '#800080', '#000080', '#000000'],
-      title: ''
+      title: '',
+      color: ''
     }
   },
   computed: {
@@ -77,10 +78,16 @@ export default {
     onMove (event) {
       if (this.isPainting) {
         if (this.mode === 'brush') {
+          this.ctx.strokeStyle = this.color
+          this.ctx.fillStyle = this.color
           this.ctx.lineTo(event.offsetX, event.offsetY)
           this.ctx.stroke()
         } else if (this.mode === 'eraser') {
-          this.ctx.clearRect(event.offsetX - 5, event.offsetY - 5, this.ctx.lineWidth, this.ctx.lineWidth)
+          // this.ctx.clearRect(event.offsetX - 5, event.offsetY - 5, this.ctx.lineWidth, this.ctx.lineWidth)
+          this.ctx.strokeStyle = 'white'
+          this.ctx.fillStyle = 'white'
+          this.ctx.lineTo(event.offsetX, event.offsetY)
+          this.ctx.stroke()
         }
       }
       this.ctx.beginPath()
@@ -97,6 +104,7 @@ export default {
       this.ctx.lineWidth = event.target.value
     },
     onColorClick (color) {
+      this.color = color
       this.ctx.strokeStyle = color
       this.ctx.fillStyle = color
     },
@@ -107,7 +115,10 @@ export default {
       this.mode = 'eraser'
     },
     onResetClick () {
-      this.ctx.clearRect(0, 0, 800, 500)
+      // 채울 스타일을 적용
+      this.ctx.fillStyle = 'white'
+      // 캔버스 크기의 사각형으로 채우기
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
       this.ctx.beginPath()
     },
     canvasToFile (canvas) {
