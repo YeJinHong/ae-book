@@ -56,7 +56,8 @@ const bookStore = {
           commit('SET_BOOK', data.result)
         })
         .catch(error => {
-          alert(error)
+          alert('존재하지 않는 책입니다.' + error)
+          window.history.back()
         })
     },
     async getSearchList ({ commit }, request) {

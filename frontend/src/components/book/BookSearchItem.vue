@@ -10,7 +10,7 @@
         <router-link :to="{ name: 'BookDetail', params: { isbn: book.isbn } }">
           <span class="title">{{ book.title }}</span><br>
         </router-link>
-        <span>현재 최저가 </span><span class="price">{{ book.price }}</span><span>원</span><br>
+        <span>현재 최저가 </span><span class="price">{{ book.price | pricePoint  }}</span><span>원</span><br>
         {{ book.author }} | {{ book.publisher }} | {{ book.publishDate }}
       </div>
       <div class="button">
@@ -29,6 +29,11 @@ export default {
   methods: {
     onClickRedirect (url) {
       window.open(url, 'blank')
+    }
+  },
+  filters: {
+    pricePoint (value) {
+      return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     }
   }
 }
