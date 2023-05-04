@@ -7,6 +7,10 @@
       @mousedown="startPainting"
       @mouseup="cancelPainting"
       @mouseleave="cancelPainting"
+      @touchmove="onMove"
+      @touchstart="startPainting"
+      @touchend="cancelPainting"
+      @touchcancel ="cancelPainting"
     ></canvas>
     <div id="palette">
       <div class="left">
