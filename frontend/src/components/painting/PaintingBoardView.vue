@@ -89,6 +89,7 @@ export default {
   methods: {
     ...mapActions(paintingStore, ['savePainting']),
     onMove (event) {
+      event.preventDefault()
       let x, y
       if (this.isPainting) {
         if (event.type === 'touchmove') {
@@ -101,7 +102,6 @@ export default {
         if (this.mode === 'brush') {
           this.ctx.strokeStyle = this.color
           this.ctx.fillStyle = this.color
-          // this.ctx.lineTo(event.offsetX, event.offsetY)
           this.ctx.lineTo(x, y)
           this.ctx.stroke()
         } else if (this.mode === 'eraser') {
@@ -113,7 +113,7 @@ export default {
         }
       }
       this.ctx.beginPath()
-      this.ctx.moveTo(event.offsetX, event.offsetY)
+      this.ctx.moveTo(x, y)
     },
     startPainting () {
       this.isPainting = true
