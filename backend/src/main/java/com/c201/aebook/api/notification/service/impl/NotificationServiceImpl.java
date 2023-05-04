@@ -6,6 +6,7 @@ import com.c201.aebook.api.notification.persistence.entity.NotificationEntity;
 import com.c201.aebook.api.notification.persistence.repository.NotificationRepository;
 import com.c201.aebook.api.notification.presentation.dto.response.NotificationBookDetailResponseDTO;
 import com.c201.aebook.api.notification.presentation.dto.response.NotificationBookListResponseDTO;
+import com.c201.aebook.api.notification.presentation.dto.response.NotificationResponseDTO;
 import com.c201.aebook.api.notification.presentation.dto.response.NotificationUpdateResponseDTO;
 import com.c201.aebook.api.notification.service.NotificationService;
 import com.c201.aebook.api.user.persistence.entity.UserEntity;
