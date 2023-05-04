@@ -4,10 +4,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import com.c201.aebook.api.book.persistence.entity.BookEntity;
 import com.c201.aebook.api.book.persistence.repository.BookRepository;
+import com.c201.aebook.api.event.NotificationEvent;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 public class AladinBatchItemWriter implements ItemWriter<BookEntity> {
 
 	private final BookRepository bookRepository;
+	private final ApplicationEventPublisher publisher;
+
 
 	@Override
 	public void write(List<? extends BookEntity> items) throws Exception {
@@ -32,6 +36,9 @@ public class AladinBatchItemWriter implements ItemWriter<BookEntity> {
 					updateBook.setPrice(item.getPrice());
 					updateBook.setAladinUrl(item.getAladinUrl());
 					bookRepository.save(updateBook);
+
+					//알림 이벤트 발생
+					publisher.publishEvent(new NotificationEvent(this, updateBook));
 				}
 			}else{
 				bookRepository.save(item);
