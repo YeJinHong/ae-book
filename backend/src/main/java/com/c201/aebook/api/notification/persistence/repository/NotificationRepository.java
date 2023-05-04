@@ -22,4 +22,7 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
     Optional<NotificationEntity> findByNotificationId(Long notificationId);
 
     Optional<NotificationEntity> findByIdAndUserId(Long notificationId, Long userId);
+
+    @Query("select count(n.id) > 0 from NotificationEntity n where n.user.id = :userId and n.book.id = :bookId")
+    boolean existsByBookId(Long bookId, Long userId);
 }
