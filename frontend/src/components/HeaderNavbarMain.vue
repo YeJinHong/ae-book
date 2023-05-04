@@ -69,5 +69,6 @@ export default {
 .navbar{
   height: 150px;
   background-image: url("../assets/images/main_header.png");
+  background-size: 1700px 150px;
 }
 </style>
