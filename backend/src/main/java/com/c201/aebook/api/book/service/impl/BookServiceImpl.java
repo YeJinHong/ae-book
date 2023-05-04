@@ -3,6 +3,7 @@ package com.c201.aebook.api.book.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.c201.aebook.api.notification.persistence.entity.NotificationEntity;
 import com.c201.aebook.api.notification.persistence.repository.NotificationRepository;
 import com.c201.aebook.auth.CustomUserDetails;
 import lombok.extern.slf4j.Slf4j;
@@ -38,14 +39,18 @@ public class BookServiceImpl implements BookService {
 			.orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
 		BookResponseDTO bookResponseDTO = bookConverter.toBookResponseDTO(book);
 
-		// 사용자 정보 찾기
-		boolean notitication = false;
-		if(customUserDetails != null) {
-			// 사용자Id와 bookId로 알림 정보 찾기
-			notitication = notificationRepository.existsByBookId(book.getId(), Long.valueOf(customUserDetails.getUsername()));
-		}
+		bookResponseDTO.setNotification(false);
 
-		bookResponseDTO.setNotification(notitication);
+		// 사용자 정보를 가지고 있는 경우
+		if(customUserDetails != null) {
+			NotificationEntity notificationEntity = notificationRepository.findByUserIdAndBookId(Long.valueOf(customUserDetails.getUsername()), book.getId());
+
+			// notification 정보를 가지고 있는 경우
+			if (notificationEntity != null) {
+				bookResponseDTO.setNotification(true);
+				bookResponseDTO.setNotificationId(notificationEntity.getId());
+			}
+		}
 
 		return bookResponseDTO;
 	}
@@ -60,9 +65,11 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public Page<BookSearchResponseDTO> searchBookList(String keyword, String[] searchTarget, Pageable pageable) {
+	public Page<BookSearchResponseDTO> searchBookList(String keyword, String[] searchTarget, Pageable pageable, CustomUserDetails customUserDetails) {
 		Page<BookEntity> bookList = bookCustomRepository.searchBookList(keyword, searchTarget, pageable);
 		Page<BookSearchResponseDTO> result = bookList.map(book -> bookConverter.toBookSearchResponseDTO(book));
+
+
 		return result;
 	}
 
