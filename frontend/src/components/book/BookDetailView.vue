@@ -7,7 +7,7 @@
     ISBN {{ book.isbn }}
     XXXXX
     <!-- TODO: 알림 설정  -->
-    <button type="button" v-if=isNotification>알림 신청중</button>
+    <button type="button" v-if="isNotifications || isNotification">알림 신청중</button>
     <button type="button" v-else v-b-modal.modal-save-notification>알림 신청</button>
     <button type="button" @click="onClickRedirect(book.aladinUrl)">구매하러가기</button>
     <p>{{ book.description }}</p>
@@ -101,8 +101,13 @@ export default {
       isNotificationModalVisible: false,
       upperLimit: 0,
       upperLimitState: null,
-      selected: ''
+      selected: '',
+      isNotifications: false
     }
+  },
+  created () {
+    this.isNotifications = sessionStorage.getItem('isNotification')
+    console.log(this.isNotifications)
   },
   computed: {
     ...mapState(bookStore, ['book']),
