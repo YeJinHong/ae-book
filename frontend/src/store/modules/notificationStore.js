@@ -1,4 +1,4 @@
-import { saveNotification } from '@/api/notification'
+import { saveNotification, getNotificationList } from '@/api/notification'
 
 const notificationStore = {
   namespaced: true,
@@ -37,6 +37,16 @@ const notificationStore = {
       await saveNotification(data)
         .then(({ data }) => {
           // console.log(data)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    async getBookNotificationList ({ commit }) {
+      await getNotificationList()
+        .then(({ data }) => {
+          console.log(data)
+          commit('SET_NOTIFICATION_LIST', data.result.content)
         })
         .catch(error => {
           console.log(error)
