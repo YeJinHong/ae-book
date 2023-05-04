@@ -89,22 +89,31 @@ export default {
   methods: {
     ...mapActions(paintingStore, ['savePainting']),
     onMove (event) {
+      event.preventDefault()
+      let x, y
       if (this.isPainting) {
+        if (event.type === 'touchmove') {
+          x = event.touches[0].clientX - this.canvas.offsetLeft
+          y = event.touches[0].clientY - this.canvas.offsetTop
+        } else {
+          x = event.offsetX
+          y = event.offsetY
+        }
         if (this.mode === 'brush') {
           this.ctx.strokeStyle = this.color
           this.ctx.fillStyle = this.color
-          this.ctx.lineTo(event.offsetX, event.offsetY)
+          this.ctx.lineTo(x, y)
           this.ctx.stroke()
         } else if (this.mode === 'eraser') {
           // this.ctx.clearRect(event.offsetX - 5, event.offsetY - 5, this.ctx.lineWidth, this.ctx.lineWidth)
           this.ctx.strokeStyle = 'white'
           this.ctx.fillStyle = 'white'
-          this.ctx.lineTo(event.offsetX, event.offsetY)
+          this.ctx.lineTo(x, y)
           this.ctx.stroke()
         }
       }
       this.ctx.beginPath()
-      this.ctx.moveTo(event.offsetX, event.offsetY)
+      this.ctx.moveTo(x, y)
     },
     startPainting () {
       this.isPainting = true
