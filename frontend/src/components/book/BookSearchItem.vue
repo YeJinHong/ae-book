@@ -41,6 +41,7 @@ export default {
   flex-direction: row;
   margin-top: 40px;
   margin-bottom: 60px;
+  justify-content: space-between;
 }
 
 .left {
