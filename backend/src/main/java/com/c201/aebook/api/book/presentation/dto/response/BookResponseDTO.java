@@ -42,6 +42,9 @@ public class BookResponseDTO {
 	@Schema(description = "알림 신청 여부", defaultValue = "true")
 	private boolean notification;
 
+	@Schema(description = "알림 Id", defaultValue = "true")
+	private Long notificationId;
+
 	@Builder
 	public BookResponseDTO(String title, String description, String author, String publisher, Date publishDate,
 		String isbn, int price, String aladinUrl, String coverImageUrl) {
