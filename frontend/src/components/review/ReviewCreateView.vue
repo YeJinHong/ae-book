@@ -65,8 +65,8 @@
             :key="index"
             @click="check(index)"
           >
-            <span v-if="index <= form.score">🍎</span>
-            <span v-if="index > form.score">🍏</span>
+            <span v-if="index <= form.score">🧡</span>
+            <span v-if="index > form.score">🤍</span>
           </div>
         </div>
       </div>

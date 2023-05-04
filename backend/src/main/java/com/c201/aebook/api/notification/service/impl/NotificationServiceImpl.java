@@ -54,6 +54,7 @@ public class NotificationServiceImpl implements NotificationService {
         // 4. 알림 신청 저장
         notificationRepository.save(NotificationEntity.builder()
                 .upperLimit(notificationSO.getUpperLimit())
+                .notificationType(notificationSO.getNotificationType())
                 .user(userEntity)
                 .book(bookEntity)
                 .build());
