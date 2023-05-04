@@ -39,6 +39,9 @@ public class BookResponseDTO {
 	@Schema(description = "표지 이미지 주소", defaultValue = "주소")
 	private String coverImageUrl;
 
+	@Schema(description = "알림 신청 여부", defaultValue = "true")
+	private boolean notification;
+
 	@Builder
 	public BookResponseDTO(String title, String description, String author, String publisher, Date publishDate,
 		String isbn, int price, String aladinUrl, String coverImageUrl) {
