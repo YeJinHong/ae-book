@@ -6,6 +6,7 @@ import com.c201.aebook.api.notification.persistence.entity.NotificationEntity;
 import com.c201.aebook.api.notification.persistence.repository.NotificationRepository;
 import com.c201.aebook.api.notification.presentation.dto.response.NotificationBookDetailResponseDTO;
 import com.c201.aebook.api.notification.presentation.dto.response.NotificationBookListResponseDTO;
+import com.c201.aebook.api.notification.presentation.dto.response.NotificationResponseDTO;
 import com.c201.aebook.api.notification.presentation.dto.response.NotificationUpdateResponseDTO;
 import com.c201.aebook.api.notification.service.NotificationService;
 import com.c201.aebook.api.user.persistence.entity.UserEntity;
@@ -34,7 +35,7 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationConverter notificationConverter;
 
     @Override
-    public void saveNotification(String userId, NotificationSO notificationSO) {
+    public NotificationResponseDTO saveNotification(String userId, NotificationSO notificationSO) {
         // 1. isbn 유효성 검증
         BookEntity bookEntity = bookRepository.findByIsbn(notificationSO.getIsbn())
                 .orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
@@ -56,13 +57,16 @@ public class NotificationServiceImpl implements NotificationService {
             throw new CustomException(ErrorCode.DUPLICATED_NOTIFICATION);
         }
 
-        // 5. 알림 신청 저장
-        notificationRepository.save(NotificationEntity.builder()
+        // 4. 알림 신청 저장
+        NotificationEntity notification = notificationRepository.save(NotificationEntity.builder()
                 .upperLimit(notificationSO.getUpperLimit())
                 .notificationType(notificationSO.getNotificationType())
                 .user(userEntity)
                 .book(bookEntity)
                 .build());
+
+        NotificationResponseDTO notificationResponseDTO = notificationConverter.toNotificationResponseDTO(notification);
+        return notificationResponseDTO;
     }
 
     @Override
