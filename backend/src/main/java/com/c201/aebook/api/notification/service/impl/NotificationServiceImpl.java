@@ -6,9 +6,12 @@ import com.c201.aebook.api.notification.persistence.entity.NotificationEntity;
 import com.c201.aebook.api.notification.persistence.repository.NotificationRepository;
 import com.c201.aebook.api.notification.presentation.dto.response.NotificationBookDetailResponseDTO;
 import com.c201.aebook.api.notification.presentation.dto.response.NotificationBookListResponseDTO;
+import com.c201.aebook.api.notification.presentation.dto.response.NotificationResponseDTO;
+import com.c201.aebook.api.notification.presentation.dto.response.NotificationUpdateResponseDTO;
 import com.c201.aebook.api.notification.service.NotificationService;
 import com.c201.aebook.api.user.persistence.entity.UserEntity;
 import com.c201.aebook.api.user.persistence.repository.UserRepository;
+import com.c201.aebook.api.vo.NotificationPatchSO;
 import com.c201.aebook.api.vo.NotificationSO;
 import com.c201.aebook.converter.NotificationConverter;
 import com.c201.aebook.utils.exception.CustomException;
@@ -18,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -31,7 +35,7 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationConverter notificationConverter;
 
     @Override
-    public void saveNotification(String userId, NotificationSO notificationSO) {
+    public NotificationResponseDTO saveNotification(String userId, NotificationSO notificationSO) {
         // 1. isbn 유효성 검증
         BookEntity bookEntity = bookRepository.findByIsbn(notificationSO.getIsbn())
                 .orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
@@ -41,7 +45,12 @@ public class NotificationServiceImpl implements NotificationService {
         UserEntity userEntity = userRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        // 3. 해당 책에 알림 신청을 한 적이 있는지 검증
+        // 3. 알림 타입이 D이면서 upperLimit이 0 이상인지 확인
+        if(notificationSO.getNotificationType().equals("D") && notificationSO.getUpperLimit() >= 0) {
+            notificationSO.setUpperLimit(0);
+        }
+
+        // 4. 해당 책에 알림 신청을 한 적이 있는지 검증
         NotificationEntity notificationEntity = notificationRepository
                 .findByUserIdAndBookId(userEntity.getId(), bookEntity.getId());
         if(notificationEntity != null) {
@@ -49,11 +58,15 @@ public class NotificationServiceImpl implements NotificationService {
         }
 
         // 4. 알림 신청 저장
-        notificationRepository.save(NotificationEntity.builder()
+        NotificationEntity notification = notificationRepository.save(NotificationEntity.builder()
                 .upperLimit(notificationSO.getUpperLimit())
+                .notificationType(notificationSO.getNotificationType())
                 .user(userEntity)
                 .book(bookEntity)
                 .build());
+
+        NotificationResponseDTO notificationResponseDTO = notificationConverter.toNotificationResponseDTO(notification);
+        return notificationResponseDTO;
     }
 
     @Override
@@ -64,6 +77,7 @@ public class NotificationServiceImpl implements NotificationService {
         return notifications.map(notification -> NotificationBookListResponseDTO.builder()
                 .id(notification.getId())
                 .upperLimit(notification.getUpperLimit())
+                .notificationType(notification.getNotificationType())
                 .title(notification.getBook().getTitle())
                 .isbn(notification.getBook().getIsbn())
                 .price(notification.getBook().getPrice())
@@ -83,6 +97,7 @@ public class NotificationServiceImpl implements NotificationService {
         return NotificationBookDetailResponseDTO.builder()
                 .id(notificationId)
                 .upperLimit(notificationEntity.getUpperLimit())
+                .notificationType(notificationEntity.getNotificationType())
                 .createdAt(notificationEntity.getCreatedAt())
                 .updatedAt(notificationEntity.getUpdatedAt())
                 .title(notificationEntity.getBook().getTitle())
@@ -93,5 +108,32 @@ public class NotificationServiceImpl implements NotificationService {
                 .coverImageUrl(notificationEntity.getBook().getCoverImageUrl())
                 .aladinUrl(notificationEntity.getBook().getAladinUrl())
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public NotificationUpdateResponseDTO updateNotification(String userId, Long notificationId, NotificationPatchSO notificationPatchSO) {
+        // 1. notificationId 유효성 검증
+        NotificationEntity notificationEntity = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOTIFICATION_NOT_FOUND));
+
+        // 2. notification 정보(upperLimit) 업데이트
+        notificationEntity.updateNotificationEntity(notificationPatchSO.getUpperLimit(), notificationPatchSO.getNotificationType());
+
+        // 3. NofiticationUpdateResponseDTO에 담기
+        NotificationUpdateResponseDTO notificationUpdateResponseDTO =
+                notificationConverter.toNotificationUpdateResponseDTO(notificationEntity.getUpperLimit(), notificationEntity.getNotificationType());
+
+        return notificationUpdateResponseDTO;
+    }
+
+    @Override
+    public void deleteNotification(String userId, Long notificationId) {
+        // 1. notificaionId 유효성 검증 및 사용자 일치 여부 확인
+        NotificationEntity notificationEntity = notificationRepository.findByIdAndUserId(notificationId, Long.valueOf(userId))
+                .orElseThrow(() -> new CustomException(ErrorCode.NOTIFICATION_NOT_FOUND));
+
+        // 2. 알림 삭제
+        notificationRepository.delete(notificationEntity);
     }
 }
