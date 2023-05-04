@@ -42,7 +42,8 @@ public class NotificationEntity extends BaseEntity {
         this.book = book;
     }
 
-    public void updateNotificationEntity(int upperLimit) {
+    public void updateNotificationEntity(int upperLimit, String notificationType) {
         this.upperLimit = upperLimit;
+        this.notificationType = notificationType;
     }
 }

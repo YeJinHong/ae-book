@@ -28,8 +28,8 @@ public class NotificationValidator {
 	}
 
 	public void checkIntType(int value, String name) {
-		if (value <= 0) {
-			throw new IllegalArgumentException(name + "은/는 필수 입력값이며 양수 값만 가능합니다.");
+		if (value < 0) {
+			throw new IllegalArgumentException(name + "은/는 필수 입력값이며 0 또는 양수 값만 가능합니다.");
 		}
 	}
 
@@ -41,5 +41,6 @@ public class NotificationValidator {
 
 	public void validateNotificationUpdateRequestDTO(NotificationUpdateRequestDTO notificationUpdateRequestDTO) {
 		checkIntType(notificationUpdateRequestDTO.getUpperLimit(), "금액 상한선");
+		checkNotificationType(notificationUpdateRequestDTO.getNotificationType(), "알림 타입");
 	}
 }
