@@ -5,22 +5,22 @@
     <div class="menu-container">
       <!-- <router-link :to="{ name: '' }"> -->
         <div class="main-menu first">
-          <div class="menu-text">내가<br>만드는<br>동화</div>
+          <div class="menu-text">내가<br>만드는<br>동화<br><img src="../assets/images/duck.png" id="duckIcon"></div>
         </div>
       <!-- </router-link> -->
       <router-link :to="{ name: 'Painting' }">
         <div class="main-menu second">
-          <div class="menu-text">색칠공부</div>
+          <div class="menu-text">색칠공부<br><br><br><img src="../assets/images/tiger.png" id="paintingIcon"></div>
         </div>
       </router-link>
       <router-link :to="{ name: 'BookSearchByPicture' }">
         <div class="main-menu third">
-          <div class="menu-text">사진으로<br>도서 검색</div>
+          <div class="menu-text">사진으로<br>도서 검색<br><br><img src="../assets/images/photoCameraIcon.png" id="photoIcon"></div>
         </div>
       </router-link>
       <router-link :to="{ name: 'BookSearch' }">
         <div class="main-menu fourth">
-          <div class="menu-text">제목으로<br>도서 검색</div>
+          <div class="menu-text">제목으로<br>도서 검색<br><br><img src="../assets/images/bookIcon.png" id="bookIcon"></div>
         </div>
       </router-link>
     </div>
@@ -39,13 +39,11 @@
     <div class="carousel-container">
       <painting-carousel-view :items="mainPaintingList" :chunkSize="4"></painting-carousel-view>
     </div>
-    <the-footer></the-footer>
   </div>
 </template>
 
 <script>
 import HeaderNavbarMain from '@/components/HeaderNavbarMain'
-import TheFooter from '@/components/TheFooter'
 import Carousel from '@/components/CarouselView'
 import BookCarouselView from '@/components/common/list/BookCarouselView.vue'
 import PaintingCarouselView from '@/components/common/list/PaintingCarouselView.vue'
@@ -59,7 +57,6 @@ export default {
   name: 'AppMain',
   components: {
     HeaderNavbarMain,
-    TheFooter,
     Carousel,
     BookCarouselView,
     PaintingCarouselView
@@ -131,11 +128,11 @@ export default {
 }
 
 .main-menu.second {
-  background-color: var(--menu-red);
+  background-color: var(--menu-yellow);
 }
 
 .main-menu.third {
-  background-color: var(--menu-yellow);
+  background-color: var(--menu-red);
 }
 
 .main-menu.fourth {
@@ -176,4 +173,9 @@ export default {
   background-color: var(--ae-red);
   width:141px;
 }
+
+#duckIcon, #bookIcon, #paintingIcon, #photoIcon{
+  height: 140px;
+}
+
 </style>
