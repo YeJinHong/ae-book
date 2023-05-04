@@ -1,16 +1,33 @@
 <template>
   <div v-if="book">
-    {{ book.title }}
-    {{ book.author }} | {{ book.publisher }} | {{ book.publishDate }}
-    <img v-bind:src="book.coverImageUrl" class="book-image" />
-    최저가 {{ book.price }}원
-    ISBN {{ book.isbn }}
-    XXXXX
-    <!-- TODO: 알림 설정  -->
-    <button type="button" v-if=isNotification>알림 신청중</button>
-    <button type="button" v-else v-b-modal.modal-save-notification>알림 신청</button>
-    <button type="button" @click="onClickRedirect(book.aladinUrl)">구매하러가기</button>
-    <p>{{ book.description }}</p>
+    <div class="book-container">
+      <h1>{{ book.title }}</h1>
+      <p>{{ book.author }} | {{ book.publisher }} | {{ book.publishDate }}</p>
+      <div class="bar"></div>
+      <div class="main-info">
+        <div class="book-image-box">
+          <img v-bind:src="book.coverImageUrl" class="book-image" />
+        </div>
+        <div class="sub-info">
+          <div class="price-info">
+            <span class="price-text">최저가</span><span class="price">{{ book.price | pricePoint }}원</span>
+          </div>
+          <div class="red-bar"></div>
+          <p><span style="font-weight:bold">ISBN</span> {{ book.isbn }}</p>
+          <p>별별별별별</p>
+          <!-- TODO: 비로그인시 알림 설정 버튼 안보이도록  -->
+          <button type="button" class="ae-btn btn-navy" v-if=book.notification >알림 신청중</button>
+          <!-- <button type="button" class="ae-btn" v-else v-b-modal.modal-save-notification>알림 신청</button> -->
+          <button type="button" class="ae-btn" v-else @click="checkLoginAndOpenModal">알림 신청</button>
+          <button type="button" class="ae-btn btn-red" @click="onClickRedirect(book.aladinUrl)">구매하러가기 ></button>
+        </div>
+      </div>
+      <div class="bar"></div>
+      <p style="font-weight: bold; text-align: left; font-size: 24px; color:var(--ae-navy)">책 소개</p>
+      <p>{{ book.description }}</p>
+      <div class="bar"></div>
+    </div>
+    <!-- //////////////////////////////////////////////////////////////////////////////////// -->
     <!-- TODO: 별점 및 서평 등록 -->
     <button @click="showModal()">리뷰 등록</button>
     <!-- TODO: 서평 수정 및 삭제 -->
@@ -101,17 +118,26 @@ export default {
       isNotificationModalVisible: false,
       upperLimit: 0,
       upperLimitState: null,
-      selected: ''
+      selected: '',
+      isNotifications: false
     }
+  },
+  created () {
+    if (this.book.notification === null) {
+      this.notification = false
+    } else {
+      this.isNotifications = this.book.notification
+    }
+    console.log(this.isNotifications)
   },
   computed: {
     ...mapState(bookStore, ['book']),
-    ...mapState(reviewStore, ['reviewBookList', 'reviewBookPageSetting']),
-    ...mapState(notificationStore, ['isNotification'])
+    ...mapState(reviewStore, ['reviewBookList', 'reviewBookPageSetting'])
   },
   mounted () {
     this.getBookDetail(this.isbn)
     this.book = this.getBook
+    this.isNotifications = this.book.notification
   },
   methods: {
     ...mapActions(bookStore, ['getBookDetail']),
@@ -131,6 +157,15 @@ export default {
     // closeNotificationModal () {
     //   this.isNotificationModalVisible = false
     // },
+    checkLoginAndOpenModal () {
+      const login = sessionStorage.getItem('isLoginUser')
+      if (!login) {
+        alert('로그인이 필요합니다.')
+        this.$router.push('/user/login')
+      } else {
+        this.$refs.modal.show()
+      }
+    },
     checkFormValidity () {
       const valid = this.$refs.form.checkValidity()
       this.upperLimitState = valid
@@ -160,10 +195,16 @@ export default {
       this.notificationSave(data)
         .then(() => {
           alert('알림이 성공적으로 등록되었습니다!')
+          this.getBookDetail(this.book.isbn)
         })
       this.$nextTick(() => {
         this.$bvModal.hide('modal-save-notification')
       })
+    }
+  },
+  filters: {
+    pricePoint (value) {
+      return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     }
   }
 }
@@ -173,5 +214,78 @@ export default {
 .pagination-container {
   display:flex;
   justify-content: center;
+}
+
+.book-container {
+  width: 1000px;
+  margin: auto;
+}
+
+.book-container > h1 {
+  color: var(--ae-navy);
+  font-size: 45px;
+  font-weight: 800;
+  text-align: left;
+  margin-top: 30px;
+}
+
+.book-container > p {
+  color: #888888;
+  font-size: 15px;
+  font-weight:100;
+  text-align: left;
+}
+
+.book-image {
+  width: 300px;
+  border: 15px solid white;
+  box-shadow: 2px 4px 11px 0 rgba(0, 0, 0, 0.25);
+}
+
+.main-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.sub-info {
+  width: 40%;
+  margin-left: 50px;
+}
+
+.sub-info > p {
+  text-align: left;
+}
+
+.price-info {
+  text-align: left;
+}
+
+.price-text {
+  font-size: 40px;
+  font-weight: 300;
+  text-align: left;
+  margin-right: 30px;
+}
+
+.price {
+  color: var(--ae-red);
+  font-size: 40px;
+  font-weight: 800;
+  text-align: left;
+}
+
+.red-bar {
+  height: 4px;
+  background-color: var(--ae-red);
+  width: 400px;
+  margin: 10px 0px;
+}
+
+.bar {
+  height:2px;
+  background-color: #E0E0E0;
+  margin: 35px 0px;
 }
 </style>

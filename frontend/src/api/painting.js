@@ -4,7 +4,7 @@ import axios from 'axios'
 // 그림 저장
 const savePainting = formData => api.post('/api/paintings', formData, {headers: {'Content-Type': 'multipart/form-data'}})
 // 그림 리스트 조회
-const getPaintingList = type => api.get(`/api/paintings?type=${type}`)
+const getPaintingList = (request) => api.get(`/api/paintings?type=${request.type}&page=${request.page}`)
 // 그림 상세 조회
 const getPaintingDetail = paintingId => api.get(`/api/paintings/${paintingId}`)
 // 그림 삭제

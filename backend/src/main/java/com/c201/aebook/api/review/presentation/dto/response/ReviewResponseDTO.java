@@ -15,33 +15,32 @@ public class ReviewResponseDTO {
 	@Schema(description = "서평 ID", defaultValue = "1")
 	private Long id;
 
-	@Schema(description = "서평 작성자 닉네임", defaultValue = "아응앵")
-	private String reviewerNickname;
-
 	@Schema(description = "별점", defaultValue = "5")
 	private int score;
 
-	@Schema(description = "서평 내용", defaultValue = "절경이고요 장관이네요")
+	@Schema(description = "서평 내용", defaultValue = "장관이에요 절경이고요")
 	private String content;
 
-	@Schema(description = "isbn", defaultValue = "9788932916378")
-	private String isbn;
+	@Schema(description = "서평 작성자 ID", defaultValue = "1")
+	private Long reviewerId;
 
-	@Schema(description = "서평 작성 시간", defaultValue = "2023-04-14 10:30:15")
+	@Schema(description = "서평을 작성한 도서 ID", defaultValue = "1")
+	private Long bookId;
+
+	@Schema(description = "서평 등록 시간", defaultValue = "2023-04-14 10:30:15")
 	private LocalDateTime createdAt;
 
-	@Schema(description = "서평 수정 시간", defaultValue = "2023-04-17 10:30:15")
+	@Schema(description = "서평 수정 시간", defaultValue = "2023-04-15 10:30:15")
 	private LocalDateTime updatedAt;
 
 	@Builder
-	public ReviewResponseDTO(Long id, String reviewerNickname, int score, String content, String isbn,
-		LocalDateTime createdAt,
+	public ReviewResponseDTO(Long id, int score, String content, Long reviewerId, Long bookId, LocalDateTime createdAt,
 		LocalDateTime updatedAt) {
 		this.id = id;
-		this.reviewerNickname = reviewerNickname;
 		this.score = score;
 		this.content = content;
-		this.isbn = isbn;
+		this.reviewerId = reviewerId;
+		this.bookId = bookId;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 	}

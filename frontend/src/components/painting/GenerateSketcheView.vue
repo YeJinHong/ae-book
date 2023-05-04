@@ -1,16 +1,18 @@
 <template>
   <div>
-    <h1>이미지 업로드해서 스케치로 바꾸기</h1>
-    <span>아직 안됨.. 하지만 이미지 업로드하면 미리보기 가능 !!</span>
+    <input type="file" @change="onFileChange" />
     <div class="image-container">
-      <input type="file" @change="onFileChange" />
-      <img :src="imageUrl" v-if="imageUrl" />
+      <div class="before">
+        <p>원본</p>
+        <img :src="imageUrl" v-if="imageUrl" />
+      </div>
+      <div class="after">
+        <p>변환</p>
+        <img :src="sketch"/>
+      </div>
     </div>
-    <div>
-      <img :src="sketch"/>
-    </div>
-    <button>돌아가기</button>
-    <button @click="onSaveClick">저장하기</button>
+    <button @click="goBack" class="ae-btn btn-navy">돌아가기</button>
+    <button @click="onSaveClick" class="ae-btn btn-red">저장하기</button>
   </div>
 </template>
 
@@ -79,11 +81,41 @@ export default {
         })
 
       this.$router.push('/painting/board')
+    },
+    goBack () {
+      window.history.back()
     }
   }
 }
 </script>
 
-<style>
+<style scoped>
+.image-container {
+  margin: auto;
+  width: 1000px;
+  display: flex;
+  flex-direction: row;
+  min-height: 400px;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
 
+.image-container > div {
+  border-radius: 10px;
+  border: 1px solid var(--ae-navy);
+}
+
+.image-container p {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.before {
+  width: 50%;
+  margin-right: 30px;
+}
+
+.after {
+  width: 50%;
+}
 </style>
