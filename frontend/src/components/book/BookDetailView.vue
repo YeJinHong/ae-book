@@ -10,7 +10,7 @@
         </div>
         <div class="sub-info">
           <div class="price-info">
-            <span class="price-text">최저가</span><span class="price">{{ book.price }}원</span>
+            <span class="price-text">최저가</span><span class="price">{{ book.price | pricePoint }}원</span>
           </div>
           <div class="red-bar"></div>
           <p><span style="font-weight:bold">ISBN</span> {{ book.isbn }}</p>
@@ -180,6 +180,11 @@ export default {
       this.$nextTick(() => {
         this.$bvModal.hide('modal-save-notification')
       })
+    }
+  },
+  filters: {
+    pricePoint (value) {
+      return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     }
   }
 }
