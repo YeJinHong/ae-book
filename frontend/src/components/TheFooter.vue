@@ -20,8 +20,10 @@ export default {
 
 <style scoped>
 .footer {
-  display: flex;
-  align-items: center;
+    background-color: var(--main-yellow);
+    padding: 20px;
+    position: relative;
+    margin-top: auto;
 }
 
 .footer img {
