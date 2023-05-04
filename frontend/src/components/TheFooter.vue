@@ -2,11 +2,13 @@
   <div>
     <div>&nbsp;</div>
     <div class="footer">
-      <img src="../assets/images/aebook_logo.png">
+      <div style="text-align: left">
+        <img src="../assets/images/main_logo.png">
+      </div>
       <div class="footer-text">
         <span>&copy;아이북(aebook) C201</span><br>
         <span>상호명: 아이북 | 사업자 등록 번호: 746-43-01140 | 사업자명: 이도연</span><br>
-        <span>주소: 광주광역시 남구 서문대로678번길 7, 103동 402호</span>
+        <span>도서 API 제공 : 알라딘 인터넷서점( www.aladin.co.kr)</span>
       </div>
     </div>
   </div>
@@ -20,8 +22,10 @@ export default {
 
 <style scoped>
 .footer {
-  display: flex;
-  align-items: center;
+    background-color: var(--main-yellow);
+    padding: 20px;
+    position: relative;
+    margin-top: auto;
 }
 
 .footer img {
