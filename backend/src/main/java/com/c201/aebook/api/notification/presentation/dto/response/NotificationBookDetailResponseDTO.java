@@ -20,6 +20,14 @@ public class NotificationBookDetailResponseDTO {
     @Schema(description = "사용자 상한가", defaultValue = "1000")
     private int upperLimit;
 
+    /**
+     * S는 사용자가 가격을 지정한 경우(selected),
+     * D는 사용자가 가격을 지정하지 않은 경우(default)
+     */
+    @Schema(description = "알림 타입", defaultValue = "S")
+    private String notificationType;
+
+
     @Schema(description = "알림 신청 시간", defaultValue = "2023-04-14 10:30:15")
     private LocalDateTime createdAt;
 
@@ -48,9 +56,10 @@ public class NotificationBookDetailResponseDTO {
     private String aladinUrl;
 
     @Builder
-    public NotificationBookDetailResponseDTO(Long id, int upperLimit, LocalDateTime createdAt, LocalDateTime updatedAt, String title, String author, String publisher, String isbn, int price, String coverImageUrl, String aladinUrl) {
+    public NotificationBookDetailResponseDTO(Long id, int upperLimit, String notificationType, LocalDateTime createdAt, LocalDateTime updatedAt, String title, String author, String publisher, String isbn, int price, String coverImageUrl, String aladinUrl) {
         this.id = id;
         this.upperLimit = upperLimit;
+        this.notificationType = notificationType;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.title = title;
