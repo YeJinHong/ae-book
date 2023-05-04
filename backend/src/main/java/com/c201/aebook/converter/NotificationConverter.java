@@ -18,7 +18,7 @@ public interface NotificationConverter {
     NotificationBookListResponseDTO toNotificationBookListResponseDTO(NotificationEntity notificationEntity);
 
     NotificationPatchSO toNotificationPatchSO(NotificationUpdateRequestDTO notificationUpdateRequestDTO);
-    NotificationUpdateResponseDTO toNotificationUpdateResponseDTO(Integer upperLimit);
+    NotificationUpdateResponseDTO toNotificationUpdateResponseDTO(Integer upperLimit, String notificationType);
 
     NotificationResponseDTO toNotificationResponseDTO(NotificationEntity notificationEntity);
 
