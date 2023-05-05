@@ -1,14 +1,14 @@
 <template>
   <div>
-    <input type="text" v-model="painting.title">
-    <button class="ae-btn btn-red" @click="updatePaintingTitle({paintingId: painting.id, title: {title:painting.title}})">수정</button>
-    <img v-bind:src="painting.fileUrl">
+    <input type="text" v-model="notification.title">
+    <button class="ae-btn btn-red" @click="updateNotification({notificationId: notification.id, upperLimit: {upperLimit:notification.upperLimit}})">수정</button>
+    <img v-bind:src="notification.coverImageUrl">
   </div>
   </template>
 
 <script>
 import { mapState, mapActions } from 'vuex'
-const paintingStore = 'paintingStore'
+const notificationStore = 'notificationStore'
 
 export default {
   name: 'NotificationDetailView',
@@ -18,10 +18,10 @@ export default {
     }
   },
   computed: {
-    ...mapState(paintingStore, ['painting'])
+    ...mapState(notificationStore, ['notification'])
   },
   methods: {
-    ...mapActions('paintingStore', ['updatePaintingTitle'])
+    ...mapActions(notificationStore, ['updateNotification'])
   }
 }
 </script>
