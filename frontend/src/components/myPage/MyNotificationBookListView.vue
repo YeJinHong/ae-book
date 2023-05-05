@@ -4,7 +4,7 @@
     <div style="height:2px; background-color: #E0E0E0;"></div>
     <ModalView :modalShow="isModalVisible" @close-modal="closeModal">
       <notification-detail-view/>
-      <notification-modal-button @close="closeModal"></notification-modal-button>
+      <notification-modal-button :id="id" @close="closeModal"></notification-modal-button>
     </ModalView>
     <div class="carousel-container">
       <img-carousel-view :items="notificationList" :chunkSize="3" @moveTo="showModal"></img-carousel-view>
@@ -30,7 +30,8 @@ export default {
   },
   data () {
     return {
-      isModalVisible: false
+      isModalVisible: false,
+      id: null
     }
   },
   computed: {
@@ -38,17 +39,17 @@ export default {
   },
   mounted () {
     this.getBookNotificationList()
-    console.log(this.notificationList)
   },
   methods: {
     ...mapActions(notificationStore, ['getBookNotificationList', 'getBookNotificationDetail']),
     showModal (notificationId) {
+      this.id = notificationId
       this.getBookNotificationDetail(notificationId)
       this.isModalVisible = true
     },
     closeModal () {
       this.isModalVisible = false
-      // this.clearStoryId()
+      this.getBookNotificationList()
     }
   }
 
