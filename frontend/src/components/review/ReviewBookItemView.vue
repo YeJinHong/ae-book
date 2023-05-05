@@ -1,20 +1,19 @@
 <template>
-  <div class="review-item">
+  <div class="review-item" :style="{ height: isExpanded ? 'auto' : '170px' }">
     <div>
       <div class="item-gruop-1">
         <div class="item-user-info">
-          <!-- TODO: 유저 프로필 사진 받아야 함 -->
-          <!-- {{ review.reviewerProfileImg }} -->
-          <div class="user-nickname">
-          {{ review.reviewerNickname }}
+          <img class="item-user-img" :src=review.reviewerImg />
+          <div>
+            <div class="user-nickname">
+            {{ review.reviewerNickname }}
+            </div>
+            <div class="user-updated-at">
+            {{ review.updatedAt.slice(0, 10) }}
           </div>
-          <div class="user-updated-at">
-          {{ review.updatedAt.slice(0, 10) }}
           </div>
         </div>
-        <!-- TODO: 유저 ID 받아야 함 -->
-        <!-- <div v-if="userInfo.userId == review.reviewerId" class='btn-gruop'> -->
-        <div class='btn-gruop'>
+        <div v-if="userInfo.userId == review.reviewerId" class='btn-gruop'>
           <div v-if="!isModify">
             <button class='orange-btn' @click="modifyReview">수정</button>
             <button class='orange-btn' @click="deleteReview">삭제</button>
@@ -30,17 +29,32 @@
         </div>
       </div>
       <div class="item-group-2">
-        <div v-if="!isModify" class="item-content">
-          {{ review.content }}
+        <div
+          v-show="!isModify"
+          class="item-content"
+          ref="itemContent"
+        >
+          <p v-show="!isTruncated && !isExpanded">{{ review.content }} </p>
+          <p v-show="isTruncated && !isExpanded">
+            {{ truncatedContent }}
+            <button class="more-content orange-btn" @click="expandContent">
+            더보기
+          </button></p>
+          <p v-show="isTruncated && isExpanded">
+            {{ review.content }}
+            <button class="more-content orange-btn" @click="shrinkContent">
+            닫기
+          </button>
+          </p>
         </div>
         </div>
-        <textarea v-if="isModify"
+        <textarea v-show="isModify"
           id="reviewContent"
-          class="form-control"
-          style="width: 635.67px; height: 96px;"
-          rows="4"
+          class="item-modify"
+          rows="3"
           v-model="updateContent">
         </textarea>
+
       </div>
     </div>
 </template>
@@ -64,7 +78,12 @@ export default {
       isModify: false,
       updateScore: this.review.score,
       updateContent: this.review.content,
-      userInfo: JSON.parse(sessionStorage.getItem('userInfo'))
+      userInfo: JSON.parse(sessionStorage.getItem('userInfo')),
+
+      // 더보기
+      isTruncated: false,
+      isExpanded: false,
+      truncatedContent: ''
     }
   },
   methods: {
@@ -102,7 +121,6 @@ export default {
       }
     },
     modifyReview () {
-      console.log('modifyComment : ' + this.review.id)
       if (!this.isModify) {
         this.isModify = true
       }
@@ -112,10 +130,8 @@ export default {
     },
     modifyScore (newScore) {
       this.updateScore = newScore
-      console.log('updateScroe : ' + this.updateScore)
     },
     async deleteReview () {
-      console.log('?@#?!@#!@$?')
       if (confirm('리얼루다가 삭제하시것슴니까 ?!?!?!?!!!?')) {
         await this.deleteReviewAction(this.review.id)
       }
@@ -123,39 +139,92 @@ export default {
       this.$emit('paging', this.page + 1)
     },
     check (index) {
-      console.log(index)
       this.review.score = index
-    }
-  }
+    },
 
+    // 더보기
+    truncateContent () {
+      if (this.getContentLength() < 116) {
+        return
+      }
+      this.isTruncated = true
+      this.truncatedContent = this.review.content.slice(0, 115) + '...'
+    },
+    expandContent () {
+      this.isExpanded = true
+    },
+    shrinkContent () {
+      this.isExpanded = false
+    },
+    getContentLength () {
+      return this.review.content.length
+    }
+  },
+  mounted () {
+    this.truncateContent()
+  }
 }
 </script>
 
 <style>
+.item-content.is-expanded {
+  height: auto !important;
+  overflow: visible !important;
+}
+.item-content {
+  padding: 10px 0px;
+  text-align: left;
+  padding: 6px 12px;
+  font-size: 1em;
+  width: 632px;
+  /* height: 73px; */
+  /* height: 80px; */
+  overflow: hidden;
+  display: flex;
+}
+.more-content {
+  border: none;
+}
+.item-user-img {
+  display: flex;
+  width: 50;
+  height: 50px;
+  border-radius: 30px;
+  margin-right: 20px;
+}
 .user-nickname {
   color: var(--ae-navy);
   font-weight: bold;
-  font-size: 1.4em;
+  font-size: 1.0em;
+  margin-top: 6px;
+  text-align: left;
 }
 .user-updated-at {
-  font-size: 0.5em;
+  font-size: 0.2em;
+  color: var(--font-gray);
+  text-align: left;
 }
 .item-gruop-1 {
   display: flex;
   align-items: center;
   margin-left: 13px;
-  /* justify-content: space-between; */
+  margin-bottom: 5px;
 }
 .item-user-info {
-  /* display: flex; */
+  display: flex;
   justify-content: flex-start;
   margin-right: 10px;
 }
-.item-content {
-  display: flex;
-  padding: 10px 0px;
-  text-align: left;
-  padding: 6px 12px;
+.item-group-2 {
+  margin-left: 5px;
+}
+.item-modify {
+  width: 637px;
+  margin-left: 15px;
+  margin-top: 3px;
+  font-size: 1em;
+  resize: none;
+  height: auto;
 }
 .item-score {
   display: flex;
@@ -164,7 +233,7 @@ export default {
 .review-item {
   background-color: white;
   padding : 20px 30px;
-  border: 0.5px solid rgb(200, 199, 199);
+  border: 0.5px solid var(--stroke-gray);
   height: 180px;
   width: 700px;
   border-radius: 45px;
@@ -172,10 +241,13 @@ export default {
 .btn-gruop {
   display: flex;
   justify-content: flex-start;
+  margin-bottom: 16px;
 }
 .orange-btn {
   color: var(--ae-red);;
   border: none;
   background: none;
+  font-weight: bold;
+  font-size: 0.9em;
 }
 </style>
