@@ -16,8 +16,8 @@
 import { mapActions, mapState } from 'vuex'
 import ModalView from '@/components/common/ModalView.vue'
 import ImgCarouselView from '@/components/common/list/ImgCarouselView.vue'
-import NotificationDetailView from '../notification/NotificationDetailView.vue'
-import NotificationModalButton from '../notification/NotificationModalButton.vue'
+import NotificationDetailView from '@/components/notification/NotificationDetailView.vue'
+import NotificationModalButton from '@/components/notification/NotificationModalButton.vue'
 const notificationStore = 'notificationStore'
 
 export default {
@@ -41,9 +41,9 @@ export default {
     console.log(this.notificationList)
   },
   methods: {
-    ...mapActions(notificationStore, ['getBookNotificationList', 'getNotificationDetail']),
+    ...mapActions(notificationStore, ['getBookNotificationList', 'getBookNotificationDetail']),
     showModal (notificationId) {
-      this.getNotificationDetail(notificationId)
+      this.getBookNotificationDetail(notificationId)
       this.isModalVisible = true
     },
     closeModal () {
