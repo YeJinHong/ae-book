@@ -1,5 +1,7 @@
 <template #modal-footer>
   <div class="modal-footer">
+    <button class="ae-btn btn-navy">수정</button>
+    <button class="ae-btn btn-red">삭제</button>
     <button class="ae-btn" @click="closeModal">닫기</button>
   </div>
 </template>
