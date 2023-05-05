@@ -4,22 +4,17 @@
   </div>
 </template>
 <script>
-import { mapActions, mapState } from 'vuex'
-const paintingStore = 'paintingStore'
+import { mapState } from 'vuex'
+const notificationStore = 'notificationStore'
 
 export default {
   name: 'NotificationModalButton',
   computed: {
-    ...mapState(paintingStore, ['painting'])
+    ...mapState(notificationStore, ['notification'])
   },
   methods: {
-    ...mapActions('paintingStore', ['downloadPainting', 'deletePainting', 'updatePaintingTitle']),
     closeModal () {
       this.$emit('close')
-    },
-    clickDelete (id) {
-      this.deletePainting(id)
-      this.closeModal()
     }
   }
 }
