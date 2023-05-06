@@ -3,7 +3,7 @@
     <h1 class="subject">알림 신청한 책 목록</h1>
     <div style="height:2px; background-color: #E0E0E0;"></div>
     <ModalView :modalShow="isModalVisible" @close-modal="closeModal">
-      <notification-detail-view/>
+      <notification-detail-view :notificationId="notificationId"/>
       <notification-modal-button :notificationId="notificationId" @close="closeModal"></notification-modal-button>
     </ModalView>
     <div class="carousel-container">
