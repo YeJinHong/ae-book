@@ -30,7 +30,7 @@ const getNotificationDetail = async (notificationId) => {
     throw new Error('알림 상세 정보를 불러오는 것에 실패하였습니다.')
   }
 }
-const deletetNotification = async (notificationId) => {
+const deleteNotification = async (notificationId) => {
   try {
     console.log('알림 삭제(취소)')
     const response = await api.delete(`/api/notifications/${notificationId}`)
@@ -41,4 +41,4 @@ const deletetNotification = async (notificationId) => {
   }
 }
 
-export { saveNotification, getNotificationList, getNotificationDetail, deletetNotification }
+export { saveNotification, getNotificationList, getNotificationDetail, deleteNotification }
