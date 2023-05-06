@@ -6,8 +6,8 @@
       <img v-if="item.coverImageUrl" v-bind:src="item.coverImageUrl" class="item-img">
     </div>
     <div class="info-container">
-      <p class="title">{{ item.title | shotText(11, '...') }}</p>
-      <p class="author" v-if="item.author">{{ item.author | shotText(17, '...') }}</p>
+      <p class="title">{{ item.title | shortText(11, '...') }}</p>
+      <p class="author" v-if="item.author">{{ item.author | shortText(17, '...') }}</p>
       <p class="price" v-if="item.price">{{ item.price | pricePoint }}원</p>
     </div>
   </div>
@@ -18,18 +18,6 @@ export default {
   name: 'ListItem',
   props: {
     item: Object
-  },
-  filters: {
-    shotText (text, length, suffix) {
-      if (text.length > length) {
-        return text.substring(0, length) + suffix
-      } else {
-        return text
-      }
-    },
-    pricePoint (value) {
-      return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-    }
   }
 }
 </script>
