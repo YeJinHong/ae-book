@@ -2,9 +2,9 @@ Copy code
 <template>
 <!-- 상단 페이지 넘김 버튼 -->
   <div>
-     <div class="my-controls">
-      <button @click="prev">Previous</button>
-      <button @click="next">Next</button>
+    <div class="my-controls">
+      <button @click="prev" class="carousel-btn">&lt;</button>
+      <button @click="next" class="carousel-btn right">></button>
     </div>
     <!-- 캐러셀 창 설정 -->
     <b-carousel
@@ -93,5 +93,29 @@ export default {
   border: 2px solid;
   border-color: darkmagenta;
   background-color: white;
+}
+
+.my-controls {
+  width: 1000px;
+  margin: auto;
+  display: flex;
+  justify-content: right;
+  margin-bottom: 20px;
+}
+
+.carousel-btn{
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+  color: var(--ae-navy);
+  border: 1px solid #E5E3DA;
+  background-color: white;
+  margin-right: 5px;
+}
+
+.right{
+  border: 1px solid var(--ae-red);
+  background-color: var(--ae-red);
+  color: white;
 }
 </style>

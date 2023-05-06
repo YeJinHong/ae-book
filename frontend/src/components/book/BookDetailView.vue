@@ -16,7 +16,7 @@
           <p><span style="font-weight:bold">ISBN</span> {{ book.isbn }}</p>
           <p>별별별별별</p>
           <!-- TODO: 비로그인시 알림 설정 버튼 안보이도록  -->
-          <button type="button" class="ae-btn btn-navy" v-if=book.notification >알림 신청중</button>
+          <button type="button" class="ae-btn btn-navy" v-if=book.notification @click="cancelNotification(book.notificationId)">알림 신청중</button>
           <!-- <button type="button" class="ae-btn" v-else v-b-modal.modal-save-notification>알림 신청</button> -->
           <button type="button" class="ae-btn" v-else @click="checkLoginAndOpenModal">알림 신청</button>
           <button type="button" class="ae-btn btn-red" @click="onClickRedirect(book.aladinUrl)">구매하러가기 ></button>
@@ -141,7 +141,7 @@ export default {
   },
   methods: {
     ...mapActions(bookStore, ['getBookDetail']),
-    ...mapActions(notificationStore, ['notificationSave']),
+    ...mapActions(notificationStore, ['notificationSave', 'notificationdelete']),
     onClickRedirect (url) {
       window.open(url, 'blank')
     },
@@ -200,6 +200,16 @@ export default {
       this.$nextTick(() => {
         this.$bvModal.hide('modal-save-notification')
       })
+    },
+    cancelNotification (notificationId) {
+      console.log('삭제')
+      console.log(notificationId)
+      if (confirm('알림을 취소하시겠습니까?')) {
+        this.notificationdelete(notificationId)
+          .then(() => {
+            this.getBookDetail(this.book.isbn)
+          })
+      }
     }
   },
   filters: {

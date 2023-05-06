@@ -162,7 +162,7 @@ export default {
 .subject-line{
   width: 1000px;
   margin: auto;
-  margin-top: 100px;
+  margin-top: 70px;
   display: flex;
   justify-content: left;
   align-items: center;
