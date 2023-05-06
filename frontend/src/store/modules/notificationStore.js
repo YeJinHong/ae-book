@@ -1,4 +1,4 @@
-import { saveNotification, getNotificationList, getNotificationDetail, deletetNotification } from '@/api/notification'
+import { saveNotification, getNotificationList, getNotificationDetail, deleteNotification } from '@/api/notification'
 
 const notificationStore = {
   namespaced: true,
@@ -64,7 +64,7 @@ const notificationStore = {
     },
     async notificationdelete ({ commit }, notificationId) {
       console.log('삭제')
-      await deletetNotification(notificationId)
+      await deleteNotification(notificationId)
         .then(({ data }) => {
           console.log(data)
           commit('RESET_NOTIFICATION_LIST')
