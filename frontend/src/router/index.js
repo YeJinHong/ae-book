@@ -106,6 +106,11 @@ export default new Router({
           path: 'story',
           name: 'StoryListView',
           component: () => import('@/components/story/StoryListView')
+        },
+        {
+          path: 'notification',
+          name: 'MyNotification',
+          component: () => import('@/components/myPage/MyNotificationBookListView')
         }
       ]
     },
