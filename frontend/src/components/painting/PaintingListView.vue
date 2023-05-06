@@ -4,13 +4,17 @@
     <button @click="onClickList('LINE')" class="ae-btn">선화</button>
     <button @click="onClickList('COLOR')" class="ae-btn">그림</button>
     <router-link to="/painting/generate"><button class="ae-btn btn-red">선화 만들러 가기</button></router-link>
+    <ModalView :modalShow="isModalVisible" @close-modal="closeModal">
+      <painting-detail-view/>
+      <painting-modal-button @close="closeModal"></painting-modal-button>
+    </ModalView>
     <div class="painting-container">
-      <list-item
-          v-for="painting in paintingList"
-          :key="painting.id"
-          :item="painting"
-        >
-      </list-item>
+      <div v-for="painting in paintingList" :key="painting.id" @click="showModal(painting.id)">
+        <list-item
+            :item="painting"
+          >
+        </list-item>
+      </div>
     </div>
     <div class="pagination-container">
       <pagination :pageSetting="paintingPageSetting" @paging="paging"></pagination>
@@ -22,24 +26,34 @@
 import { mapActions, mapState } from 'vuex'
 import ListItem from '../common/list/ListItem.vue'
 import Pagination from '../common/Pagination.vue'
+import PaintingModalButton from '../painting/PaintingModalButton.vue'
+import PaintingDetailView from '@/components/painting/PaintingDetailView.vue'
+import ModalView from '@/components/common/ModalView.vue'
 const paintingStore = 'paintingStore'
 
 export default {
   name: 'PaintingListView',
   data () {
     return {
-      request: null
+      request: null,
+      isModalVisible: false
     }
   },
   components: {
     ListItem,
-    Pagination
+    Pagination,
+    PaintingModalButton,
+    PaintingDetailView,
+    ModalView
   },
   computed: {
     ...mapState(paintingStore, ['paintingList', 'paintingPageSetting'])
   },
+  mounted () {
+    this.onClickList('COLOR')
+  },
   methods: {
-    ...mapActions(paintingStore, ['getPaintingList']),
+    ...mapActions(paintingStore, ['getPaintingList', 'getPaintingDetail']),
     onClickList (type) {
       this.request = {
         type: type
@@ -49,6 +63,13 @@ export default {
     paging (page) {
       this.request['page'] = page - 1
       this.getPaintingList(this.request)
+    },
+    showModal (paintingId) {
+      this.getPaintingDetail(paintingId)
+      this.isModalVisible = true
+    },
+    closeModal () {
+      this.isModalVisible = false
     }
   }
 }
