@@ -1,4 +1,4 @@
-import { saveNotification, getNotificationList, getNotificationDetail, updateNotification } from '@/api/notification'
+import { saveNotification, getNotificationList, getNotificationDetail, deleteNotification, updateNotification } from '@/api/notification'
 
 const notificationStore = {
   namespaced: true,
@@ -57,6 +57,18 @@ const notificationStore = {
       await getNotificationDetail(notificationId)
         .then(({ data }) => {
           commit('SET_NOTIFICATION', data.result)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    async notificationdelete ({ commit }, notificationId) {
+      console.log('삭제')
+      await deleteNotification(notificationId)
+        .then(({ data }) => {
+          console.log(data)
+          commit('RESET_NOTIFICATION_LIST')
+          this.getBookNotificationList()
         })
         .catch(error => {
           console.log(error)
