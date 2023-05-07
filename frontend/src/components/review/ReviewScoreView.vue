@@ -14,7 +14,7 @@
 <script>
 export default {
   name: 'ReviewScoreView',
-  props: ['score', 'isModify'],
+  props: ['score'],
   data () {
     return {
       starScore: this.score
