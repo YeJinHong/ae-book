@@ -31,9 +31,8 @@
       <book-carousel-view :items="bookList" :chunkSize="4"></book-carousel-view>
     </div>
     <!-- TODO : 각기 다음에 필요한 컴포넌트는 components/{domain} 하위에 작성 -->
-    <!-- TODO : 새로 들어온 책 콘텐츠 케러셀 컴포넌트-->
     <div class="subject-line"><div class="subject">최신 리뷰</div><div class="red-bar"></div></div>
-    <carousel :items="reviewMainList"></carousel>
+        <review-carousel-view :items="reviewMainList"></review-carousel-view>
     <!-- TODO : 우리 아이들 작품(만든 동화) 리스트 컴포넌트 -->
     <div class="subject-line"><div class="subject">우리 아이들 작품</div><div class="red-bar"></div></div>
     <div class="carousel-container">
@@ -44,10 +43,10 @@
 
 <script>
 import HeaderNavbarMain from '@/components/HeaderNavbarMain'
-import Carousel from '@/components/CarouselView'
 import BookCarouselView from '@/components/common/list/BookCarouselView.vue'
 import PaintingCarouselView from '@/components/common/list/PaintingCarouselView.vue'
 import { mapState, mapActions } from 'vuex'
+import ReviewCarouselView from '../components/common/list/ReviewCarouselView.vue'
 
 const reviewStore = 'reviewStore'
 const bookStore = 'bookStore'
@@ -57,7 +56,7 @@ export default {
   name: 'AppMain',
   components: {
     HeaderNavbarMain,
-    Carousel,
+    ReviewCarouselView,
     BookCarouselView,
     PaintingCarouselView
   },
@@ -81,22 +80,6 @@ export default {
 </script>
 
 <style scoped>
-.main-review-container {
-  border: 2px solid;
-  border-color: darkmagenta;
-  display: flex;  /* flexbox 적용 */
-  flex-wrap: wrap; /* 라인을 넘어가면 다음 라인으로 이동 */
-  justify-content: space-between; /* 요소 사이의 간격을 최대한 벌림 */
-}
-.main-review-item {
-  border: 2px solid;
-  border-color: rgba(0, 255, 76, 0.418);
-  width: 30%; /* 각 항목의 너비 */
-  margin-bottom: 20px; /* 각 항목의 아래쪽 여백 */
-  padding: 10px; /* 각 항목의 안쪽 여백 */
-  border: 1px solid gray; /* 경계선 */
-}
-
 .carousel-container {
   margin: auto;
   height: 500px;
