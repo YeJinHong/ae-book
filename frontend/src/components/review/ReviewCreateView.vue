@@ -1,22 +1,7 @@
 <template>
   <div>
-    <div>ReviewCreate components</div>
     <div>
     <b-form @submit="onSubmit" @reset="onReset" v-if="show">
-      <b-form-group
-        id="input-group-0"
-        label="Review title"
-        label-for="input-0"
-      >
-        <b-form-input
-          id="input-0"
-          v-model="form.title"
-          type="text"
-          placeholder="Enter title"
-          required
-        ></b-form-input>
-      </b-form-group>
-
       <b-form-group
         id="input-group-1"
         label="Review Keyword"
@@ -31,22 +16,6 @@
         ></b-form-input>
         <button @click="createAIReview">자동 작성</button>
       </b-form-group>
-
-      <b-form-group
-        id="input-group-2"
-        label="Book ISBN"
-        label-for="input-2"
-      >
-        <b-form-input
-          id="input-2"
-          v-model="form.isbn"
-          type="text"
-          maxlength=13
-          placeholder="Enter ISBN"
-          required
-        ></b-form-input>
-      </b-form-group>
-
       <b-form-group id="input-group-3" label="Content" label-for="input-2">
         <b-form-textarea
           id="input-3"
@@ -56,20 +25,7 @@
           required
         ></b-form-textarea>
       </b-form-group>
-      <!-- 별점 테스트 -->
-      <div class="inner">
-        <div class="star-rating">
-          <div
-            class="star"
-            v-for="index in 5"
-            :key="index"
-            @click="check(index)"
-          >
-            <span v-if="index <= form.score">🧡</span>
-            <span v-if="index > form.score">🤍</span>
-          </div>
-        </div>
-      </div>
+      <review-modify-score-view v-if="isModify" :score=this.form.score :isModify=this.isModify @modify-score="modifyScore" />
       <b-button type="submit" variant="primary">Submit</b-button>
       <b-button type="reset" variant="danger">Reset</b-button>
     </b-form>
@@ -83,24 +39,29 @@
 <script>
 import axios from 'axios'
 import { mapActions } from 'vuex'
+import ReviewModifyScoreView from './ReviewModifyScoreView.vue'
 
 const reviewStore = 'reviewStore'
 
 export default {
+  components: { ReviewModifyScoreView },
   name: 'ReviewCreateView',
-  props: ['isbn'],
+  props: {
+    bookInfo: Object
+  },
   data () {
     return {
       form: {
-        title: '',
+        title: this.bookInfo.title,
         keyword: '',
-        writer: null,
+        writer: this.bookInfo.writer,
         char: null,
-        isbn: this.isbn,
+        isbn: this.bookInfo.isbn,
         content: '',
         score: 5
       },
-      show: true
+      show: true,
+      isModify: true
     }
   },
   methods: {
@@ -165,7 +126,7 @@ export default {
         this.show = true
       })
     },
-    check (index) {
+    modifyScore (index) {
       console.log(index)
       this.form.score = index
     }
