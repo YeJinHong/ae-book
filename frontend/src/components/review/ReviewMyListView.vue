@@ -62,7 +62,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .list-group-item {
   background: none;
   border: none;
