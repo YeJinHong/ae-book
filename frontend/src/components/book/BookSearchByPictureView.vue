@@ -1,8 +1,11 @@
 <template>
-  <div>사진(ISBN)으로 책 검색
+  <div>
+    <h1>ISBN 사진으로 검색</h1>
     <div class="image-container">
       <input type="file" @change="onFileChange" />
-      <img :src="imageUrl" v-if="imageUrl" />
+      <div class="photo">
+        <img :src="imageUrl" v-if="imageUrl" />
+      </div>
     </div>
   </div>
 </template>
@@ -57,4 +60,15 @@ export default {
 </script>
 
 <style scoped>
+h1 {
+  font-weight: 800;
+  margin: 10px 0px;
+}
+.photo {
+  height: 500px;
+  width: 40%;
+  margin: auto;
+  border-radius: 10px;
+  border: 1px solid var(--ae-navy);
+}
 </style>
