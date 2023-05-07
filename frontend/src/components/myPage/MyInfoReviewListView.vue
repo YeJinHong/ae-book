@@ -1,20 +1,7 @@
 <template>
   <div>
-    마이페이지 리뷰 리스트
-    <!-- TODO: 정렬 -->
-    <div
-      class="list-group-item"
-      v-for="review in reviewMyList"
-      :key="review.id"
-      >
-      <div>
-        {{ review.reviewerNickname }} |
-        {{ review.content }} |
-        {{ review.score }}
-      </div>
-    </div>
-    <div class="pagination-container">
-      <pagination :pageSetting="reviewMyPageSetting" @paging="paging"></pagination>
+    <div>
+      <review-my-list-view></review-my-list-view>
     </div>
   </div>
 </template>
@@ -22,13 +9,15 @@
 <script>
 import { mapActions, mapState } from 'vuex'
 import Pagination from '../common/Pagination.vue'
+import ReviewMyListView from '../review/ReviewMyListView.vue'
 
 const reviewStore = 'reviewStore'
 
 export default {
   name: 'MyInfoReviewListView',
   components: {
-    Pagination
+    Pagination,
+    ReviewMyListView
   },
   data () {
     return {
