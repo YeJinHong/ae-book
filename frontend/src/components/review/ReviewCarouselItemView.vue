@@ -4,7 +4,6 @@ d<template>
       {{ item.reviewerNickname }}
     </div>
     <div class='item-content'>
-      <!-- {{ item.content }} -->
       {{ item.content | shortText(59, '...') }}
     </div>
     <div class='item-score'>
@@ -25,9 +24,6 @@ export default {
 
 <style scoped>
 .item-container {
-  /* border-width: 2px;
-  border-style: dashed;
-  border-color: var(--ae-red); */
   border-radius: 30px;
   background-color: white;
   margin: 0px 15px;
