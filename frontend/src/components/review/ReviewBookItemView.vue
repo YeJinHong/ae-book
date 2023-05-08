@@ -52,7 +52,9 @@
           id="reviewContent"
           class="item-modify"
           rows="4"
-          v-model="updateContent">
+          v-model="updateContent"
+          ref="reviewContent"
+          >
         </textarea>
 
       </div>
@@ -88,11 +90,18 @@ export default {
   methods: {
     ...mapActions(reviewStore, ['modifyReviewAction', 'deleteReviewAction']),
     async checkValue () {
+      console.log('update : ' + this.updateContent)
       let err = true
       let msg = ''
 
       if (!this.updateContent) {
-        msg = '내용을 입력해주세요'
+        msg = '내용을 입력해주세요.'
+        err = false
+        this.$refs.reviewContent.focus()
+      }
+
+      if (this.updateContent.length > 300) {
+        msg = '리뷰 내용을 줄여주세요.'
         err = false
         this.$refs.reviewContent.focus()
       }
