@@ -14,6 +14,8 @@
         @touchstart="startPainting"
         @touchend="cancelPainting"
         @touchcancel ="cancelPainting"
+        width="700"
+        height="500"
       ></canvas>
     </div>
     <!-- 왼쪽 -->
@@ -78,13 +80,13 @@ export default {
   mounted () {
     this.canvas = this.$refs.canvas
     this.ctx = this.canvas.getContext('2d')
-    this.canvas.width = 700
-    this.canvas.height = 500
     this.ctx.lineWidth = 10
+    this.ctx.lineJoin = 'round'
+    this.ctx.lineCap = 'round'
     // base64 문자열 이미지 로드
     const image = new Image()
     image.src = this.sketch
-    this.ctx.drawImage(image, 0, 0, this.canvas.width, this.canvas.height)
+    this.ctx.drawImage(image, 0, 0, 700, 500)
   },
   methods: {
     ...mapActions(paintingStore, ['savePainting']),
@@ -213,8 +215,6 @@ export default {
 #canvas {
     border-radius: 15px;
     box-shadow: 0px 1px 10px 0.1px rgba(0, 0, 0, 0.3);
-    width: 700px;
-    height:  500px;
     float: left;
 }
 
