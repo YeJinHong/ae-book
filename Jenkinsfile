@@ -24,6 +24,14 @@ pipeline
 		// 		echo 'Environment Settings End'
 		// 	}
 		// }
+		//===================================== K8S =====================================
+		stage('setting for minikube') {
+			steps {
+				echo 'Setting start'
+				sh 'eval $(minikube -p minikube docker-env)'
+				echo 'Setting success'
+			}
+		}
 		//===================================== Front app =====================================
 		stage('build-front') {
 			when {
@@ -35,6 +43,7 @@ pipeline
 				echo 'Build End Front App'
 			}
 		}
+		
 		// stage('deploy-front') {
 		// 	when {
 		// 		changeset "frontend/**/*"
