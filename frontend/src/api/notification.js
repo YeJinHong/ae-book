@@ -10,10 +10,10 @@ const saveNotification = async (data) => {
     throw new Error('알림 신청에 실패하였습니다.')
   }
 }
-const getNotificationList = async () => {
+const getNotificationList = async (request) => {
   try {
     // console.log('알림 신청한 책 목록')
-    const response = await api.get(`/api/notifications`)
+    const response = await api.get(`/api/notifications?page=${request.page}&size=${request.size}`)
     return response
   } catch (error) {
     console.log(error)
