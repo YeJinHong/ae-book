@@ -2,7 +2,9 @@
   <div>
     <label class="title">제목 : </label>
     <input type="text" v-model="title">
-    <button @click="playAudio" class="ae-btn btn-red">오디오재생</button>
+    <button v-if="generate===false" @click="createAudio" class="ae-btn btn-red">오디오재생</button>
+    <button v-else-if="stop===false" @click="playAudio(stop)" class="ae-btn btn-red">오디오멈춤</button>
+    <button v-else @click="playAudio(stop)" class="ae-btn btn-red">오디오재생</button>
     <button @click="onSaveClick" class="ae-btn btn-red">동화 저장</button>
     <div class="container">
       <div class="container-left">
@@ -30,7 +32,10 @@ export default {
     return {
       painting: '',
       story: null,
-      sound: ''
+      sound: '',
+      stop: false,
+      audio: null,
+      generate: false
     }
   },
   created () {
@@ -49,7 +54,7 @@ export default {
   },
   methods: {
     ...mapActions(storyStore, ['saveStory']),
-    playAudio () {
+    createAudio () {
       let sound = 'http://localhost:8000/static/sound/' + this.sound
       // const binaryString = this.sound.slice(2)
       // const buffer = new ArrayBuffer(binaryString.length)
@@ -60,7 +65,18 @@ export default {
       // const blob = new Blob([buffer], { type: 'audio/wav' })
       // const audio = new Audio(URL.createObjectURL(blob))
       const audio = new Audio(sound)
+      this.audio = audio
+      this.generate = true
       audio.play()
+    },
+    playAudio (stop) {
+      if (stop === false) {
+        this.audio.pause()
+        this.stop = true
+      } else {
+        this.audio.play()
+        this.stop = false
+      } 
     },
     canvasToFile (canvas) {
       // canvas -> dataURL
