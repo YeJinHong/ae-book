@@ -43,9 +43,11 @@
     </div>
     <div class="tools">
       <input id="line-width" @change="onLineWidthChange" type="range" min="5" max="20" value="10">
-      <button id="reset-btn" @click="onResetClick">초기화</button>
-      <button id="eraser-btn" @click="onEraserClick">지우개</button>
-      <button id="brush-btn" @click="onBrushClick">브러쉬</button>
+      <div>
+        <img src="@/assets/images/icons/reset.png" width="35px" id="reset-btn" @click="onResetClick">
+        <img src="@/assets/images/icons/eraser.png" width="35px" id="eraser-btn" @click="onEraserClick">
+        <img src="@/assets/images/icons/brush.png" width="35px" id="brush-btn" @click="onBrushClick">
+      </div>
     </div>
     <div>
       <button @click="goBack" class="ae-btn btn-navy">종료</button>
