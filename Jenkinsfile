@@ -38,7 +38,8 @@ pipeline
 				success {
 					echo 'Front-vue-img docker push Start'
 					sh '''
-						docker push teepij/front-vue-img:latest
+						docker tag front-vue-img:latest teepij/front-vue-img:latest
+						docker push teepij/front-vue-img
 					'''
 					echo 'Front-vue-img docker push Success';
 				}
@@ -80,7 +81,8 @@ pipeline
 				success {
 					echo 'Back-spring-img docker push Start'
 					sh '''
-						docker push teepij/back-spring-img:latest
+						docker tag back-spring-img:latest teepij/back-spring-img:latest
+						docker push teepij/back-spring-img
 					'''
 					echo 'Back-spring-img docker push Success';
 				}
@@ -122,7 +124,8 @@ pipeline
 				success {
 					echo 'Back-batch-img docker push Start'
 					sh '''
-						docker push teepij/back-batch-img:latest
+						docker tag back-batch-img:latest teepij/back-batch-img:latest
+						docker push teepij/back-batch-img
 					'''
 					echo 'Back-batch-img docker push Success';
 				}
@@ -163,7 +166,8 @@ pipeline
 				success {
 					echo 'Back-fast-img docker push Start'
 					sh '''
-						docker push teepij/back-fast-img:latest
+						docker tag back-fast-img:latest teepij/back-fast-img:latest
+						docker push teepij/back-fast-img
 					'''
 					echo 'Back-fast-img docker push Success';
 				}
