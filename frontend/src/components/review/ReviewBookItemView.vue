@@ -13,7 +13,7 @@
           </div>
           </div>
         </div>
-        <div v-if="userInfo.userId == review.reviewerId" class='btn-group'>
+        <div v-if="userId == review.reviewerId" class='btn-group'>
           <div v-if="!isModify">
             <button class='orange-btn' @click="modifyReview">수정</button>
             <button class='orange-btn' @click="deleteReview">삭제</button>
@@ -78,7 +78,7 @@ export default {
       isModify: false,
       updateScore: this.review.score,
       updateContent: this.review.content,
-      userInfo: JSON.parse(sessionStorage.getItem('userInfo')),
+      userId: 0,
 
       // 더보기
       isTruncated: false,
@@ -163,6 +163,10 @@ export default {
   },
   mounted () {
     this.truncateContent()
+
+    if (sessionStorage.getItem('userInfo')) {
+      this.userId = JSON.parse(sessionStorage.getItem('userInfo')).userId
+    }
   }
 }
 </script>
