@@ -76,6 +76,7 @@ export default {
 }
 
 .nickname{
+  margin-top: 2px;
   font-size: 20px;
 }
 </style>
