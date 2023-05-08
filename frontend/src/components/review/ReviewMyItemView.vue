@@ -1,26 +1,15 @@
 <template>
-  <div class="review-item" :style="{ height: isExpanded ? 'auto' : '210px' }">
-    <div>
+  <div class="review-item" :style="{ height: isExpanded ? 'auto' : '150px' }">
+    <div class="review-group">
       <div class="item-group-1">
-        <div class="item-user-info">
-          <img class="item-user-img" :src=review.reviewerImg />
+        <div class="item-info">
           <div>
-            <div class="user-nickname">
-            {{ review.reviewerNickname }}
+            <div class="book-title">
+            {{ review.title.slice(5, review.title.length)}}
+              <div class="item-updated-at">
+              {{ review.updatedAt.slice(0, 10) }}
+              </div>
             </div>
-            <div class="user-updated-at">
-            {{ review.updatedAt.slice(0, 10) }}
-          </div>
-          </div>
-        </div>
-        <div v-if="userInfo.userId == review.reviewerId" class='btn-group'>
-          <div v-if="!isModify">
-            <button class='orange-btn' @click="modifyReview">수정</button>
-            <button class='orange-btn' @click="deleteReview">삭제</button>
-          </div>
-          <div v-if="isModify">
-            <button class='orange-btn' @click="checkValue">완료</button>
-            <button class='orange-btn' @click="cancelModify">취소</button>
           </div>
         </div>
         <div class="item-score">
@@ -36,7 +25,7 @@
         >
           <p v-show="!isTruncated && !isExpanded">{{ review.content }} </p>
           <p v-show="isTruncated && !isExpanded">
-            {{ review.content | shortText(155, '...') }} &nbsp;
+            {{ review.content | shortText(94, '...') }} &nbsp;
             <button class="more-content orange-btn" @click="expandContent">
             더보기
           </button></p>
@@ -51,12 +40,21 @@
         <textarea v-show="isModify"
           id="reviewContent"
           class="item-modify"
-          rows="4"
+          rows="3"
           v-model="updateContent">
         </textarea>
-
       </div>
-    </div>
+      <div class='btn-group'>
+        <div v-if="!isModify">
+          <button class='ae-btn' @click="modifyReview">수정</button>
+          <button class='ae-btn btn-navy' @click="deleteReview">삭제</button>
+        </div>
+        <div v-if="isModify">
+          <button class='ae-btn' @click="checkValue">완료</button>
+          <button class='ae-btn btn-navy' @click="cancelModify">취소</button>
+        </div>
+      </div>
+  </div>
 </template>
 
 <script>
@@ -67,7 +65,7 @@ import ReviewModifyScoreView from './ReviewModifyScoreView.vue'
 const reviewStore = 'reviewStore'
 
 export default {
-  name: 'ReviewBookItemView',
+  name: 'ReviewMyItemView',
   components: {
     ReviewScoreView,
     ReviewModifyScoreView
@@ -144,7 +142,7 @@ export default {
 
     // 더보기
     truncateContent () {
-      if (this.getContentLength() < 161) {
+      if (this.getContentLength() < 100) {
         this.isTruncated = false
         this.isExpanded = false
         return
@@ -164,10 +162,11 @@ export default {
   mounted () {
     this.truncateContent()
   }
+
 }
 </script>
 
-<style>
+<style scoped>
 .item-content.is-expanded {
   height: auto !important;
   overflow: visible !important;
@@ -177,33 +176,28 @@ export default {
   text-align: left;
   padding: 6px 12px;
   font-size: 1em;
-  width: 632px;
-  /* height: 73px; */
-  /* height: 80px; */
+  width: 97.5%;
   overflow: hidden;
   display: flex;
 }
 .more-content {
   border: none;
 }
-.item-user-img {
-  display: flex;
-  width: 50;
-  height: 50px;
-  border-radius: 30px;
-  margin-right: 20px;
-}
-.user-nickname {
+.book-title {
   color: var(--ae-navy);
-  font-weight: bold;
-  font-size: 1.0em;
-  margin-top: 6px;
+  font-weight: 900;
+  font-size: 1.2em;
+  margin-top: 4px;
+  margin-bottom: 2px;
   text-align: left;
+  display: flex;
 }
-.user-updated-at {
-  font-size: 0.2em;
+.item-updated-at {
+  font-size: 11px;
   color: var(--font-gray);
-  text-align: left;
+  text-align: center;
+  margin-top: 8px;
+  margin-left: 10px;
 }
 .item-group-1 {
   display: flex;
@@ -211,7 +205,7 @@ export default {
   margin-left: 13px;
   margin-bottom: 5px;
 }
-.item-user-info {
+.item-info {
   display: flex;
   justify-content: flex-start;
   margin-right: 10px;
@@ -220,8 +214,8 @@ export default {
   margin-left: 5px;
 }
 .item-modify {
-  width: 637px;
-  margin-left: 15px;
+  width: 506px;
+  margin-left: 2px;
   margin-top: 3px;
   font-size: 1em;
   resize: none;
@@ -233,17 +227,34 @@ export default {
 }
 .review-item {
   background-color: white;
-  padding : 20px 30px;
+  padding : 13px 20px 0px 20px;
   border: 0.5px solid var(--stroke-gray);
   height: 180px;
   width: 700px;
-  border-radius: 45px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+}
+.review-group {
+  width: 85%;
+  margin-right: 10px;
 }
 .btn-group {
-  display: flex;
-  justify-content: flex-start;
-  margin-bottom: 16px;
+  margin-top: 35px;
+  width: 15%;
 }
+
+.ae-btn {
+  border-width: 1.5px;
+  border-style: solid;
+  border-color: var(--ae-navy);
+  border-radius: 10px;
+  padding: 0.3rem 1.8rem;
+  font-size: 0.95rem;
+  font-weight: bold;
+  margin: 3px 0px;
+}
+
 .orange-btn {
   color: var(--ae-red);;
   border: none;

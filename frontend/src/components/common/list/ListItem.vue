@@ -6,9 +6,9 @@
       <img v-if="item.coverImageUrl" v-bind:src="item.coverImageUrl" class="item-img">
     </div>
     <div class="info-container">
-      <p class="title">{{ item.title }}</p>
-      <p class="author" v-if="item.author">{{ item.author }}</p>
-      <p class="price" v-if="item.price">{{ item.price }}원</p>
+      <p class="title">{{ item.title | shortText(11, '...') }}</p>
+      <p class="author" v-if="item.author">{{ item.author | shortText(17, '...') }}</p>
+      <p class="price" v-if="item.price">{{ item.price | pricePoint }}원</p>
     </div>
   </div>
 </template>
