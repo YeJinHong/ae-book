@@ -5,6 +5,12 @@
 const path = require('path')
 require('dotenv').config()
 
+const springServiceHost = process.env.BACK_SPRING_SERVICE_HOST || 'localhost';
+const springServicePort = process.env.BACK_SPRING_SERVICE_PORT || '8082';
+
+const fastServiceHost = process.env.BACK_FAST_SERVICE_HOST || 'localhost';
+const fastServicePort = process.env.BACK_FAST_SERVICE_PORT || '8000';
+
 module.exports = {
   dev: {
 
@@ -15,7 +21,7 @@ module.exports = {
       // /api로 시작하는 요청을 프록시합니다.
       '/api': {
         // 프록시 대상 주소입니다.
-        target: 'http://localhost:8082/api',
+        target: `http://${springServiceHost}:${springServicePort}/api`,
         changeOrigin: true,
         // 프록시할 요청 경로를 변경합니다.
         pathRewrite: {
@@ -24,7 +30,7 @@ module.exports = {
       },
 
       '/fast' : {
-        target:'http://localhost:8000',
+        target: `http://${fastServiceHost}:${fastServicePort}/api`,
         changeOrigin:true,
         pathRewrite:{
           '^/fast':''
@@ -93,5 +99,9 @@ module.exports = {
     // `npm run build --report`
     // Set to `true` or `false` to always turn it on or off
     bundleAnalyzerReport: process.env.npm_config_report
+  },
+
+  devServer: {
+     disableHostCheck: true
   }
 }
