@@ -1,7 +1,6 @@
 <template>
   <div>
     <header-navbar></header-navbar>
-    <div>This is Story page</div>
     <router-view></router-view>
   </div>
 </template>
