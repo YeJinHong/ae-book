@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapMutations } from 'vuex'
 const paintingStore = 'paintingStore'
 
 export default {
@@ -30,7 +30,11 @@ export default {
   computed: {
     ...mapState(paintingStore, ['paintingList', 'sketch'])
   },
+  mounted () {
+    this.RESET_SKETCH()
+  },
   methods: {
+    ...mapMutations(paintingStore, ['RESET_SKETCH']),
     ...mapActions(paintingStore, ['getPaintingList', 'convertSketch', 'savePainting']),
     onFileChange (e) {
       const file = e.target.files[0]

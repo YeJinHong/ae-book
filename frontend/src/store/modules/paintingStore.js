@@ -27,6 +27,9 @@ const paintingStore = {
     RESET_PAINTING_LIST (state) {
       state.paintingList = []
     },
+    RESET_SKETCH (state) {
+      state.sketch = ''
+    },
     SET_SKETCH: (state, data) => {
       if (data.type === 'painting') {
         state.sketch = data.url.fileUrl + '?timestamp=' + (new Date().getTime())
