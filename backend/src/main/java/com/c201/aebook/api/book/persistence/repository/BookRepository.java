@@ -19,4 +19,8 @@ public interface BookRepository extends JpaRepository<BookEntity, Long> {
 
 	@Query("select b.title from BookEntity b where b.id = :bookId")
 	public String findTitleById(Long bookId);
+
+	/* 알림톡 테스트에 사용 */
+	@Query("select b.price from BookEntity b where b.id = :bookId")
+	public int findPriceById(Long bookId);
 }
