@@ -14,6 +14,8 @@
         @touchstart="startPainting"
         @touchend="cancelPainting"
         @touchcancel ="cancelPainting"
+        width="700"
+        height="500"
       ></canvas>
     </div>
     <!-- 왼쪽 -->
@@ -41,9 +43,11 @@
     </div>
     <div class="tools">
       <input id="line-width" @change="onLineWidthChange" type="range" min="5" max="20" value="10">
-      <button id="reset-btn" @click="onResetClick">초기화</button>
-      <button id="eraser-btn" @click="onEraserClick">지우개</button>
-      <button id="brush-btn" @click="onBrushClick">브러쉬</button>
+      <div>
+        <img src="@/assets/images/icons/reset.png" width="35px" id="reset-btn" @click="onResetClick">
+        <img src="@/assets/images/icons/eraser.png" width="35px" id="eraser-btn" @click="onEraserClick">
+        <img src="@/assets/images/icons/brush.png" width="35px" id="brush-btn" @click="onBrushClick">
+      </div>
     </div>
     <div>
       <button @click="goBack" class="ae-btn btn-navy">종료</button>
@@ -78,13 +82,13 @@ export default {
   mounted () {
     this.canvas = this.$refs.canvas
     this.ctx = this.canvas.getContext('2d')
-    this.canvas.width = 700
-    this.canvas.height = 500
     this.ctx.lineWidth = 10
+    this.ctx.lineJoin = 'round'
+    this.ctx.lineCap = 'round'
     // base64 문자열 이미지 로드
     const image = new Image()
     image.src = this.sketch
-    this.ctx.drawImage(image, 0, 0, this.canvas.width, this.canvas.height)
+    this.ctx.drawImage(image, 0, 0, 700, 500)
   },
   methods: {
     ...mapActions(paintingStore, ['savePainting']),
@@ -166,6 +170,12 @@ export default {
         alert('제목을 입력해주세요.')
         return
       }
+
+      if (sessionStorage.getItem('isLoginUser') !== true) {
+        alert('로그인을 해야 저장이 가능합니다.')
+        return
+      }
+
       const paintingFile = this.canvasToFile(this.canvas)
 
       let data = {
@@ -181,9 +191,9 @@ export default {
         .then(
           alert('그림 저장에 성공했습니다.')
         )
-        .catch(error => {
-          alert('그림 저장에 실패했습니다.' + error)
-        })
+        .catch(
+          alert('그림 저장에 실패했습니다.')
+        )
     },
     goBack () {
       window.history.back()
@@ -213,8 +223,6 @@ export default {
 #canvas {
     border-radius: 15px;
     box-shadow: 0px 1px 10px 0.1px rgba(0, 0, 0, 0.3);
-    width: 700px;
-    height:  500px;
     float: left;
 }
 
