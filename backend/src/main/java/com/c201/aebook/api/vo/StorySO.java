@@ -13,5 +13,6 @@ public class StorySO {
 	private String title;
 	private String content;
 	private String imgUrl;
+	private String voiceUrl;
 	private Long userId;
 }
