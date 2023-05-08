@@ -1,31 +1,20 @@
 <template>
-    <div>
-        <b-navbar toggleable="lg" type="dark" variant="light" class="nav">
-            <b-navbar-brand href="#">
-                <router-link to="/">
-                  <img src="../assets/images/aebook_logo.png" width="250" height="170">
-                </router-link>
-            </b-navbar-brand>
-
-            <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-
-            <b-collapse id="nav-collapse" is-nav>
-                <!-- 로그인 후, 보여주는 정보는 추후 다시 결정, 마이페이지는 임시 배치 -->
-                <b-navbar-nav class="ml-auto" v-if=isLoginUser>
-                    <b-nav-form>
-                        {{ user.userId }} | {{ user.nickname }}
-                        <b-button size="sm" @click="logout" class="btn-white"><img src="https://img.icons8.com/material-rounded/24/null/person-male.png"/>로그아웃</b-button>
-                        <router-link :to="{ name: 'MyInfo' }" class="link"><b-button size="sm" class="btn-white">마이페이지</b-button></router-link>
-                    </b-nav-form>
-                </b-navbar-nav>
-                <!-- 로그인 전 -->
-                <b-navbar-nav class="ml-auto" v-else>
-                    <b-nav-form>
-                        <router-link :to="{ name: 'Login' }" class="link"><b-button size="sm" class="btn-white"><img src="https://img.icons8.com/material-rounded/24/null/person-male.png"/>로그인</b-button></router-link>
-                    </b-nav-form>
-                </b-navbar-nav>
-            </b-collapse>
-        </b-navbar>
+    <div class="navbar">
+      <div class="logo-box">
+        <router-link to="/">
+          <img src="../assets/images/main_logo.png" width="250" height="170">
+        </router-link>
+      </div>
+        <!-- 로그인 후, 보여주는 정보는 추후 다시 결정, 마이페이지는 임시 배치 -->
+        <div class="after-login" style="margin-left: auto;" v-if=isLoginUser >
+          {{ user.userId }} | {{ user.nickname }}
+          <b-button size="sm" @click="logout" class="btn-white"><img src="https://img.icons8.com/material-rounded/24/null/person-male.png"/>로그아웃</b-button>
+          <router-link :to="{ name: 'MyInfo' }" class="link"><b-button size="sm" class="btn-white">마이페이지</b-button></router-link>
+        </div>
+        <!-- 로그인 전 -->
+        <div class="before-login" style="margin-left: auto;" v-else>
+          <router-link :to="{ name: 'Login' }" class="link"><b-button size="sm" class="btn-white"><img src="https://img.icons8.com/material-rounded/24/null/person-male.png"/>로그인</b-button></router-link>
+        </div>
     </div>
 </template>
 
@@ -70,5 +59,17 @@ export default {
   height: 150px;
   background-image: url("../assets/images/main_header.png");
   background-size: 1700px 150px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.logo-box {
+  position: absolute;
+  margin: auto;
+}
+
+.after-login .before-login {
+  position: absolute;
 }
 </style>

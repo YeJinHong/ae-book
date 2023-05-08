@@ -6,8 +6,16 @@
     <painting-detail-view/>
     <painting-modal-button @close="closeModal"></painting-modal-button>
     </ModalView>
-    <div class="carousel-container">
-      <img-carousel-view :items="paintingList" :chunkSize="3" @moveTo="showModal"></img-carousel-view>
+    <div class="painting-container">
+      <div v-for="painting in paintingList" :key="painting.id" @click="showModal(painting.id)">
+        <list-item
+            :item="painting"
+          >
+        </list-item>
+      </div>
+    </div>
+    <div class="pagination-container">
+      <pagination :pageSetting="paintingPageSetting" @paging="paging"></pagination>
     </div>
 </div>
 
@@ -17,7 +25,8 @@
 import { mapActions, mapState } from 'vuex'
 import PaintingDetailView from '@/components/painting/PaintingDetailView.vue'
 import ModalView from '@/components/common/ModalView.vue'
-import ImgCarouselView from '@/components/common/list/ImgCarouselView.vue'
+import ListItem from '../common/list/ListItem.vue'
+import Pagination from '../common/Pagination.vue'
 import PaintingModalButton from '../painting/PaintingModalButton.vue'
 const paintingStore = 'paintingStore'
 
@@ -26,19 +35,25 @@ export default {
   components: {
     ModalView,
     PaintingDetailView,
-    ImgCarouselView,
-    PaintingModalButton
+    ListItem,
+    PaintingModalButton,
+    Pagination
   },
   data () {
     return {
-      isModalVisible: false
+      isModalVisible: false,
+      request: null
     }
   },
   computed: {
-    ...mapState(paintingStore, ['paintingList'])
+    ...mapState(paintingStore, ['paintingList', 'paintingPageSetting'])
   },
   mounted () {
-    this.getPaintingList('COLOR')
+    this.request = {
+      type: 'COLOR',
+      size: 3
+    }
+    this.getPaintingList(this.request)
   },
   methods: {
     ...mapActions(paintingStore, ['getPaintingList', 'getPaintingDetail']),
@@ -48,7 +63,10 @@ export default {
     },
     closeModal () {
       this.isModalVisible = false
-      // this.clearStoryId()
+    },
+    paging (page) {
+      this.request['page'] = page - 1
+      this.getPaintingList(this.request)
     }
   }
 }
@@ -59,5 +77,19 @@ export default {
   text-align: left;
   font-size: 24px;
   font-weight: 800;
+}
+
+.painting-container{
+  margin: auto;
+  margin-top: 30px;
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.pagination-container {
+  display:flex;
+  justify-content: center;
 }
 </style>
