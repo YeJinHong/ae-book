@@ -1,5 +1,5 @@
 <template>
-  <div class="review-item" :style="{ height: isExpanded ? 'auto' : '170px' }">
+  <div class="review-item" :style="{ height: isExpanded ? 'auto' : '210px' }">
     <div>
       <div class="item-group-1">
         <div class="item-user-info">
@@ -36,7 +36,7 @@
         >
           <p v-show="!isTruncated && !isExpanded">{{ review.content }} </p>
           <p v-show="isTruncated && !isExpanded">
-            {{ truncatedContent }}
+            {{ review.content | shortText(155, '...') }} &nbsp;
             <button class="more-content orange-btn" @click="expandContent">
             더보기
           </button></p>
@@ -51,7 +51,7 @@
         <textarea v-show="isModify"
           id="reviewContent"
           class="item-modify"
-          rows="3"
+          rows="4"
           v-model="updateContent">
         </textarea>
 
@@ -82,8 +82,7 @@ export default {
 
       // 더보기
       isTruncated: false,
-      isExpanded: false,
-      truncatedContent: ''
+      isExpanded: false
     }
   },
   methods: {
@@ -116,6 +115,7 @@ export default {
 
         // 2. 수정 반영해서 리스트 가져오기 : emit 완료보다 상태변경이 빨라서 딜레이 설정
         setTimeout(() => {
+          this.truncateContent()
           this.isModify = false
         }, 400)
       }
@@ -144,11 +144,12 @@ export default {
 
     // 더보기
     truncateContent () {
-      if (this.getContentLength() < 116) {
+      if (this.getContentLength() < 161) {
+        this.isTruncated = false
+        this.isExpanded = false
         return
       }
       this.isTruncated = true
-      this.truncatedContent = this.review.content.slice(0, 115) + '...'
     },
     expandContent () {
       this.isExpanded = true
