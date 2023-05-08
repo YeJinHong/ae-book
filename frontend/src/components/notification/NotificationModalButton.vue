@@ -1,6 +1,5 @@
 <template #modal-footer>
   <div class="modal-footer">
-    <button class="ae-btn btn-navy" @click="modifiyNotification">수정</button>
     <button class="ae-btn btn-red" @click="cancelNotification(notificationId)">삭제</button>
     <button class="ae-btn" @click="closeModal">닫기</button>
   </div>
@@ -11,7 +10,7 @@ const notificationStore = 'notificationStore'
 
 export default {
   name: 'NotificationModalButton',
-  props: ['notificationId'],
+  props: ['notificationId', 'request'],
   created () {
 
   },
@@ -19,7 +18,7 @@ export default {
     ...mapState(notificationStore, ['notification', 'notificationList'])
   },
   mounted () {
-    this.getBookNotificationList()
+    this.getBookNotificationList(this.request)
   },
   methods: {
     ...mapActions(notificationStore, ['getBookNotificationDetail', 'notificationdelete', 'getBookNotificationList']),

@@ -1,21 +1,33 @@
 <template>
   <div>
     <h2>나의 동화 목록</h2>
+    <!-- <div horizontal v-for="story in storyList" :key="story.storyId">
+      <h3 @click="showModal(story.storyId)">{{ story.title }}</h3>
+      <img v-bind:src="story.imgUrl" alt="story image" />
+    </div> -->
     <ModalView :modalShow="isModalVisible" @close-modal="closeModal">
       <StoryDetailView />
     </ModalView>
-    <div class="carousel-container">
-      <StoryCarouselView :items="storyList" :chunkSize="3" @moveTo="showModal"></StoryCarouselView>
+    <div class="story-container">
+      <div v-for="story in storyList" :key="story.storyId" @click="showModal(story.storyId)">
+        <list-item
+        :item="story"
+      >
+    </list-item>
+      </div>
+    </div>
+    <div class="pagination-container">
+      <pagination :pageSetting="storyPageSetting" @paging="paging"></pagination>
     </div>
   </div>
 </template>
 
 <script>
-import { searchStory } from '@/api/story'
 import ModalView from '@/components/common/ModalView'
 import StoryDetailView from '@/components/story/StoryDetailView'
-import { mapMutations, mapGetters } from 'vuex'
-import StoryCarouselView from '@/components/story/StoryCarouselView'
+import { mapMutations, mapGetters, mapState, mapActions } from 'vuex'
+import ListItem from '../common/list/ListItem.vue'
+import Pagination from '../common/Pagination.vue'
 
 const storyStore = 'storyStore'
 
@@ -24,33 +36,27 @@ export default {
   components: {
     ModalView,
     StoryDetailView,
-    StoryCarouselView
+    ListItem,
+    Pagination
   },
   data () {
     return {
-      page: {
-        page: 0,
-        size: 8,
-        sort: 'id'
+      request: {
+        page: 0
       },
-      storyList: [],
       isModalVisible: false
     }
   },
 
   mounted () {
-    searchStory(this.page)
-      .then(response => {
-        this.storyList = response.data.result.content
-      })
-      .catch(error => {
-        alert('정상적으로 조회하지 못했습니다. ' + error)
-      })
+    this.getStoryList(this.request)
   },
   computed: {
+    ...mapState(storyStore, ['storyList', 'storyPageSetting']),
     ...mapGetters(storyStore, ['getStoryId'])
   },
   methods: {
+    ...mapActions(storyStore, ['getStoryList']),
     ...mapMutations(storyStore, ['setStoryId', 'clearStoryId']),
     showModal (storyId) {
       this.setStoryId(storyId)
@@ -59,9 +65,27 @@ export default {
     closeModal () {
       this.isModalVisible = false
       this.clearStoryId()
+    },
+    paging (page) {
+      this.request['page'] = page - 1
+      this.getStoryList(this.request)
     }
   }
 }
 </script>
 
-<style></style>
+<style scoped>
+.story-container{
+  margin: auto;
+  margin-top: 30px;
+  width: 800px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.pagination-container {
+  display:flex;
+  justify-content: center;
+}
+</style>
