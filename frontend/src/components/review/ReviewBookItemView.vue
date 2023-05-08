@@ -1,7 +1,7 @@
 <template>
   <div class="review-item" :style="{ height: isExpanded ? 'auto' : '170px' }">
     <div>
-      <div class="item-gruop-1">
+      <div class="item-group-1">
         <div class="item-user-info">
           <img class="item-user-img" :src=review.reviewerImg />
           <div>
@@ -13,14 +13,14 @@
           </div>
           </div>
         </div>
-        <div v-if="userInfo.userId == review.reviewerId" class='btn-gruop'>
+        <div v-if="userInfo.userId == review.reviewerId" class='btn-group'>
           <div v-if="!isModify">
             <button class='orange-btn' @click="modifyReview">수정</button>
             <button class='orange-btn' @click="deleteReview">삭제</button>
           </div>
           <div v-if="isModify">
             <button class='orange-btn' @click="checkValue">완료</button>
-            <button class='orange-btn' @click="cancleModify">취소</button>
+            <button class='orange-btn' @click="cancelModify">취소</button>
           </div>
         </div>
         <div class="item-score">
@@ -125,7 +125,7 @@ export default {
         this.isModify = true
       }
     },
-    cancleModify () {
+    cancelModify () {
       this.isModify = false
     },
     modifyScore (newScore) {
@@ -204,7 +204,7 @@ export default {
   color: var(--font-gray);
   text-align: left;
 }
-.item-gruop-1 {
+.item-group-1 {
   display: flex;
   align-items: center;
   margin-left: 13px;
@@ -238,7 +238,7 @@ export default {
   width: 700px;
   border-radius: 45px;
 }
-.btn-gruop {
+.btn-group {
   display: flex;
   justify-content: flex-start;
   margin-bottom: 16px;
