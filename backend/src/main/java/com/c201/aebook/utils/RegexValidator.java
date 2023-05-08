@@ -10,13 +10,12 @@ import com.c201.aebook.utils.exception.ErrorCode;
 
 @Component
 public class RegexValidator {
-
 	/**
 	 * [문희주] ISBN 정규 표현식 검사
 	 * @param isbn
 	 */
 	public void validateIsbn(String isbn) {
-		Pattern pattern = Pattern.compile("\\d{13}");
+		Pattern pattern = Pattern.compile("[A-Za-z0-9]{10}|\\d{13}");
 		Matcher matcher = pattern.matcher((isbn));
 
 		if (!matcher.find()) {
