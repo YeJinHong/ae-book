@@ -45,9 +45,15 @@ public class BookResponseDTO {
 	@Schema(description = "알림 ID", defaultValue = "2")
 	private Long notificationId;
 
+	@Schema(description = "리뷰 전체 점수")
+	private int scoreSum;
+
+	@Schema(description = "리뷰 개수")
+	private int reviewCount;
+
 	@Builder
 	public BookResponseDTO(String title, String description, String author, String publisher, Date publishDate,
-		String isbn, int price, String aladinUrl, String coverImageUrl) {
+		String isbn, int price, String aladinUrl, String coverImageUrl, int scoreSum, int reviewCount) {
 		this.title = title;
 		this.description = description;
 		this.author = author;
@@ -57,5 +63,7 @@ public class BookResponseDTO {
 		this.price = price;
 		this.aladinUrl = aladinUrl;
 		this.coverImageUrl = coverImageUrl;
+		this.reviewCount = reviewCount;
+		this.scoreSum = scoreSum;
 	}
 }
