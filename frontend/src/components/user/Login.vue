@@ -2,7 +2,7 @@
   <div>
       <div id="loginForm">
         <div style="margin-right:100px;">
-          <img src="../../assets/images/login_logo.png" style="width:200px; height:250px;">
+          <img src="../../assets/images/login_logo.png" style="width:230px;">
         </div>
         <div>
           <span id="font">간편하게<br> 아이북을<br> 이용해보세요.<br></span>
@@ -10,7 +10,7 @@
       </div>
     <p>
       <a :href="kakaoLoginLink">
-        <img src="../../assets/images/kakao_login_medium_wide.png">
+        <img src="../../assets/images/kakao_login_large_wide.png" style="width:400px; margin-bottom:30px;">
       </a>
     </p>
   </div>
@@ -45,7 +45,8 @@ export default {
 }
 
 #loginForm{
-  margin:100px;
+  margin: 100px;
+  margin-bottom: 40px;
   padding:0px;
   text-align: center;
   display: flex;
