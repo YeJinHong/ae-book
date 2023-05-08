@@ -25,7 +25,7 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/talk")
+@RequestMapping("/talks")
 public class TalkTestController {
 
     private final TalkServiceImpl talkService;
@@ -45,6 +45,18 @@ public class TalkTestController {
         ResponseEntity<String> LowestPriceResponse = talkService.LowestPriceTalk(token);
 
         return ResponseEntity.ok().body(LowestPriceResponse);
+    }
+
+    @GetMapping("/customize-lower-price")
+    public ResponseEntity customizeLowestPriceTalk() throws ParseException, JsonProcessingException {
+        // 토큰 생성
+        String token = talkService.createToken();
+
+        // 최저가 알림톡 탬플릿 만들어서 알림톡 전송
+        // 결과코드(code)가 0이면 성공 -99이면 전송 실패
+        ResponseEntity<String> customizeLowestPrice = talkService.CustomizeLowestPriceTalk(token);
+
+        return ResponseEntity.ok().body(customizeLowestPrice);
     }
 
 }
