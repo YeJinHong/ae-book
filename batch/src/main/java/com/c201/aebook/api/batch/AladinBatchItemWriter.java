@@ -35,11 +35,12 @@ public class AladinBatchItemWriter implements ItemWriter<BookEntity> {
 				if(item.getPrice() < updateBook.getPrice()){
 					updateBook.setPrice(item.getPrice());
 					updateBook.setAladinUrl(item.getAladinUrl());
+					updateBook.setId(item.getId());
 
 					bookRepository.save(updateBook);
 
 					//알림 이벤트 발생
-					publisher.publishEvent(new NotificationEvent(this, updateBook));
+					publisher.publishEvent(new NotificationEvent(this, updateBook, item));
 				}
 			}else{
 				bookRepository.save(item);
