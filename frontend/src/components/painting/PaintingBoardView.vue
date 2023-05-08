@@ -170,6 +170,12 @@ export default {
         alert('제목을 입력해주세요.')
         return
       }
+
+      if (sessionStorage.getItem('isLoginUser') !== true) {
+        alert('로그인을 해야 저장이 가능합니다.')
+        return
+      }
+
       const paintingFile = this.canvasToFile(this.canvas)
 
       let data = {
@@ -185,9 +191,9 @@ export default {
         .then(
           alert('그림 저장에 성공했습니다.')
         )
-        .catch(error => {
-          alert('그림 저장에 실패했습니다.' + error)
-        })
+        .catch(
+          alert('그림 저장에 실패했습니다.')
+        )
     },
     goBack () {
       window.history.back()
