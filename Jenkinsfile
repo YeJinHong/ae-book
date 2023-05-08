@@ -24,14 +24,6 @@ pipeline
 		// 		echo 'Environment Settings End'
 		// 	}
 		// }
-		//===================================== K8S =====================================
-		stage('setting for minikube') {
-			steps {
-				echo 'Setting start'
-				sh 'eval $(minikube -p minikube docker-env)'
-				echo 'Setting success'
-			}
-		}
 		//===================================== Front app =====================================
 		stage('build-front') {
 			when {
@@ -41,6 +33,15 @@ pipeline
 				echo 'Build Start Front App'
 				sh 'docker build -t front-vue-img frontend/. --no-cache'
 				echo 'Build End Front App'
+			}
+			post {
+				success {
+					echo 'Front-vue-img docker push Start'
+					sh '''
+						docker push teepij/front-vue-img:latest
+					'''
+					echo 'Front-vue-img docker push Success';
+				}
 			}
 		}
 		
@@ -75,6 +76,15 @@ pipeline
 				'''
 				echo 'Build End "${APP_SPRING_API}"'
 			}
+			post {
+				success {
+					echo 'Back-spring-img docker push Start'
+					sh '''
+						docker push teepij/back-spring-img:latest
+					'''
+					echo 'Back-spring-img docker push Success';
+				}
+			}
 		}
 		// stage('deploy-spring-api') {
 		// 	when {
@@ -108,6 +118,15 @@ pipeline
 				'''
 				echo 'Build End "${APP_BATCH}"'
 			}
+			post {
+				success {
+					echo 'Back-batch-img docker push Start'
+					sh '''
+						docker push teepij/back-batch-img:latest
+					'''
+					echo 'Back-batch-img docker push Success';
+				}
+			}
 		}
 		// batch는 build 될 때마다 데이터가 들어가기 때문에 변경사항있다고 run하는건 아닌 듯...
 		// stage('deploy-batch-api') {
@@ -139,6 +158,15 @@ pipeline
 					docker build -t back-fast-img ${APP_AI_API}/. --no-cache
 				'''
 				echo 'Build End "${APP_AI_API}"'
+			}
+			post {
+				success {
+					echo 'Back-fast-img docker push Start'
+					sh '''
+						docker push teepij/back-fast-img:latest
+					'''
+					echo 'Back-fast-img docker push Success';
+				}
 			}
 		}
 		// stage('deploy-ai-api') {
