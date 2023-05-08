@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -25,9 +26,10 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
 
     Optional<NotificationEntity> findByIdAndUserId(Long notificationId, Long userId);
 
-    @Query("select count(n.id) > 0 from NotificationEntity n where n.user.id = :userId and n.book.id = :bookId")
+    @Query("SELECT count(n.id) > 0 FROM NotificationEntity n WHERE n.user.id = :userId AND n.book.id = :bookId")
     boolean existsByBookId(Long bookId, Long userId);
 
-    @Query("select u from NotificationEntity n join UserEntity u on u.id = n.user.id where n.book.id = :bookId")
-    List<UserEntity> findByBookId(Long bookId);
+    /* 알림톡 테스트에 사용*/
+    @Query("SELECT n FROM NotificationEntity n JOIN FETCH n.user u WHERE n.book.id = :bookId")
+    List<NotificationEntity> findByBookId(@Param("bookId") Long bookId);
 }
