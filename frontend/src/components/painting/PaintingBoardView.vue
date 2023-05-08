@@ -87,8 +87,11 @@ export default {
     this.ctx.lineCap = 'round'
     // base64 문자열 이미지 로드
     const image = new Image()
+    image.crossOrigin = 'anonymous' // cors 설정
     image.src = this.sketch
-    this.ctx.drawImage(image, 0, 0, 700, 500)
+    image.onload = function () {
+      this.ctx.drawImage(image, 0, 0, this.canvas.width, this.canvas.height)
+    }.bind(this)
   },
   methods: {
     ...mapActions(paintingStore, ['savePainting']),
@@ -191,9 +194,11 @@ export default {
         .then(
           alert('그림 저장에 성공했습니다.')
         )
-        .catch(
-          alert('그림 저장에 실패했습니다.')
-        )
+        .catch(error => {
+          alert('그림 저장에 실패했습니다.' + error)
+        })
+
+      this.$router.push('/painting/list')
     },
     goBack () {
       window.history.back()
