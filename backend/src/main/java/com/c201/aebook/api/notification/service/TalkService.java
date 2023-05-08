@@ -8,4 +8,6 @@ public interface TalkService {
 
     public String createToken() throws JsonProcessingException, ParseException;
 
+    public ResponseEntity<String> LowestPriceTalk(String token);
+
 }
