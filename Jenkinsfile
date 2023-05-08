@@ -34,16 +34,6 @@ pipeline
 				sh 'docker build -t front-vue-img frontend/. --no-cache'
 				echo 'Build End Front App'
 			}
-			post {
-				success {
-					echo 'Front-vue-img docker push Start'
-					sh '''
-						docker tag front-vue-img:latest teepij/front-vue-img:latest
-						docker push teepij/front-vue-img
-					'''
-					echo 'Front-vue-img docker push Success';
-				}
-			}
 		}
 		
 		// stage('deploy-front') {
@@ -68,25 +58,14 @@ pipeline
 				}
 			}
 			steps {
-				echo 'Build Start "${APP_SPRING_API}"'
+				echo 'Build Start backend spring'
 				sh '''
-					chmod +x ${APP_SPRING_API}/gradlew
-					${APP_SPRING_API}/gradlew -p ${APP_SPRING_API} cleanQuerydslSourceDir		
-					${APP_SPRING_API}/gradlew -p ${APP_SPRING_API} build -x test
-					docker build -t back-spring-img ${APP_SPRING_API}/. --no-cache
+					chmod +x backend/gradlew
+					backend/gradlew -p backend cleanQuerydslSourceDir		
+					backend/gradlew -p backend build -x test
+					docker build -t back-spring-img backend/. --no-cache
 				'''
-				echo 'Build End "${APP_SPRING_API}"'
-			}
-			post {
-				success {
-					echo 'Back-spring-img docker push Start'
-					sh '''
-					    docker login
-						docker tag back-spring-img:latest teepij/back-spring-img:latest
-						docker push teepij/back-spring-img
-					'''
-					echo 'Back-spring-img docker push Success';
-				}
+				echo 'Build End backend spring'
 			}
 		}
 		// stage('deploy-spring-api') {
@@ -113,23 +92,13 @@ pipeline
 				}
 			}
 			steps {
-				echo 'Build Start "${APP_BATCH}"'
+				echo 'Build Start batch'
 				sh '''
-				    chmod +x ${APP_BATCH}/gradlew
-					${APP_BATCH}/gradlew -p ${APP_BATCH} build -x test
-					docker build -t back-batch-img ${APP_BATCH}/. --no-cache
+				    chmod +x batch/gradlew
+					batch/gradlew -p batch build -x test
+					docker build -t back-batch-img batch/. --no-cache
 				'''
-				echo 'Build End "${APP_BATCH}"'
-			}
-			post {
-				success {
-					echo 'Back-batch-img docker push Start'
-					sh '''
-						docker tag back-batch-img:latest teepij/back-batch-img:latest
-						docker push teepij/back-batch-img
-					'''
-					echo 'Back-batch-img docker push Success';
-				}
+				echo 'Build End batch'
 			}
 		}
 		// batch는 build 될 때마다 데이터가 들어가기 때문에 변경사항있다고 run하는건 아닌 듯...
@@ -157,21 +126,11 @@ pipeline
 				}
 			}
 			steps {
-				echo 'Build Start "${APP_AI_API}"'
+				echo 'Build Start backend fastAPI'
 				sh '''
-					docker build -t back-fast-img ${APP_AI_API}/. --no-cache
+					docker build -t back-fast-img ai/. --no-cache
 				'''
-				echo 'Build End "${APP_AI_API}"'
-			}
-			post {
-				success {
-					echo 'Back-fast-img docker push Start'
-					sh '''
-						docker tag back-fast-img:latest teepij/back-fast-img:latest
-						docker push teepij/back-fast-img
-					'''
-					echo 'Back-fast-img docker push Success';
-				}
+				echo 'Build End backend fastAPI'
 			}
 		}
 		// stage('deploy-ai-api') {
