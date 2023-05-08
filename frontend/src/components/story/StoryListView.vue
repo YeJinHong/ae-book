@@ -10,8 +10,10 @@
     </ModalView>
     <div class="story-container">
       <div v-for="story in storyList" :key="story.storyId" @click="showModal(story.storyId)">
-          <h3 @click="showModal(story.storyId)">{{ story.title }}</h3>
-          <img v-bind:src="story.imgUrl" alt="story image" />
+        <list-item
+        :item="story"
+      >
+    </list-item>
       </div>
     </div>
     <div class="pagination-container">
@@ -40,7 +42,7 @@ export default {
   data () {
     return {
       request: {
-        page: Number
+        page: 0
       },
       isModalVisible: false
     }
@@ -76,7 +78,7 @@ export default {
 .story-container{
   margin: auto;
   margin-top: 30px;
-  width: 1000px;
+  width: 800px;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
