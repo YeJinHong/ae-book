@@ -2,36 +2,62 @@
   <div>
     <div>
     <b-form @submit="onSubmit" @reset="onReset" v-if="show">
-      <b-form-group
-        id="input-group-1"
-        label="Review Keyword"
-        label-for="input-1"
-      >
-        <b-form-input
-          id="input-1"
-          v-model="form.keyword"
-          type="text"
-          placeholder="Enter Keyword"
-          required
-        ></b-form-input>
-        <button @click="createAIReview">자동 작성</button>
-      </b-form-group>
+      <div class='line-1'>
+        <b-form-group
+          id="input-group-1"
+        >
+          <div>
+            <b-form-input
+              id="input-1"
+              v-model="form.keyword"
+              type="text"
+              placeholder="키워드를 입력하세요."
+              style="width: 300px; margin-right: 20px;"
+              required
+            ></b-form-input>
+          </div>
+        </b-form-group>
+        <button class='ae-btn ai-btn' @click="createAIReview">자동 작성</button>
+      </div>
+      <div class='line-2'>
+        <b-form-group
+          id="input-group-2"
+          label="리뷰 글자 수"
+          label-for="input-2"
+        >
+          <b-form-input
+            id="input-2"
+            v-model="form.char"
+            type="number"
+            placeholder="1 이상 100 이하의 숫자를 입력하세요."
+            min="1"
+            max="100"
+            style="width: 300px; margin-right: 12px;"
+            required
+          ></b-form-input>
+        </b-form-group>
+        <div class='score-container'>
+          <review-modify-score-view v-if="isModify" :score=this.form.score :isModify=this.isModify @modify-score="modifyScore" />
+        </div>
+      </div>
       <b-form-group id="input-group-3" label="Content" label-for="input-2">
         <b-form-textarea
           id="input-3"
           v-model="form.content"
-          placeholder="Enter Content"
+          placeholder="내용을 300자 내로 입력해주세요."
           rows="3"
+          min="1"
+          max="300"
           required
         ></b-form-textarea>
       </b-form-group>
-      <review-modify-score-view v-if="isModify" :score=this.form.score :isModify=this.isModify @modify-score="modifyScore" />
-      <b-button type="submit" variant="primary">Submit</b-button>
-      <b-button type="reset" variant="danger">Reset</b-button>
+
+      <b-button class='submit-btn b-btn' type="submit" variant="primary">등록</b-button>
+      <b-button class='reset-btn b-btn' type="reset" variant="danger">초기화</b-button>
     </b-form>
-    <b-card class="mt-3" header="Form Data Result">
-      <pre class="m-0">{{ form }}</pre>
-    </b-card>
+    <!-- <b-card class="mt-3" header="Form Data Result">
+      <pre class="m-0">{{ bookInfo }}</pre>
+    </b-card> -->
   </div>
   </div>
 </template>
@@ -87,7 +113,7 @@ export default {
       event.preventDefault()
 
       const payload = {
-        isbn: this.isbn,
+        isbn: this.form.isbn,
         data: {
           content: this.form.content,
           score: this.form.score
@@ -95,7 +121,7 @@ export default {
       }
 
       const request = {
-        isbn: this.isbn,
+        isbn: this.form.isbn,
         page: 0,
         size: 3,
         sort: 'createdAt',
@@ -117,7 +143,6 @@ export default {
       event.preventDefault()
       // Reset our form values
       this.form.keyword = ''
-      this.form.isbn = ''
       this.form.content = ''
       this.form.score = 5
       // Trick to reset/clear native browser form validation state
@@ -127,7 +152,6 @@ export default {
       })
     },
     modifyScore (index) {
-      console.log(index)
       this.form.score = index
     }
   }
@@ -135,9 +159,32 @@ export default {
 }
 </script>
 
-<style>
-.star {
-  display: inline-block;
-  font-size: 2em;
+<style scoped>
+.reset-btn {
+  background-color: var(--ae-red);
+}
+.submit-btn {
+  background-color: var(--ae-navy);
+}
+.line-1 {
+  display: flex;
+}
+.line-2 {
+  display: flex;
+}
+.score-container {
+  margin: 36px 0px 0px 0px;
+}
+.ai-btn {
+  width: 120px;
+  height: 40px;
+  padding: 0px 5px;
+  border-radius: 8px;
+  border: 2px solid;
+  font-weight: bold;
+}
+.b-btn {
+  width: 90px;
+  font-weight: bold;
 }
 </style>
