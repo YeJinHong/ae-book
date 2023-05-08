@@ -79,6 +79,7 @@ export default new Router({
     {
       path: '/mypage',
       name: 'MyPage',
+      redirect: '/mypage/modify',
       component: AppMyPage,
       children: [
         {

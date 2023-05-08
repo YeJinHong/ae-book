@@ -45,13 +45,13 @@ openai.api_key = os.getenv("SECRET_KEY")
 client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET")
 
-@app.get("/")
+@app.get("/fast")
 async def root():
     return {"message":"Hello World"}
 
 #test
 #e.g.:http://127.0.0.1:8000/hello/daehyuck
-@app.get("/hello/{name}")
+@app.get("/fast/hello/{name}")
 async def say_hello(name: str):
     return {"message":f"Hello {name}"}
 
@@ -59,7 +59,7 @@ async def say_hello(name: str):
 input: title, words
 output: review, star point
 """
-@app.post("/reviews/gpt")
+@app.post("/fast/reviews/gpt")
 async def create_review(data:Dict[Any,Any]):
     
     # {작가}의 {제목} 책을 읽고 {키워드}를 키워드로 해서 서평을 {char} 자 이내로 써줘.
@@ -112,7 +112,7 @@ async def create_review(data:Dict[Any,Any]):
 input:mp3 file(keyword), title
 output:review & point prediction
 """
-@app.post("/reviews/sound")
+@app.post("/fast/reviews/sound")
 async def sound_to_review(title:str, sound: UploadFile = File(...), writer=None, char=None):
     
     #read mp3 file to byte string
@@ -140,7 +140,7 @@ async def sound_to_review(title:str, sound: UploadFile = File(...), writer=None,
     
 
 #convert image to sketch
-@app.post("/paintings/sketch")
+@app.post("/fast/paintings/sketch")
 async def image_to_sketch(image: UploadFile = File(...)):
     
     #read image data
@@ -186,7 +186,7 @@ async def image_to_sketch(image: UploadFile = File(...)):
 input: isbn image
 output: isbn string
 """
-@app.post("/books/isbn")
+@app.post("/fast/books/isbn")
 async def isbn_detection(image: UploadFile = File(...)):
     
     #read image data
@@ -232,7 +232,7 @@ async def isbn_detection(image: UploadFile = File(...)):
 input: story keyword
 output: chatgpt story
 """
-@app.post("/stories/gpt")
+@app.post("/fast/stories/gpt")
 async def create_story(text:Dict[Any,Any]):
     
     #chatgpt query
@@ -253,7 +253,7 @@ async def create_story(text:Dict[Any,Any]):
 input:text
 output:naver clova mp3 response data
 """
-@app.post("/stories/sound")
+@app.post("/fast/stories/sound")
 async def text_to_sound(text: str):
     
     #create data(default)

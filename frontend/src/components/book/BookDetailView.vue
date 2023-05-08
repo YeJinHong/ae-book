@@ -14,7 +14,7 @@
           </div>
           <div class="red-bar"></div>
           <p><span style="font-weight:bold">ISBN</span> {{ book.isbn }}</p>
-          <p>별별별별별</p>
+          <div class="rating"><review-score-view :score="parseInt(book.scoreSum / book.reviewCount)"></review-score-view></div>
           <!-- TODO: 비로그인시 알림 설정 버튼 안보이도록  -->
           <button type="button" class="ae-btn btn-navy" v-if=book.notification @click="cancelNotification(book.notificationId)">알림 신청중</button>
           <!-- <button type="button" class="ae-btn" v-else v-b-modal.modal-save-notification>알림 신청</button> -->
@@ -26,6 +26,7 @@
       <p style="font-weight: bold; text-align: left; font-size: 24px; color:var(--ae-navy)">책 소개</p>
       <p>{{ book.description }}</p>
       <div class="bar"></div>
+      <p style="font-weight: bold; text-align: left; font-size: 24px; color:var(--ae-navy)">총 리뷰 개수 <span style="color:var(--ae-red)">{{ book.reviewCount }}</span>개</p>
     </div>
     <!-- //////////////////////////////////////////////////////////////////////////////////// -->
     <!-- TODO: 별점 및 서평 등록 -->
@@ -96,6 +97,7 @@ import ReviewCreateView from '../review/ReviewCreateView.vue'
 import ReviewCreateModalView from '../review/ReviewCreateModalView.vue'
 import NotificationCreateView from '../notification/NotificationCreateView.vue'
 import NotificationCreateModalButton from '../notification/NotificationCreateModalButton.vue'
+import ReviewScoreView from '../review/ReviewScoreView.vue'
 
 const bookStore = 'bookStore'
 const reviewStore = 'reviewStore'
@@ -110,7 +112,8 @@ export default {
     ReviewCreateModalView,
     ModalView,
     NotificationCreateView,
-    NotificationCreateModalButton
+    NotificationCreateModalButton,
+    ReviewScoreView
   },
   data () {
     return {
@@ -261,6 +264,7 @@ export default {
 
 .sub-info > p {
   text-align: left;
+  margin-bottom: 0;
 }
 
 .price-info {
@@ -292,5 +296,11 @@ export default {
   height:2px;
   background-color: #E0E0E0;
   margin: 35px 0px;
+}
+
+.rating {
+  text-align: left;
+  font-size:25px;
+  margin-bottom:50px;
 }
 </style>
