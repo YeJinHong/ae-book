@@ -2,10 +2,10 @@
   <div>
     <header-navbar></header-navbar>
     <div class="container">
-    <div class="left">
+    <div class="left-container">
       <my-page-menu @goTo="goTo"></my-page-menu>
     </div>
-    <div class="right">
+    <div class="right-container">
       <router-view></router-view>
     </div>
   </div>
@@ -37,14 +37,12 @@ export default {
   margin-top: 50px;
 }
 
-.left {
+.left-container {
   width: 20%;
-  background-color: #ccc;
   margin-right: 50px;
 }
 
-.right {
+.right-container {
   width: 80%;
-  background-color: #eee;
 }
 </style>
