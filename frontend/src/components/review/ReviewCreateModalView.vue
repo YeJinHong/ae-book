@@ -1,6 +1,6 @@
 <template>
   <div class="modal-overlay">
-    <b-modal v-model="visible" @hidden="onHidden" hide-footer>
+    <b-modal v-model="visible" @hidden="onHidden" hide-footer title="리뷰 등록">
       <slot></slot>
     </b-modal>
   </div>
