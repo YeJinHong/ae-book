@@ -35,4 +35,16 @@ public class TalkTestController {
         return talkService.createToken();
     }
 
+    @GetMapping("/lower-price")
+    public ResponseEntity lowestPriceTalk() throws ParseException, JsonProcessingException {
+        // 토큰 생성
+        String token = talkService.createToken();
+
+        // 최저가 알림톡 탬플릿 만들어서 알림톡 전송
+        // 결과코드(code)가 0이면 성공 -99이면 전송 실패
+        ResponseEntity<String> LowestPriceResponse = talkService.LowestPriceTalk(token);
+
+        return ResponseEntity.ok().body(LowestPriceResponse);
+    }
+
 }
