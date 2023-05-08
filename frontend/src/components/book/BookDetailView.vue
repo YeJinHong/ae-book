@@ -29,14 +29,12 @@
       <p style="font-weight: bold; text-align: left; font-size: 24px; color:var(--ae-navy)">총 리뷰 개수 <span style="color:var(--ae-red)">{{ book.reviewCount }}</span>개</p>
     </div>
     <!-- //////////////////////////////////////////////////////////////////////////////////// -->
-    <!-- TODO: 별점 및 서평 등록 -->
     <button @click="showModal()">리뷰 등록</button>
-    <!-- TODO: 서평 수정 및 삭제 -->
     <div>
       <review-book-list-view :isbn="isbn"></review-book-list-view>
     </div>
     <review-create-modal-view :modalShow="isModalVisible" @close-modal="closeModal">
-      <review-create-view :isbn="isbn" @close-modal="closeModal"/>
+      <review-create-view :bookInfo="this.bookInfo" @close-modal="closeModal"/>
     </review-create-modal-view>
 
     <!-- 알림 신청 모달 -->
@@ -122,7 +120,8 @@ export default {
       upperLimit: 0,
       upperLimitState: null,
       selected: '',
-      isNotifications: false
+      isNotifications: false,
+      bookInfo: null
     }
   },
   created () {
@@ -149,6 +148,11 @@ export default {
       window.open(url, 'blank')
     },
     showModal () {
+      this.bookInfo = {
+        isbn: this.isbn.slice,
+        title: this.book.title.slice(5, this.book.title.length),
+        writer: this.book.author
+      }
       this.isModalVisible = true
     },
     // showNotificationModal () {
