@@ -167,7 +167,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .item-content.is-expanded {
   height: auto !important;
   overflow: visible !important;
