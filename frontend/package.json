@@ -18,6 +18,7 @@
     "bootstrap": "^4.6.2",
     "bootstrap-vue": "^2.23.1",
     "dotenv": "^16.0.3",
+    "howler": "^2.2.3",
     "jquery": "^3.6.4",
     "popper.js": "^1.16.1",
     "vue": "^2.7.14",
