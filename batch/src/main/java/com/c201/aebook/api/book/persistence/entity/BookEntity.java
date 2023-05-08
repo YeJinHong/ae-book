@@ -94,4 +94,7 @@ public class BookEntity extends BaseEntity {
         this.aladinUrl = aladinUrl;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

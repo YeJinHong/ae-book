@@ -33,6 +33,7 @@ public class BookIntegrationJobListener implements JobExecutionListener {
 			//job failure
 			log.info("job failed =>" + jobExecution.getJobInstance().getJobName());
 		}
+		System.exit(0);
 	}
 
 }

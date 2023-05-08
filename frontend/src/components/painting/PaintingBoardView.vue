@@ -174,7 +174,7 @@ export default {
         return
       }
 
-      if (sessionStorage.getItem('isLoginUser') !== true) {
+      if (sessionStorage.getItem('isLoginUser') !== 'true') {
         alert('로그인을 해야 저장이 가능합니다.')
         return
       }
