@@ -147,7 +147,7 @@ export default {
     },
     showModal () {
       this.bookInfo = {
-        isbn: this.isbn.slice,
+        isbn: this.isbn,
         title: this.book.title.slice(5, this.book.title.length),
         writer: this.book.author
       }
