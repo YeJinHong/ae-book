@@ -12,7 +12,7 @@
       </div>
     </div>
     <button @click="goBack" class="ae-btn btn-navy">돌아가기</button>
-    <button @click="onSaveClick" class="ae-btn btn-red">저장하기</button>
+    <button @click="onSaveClick" class="ae-btn btn-red">색칠하기</button>
   </div>
 </template>
 
@@ -61,25 +61,28 @@ export default {
       return paintingFile
     },
     onSaveClick () {
-      const paintingFile = this.Base64ToFile(this.sketch)
+      if (this.sketch.type === 'sketch') {
+        const paintingFile = this.Base64ToFile(this.sketch)
 
-      let data = {
-        title: 'sketch_' + new Date().getMilliseconds(),
-        type: 'LINE'
+        let data = {
+          title: 'sketch_' + new Date().getMilliseconds(),
+          type: 'LINE'
+        }
+
+        let formData = new FormData()
+        formData.append('paintingFile', paintingFile)
+        formData.append('data', new Blob([JSON.stringify(data)], {type: 'application/json'}))
+
+        if (sessionStorage.getItem('isLoginUser') === true) {
+          this.savePainting(formData)
+            .then(
+              alert('선화를 저장에 성공했습니다.')
+            )
+            .catch(
+              alert('선화 저장에 실패했습니다.')
+            )
+        }
       }
-
-      let formData = new FormData()
-      formData.append('paintingFile', paintingFile)
-      formData.append('data', new Blob([JSON.stringify(data)], {type: 'application/json'}))
-
-      this.savePainting(formData)
-        .then(
-          alert('그림 저장에 성공했습니다.')
-        )
-        .catch(error => {
-          alert('그림 저장에 실패했습니다.' + error)
-        })
-
       this.$router.push('/painting/board')
     },
     goBack () {
