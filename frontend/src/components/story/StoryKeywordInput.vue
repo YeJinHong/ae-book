@@ -21,7 +21,7 @@ export default {
       inputValue: '',
       storyResult: '',
       rescode: '',
-      sound: 'http://localhost:8000/sound/'
+      sound: '/fast/sound/'
     }
   },
   methods: {
