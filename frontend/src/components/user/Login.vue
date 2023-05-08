@@ -1,19 +1,19 @@
 <template>
-  <b-container fluid="md">
-
-      <b-row class="text-center">
-        <b-col cols="6">
+  <div>
+      <div id="loginForm">
+        <div style="margin-right:100px;">
           <img src="../../assets/images/login_logo.png" style="width:200px; height:250px;">
-        </b-col>
-        <b-col cols="4"><span id="font">간편하게<br> 아이북을<br> 이용해보세요.<br></span></b-col>
-      </b-row>
-      <div>
-        <a :href="kakaoLoginLink">
-          <img src="../../assets/images/kakao_login_medium_wide.png">
-        </a>
+        </div>
+        <div>
+          <span id="font">간편하게<br> 아이북을<br> 이용해보세요.<br></span>
+        </div>
       </div>
-
-  </b-container>
+    <p>
+      <a :href="kakaoLoginLink">
+        <img src="../../assets/images/kakao_login_medium_wide.png">
+      </a>
+    </p>
+  </div>
 </template>
 
 <script>
@@ -41,7 +41,14 @@ export default {
   font-weight: bold;
   font-size:45px;
   color:white;
-  text-shadow: 2px 2px 2px gray;
+  text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
 }
 
+#loginForm{
+  margin:100px;
+  padding:0px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
 </style>
