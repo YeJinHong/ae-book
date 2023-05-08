@@ -10,4 +10,6 @@ public interface TalkService {
 
     public ResponseEntity<String> LowestPriceTalk(String token);
 
+    public ResponseEntity<String> CustomizeLowestPriceTalk(String token);
+
 }
