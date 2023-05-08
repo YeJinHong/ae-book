@@ -30,7 +30,7 @@ module.exports = {
       },
 
       '/fast' : {
-        target: `http://${fastServiceHost}:${fastServicePort}/api`,
+        target: `http://${fastServiceHost}:${fastServicePort}/fast`,
         changeOrigin:true,
         pathRewrite:{
           '^/fast':''
