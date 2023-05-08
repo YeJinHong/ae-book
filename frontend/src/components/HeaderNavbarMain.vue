@@ -9,7 +9,7 @@
         <div class="after-login" style="margin-left: auto;" v-if=isLoginUser >
           {{ user.userId }} | {{ user.nickname }}
           <b-button size="sm" @click="logout" class="btn-white"><img src="https://img.icons8.com/material-rounded/24/null/person-male.png"/>로그아웃</b-button>
-          <router-link :to="{ name: 'MyInfo' }" class="link"><b-button size="sm" class="btn-white">마이페이지</b-button></router-link>
+          <router-link :to="{ name: 'MyPage' }" class="link"><b-button size="sm" class="btn-white">마이페이지</b-button></router-link>
         </div>
         <!-- 로그인 전 -->
         <div class="before-login" style="margin-left: auto;" v-else>

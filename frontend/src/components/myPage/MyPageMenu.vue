@@ -1,18 +1,39 @@
 <template>
   <div class="menu">
+    <div><img class="user-img" :src=user.profileUrl></div>
+    <div class="nickname"><span style="font-weight:800">{{ user.nickname }}</span> 님</div>
     <ul>
-        <li class="mypage-btn" @click="goTo('MyNotification')">알림설정한 책</li>
-        <li class="mypage-btn" @click="goTo('mypainting')">그림장</li>
-        <li class="mypage-btn" @click="goTo('StoryListView')">동화책</li>
-        <li class="mypage-btn" @click="goTo('MyReview')">작성한 서평</li>
-        <li class="mypage-btn" @click="goTo('#')">탈퇴하기</li>
+      <li class="mypage-btn" @click="goTo('MyInfoModify')">사용자 정보 수정</li>
+      <li class="mypage-btn" @click="goTo('MyNotification')">알림설정한 책</li>
+      <li class="mypage-btn" @click="goTo('mypainting')">그림장</li>
+      <li class="mypage-btn" @click="goTo('StoryListView')">동화책</li>
+      <li class="mypage-btn" @click="goTo('MyReview')">작성한 서평</li>
       </ul>
   </div>
 </template>
 
 <script>
+import { mapGetters, mapState } from 'vuex'
+const userStore = 'userStore'
+
 export default {
   name: 'MyPageMenu',
+  data () {
+    return {
+    }
+  },
+  created () {
+    this.isLoginUser = sessionStorage.getItem('isLoginUser')
+    this.user = this.getUserInfo
+    console.log(this.user)
+  },
+  computed: {
+    ...mapState(userStore, ['isLogin', 'isLoginError', 'user']),
+    ...mapGetters(userStore, ['getUserInfo']),
+    user () {
+      return JSON.parse(sessionStorage.getItem('userInfo'))
+    }
+  },
   methods: {
     goTo (componentName) {
       this.$emit('goTo', componentName)
@@ -26,10 +47,12 @@ export default {
   background-color: var(--main-yellow);
   width: 243px;
   height: 475px;
-  float: left;
   border: 5px solid white;
   border-radius: 15px;
   box-shadow: 2px 4px 4px 0 rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .mypage-btn {
@@ -41,5 +64,18 @@ export default {
   font-weight: 800;
   color: var(--ae-red);
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-img{
+  border-radius: 100%;
+  width: 130px;
+  border: 5px solid white;
+}
+
+.nickname{
+  font-size: 20px;
 }
 </style>
