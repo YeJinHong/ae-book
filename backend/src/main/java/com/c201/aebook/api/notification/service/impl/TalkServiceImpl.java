@@ -1,6 +1,9 @@
 package com.c201.aebook.api.notification.service.impl;
 
+import com.c201.aebook.api.book.persistence.repository.BookRepository;
+import com.c201.aebook.api.notification.persistence.repository.NotificationRepository;
 import com.c201.aebook.api.notification.service.TalkService;
+import com.c201.aebook.api.user.persistence.entity.UserEntity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +45,9 @@ public class TalkServiceImpl implements TalkService {
     @Value("${talk.aebook-url}")
     private String aebookUrl;
 
+    private final NotificationRepository notificationRepository;
+    private final BookRepository bookRepository;
+
     @Override
     public String createToken() throws JsonProcessingException, ParseException {
         RestTemplate rt = new RestTemplate();
@@ -79,13 +85,7 @@ public class TalkServiceImpl implements TalkService {
         return token;
     }
 
-    public ResponseEntity<String> LowestPriceTalk(String token) {
-        /**
-         * TODO: 알림톡 전송을 위해 정보 받아오기, notificationEntity를 통해 user 정보 가져오기
-         * 일단 테스틀 위해 하드코딩
-         * */
-        String username = "도연";
-        String bookTitle = "자바와 JUnit을 활용한 실용주의 단위 테스트";
+    public ResponseEntity<String> LowestPriceTalk(String token, List<UserEntity> userList, String bookTitle) {
         String subject = "도서 최저가 갱신";
 
         //버튼 정보 입력
@@ -114,12 +114,15 @@ public class TalkServiceImpl implements TalkService {
         body.add("tpl_code", LowestPriceTplCode); // 템플릿 코드
         body.add("sender", TalkSender); // 발신자 연락처
 
-        body.add("receiver_1", "01071276216"); // 수신자 연락처
-        body.add("subject_1", subject); // 알림톡 제목(발신자만 보임)
-        body.add("message_1", username + " 님\n" +
-                "아이북에서 알림 신청한 '" + bookTitle + "' 도서의 최저가격이 갱신되었습니다.\n" +
-                "아이북에 방문하여 확인해주세요."); // 알림톡 내용
-        body.add("button_1", buttonInfo); // 버튼 정보
+        int receiverSize = userList.size();
+        for (int i=0; i<receiverSize; i++) {
+            body.add("receiver_"+ (i+1), userList.get(i).getPhone()); // 수신자 연락처
+            body.add("subject_"+ (i+1), subject); // 알림톡 제목(발신자만 보임)
+            body.add("message_"+ (i+1), userList.get(i).getNickname() + " 님\n" +
+                    "아이북에서 알림 신청한 '" + bookTitle + "' 도서의 최저가격이 갱신되었습니다.\n" +
+                    "아이북에 방문하여 확인해주세요."); // 알림톡 내용
+            body.add("button_"+ (i+1), buttonInfo); // 버튼 정보
+        }
         body.add("testMode", "N"); // 테스트 모드
 
         //전송 객체 생성
@@ -193,5 +196,20 @@ public class TalkServiceImpl implements TalkService {
 
         return customizeLowestPriceTalk;
     }
+
+    @Override
+    public List<UserEntity> getNotificationUserInfoByBookId(Long bookId) {
+        // 만약에 해당 책에 알림이 없는 경우를 먼저 확인해야 됨
+        List<UserEntity> userList = notificationRepository.findByBookId(bookId);
+        return userList;
+    }
+
+    @Override
+    public String getBookTitle(Long bookId) {
+        // 책 정보가 없는 경우 error
+        String bookTitle = bookRepository.findTitleById(bookId);
+        return bookTitle;
+    }
+
 
 }
