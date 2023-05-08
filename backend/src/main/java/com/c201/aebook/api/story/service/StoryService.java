@@ -3,6 +3,7 @@ package com.c201.aebook.api.story.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.c201.aebook.api.story.presentation.dto.response.StoryDeleteResponseDTO;
 import com.c201.aebook.api.story.presentation.dto.response.StoryResponseDTO;
 import com.c201.aebook.api.vo.StoryDeleteSO;
 import com.c201.aebook.api.vo.StoryPatchSO;
@@ -13,7 +14,7 @@ public interface StoryService {
 
 	Page<StoryResponseDTO> getStoryList(Long userId, Pageable pageable);
 
-	public void deleteStory(StoryDeleteSO storyId);
+	public StoryDeleteResponseDTO deleteStory(StoryDeleteSO storyId);
 
 	StoryResponseDTO getStoryDetail(Long storyId);
 
