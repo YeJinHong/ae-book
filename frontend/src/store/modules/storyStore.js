@@ -1,4 +1,4 @@
-import { searchStory } from '@/api/story'
+import { searchStory, searchDetailStory, registerStory } from '@/api/story'
 
 const story = {
   namespaced: true,
@@ -6,7 +6,8 @@ const story = {
   state: {
     storyId: null,
     storyPageSetting: null,
-    storyList: []
+    storyList: [],
+    story: null
   },
 
   mutations: {
@@ -22,6 +23,9 @@ const story = {
     },
     SET_LIST: (state, data) => {
       state.storyList = data
+    },
+    SET_STORY: (state, data) => {
+      state.story = data
     }
   },
   getters: {
@@ -40,8 +44,28 @@ const story = {
         .catch(error => {
           console.log(error)
         })
+    },
+    async getStoryDetail ({ commit }, request) {
+      await searchDetailStory(request)
+        .then(({ data }) => {
+          commit('SET_STORY', data.result)
+        })
+        .catch(error => {
+          alert(error)
+        })
+    },
+    async saveStory ({ commit }, request) {
+      await registerStory(request)
+        .then(({ data }) => {
+          commit('SET_STORY', data.result)
+          console.log(data.result)
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
   }
+
 }
 
 export default story

@@ -77,7 +77,7 @@ export default {
         formData.append('paintingFile', paintingFile)
         formData.append('data', new Blob([JSON.stringify(data)], {type: 'application/json'}))
 
-        if (sessionStorage.getItem('isLoginUser') === true) {
+        if (sessionStorage.getItem('isLoginUser') === 'true') {
           this.savePainting(formData)
             .then(
               alert('선화를 저장에 성공했습니다.')
