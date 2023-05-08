@@ -1,12 +1,14 @@
 package com.c201.aebook.api.notification.persistence.repository;
 
 import com.c201.aebook.api.notification.persistence.entity.NotificationEntity;
+import com.c201.aebook.api.user.persistence.entity.UserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -25,4 +27,7 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
 
     @Query("select count(n.id) > 0 from NotificationEntity n where n.user.id = :userId and n.book.id = :bookId")
     boolean existsByBookId(Long bookId, Long userId);
+
+    @Query("select u from NotificationEntity n join UserEntity u on u.id = n.user.id where n.book.id = :bookId")
+    List<UserEntity> findByBookId(Long bookId);
 }
