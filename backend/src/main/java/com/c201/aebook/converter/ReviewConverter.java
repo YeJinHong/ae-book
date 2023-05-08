@@ -4,12 +4,14 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
+import com.c201.aebook.api.book.persistence.entity.BookEntity;
 import com.c201.aebook.api.review.persistence.entity.ReviewEntity;
 import com.c201.aebook.api.review.presentation.dto.request.ReviewRequestDTO;
 import com.c201.aebook.api.review.presentation.dto.response.ReviewBookResponseDTO;
 import com.c201.aebook.api.review.presentation.dto.response.ReviewMainResponseDTO;
 import com.c201.aebook.api.review.presentation.dto.response.ReviewMyResponseDTO;
 import com.c201.aebook.api.review.presentation.dto.response.ReviewResponseDTO;
+import com.c201.aebook.api.user.persistence.entity.UserEntity;
 import com.c201.aebook.api.vo.ReviewSO;
 
 @Mapper(componentModel = "spring")
@@ -42,4 +44,10 @@ public interface ReviewConverter {
 	})
 	ReviewMainResponseDTO toReviewMainResponseDTO(ReviewEntity reviewEntity);
 
+	@Mappings({
+		@Mapping(source = "userEntity", target = "user"),
+		@Mapping(source = "bookEntity", target = "book"),
+		@Mapping(target = "id", ignore = true) // id 속성은 매핑하지 않음
+	})
+	ReviewEntity toReviewEntity(ReviewSO reviewSO, UserEntity userEntity, BookEntity bookEntity);
 }
