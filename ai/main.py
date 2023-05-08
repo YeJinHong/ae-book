@@ -54,7 +54,7 @@ client_secret = os.getenv("CLIENT_SECRET")
 app = FastAPI()
 
 # static serving "directory sound" 
-app.mount("/sound", StaticFiles(directory="sound"), name="sound")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/fast")
 async def root():
@@ -267,7 +267,9 @@ input:text
 output:respond code(code = 200(success) & etc.(fail))
 """
 @app.post("/fast/stories/sound")
-async def text_to_sound(text: str):
+async def text_to_sound(text: Dict[Any,Any]):
+    
+    text = text['data']
     
     #create data(default)
     encText = urllib.parse.quote(text)

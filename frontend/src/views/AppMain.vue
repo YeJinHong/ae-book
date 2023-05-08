@@ -3,11 +3,11 @@
     <header-navbar-main></header-navbar-main>
     <!-- 메인 메뉴 -->
     <div class="menu-container">
-      <!-- <router-link :to="{ name: '' }"> -->
+      <router-link :to="{ name: 'StoryKeywordInput' }">
         <div class="main-menu first">
           <div class="menu-text">내가<br>만드는<br>동화<br><img src="../assets/images/duck.png" id="duckIcon"></div>
         </div>
-      <!-- </router-link> -->
+      </router-link>
       <router-link :to="{ name: 'Painting' }">
         <div class="main-menu second">
           <div class="menu-text">색칠공부<br><br><br><img src="../assets/images/tiger.png" id="paintingIcon"></div>
