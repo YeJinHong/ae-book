@@ -1,11 +1,11 @@
 from fastapi import FastAPI,File,UploadFile
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse, FileResponse
 from review_star_prediction import *
 from isbn_ocr import *
 from dotenv import load_dotenv
 import os
 import openai
-import io
+# import io
 import base64
 import cv2
 import sys
@@ -15,11 +15,15 @@ import numpy as np
 from PIL import Image
 from typing import Dict,Any
 from starlette.middleware.cors import CORSMiddleware
+from io import BytesIO
+import datetime
+import random
+from fastapi.staticfiles import StaticFiles
 
 ##setting cors origin
 origins = [
-    "http://127.0.0.1",
-    "http://127.0.0.1:3000",
+    "http://0.0.0.0:3000",
+    "http://0.0.0.0",
     "http://localhost:3000"
 ]
 
@@ -35,7 +39,7 @@ app.add_middleware(
 
 #constant
 STT_URL = "https://naveropenapi.apigw.ntruss.com/recog/v1/stt?lang=Kor"
-TTS_URL = "httxps://naveropenapi.apigw.ntruss.com/tts-premium/v1/tts"
+TTS_URL = "https://naveropenapi.apigw.ntruss.com/tts-premium/v1/tts"
 ADJECTIVE = ["아름다운","이해하기 쉬운","재미있는","슬픈","교훈을 주는","상상력을 자극하는",
              "감동을 주는","어린이가 좋아할 만한","사실적인"]
 
@@ -44,6 +48,13 @@ load_dotenv()
 openai.api_key = os.getenv("SECRET_KEY")
 client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET")
+
+#setting static files
+
+app = FastAPI()
+
+# static serving "directory sound" 
+app.mount("/sound", StaticFiles(directory="sound"), name="sound")
 
 @app.get("/")
 async def root():
@@ -230,10 +241,10 @@ async def isbn_detection(image: UploadFile = File(...)):
 
 """
 input: story keyword
-output: chatgpt story
+output: chatgpt story, sound
 """
 @app.post("/stories/gpt")
-async def create_story(text:Dict[Any,Any]):
+async def create_sound_story(text:Dict[Any,Any]):
     
     #chatgpt query
     query = f"너는 동화작가야. 자기소개는 하지 말고 어린이를 위해서 {text['text']}로 {np.random.choice(ADJECTIVE)} 동화를 만들어줘."
@@ -247,14 +258,18 @@ async def create_story(text:Dict[Any,Any]):
     )
     
     #chatgpt response
-    return {'data':completion.choices[0].message['content']}
+    story = completion.choices[0].message['content']
+    
+    return {'story': story}
 
 """
 input:text
-output:naver clova mp3 response data
+output:respond code(code = 200(success) & etc.(fail))
 """
 @app.post("/stories/sound")
-async def text_to_sound(text: str):
+def text_to_sound(text: Dict[Any,Any]):
+    
+    text = text['data']
     
     #create data(default)
     encText = urllib.parse.quote(text)
@@ -269,10 +284,24 @@ async def text_to_sound(text: str):
     response = urllib.request.urlopen(request, data=data.encode('utf-8'))
     rescode = response.getcode()
     
-    
     if(rescode==200):
         
-        #sound byte string    
-        return response
+        response_body = response.read()
+        now = datetime.datetime.now()
+        
+        #random filename
+        filename = f"{round(random.random()*1000)}_{now.year}_{now.month}_{now.day}_{now.hour}_{now.minute}_{now.second}_{now.microsecond}.wav"
+        
+        #save sound file
+        with open(f"./sound/{filename}",'wb') as f:
+            f.write(response_body)
+        f.close()
+        
+        rescode = 1
+    
     else:
-        return "Error Code:" + rescode
+        
+        rescode = 0
+        filename = ''
+        
+    return {'rescode':rescode, 'sound':filename}
