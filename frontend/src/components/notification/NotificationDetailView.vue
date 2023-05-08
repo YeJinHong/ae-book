@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>&nbsp;</div>
-    <div class="detail">
+    <div class="detail" v-if="notification">
       <div class="detail-img">
         <img class="book-cover" v-bind:src="notification.coverImageUrl">
       </div>
@@ -66,7 +66,7 @@ const notificationStore = 'notificationStore'
 
 export default {
   name: 'NotificationDetailView',
-  props: ['notificationId'],
+  props: ['notificationId', 'page'],
   data () {
     return {
       modify: false,
