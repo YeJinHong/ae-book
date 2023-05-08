@@ -98,7 +98,7 @@ export default new Router({
         },
         {
           path: 'painting',
-          name: 'mypainting',
+          name: 'MyPainting',
           component: () => import('@/components/myPage/MyPaintingListView')
         },
         {
