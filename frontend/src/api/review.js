@@ -27,8 +27,4 @@ const getReviewBookList = (request) => axios.get(`/api/reviews/${request.isbn}?p
 // 7. 로그인한 사용자의 서평 리스트
 const getReviewMyList = (request) => api.get(`/api/reviews?page=${request.page}&size=${request.size}&sort=${request.sort},${request.direction}`)
 
-/* 예시
- * const searchByISBN = isbn => axios.get(`/api/books/${isbn}`)
- * const requestLogin = (payload) => api.post("/api/users/login", payload);
- */
 export { saveReview, getReview, modifyReview, deleteReview, getReviewMainList, getReviewBookList, getReviewMyList }
