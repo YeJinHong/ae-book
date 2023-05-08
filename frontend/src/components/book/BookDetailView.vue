@@ -26,10 +26,8 @@
       <p style="font-weight: bold; text-align: left; font-size: 24px; color:var(--ae-navy)">책 소개</p>
       <p>{{ book.description }}</p>
       <div class="bar"></div>
-      <p style="font-weight: bold; text-align: left; font-size: 24px; color:var(--ae-navy)">총 리뷰 개수 <span style="color:var(--ae-red)">{{ book.reviewCount }}</span>개</p>
+      <p style="font-weight: bold; text-align: left; font-size: 24px; color:var(--ae-navy)">총 리뷰 개수 <span style="color:var(--ae-red)">{{ book.reviewCount }}</span>개 <button class='ae-btn btn-red review-btn' @click="showModal()">리뷰 등록</button></p>
     </div>
-    <!-- //////////////////////////////////////////////////////////////////////////////////// -->
-    <button @click="showModal()">리뷰 등록</button>
     <div>
       <review-book-list-view :isbn="isbn"></review-book-list-view>
     </div>
