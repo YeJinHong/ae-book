@@ -29,7 +29,7 @@ const paintingStore = {
     },
     SET_SKETCH: (state, data) => {
       if (data.type === 'painting') {
-        state.sketch = data.url.fileUrl
+        state.sketch = data.url.fileUrl + '?timestamp=' + (new Date().getTime())
       } else {
         state.sketch = 'data:image/jpeg;base64,' + data.url
       }
