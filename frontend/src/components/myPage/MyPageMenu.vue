@@ -4,7 +4,7 @@
     <div class="nickname"><span style="font-weight:800">{{ user.nickname }}</span> 님</div>
     <ul>
       <li class="mypage-btn" @click="goTo('MyInfoModify')">사용자 정보 수정</li>
-      <li class="mypage-btn" @click="goTo('MyNotification')">알림설정한 책</li>
+      <li class="mypage-btn" @click="goTo('MyNotification')">알림 설정</li>
       <li class="mypage-btn" @click="goTo('mypainting')">그림장</li>
       <li class="mypage-btn" @click="goTo('StoryListView')">동화책</li>
       <li class="mypage-btn" @click="goTo('MyReview')">작성한 서평</li>
