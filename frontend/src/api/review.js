@@ -2,8 +2,15 @@ import axios from 'axios'
 import api from '@/api/auth'
 
 // 1. 서평 등록
-const saveReview = (payload) => api.post(`/api/reviews/${payload.isbn}`, payload.data)
-
+const saveReview = async (payload) => {
+  try {
+    const response = await api.post(`/api/reviews/${payload.isbn}`, payload.data)
+    return response
+  } catch (err) {
+    console.log(err)
+    throw new Error('서평 등록을 실패하였습니다.')
+  }
+}
 // 2. 서평 상세 조회
 const getReview = reviewId => api.get(`/api/reviews/detail/${reviewId}`)
 
