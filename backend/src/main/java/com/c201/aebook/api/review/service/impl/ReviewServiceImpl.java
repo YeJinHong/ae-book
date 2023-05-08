@@ -53,12 +53,7 @@ public class ReviewServiceImpl implements ReviewService {
 		}
 
 		// 4. 서평 저장
-		reviewEntity = reviewRepository.save(ReviewEntity.builder()
-			.content(reviewSO.getContent())
-			.score(reviewSO.getScore())
-			.user(userEntity)
-			.book(bookEntity)
-			.build());
+		reviewEntity = reviewRepository.save(reviewConverter.toReviewEntity(reviewSO, userEntity, bookEntity));
 
 		// 5. 도서 별점 정보 갱신
 		bookEntity.updateScoreInfo(reviewSO.getScore(), 1);
