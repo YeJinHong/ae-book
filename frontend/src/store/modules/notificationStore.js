@@ -1,4 +1,4 @@
-import { saveNotification, getNotificationList, getNotificationDetail, deleteNotification } from '@/api/notification'
+import { saveNotification, getNotificationList, getNotificationDetail, deleteNotification, updateNotification } from '@/api/notification'
 
 const notificationStore = {
   namespaced: true,
@@ -30,13 +30,15 @@ const notificationStore = {
     },
     RESET_NOTIFICATION_LIST (state) {
       state.notificationList = []
+    },
+    UPDATE_NOTIFICATION: (state, data) => {
+      state.notification.upperLimit = data.upperLimit
     }
   },
   actions: {
     async notificationSave ({ commit }, data) {
       await saveNotification(data)
         .then(({ data }) => {
-          // console.log(data)
         })
         .catch(error => {
           console.log(error)
@@ -45,7 +47,6 @@ const notificationStore = {
     async getBookNotificationList ({ commit }) {
       await getNotificationList()
         .then(({ data }) => {
-          console.log(data)
           commit('SET_NOTIFICATION_LIST', data.result.content)
         })
         .catch(error => {
@@ -55,7 +56,6 @@ const notificationStore = {
     async getBookNotificationDetail ({ commit }, notificationId) {
       await getNotificationDetail(notificationId)
         .then(({ data }) => {
-          console.log(data)
           commit('SET_NOTIFICATION', data.result)
         })
         .catch(error => {
@@ -69,6 +69,15 @@ const notificationStore = {
           console.log(data)
           commit('RESET_NOTIFICATION_LIST')
           this.getBookNotificationList()
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    async notificationUpdate ({ commit }, payload) {
+      await updateNotification(payload)
+        .then(({ data }) => {
+          commit('UPDATE_NOTIFICATION', data.result)
         })
         .catch(error => {
           console.log(error)
