@@ -1,13 +1,19 @@
 <template>
-  <div>
-    <div>로그인</div>
-    <div>
-      <a :href="kakaoLoginLink">
-        <img src="../../assets/images/kakao_login_medium_wide.png">
-      </a>
-    </div>
+  <b-container fluid="md">
 
-  </div>
+      <b-row class="text-center">
+        <b-col cols="6">
+          <img src="../../assets/images/login_logo.png" style="width:200px; height:250px;">
+        </b-col>
+        <b-col cols="4"><span id="font">간편하게<br> 아이북을<br> 이용해보세요.<br></span></b-col>
+      </b-row>
+      <div>
+        <a :href="kakaoLoginLink">
+          <img src="../../assets/images/kakao_login_medium_wide.png">
+        </a>
+      </div>
+
+  </b-container>
 </template>
 
 <script>
@@ -29,6 +35,13 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+
+#font{
+  font-weight: bold;
+  font-size:45px;
+  color:white;
+  text-shadow: 2px 2px 2px gray;
+}
 
 </style>
