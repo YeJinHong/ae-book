@@ -56,9 +56,7 @@ export default {
     ...mapState(paintingStore, ['paintingList', 'paintingPageSetting'])
   },
   mounted () {
-    if (sessionStorage.getItem('isLoginUser') !== true) {
-      this.isLoginUser = false
-    } else {
+    if (sessionStorage.getItem('isLoginUser') === 'true') {
       this.isLoginUser = true
       this.onClickList('COLOR')
     }
