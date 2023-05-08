@@ -84,6 +84,7 @@ export default {
     // base64 문자열 이미지 로드
     const image = new Image()
     image.src = this.sketch
+    image.crossOrigin = 'anonymous' // cors 설정
     this.ctx.drawImage(image, 0, 0, this.canvas.width, this.canvas.height)
   },
   methods: {
