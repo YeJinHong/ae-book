@@ -81,6 +81,7 @@ pipeline
 				success {
 					echo 'Back-spring-img docker push Start'
 					sh '''
+					    docker login
 						docker tag back-spring-img:latest teepij/back-spring-img:latest
 						docker push teepij/back-spring-img
 					'''
@@ -166,7 +167,6 @@ pipeline
 				success {
 					echo 'Back-fast-img docker push Start'
 					sh '''
-					    docker login
 						docker tag back-fast-img:latest teepij/back-fast-img:latest
 						docker push teepij/back-fast-img
 					'''
