@@ -21,12 +21,32 @@ export default new Router({
       path: '/story',
       name: 'Story',
       component: AppStory,
+      redirect: '/story/list',
       children: [
-
+        // {
+        //   path: 'keyword',
+        //   name: 'StoryKeywordInput',
+        //   component: () => import('@/components/story/StoryKeywordInput')
+        // },
+        {
+          path: 'list',
+          name: 'StoryList',
+          component: () => import('@/components/story/StoryListView2')
+        },
         {
           path: 'keyword',
           name: 'StoryKeywordInput',
-          component: () => import('@/components/story/StoryKeywordInput')
+          component: () => import('@/components/story/StoryKeywordInputView')
+        },
+        {
+          path: 'board',
+          name: 'StoryPaintingBoard',
+          component: () => import('@/components/story/StoryPaintingBoardView')
+        },
+        {
+          path: 'result',
+          name: 'StoryResult',
+          component: () => import('@/components/story/StoryResultView')
         }
       ]
     },
@@ -39,7 +59,8 @@ export default new Router({
         {
           path: 'board',
           name: 'paintingboard',
-          component: () => import('@/components/painting/PaintingBoardView')
+          component: () => import('@/components/painting/PaintingBoardView'),
+          props: true
         },
         {
           path: 'list',
