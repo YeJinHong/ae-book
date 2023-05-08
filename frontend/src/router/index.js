@@ -6,7 +6,6 @@ import AppPainting from '@/views/AppPainting'
 import AppBook from '@/views/AppBook'
 import AppMyPage from '@/views/AppMyPage'
 import AppUser from '@/views/AppUser'
-import AppReview from '@/views/AppReview'
 
 Vue.use(Router)
 
@@ -128,30 +127,6 @@ export default new Router({
           path: 'oauth',
           name: 'Oauth',
           component: () => import('@/components/user/Oauth')
-        }
-      ]
-
-    },
-    {
-      path: '/review',
-      name: 'Review',
-      component: AppReview,
-      children: [
-        {
-          path: 'create',
-          name: 'ReviewCreate',
-          component: () => import('@/components/review/ReviewCreateView')
-        },
-        {
-          path: 'detail/:reviewId',
-          name: 'ReviewDetail',
-          component: () => import('@/components/review/ReviewDetailView'),
-          props: true
-        },
-        {
-          path: 'modify',
-          name: 'ReviewModify',
-          component: () => import('@/components/review/ReviewModifyView')
         }
       ]
     }
