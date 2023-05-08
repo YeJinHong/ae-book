@@ -81,7 +81,7 @@ public class TalkServiceImpl implements TalkService {
 
     public ResponseEntity<String> LowestPriceTalk(String token) {
         /**
-         * 알림톡 전송을 위해 정보 받아오기
+         * TODO: 알림톡 전송을 위해 정보 받아오기, notificationEntity를 통해 user 정보 가져오기
          * 일단 테스틀 위해 하드코딩
          * */
         String username = "도연";
