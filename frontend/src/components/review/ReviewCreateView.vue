@@ -18,6 +18,8 @@
           </div>
         </b-form-group>
         <button class='ae-btn ai-btn' type="button" @click="createAIReview">자동 작성</button>
+        <button v-if="isRecording===false" class='ae-btn ai-btn' type="button" @click="soundToKeyword">말하기</button>
+        <button v-else class='ae-btn ai-btn' type="button" @click="stopSoundToKeyword">멈추기</button>
       </div>
       <div class='line-2'>
         <b-form-group
@@ -86,10 +88,43 @@ export default {
         score: 5
       },
       show: true,
-      isModify: true
+      isModify: true,
+      audioArray: [],
+      mediaRecorder: null,
+      isRecording: false
     }
   },
   methods: {
+    soundToKeyword () {
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then((stream) => {
+          this.mediaRecorder = new MediaRecorder(stream)
+          this.mediaRecorder.ondataavailable = (event) => {
+            this.audioArray.push(event.data)
+          }
+          this.mediaRecorder.start()
+          this.isRecording = true
+        })
+    },
+    async stopSoundToKeyword () {
+      this.isRecording = false
+      this.mediaRecorder.stop()
+      this.mediaRecorder.onstop = (event) => {
+        const blob = new Blob(this.audioArray, {type: 'audio/mp3'})
+        this.audioArray.splice(0)
+        const formData = new FormData()
+        formData.append('audio', blob, 'recoding.mp3')
+        axios
+          .post('/fast/reviews/sound', formData)
+          .then(result => {
+            console.log(result)
+            this.form.keyword = result.data.keyword
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      }
+    },
     async createAIReview () {
       if (!this.form.keyword) {
         alert('키워드를 입력해주세요.')
