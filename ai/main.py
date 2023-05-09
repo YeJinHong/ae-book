@@ -19,6 +19,7 @@ from io import BytesIO
 import datetime
 import random
 from fastapi.staticfiles import StaticFiles
+import json
 
 ##setting cors origin
 origins = [
@@ -121,14 +122,14 @@ async def create_review(data:Dict[Any,Any]):
 
 
 """
-input:mp3 file(keyword), title
-output:review & point prediction
+input:mp3 file(keyword)
+output:review keyword
 """
 @app.post("/fast/reviews/sound")
-async def sound_to_review(title:str, sound: UploadFile = File(...), writer=None, char=None):
+async def sound_to_keyword(audio: UploadFile = File(...)):
     
     #read mp3 file to byte string
-    data = await sound.read()
+    data = await audio.read()
     
     headers = {
         "X-NCP-APIGW-API-KEY-ID": client_id,
@@ -141,13 +142,11 @@ async def sound_to_review(title:str, sound: UploadFile = File(...), writer=None,
     
     if(rescode == 200):
         
-        words = response.text #stt result
+        words = json.loads(response.text)['text'] #stt result
         
-        review_dict = create_gpt_review(title,words,writer,char) #create review & star
-        
-        return {"review":review_dict["review"], "star":review_dict["star"]}
+        return {"keyword":words,"respond":1}
     else:
-        return "Error : " + response.text
+        return {"keyword":'', "respond":0}
     
     
 
