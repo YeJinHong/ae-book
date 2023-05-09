@@ -55,8 +55,9 @@ const bookStore = {
         .then(({ data }) => {
           commit('SET_BOOK', data.result)
         })
-        .catch(_error => {
+        .catch(error => {
           alert('존재하지 않거나 접근이 불가능한 도서입니다.')
+          console.error(error)
           window.history.back()
         })
     },
