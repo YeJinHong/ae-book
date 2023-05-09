@@ -63,10 +63,11 @@
 
 <script>
 import axios from 'axios'
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import ReviewModifyScoreView from './ReviewModifyScoreView.vue'
 
 const reviewStore = 'reviewStore'
+const bookStore = 'bookStore'
 
 export default {
   components: { ReviewModifyScoreView },
@@ -88,6 +89,9 @@ export default {
       show: true,
       isModify: true
     }
+  },
+  computed: {
+    ...mapState(bookStore, ['book'])
   },
   methods: {
     async createAIReview () {
@@ -148,7 +152,13 @@ export default {
           return this.getReviewBookListAction(request)
         })
         .then(() => {
+          // this.$emit('get-my-review')
+          // setTimeout(() => {
+          //   this.$emit('close-modal')
+          // }, 300)
           this.$emit('close-modal')
+          this.$emit('get-my-review')
+          this.book.reviewCount += 1
         })
         .catch((err) => {
           console.log(err)
