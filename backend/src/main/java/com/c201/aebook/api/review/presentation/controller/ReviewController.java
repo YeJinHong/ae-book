@@ -58,7 +58,7 @@ public class ReviewController {
 		consumes = MediaType.APPLICATION_JSON_VALUE
 	)
 	public BaseResponse<?> saveReview(
-		@PathVariable String isbn,
+		@PathVariable(name = "isbn") String isbn,
 		@RequestBody ReviewRequestDTO reviewRequestDTO,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
@@ -82,7 +82,7 @@ public class ReviewController {
 			path = "/{isbn}"
 		)
 	public BaseResponse<?> getBookReviewList(
-		@PathVariable String isbn,
+		@PathVariable(name = "isbn") String isbn,
 		@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
 	) {
 		// isbn 검증
@@ -105,14 +105,18 @@ public class ReviewController {
 		return new BaseResponse<>(reviews, 200, ApplicationConstants.SUCCESS);
 	}
 
-	@Operation(summary = "특정 서평 조회", description = "선택한 서평의 정보를 보여줍니다.")
+	@Operation(summary = "특정 도서 내 서평 조회", description = "선택한 도서에 내가 등록한 서평의 정보를 얻습니다.")
 	@GetMapping(
-		path = "/detail/{reviewId}"
+		path = "/{isbn}/mine"
 	)
-	public BaseResponse<?> getReview(
-		@PathVariable(name = "reviewId") Long reviewId
+	public BaseResponse<?> getMyReview(
+		@PathVariable(name = "isbn") String isbn,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
-		ReviewResponseDTO review = reviewService.getReview(reviewId);
+		// isbn 검증
+		regexValidator.validateIsbn(isbn);
+
+		ReviewResponseDTO review = reviewService.getMyReview(customUserDetails.getUsername(), isbn);
 
 		return new BaseResponse<>(review, 200, ApplicationConstants.SUCCESS);
 	}
