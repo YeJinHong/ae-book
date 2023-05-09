@@ -1,7 +1,7 @@
 <template>
 <div>
   <button v-if="storyReady" @click="goReadStory" class="ae-btn btn-red">동화 보러 가기</button>
-  <div v-else>동화가 만들어지는 중</div>
+  <h1 v-else>동화가 만들어지는 중</h1>
   <div class="container">
     <!-- 왼쪽 -->
     <div class="container-left">
@@ -251,5 +251,10 @@ export default {
   box-shadow: 1px 3px 3px 0.1px rgba(0, 0, 0, 0.3);
   border-radius: 50%;
   cursor: pointer;
+}
+
+h1 {
+  font-weight: 800;
+  margin: 10px 0px;
 }
 </style>
