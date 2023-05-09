@@ -76,7 +76,7 @@ export default {
       } else {
         this.audio.play()
         this.stop = false
-      } 
+      }
     },
     canvasToFile (canvas) {
       // canvas -> dataURL
