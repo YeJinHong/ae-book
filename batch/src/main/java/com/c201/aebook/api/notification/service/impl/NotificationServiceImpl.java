@@ -167,7 +167,7 @@ public class NotificationServiceImpl implements NotificationService {
         int receiverSize = userList.size();
         for (int i=0; i<receiverSize; i++) {
             // 2번 적용 -> 문제점 발견 : 만약에 조건에 맞는게 없다면..? -> 밑에서 receiver로 체크
-            if(price > userList.get(i).getUpperLimit() && userList.get(i).getNotificationType().equals("S")) {
+            if(price >= userList.get(i).getUpperLimit() && userList.get(i).getNotificationType().equals("S")) {
                 body.add("receiver_" + (i + 1), userList.get(i).getUser().getPhone()); // 수신자 연락처
                 body.add("subject_" + (i + 1), subject); // 알림톡 제목(발신자만 보임)
                 body.add("message_" + (i + 1), userList.get(i).getUser().getNickname() + " 님\n" +
@@ -198,7 +198,14 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public List<NotificationEntity> getNotificationUserInfoByBookId(Long bookId, String notificationType) {
-        List<NotificationEntity> notificationUserList = notificationRepository.findByBookId(bookId, notificationType);
+        List<NotificationEntity> notificationUserList = notificationRepository.findByBookId(bookId);
+        return notificationUserList;
+    }
+
+    @Override
+    public List<NotificationEntity> getNotificationUserInfoByBookIdAndNotificationType(Long bookId, String notificationType) {
+        // 만약에 해당 책에 알림이 없는 경우를 먼저 확인해야 됨
+        List<NotificationEntity> notificationUserList = notificationRepository.findByBookIdAndNotificationType(bookId, notificationType);
         return notificationUserList;
     }
 
