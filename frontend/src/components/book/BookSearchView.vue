@@ -71,6 +71,7 @@ export default {
     ...mapMutations(bookStore, ['RESET_BOOK_SEARCH']),
     ...mapActions(bookStore, ['getSearchList']),
     onClickSearch () {
+      this.autoCompleteList = []
       // eslint-disable-next-line
       const regExp = /[!@#$%^&*()-_+=[\]{}\\|;:'",.<>/?]/
       if (regExp.test(this.keyword)) {
@@ -104,7 +105,6 @@ export default {
         })
     },
     clickKeyword (keyword) {
-      this.autoCompleteList = []
       // 특수문자를 검색을 못하기 때문에 앞의 [중고] 말머리를 제외.
       this.keyword = keyword.slice(5)
       this.onClickSearch()
