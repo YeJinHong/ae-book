@@ -98,7 +98,7 @@ export default {
       }
 
       axios
-        .post(`http://127.0.0.1:8000/reviews/gpt`, {
+        .post(`/fast/reviews/gpt`, {
           title: this.form.title,
           keyword: this.form.keyword,
           writer: this.form.writer,
