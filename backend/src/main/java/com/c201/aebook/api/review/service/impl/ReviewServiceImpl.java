@@ -93,7 +93,7 @@ public class ReviewServiceImpl implements ReviewService {
 
 		// 2. 리뷰 검색
 		ReviewEntity reviewEntity = reviewRepository.findByUserIdAndBookId(Long.valueOf(userId), bookEntity.getId())
-			.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+			.orElse(null);
 
 		ReviewResponseDTO result = reviewConverter.toReviewResponseDTO(reviewEntity);
 		return result;

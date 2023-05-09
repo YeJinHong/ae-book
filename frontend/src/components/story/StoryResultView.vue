@@ -2,9 +2,9 @@
   <div>
     <label class="title">제목 : </label>
     <input type="text" v-model="title">
-    <button v-if="generate===false" @click="createAudio" class="ae-btn btn-red">오디오재생</button>
-    <button v-else-if="stop===false" @click="playAudio(stop)" class="ae-btn btn-red">오디오멈춤</button>
-    <button v-else @click="playAudio(stop)" class="ae-btn btn-red">오디오재생</button>
+    <button v-if="this.stop" @click="playAudio()" class="ae-btn btn-red">오디오재생</button>
+    <button v-else @click="playAudio()" class="ae-btn btn-red">오디오멈춤</button>
+    <button @click="restartAudio()" class="ae-btn btn-red"> 오디오 처음부터 듣기 </button>
     <button @click="onSaveClick" class="ae-btn btn-red">동화 저장</button>
     <div class="container">
       <div class="container-left">
@@ -30,18 +30,18 @@ export default {
   name: 'StoryResultView',
   data () {
     return {
+      title: '',
       painting: '',
       story: null,
-      sound: '',
-      stop: false,
-      audio: null,
-      generate: false
+      voiceBlob: {},
+      audio: Object,
+      stop: true
     }
   },
   created () {
     this.painting = this.$route.params.painting
     this.story = this.$route.params.story
-    this.sound = this.$route.params.sound
+    this.voiceBlob = this.$route.params.voiceBlob
   },
   mounted () {
     this.canvas = this.$refs.canvas
@@ -51,34 +51,27 @@ export default {
     image.onload = function () {
       this.ctx.drawImage(image, 0, 0, 500, 500)
     }.bind(this)
+    this.createAudio()
   },
   methods: {
     ...mapActions(storyStore, ['saveStory']),
     createAudio () {
-      let sound = 'http://localhost:8000/static/sound/' + this.sound
-      // const binaryString = this.sound.slice(2)
-      // const buffer = new ArrayBuffer(binaryString.length)
-      // const bytes = new Uint8Array(buffer)
-      // for (let i = 0; i < binaryString.length; i++) {
-      //   bytes[i] = binaryString.charCodeAt(i)
-      // }
-      // const blob = new Blob([buffer], { type: 'audio/wav' })
-      // const audio = new Audio(URL.createObjectURL(blob))
-      const audio = new Audio(sound)
-      this.audio = audio
-      this.generate = true
-      audio.play()
+      var blobURL = window.URL.createObjectURL(this.voiceBlob)
+      this.audio = new Audio(blobURL)
     },
-    playAudio (stop) {
-      if (stop === false) {
-        this.audio.pause()
-        this.stop = true
-      } else {
+    playAudio () {
+      if (this.stop) {
         this.audio.play()
-        this.stop = false
-      } 
+      } else {
+        this.audio.pause()
+      }
+      this.stop = !this.stop
     },
-    canvasToFile (canvas) {
+    restartAudio () {
+      this.audio.currentTime = 0
+      this.audio.play()
+    },
+    canvasToFile (canvas, milliseconds) {
       // canvas -> dataURL
       let imgBase64 = canvas.toDataURL('image/png')
 
@@ -91,16 +84,21 @@ export default {
       const blob = new Blob([ab], { type: 'image/png' })
 
       // blob -> file
-      const paintingFile = new File([blob], 'story_painting_' + new Date().getMilliseconds() + '.png', { type: 'image/png' })
+      const paintingFile = new File([blob], 'story_painting_' + milliseconds + '.png', { type: 'image/png' })
 
       return paintingFile
+    },
+    voiceBlobToFile (voiceBlob, milliseconds) {
+      return new File([voiceBlob], 'story_voice_' + milliseconds + '.wav', { type: 'audio/wav' })
     },
     onSaveClick () { // 임시 저장. (api 확인 XXXX)
       if (this.title.trim() === '') {
         alert('제목을 입력해주세요.')
         return
       }
-      const paintingFile = this.canvasToFile(this.canvas)
+      let milliseconds = new Date().getMilliseconds()
+      const paintingFile = this.canvasToFile(this.canvas, milliseconds)
+      const voiceFile = this.voiceBlobToFile(this.voiceBlob, milliseconds)
 
       let data = {
         title: this.title,
@@ -108,6 +106,7 @@ export default {
       }
 
       let formData = new FormData()
+      formData.append('voiceFile', voiceFile)
       formData.append('imageFile', paintingFile)
       formData.append('data', new Blob([JSON.stringify(data)], {type: 'application/json'}))
 
@@ -119,6 +118,7 @@ export default {
           alert('동화 저장에 실패했습니다.' + error)
         })
 
+      this.audio.pause()
       this.$router.push('/story/list')
     }
   }
