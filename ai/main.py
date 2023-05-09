@@ -56,7 +56,7 @@ client_secret = os.getenv("CLIENT_SECRET")
 app = FastAPI()
 
 # static serving "directory sound" 
-app.mount("/stat", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/fast")
 async def root():
