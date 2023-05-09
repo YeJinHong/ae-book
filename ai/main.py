@@ -42,6 +42,7 @@ STT_URL = "https://naveropenapi.apigw.ntruss.com/recog/v1/stt?lang=Kor"
 TTS_URL = "https://naveropenapi.apigw.ntruss.com/tts-premium/v1/tts"
 ADJECTIVE = ["아름다운","이해하기 쉬운","재미있는","슬픈","교훈을 주는","상상력을 자극하는",
              "감동을 주는","어린이가 좋아할 만한","사실적인"]
+VOICE = ["vara","vdain","nkyungtae","nminsang"]
 
 #api key
 load_dotenv()
@@ -273,7 +274,7 @@ async def text_to_sound(text: Dict[Any,Any]):
     
     #create data(default)
     encText = urllib.parse.quote(text)
-    data = "speaker=nminsang&volume=-5&speed=0&pitch=0&format=wav&text=" + encText
+    data = f"speaker={np.random.choice(VOICE)}&volume=-5&speed=0&pitch=0&format=wav&text=" + encText
     
     #header
     request = urllib.request.Request(TTS_URL)
