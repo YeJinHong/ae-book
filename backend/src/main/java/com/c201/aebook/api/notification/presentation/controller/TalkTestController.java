@@ -68,7 +68,8 @@ public class TalkTestController {
             @RequestParam(name = "bookId") Long bookId
     ) throws ParseException, JsonProcessingException {
         // 1. notificationRepository에서 bookId로 알림 정보랑 유저들 정보 찾기
-        List<NotificationEntity> userList = talkService.getNotificationUserInfoByBookId(bookId);
+//        List<NotificationEntity> userList = talkService.getNotificationUserInfoByBookId(bookId);
+        List<NotificationEntity> userList = talkService.getNotificationUserInfoByBookIdAndNotificationType(bookId, "D");
 
         // 2. bookId로 book title 가져오기 -> 배치에서는 바로 가져올 수 있지만 현재는 불가능하므로 repository에서 가져오기
         String bookTitle = talkService.getBookTitle(bookId);
@@ -90,7 +91,8 @@ public class TalkTestController {
         int bookPrice = talkService.getBookPrice(bookId);
 
         // 2. notificationRepository에서 bookId로 알림 정보랑 유저들 정보 찾기
-        List<NotificationEntity> userList = talkService.getNotificationUserInfoByBookId(bookId);
+//        List<NotificationEntity> userList = talkService.getNotificationUserInfoByBookId(bookId);
+        List<NotificationEntity> userList = talkService.getNotificationUserInfoByBookIdAndNotificationType(bookId, "S");
 
         // 3. bookId로 book title 가져오기 -> 배치에서는 바로 가져올 수 있지만 현재는 불가능하므로 bookRepository에서 가져오기
         String bookTitle = talkService.getBookTitle(bookId);
