@@ -17,6 +17,7 @@ public interface NotificationService {
     public ResponseEntity<String> CustomizeLowestPriceTalk(String token, List<NotificationEntity> userList, String bookTitle, int price);
 
     public List<NotificationEntity> getNotificationUserInfoByBookId(Long bookId, String notificationType);
+    public List<NotificationEntity> getNotificationUserInfoByBookIdAndNotificationType(Long bookId, String notificationType);
 
     public boolean containsKeyStartingWith(MultiValueMap<String, Object> map, String keyPrefix);
 
