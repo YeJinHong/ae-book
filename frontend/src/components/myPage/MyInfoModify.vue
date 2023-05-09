@@ -31,7 +31,7 @@
           >
             수정
           </button>
-          <button class="ae-btn">사용자 탈퇴</button>
+          <button type="button" class="ae-btn" v-b-modal.modal-delete-user>사용자 탈퇴</button>
         </div>
       </form>
 
