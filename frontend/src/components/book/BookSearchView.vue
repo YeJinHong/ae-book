@@ -15,9 +15,12 @@
         </div>
       </div>
       <div class="right">
-        <div>
+        <div v-if="keyword === '' && totalSearchCount === 0" class="no-search">
+        검색어를 입력하세요.
+      </div>
+        <div v-else>
           <div class="search-result">
-            '<span style="color:var(--ae-red); font-weight: 700;">{{ searchKeyword }}</span>' 검색 결과 전체 <span style="font-size:30px">{{totalSearchCount}}</span>건
+            '<span style="color:var(--ae-red); font-weight: 700;">{{ searchKeyword }}</span>' 검색 결과 전체 <span style="font-size:30px">{{totalSearchCount | pricePoint}}</span>건
           </div>
           <div class="bar"></div>
           <div class="no-search" v-if="totalSearchCount === 0">'<span style="color:var(--ae-red)">{{ searchKeyword }}</span>' 검색 결과를 찾을 수 없습니다.</div>
@@ -30,6 +33,7 @@
           <pagination :pageSetting="bookPageSetting" @paging="paging"></pagination>
         </div>
       </div>
+
       </div>
     </div>
   </div>
@@ -48,7 +52,7 @@ export default {
     return {
       keyword: '',
       searchKeyword: '',
-      searchTargets: [],
+      searchTargets: ['TITLE', 'AUTHOR', 'PUBLISHER'],
       request: null
     }
   },
@@ -61,7 +65,7 @@ export default {
   },
   methods: {
     ...mapMutations(bookStore, ['RESET_BOOK_SEARCH']),
-    ...mapActions(bookStore, ['getSearchList', 'getPage']),
+    ...mapActions(bookStore, ['getSearchList']),
     onClickSearch () {
       this.request = {
         keyword: this.keyword,
