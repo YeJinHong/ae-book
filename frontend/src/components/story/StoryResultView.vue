@@ -4,6 +4,7 @@
     <input type="text" v-model="title">
     <button v-if="this.stop" @click="playAudio()" class="ae-btn btn-red">오디오재생</button>
     <button v-else @click="playAudio()" class="ae-btn btn-red">오디오멈춤</button>
+    <button @click="restartAudio()" class="ae-btn btn-red"> 오디오 처음부터 듣기 </button>
     <button @click="onSaveClick" class="ae-btn btn-red">동화 저장</button>
     <div class="container">
       <div class="container-left">
@@ -65,6 +66,10 @@ export default {
         this.audio.pause()
       }
       this.stop = !this.stop
+    },
+    restartAudio () {
+      this.audio.currentTime = 0
+      this.audio.play()
     },
     canvasToFile (canvas, milliseconds) {
       // canvas -> dataURL
