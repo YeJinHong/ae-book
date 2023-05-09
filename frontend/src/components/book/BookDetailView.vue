@@ -28,7 +28,7 @@
       <div class="bar"></div>
       <p style="font-weight: bold; text-align: left; font-size: 24px; color:var(--ae-navy); display:flex;">총 리뷰 개수 <span style="color:var(--ae-red)">{{ book.reviewCount }}</span>개
        <span class='btn-group' v-if='!isLogin'>
-        <button class='ae-btn btn-red review-btn' @click="goTo(login)">리뷰 등록</button>
+        <button class='ae-btn btn-red review-btn' @click="goTo('Login')">리뷰 등록</button>
        </span>
        <span class='btn-group' v-if='isLogin'>
         <button v-if='myReview != null' class='ae-btn btn-navy review-btn'>리뷰 등록 불가</button>
@@ -170,6 +170,10 @@ export default {
     ...mapActions(bookStore, ['getBookDetail']),
     ...mapActions(notificationStore, ['notificationSave', 'notificationdelete']),
     ...mapActions(reviewStore, ['getMyReviewAction']),
+    goTo (componentName) {
+      alert('로그인이 필요해요 ! ( •̀ ω •́ )✧')
+      this.$router.push({ name: componentName })
+    },
     getMyReview () {
       console.log('여기요 !!')
       this.getMyReviewAction(this.isbn)
