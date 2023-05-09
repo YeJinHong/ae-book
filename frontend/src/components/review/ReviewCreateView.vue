@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-    <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+    <b-form @reset="onReset" v-if="show">
       <div class='line-1'>
         <b-form-group
           id="input-group-1"
@@ -13,11 +13,11 @@
               type="text"
               placeholder="키워드를 입력하세요."
               style="width: 300px; margin-right: 20px;"
-              required
+              ref="keywordInput"
             ></b-form-input>
           </div>
         </b-form-group>
-        <button class='ae-btn ai-btn' @click="createAIReview">자동 작성</button>
+        <button class='ae-btn ai-btn' type="button" @click="createAIReview">자동 작성</button>
       </div>
       <div class='line-2'>
         <b-form-group
@@ -33,7 +33,6 @@
             min="1"
             max="100"
             style="width: 300px; margin-right: 12px;"
-            required
           ></b-form-input>
         </b-form-group>
         <div class='score-container'>
@@ -47,12 +46,12 @@
           placeholder="내용을 300자 내로 입력해주세요."
           rows="3"
           min="1"
-          max="300"
-          required
+          :max="150"
+          ref="contentInput"
         ></b-form-textarea>
       </b-form-group>
 
-      <b-button class='submit-btn b-btn' type="submit" variant="primary">등록</b-button>
+      <b-button class='submit-btn b-btn' type="button" variant="primary" @click="onSubmit">등록</b-button>
       <b-button class='reset-btn b-btn' type="reset" variant="danger">초기화</b-button>
     </b-form>
     <!-- <b-card class="mt-3" header="Form Data Result">
@@ -92,6 +91,12 @@ export default {
   },
   methods: {
     async createAIReview () {
+      if (!this.form.keyword) {
+        alert('키워드를 입력해주세요.')
+        this.$refs.keywordInput.focus()
+        return
+      }
+
       axios
         .post(`http://127.0.0.1:8000/reviews/gpt`, {
           title: this.form.title,
@@ -110,7 +115,17 @@ export default {
     },
     ...mapActions(reviewStore, ['saveReviewAction', 'getReviewBookListAction']),
     onSubmit (event) {
-      event.preventDefault()
+      if (!this.form.content) {
+        alert('리뷰 내용을 입력해주세요 ㅠㅅㅠ')
+        this.$refs.contentInput.focus()
+        return
+      }
+
+      if (this.form.content.length > 300) {
+        alert('리뷰 내용을 줄여주세요 ㅠㅅㅠ \n' + '현재 입력된 글자는 ' + this.form.content.length + '입니다 ^~^')
+        this.$refs.contentInput.focus()
+        return
+      }
 
       const payload = {
         isbn: this.form.isbn,
