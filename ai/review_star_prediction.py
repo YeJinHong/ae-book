@@ -128,4 +128,4 @@ def create_gpt_review(title:str, words: str, writer=None, char=None):
     #predicted star point
     star = predict_star_point(response)
     
-    return {"review":response, "star":star}
+    return response,star
