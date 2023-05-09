@@ -36,9 +36,10 @@ export default {
         .then(({ data }) => {
           this.$router.push(`/book/detail/${data.data}`)
         })
-        .catch(
+        .catch(error => {
           alert('ISBN이 올바르지 않습니다.')
-        )
+          console.error(error)
+        })
     },
     onFileChange (e) {
       const file = e.target.files[0]
