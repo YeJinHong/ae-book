@@ -1,10 +1,10 @@
-import { saveReview, getReview, getReviewMainList, getReviewBookList, getReviewMyList, modifyReview, deleteReview } from '../../api/review'
+import { saveReview, getMyReview, getReviewMainList, getReviewBookList, getReviewMyList, modifyReview, deleteReview } from '../../api/review'
 
 const reviewStore = {
   namespaced: true,
   // state: 변수들의 집합
   state: {
-    review: null,
+    myReview: null,
     reviewMainList: [],
     reviewMyList: [],
     reviewBookList: [],
@@ -16,8 +16,8 @@ const reviewStore = {
   - state 자체를 변경하지 않음.
   */
   getters: {
-    getReview: state => {
-      return state.review
+    getMyReview: state => {
+      return state.myReview
     },
     getReviewMainList: state => {
       return state.reviewMainList
@@ -34,8 +34,8 @@ const reviewStore = {
   - State는 반드시 Mutations가 가진 method를 통해서만 조작 함.
   */
   mutations: {
-    SET_REVIEW: (state, data) => {
-      state.review = data
+    SET_MY_REVIEW: (state, data) => {
+      state.myReview = data
     },
     SET_REVIEW_MAIN_LIST: (state, data) => {
       state.reviewMainList = data
@@ -54,8 +54,8 @@ const reviewStore = {
       const { pageable, last, first, totalPages, size, totalElements, numberOfElements, empty } = data
       state.reviewBookPageSetting = { pageable, last, first, totalPages, size, totalElements, numberOfElements, empty }
     },
-    RESET_REVIEW (state) {
-      state.review = null
+    RESET_MY_REVIEW (state) {
+      state.myReview = null
     }
   },
   /*
@@ -74,11 +74,11 @@ const reviewStore = {
           console.log(err)
         })
     },
-    async getReviewAction ({ commit }, reviewId) {
-      await getReview(reviewId)
+    async getMyReviewAction ({ commit }, isbn) {
+      await getMyReview(isbn)
         .then(({ data }) => {
-          commit('SET_REVIEW', data.result)
-          console.log('getReview')
+          commit('SET_MY_REVIEW', data.result)
+          console.log('getMyReview')
           console.log(data.result)
         }).catch((err) => {
           console.log(err)
@@ -97,7 +97,7 @@ const reviewStore = {
     async deleteReviewAction ({ commit }, reviewId) {
       await deleteReview(reviewId)
         .then(({ data }) => {
-          commit('RESET_REVIEW')
+          commit('RESET_MY_REVIEW')
           console.log('Review Delete Complete')
         })
     },
