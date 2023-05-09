@@ -1,11 +1,12 @@
 <template>
   <div class="container">
-      <b-input-group>
-        <b-form-input v-model="keyword" placeholder="검색어를 입력하세요" @keyup.enter="onClickSearch"></b-form-input>
-      <b-input-group-append>
-      <b-button @click="onClickSearch">검색</b-button>
-    </b-input-group-append>
-    </b-input-group>
+    <div class="search-container">
+        <input  @blur="clickOutsideAutoKeyword" v-model="keyword" placeholder="검색어를 입력하세요" @keyup.enter="onClickSearch"  @input="autoComplete" class="search-input">
+        <button @click="onClickSearch" class="ae-btn btn-red">검색</button>
+        <ul class="autocomplete" v-if="keyword !== ''">
+          <li v-for="keyword in autoCompleteList" :key="keyword" @click="clickKeyword(keyword)">{{ keyword }}</li>
+        </ul>
+    </div>
     <div class="content-container">
       <div class="left">
         <div class="search-option">
@@ -15,7 +16,7 @@
         </div>
       </div>
       <div class="right">
-        <div v-if="keyword === '' && totalSearchCount === 0" class="no-search">
+        <div v-if="(keyword === '' && totalSearchCount === 0) || !clickSearch" class="no-search">
         검색어를 입력하세요.
       </div>
         <div v-else>
@@ -43,6 +44,7 @@
 import { mapActions, mapGetters, mapState, mapMutations } from 'vuex'
 import Pagination from '../common/Pagination.vue'
 import BookSearchItem from './BookSearchItem.vue'
+import axios from 'axios'
 const bookStore = 'bookStore'
 
 export default {
@@ -50,10 +52,12 @@ export default {
   name: 'BookSearchView',
   data () {
     return {
-      keyword: '',
-      searchKeyword: '',
+      keyword: '', // 입력중인 키워드
+      searchKeyword: '', // 검색된 키워드
       searchTargets: ['TITLE', 'AUTHOR', 'PUBLISHER'],
-      request: null
+      request: null,
+      autoCompleteList: [],
+      clickSearch: false
     }
   },
   mounted () {
@@ -67,6 +71,14 @@ export default {
     ...mapMutations(bookStore, ['RESET_BOOK_SEARCH']),
     ...mapActions(bookStore, ['getSearchList']),
     onClickSearch () {
+      this.autoCompleteList = []
+
+      if (/[!@#$%^&*()-_+=[\]{}\\|;:'",.<>/?]/.test(this.keyword)) {
+        alert('특수문자를 입력할 수 없습니다.')
+        return
+      }
+
+      this.clickSearch = true
       this.request = {
         keyword: this.keyword,
         searchTargets: this.searchTargets
@@ -77,6 +89,28 @@ export default {
     paging (page) {
       this.request['page'] = page - 1
       this.getSearchList(this.request)
+    },
+    async autoComplete () {
+      if (this.keyword.length < 2) {
+        this.autoCompleteList = []
+        return
+      }
+      await axios.get(`/api/books/autocomplete?keyword=${this.keyword}`)
+        .then(data => {
+          this.autoCompleteList = data.data.result
+        })
+        .catch(error => {
+          console.error(error)
+        })
+    },
+    clickKeyword (keyword) {
+      this.autoCompleteList = []
+      // 특수문자를 검색을 못하기 때문에 앞의 [중고] 말머리를 제외.
+      this.keyword = keyword.slice(5)
+      this.onClickSearch()
+    },
+    clickOutsideAutoKeyword () {
+      this.autoCompleteList = []
     }
   }
 }
@@ -146,5 +180,45 @@ export default {
 .no-search{
   font-size: 35px;
   margin: 50px;
+}
+
+.auto-list {
+  background-color: red;
+}
+
+.autocomplete {
+  position: absolute;
+  z-index: 5;
+  left: 0;
+  max-height: 200px;
+  overflow-y: scroll;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  width: 400px;
+  padding: 0px;
+}
+
+.autocomplete li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.autocomplete li:hover {
+  background-color: #f2f2f2;
+}
+
+.search-container{
+  position: relative;
+  width: 480px;
+  margin: auto;
+  margin-top: 50px;
+}
+
+.search-input{
+  width: 400px;
+  height: 35px;
+  border: #ccc 1px solid;
+  border-radius: 1%;
 }
 </style>
