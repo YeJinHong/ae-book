@@ -20,6 +20,7 @@ public interface TalkService {
     public ResponseEntity<String> CustomizeLowestPriceTalk(String token, List<NotificationEntity> userList, String bookTitle, int price);
 
     public List<NotificationEntity> getNotificationUserInfoByBookId(Long bookId);
+    public List<NotificationEntity> getNotificationUserInfoByBookIdAndNotificationType(Long bookId, String notificationType);
 
     public String getBookTitle(Long bookId);
     public int getBookPrice(Long bookId);

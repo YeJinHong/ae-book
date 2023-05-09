@@ -215,6 +215,13 @@ public class TalkServiceImpl implements TalkService {
     }
 
     @Override
+    public List<NotificationEntity> getNotificationUserInfoByBookIdAndNotificationType(Long bookId, String notificationType) {
+        // 만약에 해당 책에 알림이 없는 경우를 먼저 확인해야 됨
+        List<NotificationEntity> notificationUserList = notificationRepository.findByBookIdAndNotificationType(bookId, notificationType);
+        return notificationUserList;
+    }
+
+    @Override
     public List<NotificationEntity> getNotificationUserInfoByBookId(Long bookId) {
         // 만약에 해당 책에 알림이 없는 경우를 먼저 확인해야 됨
         List<NotificationEntity> notificationUserList = notificationRepository.findByBookId(bookId);
