@@ -65,7 +65,7 @@ export default {
     return {
       keyword: '',
       storyResult: '',
-      sound_location: '',
+      sound_filename: '',
       storyReady: false,
       canvas: Object,
       ctx: Object,
@@ -74,7 +74,8 @@ export default {
       colorOptions1: ['#ff0000', '#ff8c00', '#ffff00', '#008000'],
       colorOptions2: ['#0000ff', '#800080', '#000080', '#000000'],
       title: '',
-      color: ''
+      color: '',
+      voiceBlob: {}
     }
   },
   created () {
@@ -107,8 +108,16 @@ export default {
           })
             .then(result => {
               console.log(result)
-              this.sound_location = result.data.sound
+              this.sound_filename = result.data.sound
               this.storyReady = true
+              axios({
+                url: `/fast/file/download/${this.sound_filename}`,
+                method: 'GET',
+                responseType: 'blob'
+              }).then((response) => {
+                this.voiceBlob = new Blob([response.data], {type: 'audio/mp3'})
+                console.log(this.voiceBlob)
+              })
             })
             .catch(err => {
               alert('TTS 생성 중 문제 발생' + err)
@@ -121,7 +130,7 @@ export default {
     goReadStory () {
       // 그림은 어떻게 할까.
       let imgBase64 = this.canvas.toDataURL('image/png')
-      this.$router.push({ name: 'StoryResult', params: {painting: imgBase64, story: this.storyResult, sound: this.sound_location} })
+      this.$router.push({ name: 'StoryResult', params: {painting: imgBase64, story: this.storyResult, voiceBlob: this.voiceBlob} })
     },
     onMove (event) {
       event.preventDefault()
