@@ -12,13 +12,13 @@ const saveReview = async (payload) => {
   }
 }
 // 2. 서평 상세 조회
-const getReview = async reviewId => {
+const getMyReview = async isbn => {
   try {
-    const response = await api.get(`/api/reviews/detail/${reviewId}`)
+    const response = await api.get(`/api/reviews/${isbn}/mine`)
     return response
   } catch (err) {
     console.log(err)
-    throw new Error('서평 상세 조회를 실패했습니다.')
+    throw new Error('특정 도서 내 서평 조회를 실패했습니다.')
   }
 }
 
@@ -81,4 +81,4 @@ const getReviewMyList = async (request) => {
   }
 }
 
-export { saveReview, getReview, modifyReview, deleteReview, getReviewMainList, getReviewBookList, getReviewMyList }
+export { saveReview, getMyReview, modifyReview, deleteReview, getReviewMainList, getReviewBookList, getReviewMyList }
