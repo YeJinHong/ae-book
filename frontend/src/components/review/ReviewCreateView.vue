@@ -114,11 +114,25 @@ export default {
         this.audioArray.splice(0)
         const formData = new FormData()
         formData.append('audio', blob, 'recoding.mp3')
+        formData.append('title', this.form.title)
+
+        if (this.writer != null) {
+          formData.append('writer', this.form.writer)
+        }
+        if (this.char != null) {
+          formData.append('char', this.form.char)
+        }
+
         axios
-          .post('/fast/reviews/sound', formData)
+          .post('/fast/reviews/sound', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          })
           .then(result => {
             console.log(result)
-            this.form.keyword = result.data.keyword
+            this.form.content = result.data.review
+            this.form.score = result.data.star
           })
           .catch(err => {
             console.log(err)
