@@ -68,7 +68,8 @@ const bookStore = {
           commit('SET_PAGE_SETTING', data.result)
         })
         .catch(error => {
-          console.error('도서 리스트를 조회하는데 문제가 발생했습니다.' + error)
+          alert('도서 리스트를 조회하는데 문제가 발생했습니다.')
+          console.error(error)
         })
     },
     async getNewBookList ({ commit }, request) {
@@ -77,7 +78,8 @@ const bookStore = {
           commit('SET_BOOK_LIST', data.result)
         })
         .catch(error => {
-          console.error('최신 도서 리스트를 조회하는데 문제가 발생했습니다.' + error)
+          alert('최신 도서 리스트를 조회하는데 문제가 발생했습니다.')
+          console.error(error)
         })
     }
   }
