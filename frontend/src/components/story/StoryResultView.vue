@@ -28,15 +28,17 @@ export default {
   name: 'StoryResultView',
   data () {
     return {
+      title: '',
       painting: '',
       story: null,
-      sound: ''
+      voiceBlob: {},
+      audio: Object
     }
   },
   created () {
     this.painting = this.$route.params.painting
     this.story = this.$route.params.story
-    this.sound = this.$route.params.sound
+    this.voiceBlob = this.$route.params.voiceBlob
   },
   mounted () {
     this.canvas = this.$refs.canvas
@@ -50,19 +52,21 @@ export default {
   methods: {
     ...mapActions(storyStore, ['saveStory']),
     playAudio () {
-      let sound = 'http://localhost:8000/static/sound/' + this.sound
-      // const binaryString = this.sound.slice(2)
-      // const buffer = new ArrayBuffer(binaryString.length)
-      // const bytes = new Uint8Array(buffer)
-      // for (let i = 0; i < binaryString.length; i++) {
-      //   bytes[i] = binaryString.charCodeAt(i)
-      // }
-      // const blob = new Blob([buffer], { type: 'audio/wav' })
-      // const audio = new Audio(URL.createObjectURL(blob))
-      const audio = new Audio(sound)
-      audio.play()
+      // let sound = 'http://localhost:8000/static/sound/' + this.sound
+      // // const binaryString = this.sound.slice(2)
+      // // const buffer = new ArrayBuffer(binaryString.length)
+      // // const bytes = new Uint8Array(buffer)
+      // // for (let i = 0; i < binaryString.length; i++) {
+      // //   bytes[i] = binaryString.charCodeAt(i)
+      // // }
+      // // const blob = new Blob([buffer], { type: 'audio/wav' })
+      // // const audio = new Audio(URL.createObjectURL(blob))
+      // const audio = new Audio(sound)
+      var blobURL = window.URL.createObjectURL(this.voiceBlob)
+      this.audio = new Audio(blobURL)
+      this.audio.play()
     },
-    canvasToFile (canvas) {
+    canvasToFile (canvas, milliseconds) {
       // canvas -> dataURL
       let imgBase64 = canvas.toDataURL('image/png')
 
@@ -75,16 +79,21 @@ export default {
       const blob = new Blob([ab], { type: 'image/png' })
 
       // blob -> file
-      const paintingFile = new File([blob], 'story_painting_' + new Date().getMilliseconds() + '.png', { type: 'image/png' })
+      const paintingFile = new File([blob], 'story_painting_' + milliseconds + '.png', { type: 'image/png' })
 
       return paintingFile
+    },
+    voiceBlobToFile (voiceBlob, milliseconds) {
+      return new File([voiceBlob], 'story_voice_' + milliseconds + '.wav', { type: 'audio/wav' })
     },
     onSaveClick () { // 임시 저장. (api 확인 XXXX)
       if (this.title.trim() === '') {
         alert('제목을 입력해주세요.')
         return
       }
-      const paintingFile = this.canvasToFile(this.canvas)
+      let milliseconds = new Date().getMilliseconds()
+      const paintingFile = this.canvasToFile(this.canvas, milliseconds)
+      const voiceFile = this.voiceBlobToFile(this.voiceBlob, milliseconds)
 
       let data = {
         title: this.title,
@@ -92,6 +101,7 @@ export default {
       }
 
       let formData = new FormData()
+      formData.append('voiceFile', voiceFile)
       formData.append('imageFile', paintingFile)
       formData.append('data', new Blob([JSON.stringify(data)], {type: 'application/json'}))
 
@@ -103,6 +113,7 @@ export default {
           alert('동화 저장에 실패했습니다.' + error)
         })
 
+      this.audio.pause()
       this.$router.push('/story/list')
     }
   }

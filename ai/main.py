@@ -305,3 +305,8 @@ async def text_to_sound(text: Dict[Any,Any]):
         filename = ''
         
     return {'rescode':rescode, 'sound':filename}
+
+# File download
+@app.get("/fast/file/download/{filename}")
+def download_file(filename: str):
+    return FileResponse(path=f"static/sound/{filename}", filename=f"{filename}", media_type="multipart/form-data")
