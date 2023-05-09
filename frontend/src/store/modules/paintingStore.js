@@ -53,10 +53,9 @@ const paintingStore = {
       await savePainting(formdata)
         .then(({ data }) => {
           commit('SET_PAINTING', data.result)
-          console.log(data.result)
         })
         .catch(error => {
-          console.log(error)
+          console.error(error)
         })
     },
     async getPaintingList ({ commit }, request) {
