@@ -55,8 +55,8 @@ const bookStore = {
         .then(({ data }) => {
           commit('SET_BOOK', data.result)
         })
-        .catch(error => {
-          alert('존재하지 않는 책입니다.' + error)
+        .catch(_error => {
+          alert('존재하지 않거나 접근이 불가능한 도서입니다.')
           window.history.back()
         })
     },
@@ -68,17 +68,7 @@ const bookStore = {
           commit('SET_PAGE_SETTING', data.result)
         })
         .catch(error => {
-          alert(error)
-        })
-    },
-    async getPage ({ commit }, request) {
-      await getSearchList(request)
-        .then(({ data }) => {
-          commit('SET_BOOK_LIST', data.result.content)
-          commit('SET_PAGE_SETTING', data.result)
-        })
-        .catch(error => {
-          alert(error)
+          console.error('도서 리스트를 조회하는데 문제가 발생했습니다.' + error)
         })
     },
     async getNewBookList ({ commit }, request) {
@@ -87,7 +77,7 @@ const bookStore = {
           commit('SET_BOOK_LIST', data.result)
         })
         .catch(error => {
-          alert(error)
+          console.error('최신 도서 리스트를 조회하는데 문제가 발생했습니다.' + error)
         })
     }
   }

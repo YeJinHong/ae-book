@@ -65,7 +65,7 @@ export default {
   },
   methods: {
     ...mapMutations(bookStore, ['RESET_BOOK_SEARCH']),
-    ...mapActions(bookStore, ['getSearchList', 'getPage']),
+    ...mapActions(bookStore, ['getSearchList']),
     onClickSearch () {
       this.request = {
         keyword: this.keyword,

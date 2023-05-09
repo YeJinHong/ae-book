@@ -34,12 +34,11 @@ export default {
     async getISBNfromPicture (request) {
       await getISBNfromPicture(request)
         .then(({ data }) => {
-          // 근데 만약.. ISBN을 잘 읽어도 DB에 존재하지 않는다면 에러 404..
           this.$router.push(`/book/detail/${data.data}`)
         })
-        .catch(error => {
-          alert('ISBN이 올바르지 않습니다.' + error)
-        })
+        .catch(
+          alert('ISBN이 올바르지 않습니다.')
+        )
     },
     onFileChange (e) {
       const file = e.target.files[0]
