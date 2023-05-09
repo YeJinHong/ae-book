@@ -2,8 +2,8 @@
   <div>
     <label class="title">제목 : </label>
     <input type="text" v-model="title">
-    <button v-if="this.stop" @click="playAudio()" class="ae-btn btn-red">오디오재생</button>
-    <button v-else @click="playAudio()" class="ae-btn btn-red">오디오멈춤</button>
+    <button @click="playAudio(stop)" class="ae-btn btn-red">오디오재생</button>
+    <button @click="stopAudio(stop)" class="ae-btn btn-red">오디오멈춤</button>
     <button @click="restartAudio()" class="ae-btn btn-red"> 오디오 처음부터 듣기 </button>
     <button @click="onSaveClick" class="ae-btn btn-red">동화 저장</button>
     <div class="container">
@@ -59,13 +59,17 @@ export default {
       var blobURL = window.URL.createObjectURL(this.voiceBlob)
       this.audio = new Audio(blobURL)
     },
-    playAudio () {
-      if (this.stop) {
+    playAudio (stop) {
+      if (stop) {
         this.audio.play()
-      } else {
+      }
+      this.stop = !stop
+    },
+    stopAudio (stop) {
+      if (stop === false) {
         this.audio.pause()
       }
-      this.stop = !this.stop
+      this.stop = !stop
     },
     restartAudio () {
       this.audio.currentTime = 0
