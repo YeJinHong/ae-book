@@ -35,6 +35,9 @@ dependencies {
 	//http client
 	implementation 'commons-httpclient:commons-httpclient:3.1'
 
+	// json
+	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+
 }
 
 tasks.named('test') {
