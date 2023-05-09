@@ -37,10 +37,10 @@ public class NotificationEventListener implements ApplicationListener<Notificati
 		Long bookId = book.getId();
 
 		// 1-1. notificationRepository에서 최저가 알림(D)을 신청한 사용자와 알림 정보를 bookId와 notificationType으로 가져오기
-		List<NotificationEntity> lowestPriceUserList = notificationService.getNotificationUserInfoByBookId(bookId, "D");
+		List<NotificationEntity> lowestPriceUserList = notificationService.getNotificationUserInfoByBookIdAndNotificationType(bookId, "D");
 
 		// 1-2. notificationRepository에서 사용자 지정 최저가 알림(S)을 신청한 사용자와 알림 정보를 bookId와 notificationType으로 가져오기
-		List<NotificationEntity> customizeUserList = notificationService.getNotificationUserInfoByBookId(bookId, "S");
+		List<NotificationEntity> customizeUserList = notificationService.getNotificationUserInfoByBookIdAndNotificationType(bookId, "S");
 
 		// 2. token 정보 얻어오기
 		String token = null;
@@ -60,7 +60,6 @@ public class NotificationEventListener implements ApplicationListener<Notificati
 		if(customizeLowestPrice == null) {
 			log.info("전송대상 없음");
 		}
-
 
 	}
 
