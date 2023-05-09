@@ -101,7 +101,12 @@ const notificationStore = 'notificationStore'
 
 export default {
   name: 'BookDetailView',
-  props: ['isbn'],
+  props: {
+    isbn: {
+      type: String,
+      required: true
+    }
+  },
   components: {
     ReviewBookListView,
     ReviewCreateView,
@@ -147,7 +152,7 @@ export default {
     },
     showModal () {
       this.bookInfo = {
-        isbn: this.isbn.slice,
+        isbn: this.isbn,
         title: this.book.title.slice(5, this.book.title.length),
         writer: this.book.author
       }

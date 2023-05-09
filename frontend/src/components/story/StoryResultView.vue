@@ -2,7 +2,8 @@
   <div>
     <label class="title">제목 : </label>
     <input type="text" v-model="title">
-    <button @click="playAudio" class="ae-btn btn-red">오디오재생</button>
+    <button v-if="this.stop" @click="playAudio()" class="ae-btn btn-red">오디오재생</button>
+    <button v-else @click="playAudio()" class="ae-btn btn-red">오디오멈춤</button>
     <button @click="onSaveClick" class="ae-btn btn-red">동화 저장</button>
     <div class="container">
       <div class="container-left">
@@ -32,7 +33,8 @@ export default {
       painting: '',
       story: null,
       voiceBlob: {},
-      audio: Object
+      audio: Object,
+      stop: true
     }
   },
   created () {
@@ -48,23 +50,21 @@ export default {
     image.onload = function () {
       this.ctx.drawImage(image, 0, 0, 500, 500)
     }.bind(this)
+    this.createAudio()
   },
   methods: {
     ...mapActions(storyStore, ['saveStory']),
-    playAudio () {
-      // let sound = 'http://localhost:8000/static/sound/' + this.sound
-      // // const binaryString = this.sound.slice(2)
-      // // const buffer = new ArrayBuffer(binaryString.length)
-      // // const bytes = new Uint8Array(buffer)
-      // // for (let i = 0; i < binaryString.length; i++) {
-      // //   bytes[i] = binaryString.charCodeAt(i)
-      // // }
-      // // const blob = new Blob([buffer], { type: 'audio/wav' })
-      // // const audio = new Audio(URL.createObjectURL(blob))
-      // const audio = new Audio(sound)
+    createAudio () {
       var blobURL = window.URL.createObjectURL(this.voiceBlob)
       this.audio = new Audio(blobURL)
-      this.audio.play()
+    },
+    playAudio () {
+      if (this.stop) {
+        this.audio.play()
+      } else {
+        this.audio.pause()
+      }
+      this.stop = !this.stop
     },
     canvasToFile (canvas, milliseconds) {
       // canvas -> dataURL

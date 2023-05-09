@@ -16,7 +16,7 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
 	@Query("SELECT re FROM ReviewEntity re LEFT JOIN FETCH re.user LEFT JOIN FETCH re.book WHERE re.id = :reviewId")
 	public Optional<ReviewEntity> findById(Long reviewId);
 
-	public ReviewEntity findByUserIdAndBookId(Long userId, Long bookId);
+	public Optional<ReviewEntity> findByUserIdAndBookId(Long userId, Long bookId);
 
 	@Query(value = "SELECT re FROM ReviewEntity re LEFT JOIN FETCH re.user WHERE re.book.id = :bookId",
 		countQuery = "SELECT COUNT(re) FROM ReviewEntity re WHERE re.book.id = :bookId")
