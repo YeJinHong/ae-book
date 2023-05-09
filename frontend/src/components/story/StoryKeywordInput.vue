@@ -3,7 +3,7 @@
     <input type="text" v-model="inputValue" />
     <button @click="sendInputValue">전송</button>
     <div>{{storyResult}}</div>
-    <button @click="playAudio(sound)">오디오 재생</button>
+    <button @click="playAudio()">오디오 재생</button>
     <!-- <StoryChatGptView :storyResult="storyResult"></StoryChatGptView> -->
   </div>
 </template>
@@ -21,13 +21,17 @@ export default {
       inputValue: '',
       storyResult: '',
       rescode: '',
-      sound: 'http://localhost:8000/static/sound/'
+      sound: 'http://localhost:8000/static/sound/',
+      sound_filename: '',
+      soundBlob: {}
     }
   },
   methods: {
-    playAudio (sound) {
-      if (sound) {
-        const audio = new Audio(sound)
+    playAudio () {
+      if (this.soundBlob) {
+        var blobURL = window.URL.createObjectURL(this.soundBlob)
+        // const audio = new Audio(sound)
+        const audio = new Audio(blobURL)
         audio.play()
       }
     },
@@ -49,8 +53,17 @@ export default {
             .then(result => {
               console.log(result)
               this.rescode = result.data.rescode
-              this.sound += result.data.sound
-              console.log(this.sound)
+              // this.sound += result.data.sound
+              this.sound_filename = result.data.sound
+              axios({
+                url: `/fast/file/download/${this.sound_filename}`,
+                method: 'GET',
+                responseType: 'blob'
+              }).then((response) => {
+                this.soundBlob = new Blob([response.data], {type: 'audio/mp3'})
+                console.log(this.soundBlob)
+              })
+              // console.log(this.sound)
             })
             .catch(err => {
               console.log(err)
