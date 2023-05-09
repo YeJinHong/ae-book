@@ -1,6 +1,6 @@
 import { searchStory, searchDetailStory, registerStory } from '@/api/story'
 
-const story = {
+const storyStore = {
   namespaced: true,
 
   state: {
@@ -38,6 +38,7 @@ const story = {
     async getStoryList ({commit}, request) {
       await searchStory(request)
         .then(({data}) => {
+          console.log(data)
           commit('SET_PAGE_SETTING', data.result)
           commit('SET_LIST', data.result.content)
         })
@@ -65,7 +66,6 @@ const story = {
         })
     }
   }
-
 }
 
-export default story
+export default storyStore
