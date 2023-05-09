@@ -22,7 +22,7 @@ public interface ReviewService {
 	public Page<ReviewMyResponseDTO> getMyReviewList(String userId, Pageable pageable);
 
 	// 4. getReview : 특정 서평 조회
-	public ReviewResponseDTO getReview(Long reviewId);
+	public ReviewResponseDTO getMyReview(String userId, String isbn);
 
 	// 5. modifyReview : 특정 서평 수정
 	public ReviewResponseDTO modifyReview(Long reviewId, String userId, ReviewSO reviewSO);
