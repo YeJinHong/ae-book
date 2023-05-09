@@ -1,6 +1,10 @@
 package com.c201.aebook.api.notification.service.impl;
 
+import com.c201.aebook.api.book.persistence.repository.BookRepository;
+import com.c201.aebook.api.notification.persistence.entity.NotificationEntity;
+import com.c201.aebook.api.notification.persistence.repository.NotificationRepository;
 import com.c201.aebook.api.notification.service.TalkService;
+import com.c201.aebook.api.user.persistence.entity.UserEntity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +46,9 @@ public class TalkServiceImpl implements TalkService {
     @Value("${talk.aebook-url}")
     private String aebookUrl;
 
+    private final NotificationRepository notificationRepository;
+    private final BookRepository bookRepository;
+
     @Override
     public String createToken() throws JsonProcessingException, ParseException {
         RestTemplate rt = new RestTemplate();
@@ -79,13 +86,7 @@ public class TalkServiceImpl implements TalkService {
         return token;
     }
 
-    public ResponseEntity<String> LowestPriceTalk(String token) {
-        /**
-         * TODO: 알림톡 전송을 위해 정보 받아오기, notificationEntity를 통해 user 정보 가져오기
-         * 일단 테스틀 위해 하드코딩
-         * */
-        String username = "도연";
-        String bookTitle = "자바와 JUnit을 활용한 실용주의 단위 테스트";
+    public ResponseEntity<String> LowestPriceTalk(String token, List<NotificationEntity> userList, String bookTitle) {
         String subject = "도서 최저가 갱신";
 
         //버튼 정보 입력
@@ -114,12 +115,15 @@ public class TalkServiceImpl implements TalkService {
         body.add("tpl_code", LowestPriceTplCode); // 템플릿 코드
         body.add("sender", TalkSender); // 발신자 연락처
 
-        body.add("receiver_1", "01071276216"); // 수신자 연락처
-        body.add("subject_1", subject); // 알림톡 제목(발신자만 보임)
-        body.add("message_1", username + " 님\n" +
-                "아이북에서 알림 신청한 '" + bookTitle + "' 도서의 최저가격이 갱신되었습니다.\n" +
-                "아이북에 방문하여 확인해주세요."); // 알림톡 내용
-        body.add("button_1", buttonInfo); // 버튼 정보
+        int receiverSize = userList.size();
+        for (int i=0; i<receiverSize; i++) {
+            body.add("receiver_"+ (i+1), userList.get(i).getUser().getPhone()); // 수신자 연락처
+            body.add("subject_"+ (i+1), subject); // 알림톡 제목(발신자만 보임)
+            body.add("message_"+ (i+1), userList.get(i).getUser().getNickname() + " 님\n" +
+                    "아이북에서 알림 신청한 '" + bookTitle + "' 도서의 최저가격이 갱신되었습니다.\n" +
+                    "아이북에 방문하여 확인해주세요."); // 알림톡 내용
+            body.add("button_"+ (i+1), buttonInfo); // 버튼 정보
+        }
         body.add("testMode", "N"); // 테스트 모드
 
         //전송 객체 생성
@@ -136,14 +140,7 @@ public class TalkServiceImpl implements TalkService {
         return LowestPriceResponse;
     }
 
-    public ResponseEntity<String> CustomizeLowestPriceTalk(String token) {
-        /**
-         * TODO: 알림톡 전송을 위해 정보 받아오기, notificationEntity를 통해 user 정보 가져오기
-         * 일단 테스틀 위해 하드코딩
-         * */
-        String username = "냠냠";
-        String bookTitle = "자바와 JUnit을 활용한 실용주의 단위 테스트";
-        int price = 5000;
+    public ResponseEntity<String> CustomizeLowestPriceTalk(String token, List<NotificationEntity> userList, String bookTitle, int price) {
         String subject = "사용지 지정 도서 최저가 갱신";
 
         //버튼 정보 입력
@@ -172,26 +169,88 @@ public class TalkServiceImpl implements TalkService {
         body.add("tpl_code", CustomizeLowestPriceTplCode); // 템플릿 코드
         body.add("sender", TalkSender); // 발신자 연락처
 
-        body.add("receiver_1", "01076100034"); // 수신자 연락처
-        body.add("subject_1", subject); // 알림톡 제목(발신자만 보임)
-        body.add("message_1", username + " 님\n" +
-                "아이북에서 알림 신청한 '" + bookTitle + "' 도서의 최저가격이 지정하신 " + price + "원 이하로 갱신되었습니다.\n" +
-                "아이북에 방문하여 확인해주세요!"); // 알림톡 내용
-        body.add("button_1", buttonInfo); // 버튼 정보
+        /**
+         * 어떤 방법이 좀 더 현명한 방법일까.....
+         *
+         * 1번
+         * 다른 곳에서 현재 도서의 최저가와 사용자가 지정한 최저가를 비교해서
+         * 사용자 지정가가 더 낮은 경우만 모아서 userList로 보내기
+         * 그리고 여기서 for문 돌면서 탬플릿에 맞춰서 보내기
+         *
+         * 2번
+         * 어차피 여기서 탬플릿 때문에 for문을 도니까
+         * 여기서 if문으로 현재 도서의 최저가와 사용자가 지정한 최저가를 비교해서
+         * 사용자 지정가가 더 낮은 경우만 탬플릿에 맞춰서 바로 알림톡 보내기
+         * */
+        int receiverSize = userList.size();
+        for (int i=0; i<receiverSize; i++) {
+            // 2번 적용 -> 문제점 발견 : 만약에 조건에 맞는게 없다면..? -> 밑에서 receiver로 체크
+            if(price > userList.get(i).getUpperLimit() && userList.get(i).getNotificationType().equals("S")) {
+                body.add("receiver_" + (i + 1), userList.get(i).getUser().getPhone()); // 수신자 연락처
+                body.add("subject_" + (i + 1), subject); // 알림톡 제목(발신자만 보임)
+                body.add("message_" + (i + 1), userList.get(i).getUser().getNickname() + " 님\n" +
+                        "아이북에서 알림 신청한 '" + bookTitle + "' 도서의 최저가격이 지정하신 " + userList.get(i).getUpperLimit() + "원 이하로 갱신되었습니다.\n" +
+                        "아이북에 방문하여 확인해주세요!"); // 알림톡 내용
+                body.add("button_" + (i + 1), buttonInfo); // 버튼 정보
+            }
+        }
         body.add("testMode", "N"); // 테스트 모드
 
-        //전송 객체 생성
-        HttpEntity<MultiValueMap<String, Object>> LowestPriceRequest = new HttpEntity<>(body);
+        // 문제점 해결을 위해 receiver가 있는지 체크
+        ResponseEntity<String> customizeLowestPriceTalk = null;
+        if(containsKeyStartingWith(body,"receiver")) {
+            //전송 객체 생성
+            HttpEntity<MultiValueMap<String, Object>> LowestPriceRequest = new HttpEntity<>(body);
 
-        //post로 보내고 결과 받기
-        ResponseEntity<String> customizeLowestPriceTalk = rt.exchange(
-                "https://kakaoapi.aligo.in/akv10/alimtalk/send/",
-                HttpMethod.POST,
-                LowestPriceRequest,
-                String.class
-        );
+            //post로 보내고 결과 받기
+            customizeLowestPriceTalk = rt.exchange(
+                    "https://kakaoapi.aligo.in/akv10/alimtalk/send/",
+                    HttpMethod.POST,
+                    LowestPriceRequest,
+                    String.class
+            );   
+        }
 
         return customizeLowestPriceTalk;
     }
+
+    @Override
+    public List<NotificationEntity> getNotificationUserInfoByBookIdAndNotificationType(Long bookId, String notificationType) {
+        // 만약에 해당 책에 알림이 없는 경우를 먼저 확인해야 됨
+        List<NotificationEntity> notificationUserList = notificationRepository.findByBookIdAndNotificationType(bookId, notificationType);
+        return notificationUserList;
+    }
+
+    @Override
+    public List<NotificationEntity> getNotificationUserInfoByBookId(Long bookId) {
+        // 만약에 해당 책에 알림이 없는 경우를 먼저 확인해야 됨
+        List<NotificationEntity> notificationUserList = notificationRepository.findByBookId(bookId);
+        return notificationUserList;
+    }
+
+    @Override
+    public String getBookTitle(Long bookId) {
+        // 책 정보가 없는 경우 error -> 현재는 해야되지만 배치에서는 책정보가 있는것만 오지 않을까...? 그래도 해야될듯...
+        String bookTitle = bookRepository.findTitleById(bookId);
+        return bookTitle;
+    }
+
+    @Override
+    public int getBookPrice(Long bookId) {
+        // 책 정보가 없는 경우 error -> 현재는 해야되지만 배치에서는 책정보가 있는것만 오지 않을까....? 그래도 느낌이 해야될듯...
+        int bookPrice = bookRepository.findPriceById(bookId);
+        return bookPrice;
+    }
+
+    @Override
+    public boolean containsKeyStartingWith(MultiValueMap<String, Object> map, String keyPrefix) {
+        for (String key : map.keySet()) {
+            if (key.startsWith(keyPrefix)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 }
