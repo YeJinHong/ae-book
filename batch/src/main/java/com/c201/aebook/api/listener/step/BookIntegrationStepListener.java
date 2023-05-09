@@ -44,6 +44,8 @@ public class BookIntegrationStepListener implements StepExecutionListener {
 		int rollbackCount = stepExecution.getRollbackCount();
 		
 		log.info(" ================= [ STEP END ] ================ ");
+		log.info("after step execution = " + stepExecution);
+		log.info(" ================= [ STEP END ] ================ ");
 		log.info(stepName + " : before step execution");
 		log.info("commitCount of stepExecution : " + commitCount);
 		log.info("readCount of stepExecution : " + readCount);
