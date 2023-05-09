@@ -104,7 +104,12 @@ const notificationStore = 'notificationStore'
 
 export default {
   name: 'BookDetailView',
-  props: ['isbn'],
+  props: {
+    isbn: {
+      type: String,
+      required: true
+    }
+  },
   components: {
     ReviewBookListView,
     ReviewCreateView,
