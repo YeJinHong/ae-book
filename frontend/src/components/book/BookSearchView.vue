@@ -157,6 +157,7 @@ export default {
   text-align: left;
   font-size: 18px;
   font-weight: bold;
+  margin-top: 10px;
 }
 
 .search-option > * {
