@@ -7,7 +7,7 @@
     <img v-bind:src="story.imgUrl" alt="story image" v-if="story" />
     <p v-if="story">작성자: {{ story.storyAuthorNickname }}</p>
     <p v-if="story">작성일: {{ story.createdAt }}</p>
-    <StoryModalButton :title="story.title"></StoryModalButton>
+    <StoryModalButton :title="story.title" @close="closeModal"></StoryModalButton>
   </div>
 </template>
 
@@ -24,6 +24,9 @@ export default {
   },
   computed: {
     ...mapGetters(storyStore, ['getStoryId'])
+  },
+  props: {
+
   },
   data () {
     return {
@@ -42,7 +45,9 @@ export default {
       })
   },
   methods: {
-
+    closeModal () {
+      this.$emit('close')
+    }
   }
 
 }
