@@ -15,18 +15,22 @@
           <div class="red-bar"></div>
           <p><span style="font-weight:bold">ISBN</span> {{ book.isbn }}</p>
           <div class="rating"><review-score-view :score="book.reviewCount === 0? 0 : parseInt(book.scoreSum / book.reviewCount)"></review-score-view></div>
-          <!-- TODO: 비로그인시 알림 설정 버튼 안보이도록  -->
-          <button type="button" class="ae-btn btn-navy" v-if=book.notification @click="cancelNotification(book.notificationId)">알림 신청중</button>
-          <!-- <button type="button" class="ae-btn" v-else v-b-modal.modal-save-notification>알림 신청</button> -->
-          <button type="button" class="ae-btn" v-else @click="checkLoginAndOpenModal">알림 신청</button>
-          <button type="button" class="ae-btn btn-red" @click="onClickRedirect(book.aladinUrl)">구매하러가기 ></button>
+          <div class="btn-box">
+            <!-- TODO: 비로그인시 알림 설정 버튼 안보이도록  -->
+            <button type="button" class="ae-btn btn-navy" v-if=book.notification @click="cancelNotification(book.notificationId)">알림 신청중</button>
+            <!-- <button type="button" class="ae-btn" v-else v-b-modal.modal-save-notification>알림 신청</button> -->
+            <button type="button" class="ae-btn" v-else @click="checkLoginAndOpenModal">알림 신청</button>
+            <button type="button" class="ae-btn btn-red" @click="onClickRedirect(book.aladinUrl)">구매하러가기 →</button>
+          </div>
         </div>
       </div>
       <div class="bar"></div>
-      <p style="font-weight: bold; text-align: left; font-size: 24px; color:var(--ae-navy)">책 소개</p>
-      <p>{{ book.description }}</p>
+      <div class="book-desc">
+        <div class="desc-left"><p style="font-weight: bold; text-align: left; font-size: 24px; color:var(--ae-navy)">책 소개</p></div>
+        <div class="desc-right">{{ book.description }}</div>
+      </div>
       <div class="bar"></div>
-      <p style="font-weight: bold; text-align: left; font-size: 24px; color:var(--ae-navy); display:flex;">총 리뷰 개수 <span style="color:var(--ae-red)">{{ book.reviewCount }}</span>개
+      <p style="font-weight: bold; text-align: left; font-size: 24px; color:var(--ae-navy); display:flex;">총 리뷰 개수&nbsp;<span style="color:var(--ae-red)">{{ book.reviewCount }}</span>개
        <span class='btn-group' v-if='!isLogin'>
         <button class='ae-btn btn-red review-btn' @click="goTo('Login')">리뷰 등록</button>
        </span>
@@ -285,7 +289,7 @@ export default {
 }
 
 .sub-info {
-  width: 40%;
+  width: 35%;
   margin-left: 50px;
 }
 
@@ -296,6 +300,9 @@ export default {
 
 .price-info {
   text-align: left;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .price-text {
@@ -315,7 +322,7 @@ export default {
 .red-bar {
   height: 4px;
   background-color: var(--ae-red);
-  width: 400px;
+  width: 100%;
   margin: 10px 0px;
 }
 
@@ -331,4 +338,34 @@ export default {
   margin-bottom:50px;
 }
 
+.btn-box {
+  display: flex;
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.btn-box > button {
+  height: 50px;
+}
+
+.btn-box > button:nth-child(1){
+  width: 40%;
+}
+
+.btn-box > button:nth-child(2){
+  width: 60%;
+}
+
+.book-desc {
+  display: flex;
+  flex-direction: row;
+}
+.desc-left {
+  width: 20%;
+}
+.desc-right {
+  width: 80%;
+  overflow-wrap: break-word;
+  text-align: left;
+}
 </style>
