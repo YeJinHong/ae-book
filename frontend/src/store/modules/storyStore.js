@@ -1,6 +1,6 @@
-import { searchStory, searchDetailStory, registerStory } from '@/api/story'
+import { searchStory, registerStory } from '@/api/story'
 
-const story = {
+const storyStore = {
   namespaced: true,
 
   state: {
@@ -42,30 +42,19 @@ const story = {
           commit('SET_LIST', data.result.content)
         })
         .catch(error => {
-          console.log(error)
-        })
-    },
-    async getStoryDetail ({ commit }, request) {
-      await searchDetailStory(request)
-        .then(({ data }) => {
-          commit('SET_STORY', data.result)
-        })
-        .catch(error => {
-          alert(error)
+          console.error(error)
         })
     },
     async saveStory ({ commit }, request) {
       await registerStory(request)
         .then(({ data }) => {
           commit('SET_STORY', data.result)
-          console.log(data.result)
         })
         .catch(error => {
-          console.log(error)
+          console.error(error)
         })
     }
   }
-
 }
 
-export default story
+export default storyStore

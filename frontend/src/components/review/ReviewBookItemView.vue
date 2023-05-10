@@ -62,11 +62,12 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import ReviewScoreView from './ReviewScoreView.vue'
 import ReviewModifyScoreView from './ReviewModifyScoreView.vue'
 
 const reviewStore = 'reviewStore'
+const bookStore = 'bookStore'
 
 export default {
   name: 'ReviewBookItemView',
@@ -86,6 +87,9 @@ export default {
       isTruncated: false,
       isExpanded: false
     }
+  },
+  computed: {
+    ...mapState(bookStore, ['book'])
   },
   methods: {
     ...mapActions(reviewStore, ['modifyReviewAction', 'deleteReviewAction']),
@@ -146,6 +150,7 @@ export default {
       }
 
       this.$emit('paging', this.page + 1)
+      this.book.reviewCount -= 1
     },
     check (index) {
       this.review.score = index
