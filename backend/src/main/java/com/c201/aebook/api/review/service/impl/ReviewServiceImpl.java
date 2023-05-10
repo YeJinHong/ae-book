@@ -47,18 +47,15 @@ public class ReviewServiceImpl implements ReviewService {
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		// 3. 해당 책에 서평을 작성한 적 없는지 검증
-		ReviewEntity reviewEntity = reviewRepository.findByUserIdAndBookId(userEntity.getId(), bookEntity.getId());
+		ReviewEntity reviewEntity = reviewRepository.findByUserIdAndBookId(userEntity.getId(), bookEntity.getId())
+			.orElse(null);
+
 		if (reviewEntity != null) {
 			throw new CustomException(ErrorCode.DUPLICATED_REVIEW);
 		}
 
 		// 4. 서평 저장
-		reviewEntity = reviewRepository.save(ReviewEntity.builder()
-			.content(reviewSO.getContent())
-			.score(reviewSO.getScore())
-			.user(userEntity)
-			.book(bookEntity)
-			.build());
+		reviewEntity = reviewRepository.save(reviewConverter.toReviewEntity(reviewSO, userEntity, bookEntity));
 
 		// 5. 도서 별점 정보 갱신
 		bookEntity.updateScoreInfo(reviewSO.getScore(), 1);
@@ -89,11 +86,16 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 
 	@Override
-	public ReviewResponseDTO getReview(Long reviewId) {
-		ReviewEntity review = reviewRepository.findById(reviewId)
-			.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+	public ReviewResponseDTO getMyReview(String userId, String isbn) {
+		// 1. isbn으로 도서 찾기
+		BookEntity bookEntity = bookRepository.findByIsbn(isbn)
+			.orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
 
-		ReviewResponseDTO result = reviewConverter.toReviewResponseDTO(review);
+		// 2. 리뷰 검색
+		ReviewEntity reviewEntity = reviewRepository.findByUserIdAndBookId(Long.valueOf(userId), bookEntity.getId())
+			.orElse(null);
+
+		ReviewResponseDTO result = reviewConverter.toReviewResponseDTO(reviewEntity);
 		return result;
 	}
 

@@ -26,10 +26,10 @@ public class KakaoProfile {
         public Boolean profile_image_needs_agreement;
         public Profile profile;
 
-        // 추후 권한을 받으면 변경 예정
-//        public boolean has_phone_number;
-//        public boolean phone_number_needs_agreement;
-//        public String phone_number;
+        // 권한을 받아서 전화번호도 입력
+        public boolean has_phone_number;
+        public boolean phone_number_needs_agreement;
+        public String phone_number;
 
         @Getter
         @Setter

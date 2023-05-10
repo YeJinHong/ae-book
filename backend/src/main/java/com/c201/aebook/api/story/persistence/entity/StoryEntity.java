@@ -37,16 +37,20 @@ public class StoryEntity extends BaseEntity {
 	@Column(name = "img_url", nullable = false, length = 200)
 	private String imgUrl;
 
+	@Column(name = "voice_url", nullable = false, length = 200)
+	private String voiceUrl;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private UserEntity user;
 
 	@Builder
-	public StoryEntity(Long id, String title, String content, String imgUrl, UserEntity user) {
+	public StoryEntity(Long id, String title, String content, String imgUrl, String voiceUrl, UserEntity user) {
 		this.id = id;
 		this.title = title;
 		this.content = content;
 		this.imgUrl = imgUrl;
+		this.voiceUrl = voiceUrl;
 		this.user = user;
 	}
 

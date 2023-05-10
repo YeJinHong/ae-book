@@ -1,6 +1,6 @@
 <template>
   <div>
-    <input type="file" @change="onFileChange" />
+    <input type="file" @change="onFileChange" accept = ".jpg, ,.jpeg, .png"/>
     <div class="image-container">
       <div class="before">
         <p>원본</p>
@@ -12,12 +12,12 @@
       </div>
     </div>
     <button @click="goBack" class="ae-btn btn-navy">돌아가기</button>
-    <button @click="onSaveClick" class="ae-btn btn-red">저장하기</button>
+    <button @click="onSaveClick" class="ae-btn btn-red">색칠하기</button>
   </div>
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapMutations } from 'vuex'
 const paintingStore = 'paintingStore'
 
 export default {
@@ -30,7 +30,11 @@ export default {
   computed: {
     ...mapState(paintingStore, ['paintingList', 'sketch'])
   },
+  mounted () {
+    this.RESET_SKETCH()
+  },
   methods: {
+    ...mapMutations(paintingStore, ['RESET_SKETCH']),
     ...mapActions(paintingStore, ['getPaintingList', 'convertSketch', 'savePainting']),
     onFileChange (e) {
       const file = e.target.files[0]
@@ -72,14 +76,16 @@ export default {
       formData.append('paintingFile', paintingFile)
       formData.append('data', new Blob([JSON.stringify(data)], {type: 'application/json'}))
 
-      this.savePainting(formData)
-        .then(
-          alert('그림 저장에 성공했습니다.')
-        )
-        .catch(error => {
-          alert('그림 저장에 실패했습니다.' + error)
-        })
-
+      if (sessionStorage.getItem('isLoginUser') === 'true') {
+        this.savePainting(formData)
+          .then(
+            alert('선화를 저장에 성공했습니다.')
+          )
+          .catch(error => {
+            alert('선화 저장에 실패했습니다.')
+            console.error(error)
+          })
+      }
       this.$router.push('/painting/board')
     },
     goBack () {
@@ -90,6 +96,10 @@ export default {
 </script>
 
 <style scoped>
+
+img {
+  max-width: 500px;
+}
 .image-container {
   margin: auto;
   width: 1000px;

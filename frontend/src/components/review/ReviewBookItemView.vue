@@ -13,7 +13,7 @@
           </div>
           </div>
         </div>
-        <div v-if="userInfo.userId == review.reviewerId" class='btn-group'>
+        <div v-if="userId == review.reviewerId" class='btn-group'>
           <div v-if="!isModify">
             <button class='orange-btn' @click="modifyReview">수정</button>
             <button class='orange-btn' @click="deleteReview">삭제</button>
@@ -52,7 +52,9 @@
           id="reviewContent"
           class="item-modify"
           rows="4"
-          v-model="updateContent">
+          v-model="updateContent"
+          ref="reviewContent"
+          >
         </textarea>
 
       </div>
@@ -60,11 +62,12 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import ReviewScoreView from './ReviewScoreView.vue'
 import ReviewModifyScoreView from './ReviewModifyScoreView.vue'
 
 const reviewStore = 'reviewStore'
+const bookStore = 'bookStore'
 
 export default {
   name: 'ReviewBookItemView',
@@ -78,21 +81,31 @@ export default {
       isModify: false,
       updateScore: this.review.score,
       updateContent: this.review.content,
-      userInfo: JSON.parse(sessionStorage.getItem('userInfo')),
+      userId: 0,
 
       // 더보기
       isTruncated: false,
       isExpanded: false
     }
   },
+  computed: {
+    ...mapState(bookStore, ['book'])
+  },
   methods: {
     ...mapActions(reviewStore, ['modifyReviewAction', 'deleteReviewAction']),
     async checkValue () {
+      console.log('update : ' + this.updateContent)
       let err = true
       let msg = ''
 
       if (!this.updateContent) {
-        msg = '내용을 입력해주세요'
+        msg = '내용을 입력해주세요.'
+        err = false
+        this.$refs.reviewContent.focus()
+      }
+
+      if (this.updateContent.length > 300) {
+        msg = '리뷰 내용을 줄여주세요.'
         err = false
         this.$refs.reviewContent.focus()
       }
@@ -137,6 +150,7 @@ export default {
       }
 
       this.$emit('paging', this.page + 1)
+      this.book.reviewCount -= 1
     },
     check (index) {
       this.review.score = index
@@ -163,11 +177,15 @@ export default {
   },
   mounted () {
     this.truncateContent()
+
+    if (sessionStorage.getItem('userInfo')) {
+      this.userId = JSON.parse(sessionStorage.getItem('userInfo')).userId
+    }
   }
 }
 </script>
 
-<style>
+<style scoped>
 .item-content.is-expanded {
   height: auto !important;
   overflow: visible !important;

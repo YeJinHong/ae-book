@@ -3,17 +3,27 @@
     <h1 class="subject">알림 신청한 책 목록</h1>
     <div style="height:2px; background-color: #E0E0E0;"></div>
     <ModalView :modalShow="isModalVisible" @close-modal="closeModal">
-      <notification-detail-view :notificationId="notificationId"/>
-      <notification-modal-button :notificationId="notificationId" @close="closeModal"></notification-modal-button>
+      <notification-detail-view :notificationId="notificationId" :page="this.request.page"/>
+      <notification-modal-button :notificationId="notificationId" :request="this.request" @close="closeModal"></notification-modal-button>
     </ModalView>
-    <div class="carousel-container">
-      <img-carousel-view :items="notificationList" :chunkSize="3" @moveTo="showModal"></img-carousel-view>
+    <div class="notification-container">
+      <div v-for="notification in notificationList" :key="notification.id" @click="showModal(notification.id)">
+        <list-item
+            :item="notification"
+          >
+        </list-item>
+      </div>
+    </div>
+    <div class="pagination-container">
+      <pagination :pageSetting="notificationPageSetting" @paging="paging"></pagination>
     </div>
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from 'vuex'
+import ListItem from '../common/list/ListItem.vue'
+import Pagination from '../common/Pagination.vue'
 import ModalView from '@/components/common/ModalView.vue'
 import ImgCarouselView from '@/components/common/list/ImgCarouselView.vue'
 import NotificationDetailView from '@/components/notification/NotificationDetailView.vue'
@@ -26,22 +36,34 @@ export default {
     ModalView,
     ImgCarouselView,
     NotificationDetailView,
-    NotificationModalButton
+    NotificationModalButton,
+    ListItem,
+    Pagination
   },
   data () {
     return {
       isModalVisible: false,
-      notificationId: null
+      notificationId: null,
+      request: {
+        page: 0,
+        size: 3,
+        sort: 'createdAt',
+        direction: 'DESC'
+      }
     }
   },
   computed: {
-    ...mapState(notificationStore, ['notificationList'])
+    ...mapState(notificationStore, ['notificationList', 'notificationPageSetting'])
   },
   mounted () {
-    this.getBookNotificationList()
+    this.getBookNotificationList(this.request)
   },
   methods: {
     ...mapActions(notificationStore, ['getBookNotificationList', 'getBookNotificationDetail']),
+    paging (page) {
+      this.request['page'] = page - 1
+      this.getBookNotificationList(this.request)
+    },
     showModal (notificationId) {
       this.notificationId = notificationId
       this.getBookNotificationDetail(notificationId)
@@ -49,17 +71,30 @@ export default {
     },
     closeModal () {
       this.isModalVisible = false
-      this.getBookNotificationList()
+      this.getBookNotificationList(this.request)
     }
   }
 
 }
 </script>
 
-<style>
+<style scoped>
 .subject{
   text-align: left;
   font-size: 24px;
   font-weight: 800;
+}
+.notification-container{
+  margin: auto;
+  margin-top: 30px;
+  /* width: 1000px; */
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.pagination-container {
+  display:flex;
+  justify-content: center;
 }
 </style>

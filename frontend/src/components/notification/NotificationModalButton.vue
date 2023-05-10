@@ -10,7 +10,7 @@ const notificationStore = 'notificationStore'
 
 export default {
   name: 'NotificationModalButton',
-  props: ['notificationId'],
+  props: ['notificationId', 'request'],
   created () {
 
   },
@@ -18,7 +18,7 @@ export default {
     ...mapState(notificationStore, ['notification', 'notificationList'])
   },
   mounted () {
-    this.getBookNotificationList()
+    this.getBookNotificationList(this.request)
   },
   methods: {
     ...mapActions(notificationStore, ['getBookNotificationDetail', 'notificationdelete', 'getBookNotificationList']),

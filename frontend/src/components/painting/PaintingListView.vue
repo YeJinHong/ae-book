@@ -1,14 +1,19 @@
 <template>
   <div>
     <h1>그림 목록</h1>
-    <button @click="onClickList('LINE')" class="ae-btn">선화</button>
-    <button @click="onClickList('COLOR')" class="ae-btn">그림</button>
+    <button v-if="isLoginUser" @click="onClickList('LINE')" class="ae-btn">선화 리스트 보기</button>
+    <button v-else class="ae-btn disabled" disabled>선화</button>
+    <button v-if="isLoginUser" @click="onClickList('COLOR')" class="ae-btn">그림 리스트 보기</button>
+    <button v-else class="ae-btn disabled" disabled>그림</button>
     <router-link to="/painting/generate"><button class="ae-btn btn-red">선화 만들러 가기</button></router-link>
     <ModalView :modalShow="isModalVisible" @close-modal="closeModal">
       <painting-detail-view/>
       <painting-modal-button @close="closeModal"></painting-modal-button>
     </ModalView>
-    <div class="painting-container">
+    <div v-if="isLoginUser === false" class="painting-container">
+      로그인한 유저만 확인 가능합니다.
+    </div>
+    <div v-else class="painting-container">
       <div v-for="painting in paintingList" :key="painting.id" @click="showModal(painting.id)">
         <list-item
             :item="painting"
@@ -36,7 +41,8 @@ export default {
   data () {
     return {
       request: null,
-      isModalVisible: false
+      isModalVisible: false,
+      isLoginUser: false
     }
   },
   components: {
@@ -50,7 +56,10 @@ export default {
     ...mapState(paintingStore, ['paintingList', 'paintingPageSetting'])
   },
   mounted () {
-    this.onClickList('COLOR')
+    if (sessionStorage.getItem('isLoginUser') === 'true') {
+      this.isLoginUser = true
+      this.onClickList('COLOR')
+    }
   },
   methods: {
     ...mapActions(paintingStore, ['getPaintingList', 'getPaintingDetail']),
@@ -93,5 +102,9 @@ h1 {
 .pagination-container {
   display:flex;
   justify-content: center;
+}
+
+.disabled{
+  background-color: lightgray;
 }
 </style>

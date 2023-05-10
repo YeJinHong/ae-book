@@ -6,7 +6,6 @@ import AppPainting from '@/views/AppPainting'
 import AppBook from '@/views/AppBook'
 import AppMyPage from '@/views/AppMyPage'
 import AppUser from '@/views/AppUser'
-import AppReview from '@/views/AppReview'
 
 Vue.use(Router)
 
@@ -22,12 +21,32 @@ export default new Router({
       path: '/story',
       name: 'Story',
       component: AppStory,
+      redirect: '/story/list',
       children: [
-
+        // {
+        //   path: 'keyword',
+        //   name: 'StoryKeywordInput',
+        //   component: () => import('@/components/story/StoryKeywordInput')
+        // },
+        {
+          path: 'list',
+          name: 'StoryList',
+          component: () => import('@/components/story/StoryListView')
+        },
         {
           path: 'keyword',
           name: 'StoryKeywordInput',
-          component: () => import('@/components/story/StoryKeywordInput')
+          component: () => import('@/components/story/StoryKeywordInputView')
+        },
+        {
+          path: 'board',
+          name: 'StoryPaintingBoard',
+          component: () => import('@/components/story/StoryPaintingBoardView')
+        },
+        {
+          path: 'result',
+          name: 'StoryResult',
+          component: () => import('@/components/story/StoryResultView')
         }
       ]
     },
@@ -40,7 +59,8 @@ export default new Router({
         {
           path: 'board',
           name: 'paintingboard',
-          component: () => import('@/components/painting/PaintingBoardView')
+          component: () => import('@/components/painting/PaintingBoardView'),
+          props: true
         },
         {
           path: 'list',
@@ -80,6 +100,7 @@ export default new Router({
     {
       path: '/mypage',
       name: 'MyPage',
+      redirect: '/mypage/modify',
       component: AppMyPage,
       children: [
         {
@@ -99,13 +120,13 @@ export default new Router({
         },
         {
           path: 'painting',
-          name: 'mypainting',
+          name: 'MyPainting',
           component: () => import('@/components/myPage/MyPaintingListView')
         },
         {
           path: 'story',
-          name: 'StoryListView',
-          component: () => import('@/components/story/StoryListView')
+          name: 'MyStoryListView',
+          component: () => import('@/components/myPage/MyStoryListView')
         },
         {
           path: 'notification',
@@ -128,30 +149,6 @@ export default new Router({
           path: 'oauth',
           name: 'Oauth',
           component: () => import('@/components/user/Oauth')
-        }
-      ]
-
-    },
-    {
-      path: '/review',
-      name: 'Review',
-      component: AppReview,
-      children: [
-        {
-          path: 'create',
-          name: 'ReviewCreate',
-          component: () => import('@/components/review/ReviewCreateView')
-        },
-        {
-          path: 'detail/:reviewId',
-          name: 'ReviewDetail',
-          component: () => import('@/components/review/ReviewDetailView'),
-          props: true
-        },
-        {
-          path: 'modify',
-          name: 'ReviewModify',
-          component: () => import('@/components/review/ReviewModifyView')
         }
       ]
     }
