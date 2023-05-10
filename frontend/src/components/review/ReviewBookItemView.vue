@@ -57,7 +57,7 @@
             ref="reviewContent"
             >
           </textarea>
-          <div v-show="isModify" class="limit">현재 {{ this.updateContent.length }} 자 입니다.</div>
+          <div v-show="isModify" class="limit">현재 {{ this.updateContent.length }} / 300 자 입니다.</div>
         </div>
       </div>
     </div>
