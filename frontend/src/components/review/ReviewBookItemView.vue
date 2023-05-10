@@ -126,6 +126,7 @@ export default {
         await this.modifyReviewAction(payload)
         await this.$emit('paging', this.page + 1)
 
+        this.book.scoreSum += this.updateScore - this.review.score
         // 2. 수정 반영해서 리스트 가져오기 : emit 완료보다 상태변경이 빨라서 딜레이 설정
         setTimeout(() => {
           this.truncateContent()
@@ -145,11 +146,12 @@ export default {
       this.updateScore = newScore
     },
     async deleteReview () {
-      if (confirm('리얼루다가 삭제하시것슴니까 ?!?!?!?!!!?')) {
+      if (confirm('삭제하시겠습니까?')) {
         await this.deleteReviewAction(this.review.id)
       }
 
       this.$emit('paging', this.page + 1)
+      this.book.scoreSum -= this.review.score
       this.book.reviewCount -= 1
     },
     check (index) {
