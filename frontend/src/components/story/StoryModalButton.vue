@@ -29,14 +29,17 @@ export default {
     title: String
   },
   methods: {
+    closeModal () {
+      this.$emit('close')
+    },
 
     deleteStoryById () {
       this.storyId = this.getStoryId
       deleteStory(this.storyId)
         .then(response => {
-          console.log(response)
           if (response.data.resultCode === 200) {
             alert('정상적으로 삭제했습니다.')
+            this.closeModal()
           }
         })
         .catch(error => {
@@ -53,6 +56,7 @@ export default {
         .then(response => {
           if (response.data.resultCode === 200) {
             alert('정상적으로 수정했습니다.')
+            this.closeModal()
           } else {
             alert('정상적으로 수정하지 못했습니다.')
           }
