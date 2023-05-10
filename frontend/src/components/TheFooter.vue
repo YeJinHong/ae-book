@@ -27,6 +27,7 @@ footer{
   bottom: 0;
   left: 0;
   right: 0;
+  padding:20px;
 }
 .footer img {
   width: 100px;
