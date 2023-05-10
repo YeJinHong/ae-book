@@ -1,65 +1,67 @@
 <template>
   <div>
     <div>
-    <b-form @reset="onReset" v-if="show">
-      <div class='line-1'>
-        <b-form-group
-          id="input-group-1"
-        >
-          <div>
-            <b-form-input
-              id="input-1"
-              v-model="form.keyword"
-              type="text"
-              placeholder="키워드를 입력하세요."
-              style="width: 300px; margin-right: 20px;"
-              ref="keywordInput"
-            ></b-form-input>
+      <div class='description'>
+        <p class='p-bottom'>방법 1. 키워드를 작성한다. 리뷰의 길이는 선택적으로 지정한다.</p>
+        <p class='p-line'>자동 작성 버튼을 누른다.</p>
+        <p class='p-bottom'>방법 2. 마이크 버튼을 누른다. 키워드를 나열하며 말한다.</p>
+        <p class='p-line'>마이크 버튼을 눌러서 녹음을 멈춘다.</p>
+      </div>
+      <b-form @reset="onReset" v-if="show">
+        <div class='line-1'>
+          <div class='line-2'>
+            <b-form-group
+              id="input-group-1"
+            >
+              <div>
+                <b-form-input
+                  id="input-1"
+                  class="input-line"
+                  v-model="form.keyword"
+                  type="text"
+                  placeholder="키워드를 입력하세요."
+                  ref="keywordInput"
+                ></b-form-input>
+              </div>
+            </b-form-group>
+              <b-form-group
+                id="input-group-2"
+                label-for="input-2"
+              >
+                <b-form-input
+                  id="input-2"
+                  class="input-line"
+                  v-model="form.char"
+                  type="number"
+                  placeholder="1 이상 100 이하의 숫자를 입력하세요."
+                  min="1"
+                  max="100"
+                ></b-form-input>
+              </b-form-group>
           </div>
-        </b-form-group>
-        <button class='ae-btn ai-btn' type="button" @click="createAIReview">자동 작성</button>
-        <button v-if="isRecording===false" class='ae-btn ai-btn' type="button" @click="soundToKeyword">말하기</button>
-        <button v-else class='ae-btn ai-btn' type="button" @click="stopSoundToKeyword">멈추기</button>
-      </div>
-      <div class='line-2'>
-        <b-form-group
-          id="input-group-2"
-          label="리뷰 글자 수"
-          label-for="input-2"
-        >
-          <b-form-input
-            id="input-2"
-            v-model="form.char"
-            type="number"
-            placeholder="1 이상 100 이하의 숫자를 입력하세요."
-            min="1"
-            max="100"
-            style="width: 300px; margin-right: 12px;"
-          ></b-form-input>
-        </b-form-group>
-        <div class='score-container'>
-          <review-modify-score-view v-if="isModify" :score=this.form.score :isModify=this.isModify @modify-score="modifyScore" />
+          <button id='auto-create' class='ae-btn btn-red' type="button" @click="createAIReview">자동 작성</button>
+          <!-- <button v-if="isRecording===false" class='' type="button" @click="soundToKeyword">말하기</button> -->
+          <!-- <button v-else class='' type="button" @click="stopSoundToKeyword">멈추기</button> -->
         </div>
-      </div>
-      <b-form-group id="input-group-3" label="Content" label-for="input-2">
-        <b-form-textarea
-          id="input-3"
-          v-model="form.content"
-          placeholder="내용을 300자 내로 입력해주세요."
-          rows="3"
-          min="1"
-          :max="150"
-          ref="contentInput"
-        ></b-form-textarea>
-      </b-form-group>
+        <b-form-group id="input-group-3" label="리뷰내용" label-for="input-2">
+          <b-form-textarea
+            id="input-3"
+            v-model="form.content"
+            placeholder="내용을 300자 내로 입력해주세요."
+            rows="6"
+            min="1"
+            :max="150"
+            ref="contentInput"
+          ></b-form-textarea>
+        </b-form-group>
 
-      <b-button class='submit-btn b-btn' type="button" variant="primary" @click="onSubmit">등록</b-button>
-      <b-button class='reset-btn b-btn' type="reset" variant="danger">초기화</b-button>
-    </b-form>
-    <!-- <b-card class="mt-3" header="Form Data Result">
-      <pre class="m-0">{{ bookInfo }}</pre>
-    </b-card> -->
-  </div>
+        <b-button class='submit-btn b-btn' type="button" variant="primary" @click="onSubmit">등록</b-button>
+        <b-button class='reset-btn b-btn' type="reset" variant="danger">초기화</b-button>
+      </b-form>
+      <!-- <b-card class="mt-3" header="Form Data Result">
+        <pre class="m-0">{{ bookInfo }}</pre>
+      </b-card> -->
+    </div>
   </div>
 </template>
 
@@ -231,6 +233,19 @@ export default {
 </script>
 
 <style scoped>
+.input-line {
+  width: 350px;
+}
+.p-bottom {
+  margin-bottom: 0rem;
+}
+.p-line {
+  margin-left: 54px;
+}
+.description {
+  margin-left: 18px;
+  text-align: left;
+}
 .reset-btn {
   background-color: var(--ae-red);
 }
@@ -240,15 +255,12 @@ export default {
 .line-1 {
   display: flex;
 }
-.line-2 {
-  display: flex;
-}
 .score-container {
   margin: 36px 0px 0px 0px;
 }
-.ai-btn {
+.btn-red {
   width: 120px;
-  height: 40px;
+  height: 95px;
   padding: 0px 5px;
   border-radius: 8px;
   border: 2px solid;
