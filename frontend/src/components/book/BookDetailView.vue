@@ -14,7 +14,7 @@
           </div>
           <div class="red-bar"></div>
           <p><span style="font-weight:bold">ISBN</span> {{ book.isbn }}</p>
-          <div class="rating"><review-score-view :score="parseInt(book.scoreSum / book.reviewCount)"></review-score-view></div>
+          <div class="rating"><review-score-view :score="book.reviewCount === 0? 0 : parseInt(book.scoreSum / book.reviewCount)"></review-score-view></div>
           <!-- TODO: 비로그인시 알림 설정 버튼 안보이도록  -->
           <button type="button" class="ae-btn btn-navy" v-if=book.notification @click="cancelNotification(book.notificationId)">알림 신청중</button>
           <!-- <button type="button" class="ae-btn" v-else v-b-modal.modal-save-notification>알림 신청</button> -->
@@ -157,9 +157,7 @@ export default {
   },
   mounted () {
     this.getBookDetail(this.isbn)
-    this.book = this.getBook
     this.isNotifications = this.book.notification
-
     console.log('mounted')
     this.isLogin = JSON.parse(sessionStorage.getItem('isLoginUser'))
     if (this.isLogin) {
