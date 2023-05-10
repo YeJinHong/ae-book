@@ -48,15 +48,17 @@
           </p>
         </div>
         </div>
-        <textarea v-show="isModify"
-          id="reviewContent"
-          class="item-modify"
-          rows="4"
-          v-model="updateContent"
-          ref="reviewContent"
-          >
-        </textarea>
-
+        <div>
+          <textarea v-show="isModify"
+            id="reviewContent"
+            class="item-modify"
+            rows="4"
+            v-model="updateContent"
+            ref="reviewContent"
+            >
+          </textarea>
+          <div v-show="isModify" class="limit">현재 {{ this.updateContent.length }} 자 입니다.</div>
+        </div>
       </div>
     </div>
 </template>
@@ -105,7 +107,7 @@ export default {
       }
 
       if (this.updateContent.length > 300) {
-        msg = '리뷰 내용을 줄여주세요.'
+        msg = '리뷰 내용을 줄여주세요. \n' + '현재 입력된 글자는 ' + this.updateContent.length + '자 입니다.'
         err = false
         this.$refs.reviewContent.focus()
       }
@@ -186,6 +188,9 @@ export default {
 </script>
 
 <style scoped>
+.limit {
+  text-align: right;
+}
 .item-content.is-expanded {
   height: auto !important;
   overflow: visible !important;
@@ -196,10 +201,9 @@ export default {
   padding: 6px 12px;
   font-size: 1em;
   width: 632px;
-  /* height: 73px; */
-  /* height: 80px; */
-  overflow: hidden;
   display: flex;
+  overflow: hidden;
+  word-break: break-all; /* 단어 단위가 아닌 문자 단위로 줄 바꿈 */
 }
 .more-content {
   border: none;
