@@ -213,6 +213,13 @@ export default {
         bvModalEvent.preventDefault()
         return
       }
+
+      if (this.upperLimit > this.book.price) {
+        alert('도서의 최저가보다 적은 가격만 알림 신청이 가능합니다! 가격을 변경해주세요!')
+        bvModalEvent.preventDefault()
+        return
+      }
+
       bvModalEvent.preventDefault()
       this.handleSubmit()
     },
