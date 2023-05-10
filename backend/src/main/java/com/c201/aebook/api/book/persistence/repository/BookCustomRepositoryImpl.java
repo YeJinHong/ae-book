@@ -22,7 +22,7 @@ public class BookCustomRepositoryImpl implements BookCustomRepository {
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public Page<BookEntity> searchBookList(String keyword, String[] searchTarget, Pageable pageable) {
+	public Page<BookEntity> searchBookList(String[] keyword, String[] searchTarget, Pageable pageable) {
 		QueryResults<BookEntity> bookList = queryFactory
 			.selectFrom(bookEntity)
 			.where(checkSearchOption(searchTarget, keyword))
@@ -34,16 +34,28 @@ public class BookCustomRepositoryImpl implements BookCustomRepository {
 	}
 
 	// 체크된 검색 옵션으로 동적 쿼리 만들기
-	private BooleanBuilder checkSearchOption(String[] searchTarget, String keyword) {
+	private BooleanBuilder checkSearchOption(String[] searchTarget, String[] keyword) {
 		BooleanBuilder booleanBuilder = new BooleanBuilder();
 		Arrays.stream(searchTarget)
 			.forEach(target -> {
 				if ("TITLE".equals(target)) {
-					booleanBuilder.or(bookEntity.title.containsIgnoreCase(keyword));
+					BooleanBuilder titleBooleanBuilder = new BooleanBuilder();
+					for (int i = 0; i < keyword.length; i++) {
+						titleBooleanBuilder.and(bookEntity.title.containsIgnoreCase(keyword[i]));
+					}
+					booleanBuilder.or(titleBooleanBuilder);
 				} else if ("AUTHOR".equals(target)) {
-					booleanBuilder.or(bookEntity.author.containsIgnoreCase(keyword));
+					BooleanBuilder authorBooleanBuilder = new BooleanBuilder();
+					for (int i = 0; i < keyword.length; i++) {
+						authorBooleanBuilder.and(bookEntity.title.containsIgnoreCase(keyword[i]));
+					}
+					booleanBuilder.or(authorBooleanBuilder);
 				} else if ("PUBLISHER".equals(target)) {
-					booleanBuilder.or(bookEntity.publisher.containsIgnoreCase(keyword));
+					BooleanBuilder publisherBooleanBuilder = new BooleanBuilder();
+					for (int i = 0; i < keyword.length; i++) {
+						publisherBooleanBuilder.and(bookEntity.title.containsIgnoreCase(keyword[i]));
+					}
+					booleanBuilder.or(publisherBooleanBuilder);
 				}
 			});
 
