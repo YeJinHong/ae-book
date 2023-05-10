@@ -126,6 +126,7 @@ export default {
 .content-container{
   display: flex;
   flex-direction: row;
+  margin-top: 60px;
 }
 
 .left {
