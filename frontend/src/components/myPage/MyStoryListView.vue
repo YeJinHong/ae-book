@@ -24,7 +24,6 @@ import StoryDetailView from '@/components/story/StoryDetailView'
 import { mapMutations, mapGetters, mapState, mapActions } from 'vuex'
 import ListItem from '../common/list/ListItem.vue'
 import Pagination from '../common/Pagination.vue'
-import StoryModalButton from '@/components/story/StoryModalButton.vue'
 
 const storyStore = 'storyStore'
 
@@ -34,8 +33,7 @@ export default {
     ModalView,
     StoryDetailView,
     ListItem,
-    Pagination,
-    StoryModalButton
+    Pagination
   },
   data () {
     return {
