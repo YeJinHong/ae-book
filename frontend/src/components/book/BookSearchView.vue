@@ -4,7 +4,7 @@
         <input  @blur="clickOutsideAutoKeyword" v-model="keyword" placeholder="검색어를 입력하세요" @keyup.enter="onClickSearch"  @input="autoComplete" class="search-input">
         <button @click="onClickSearch" class="ae-btn btn-red">검색</button>
         <ul class="autocomplete" v-if="keyword !== ''">
-          <li v-for="keyword in autoCompleteList" :key="keyword" @mousedown="clickKeyword(keyword)">{{ keyword }}</li>
+          <li v-for="keyword in autoCompleteList" :key="keyword" @mousedown="clickKeyword(keyword)">{{ keyword | removeTitlePrefix }}</li>
         </ul>
     </div>
     <div class="content-container">
