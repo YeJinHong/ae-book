@@ -1,12 +1,8 @@
 <template>
   <div>
     <h2>나의 동화 목록</h2>
-    <!-- <div horizontal v-for="story in storyList" :key="story.storyId">
-      <h3 @click="showModal(story.storyId)">{{ story.title }}</h3>
-      <img v-bind:src="story.imgUrl" alt="story image" />
-    </div> -->
     <ModalView :modalShow="isModalVisible" @close-modal="closeModal">
-      <StoryDetailView />
+      <StoryDetailView @close="closeModal"/>
     </ModalView>
     <div class="story-container">
       <div v-for="story in storyList" :key="story.storyId" @click="showModal(story.storyId)">
