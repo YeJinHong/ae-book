@@ -10,6 +10,7 @@
     <b-button @click="playAudio(stop)" size="sm" variant="info">오디오 재생</b-button>
     <b-button @click="stopAudio(stop)" size="sm" variant="primary">오디오 일시 정지</b-button>
     <b-button @click="restartAudio()" size="sm" variant="warning">오디오 처음부터 듣기</b-button>
+    <b-button @click="closeModal" size="sm" variant="dark">닫기</b-button>
   </div>
 </template>
 <script>
@@ -40,6 +41,7 @@ export default {
 
   methods: {
     closeModal () {
+      this.audio.pause()
       this.$emit('close')
     },
 
