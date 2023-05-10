@@ -1,4 +1,4 @@
-from fastapi import FastAPI,File,UploadFile
+from fastapi import FastAPI,File,UploadFile,Form
 from fastapi.responses import JSONResponse, StreamingResponse, FileResponse
 from review_star_prediction import *
 from isbn_ocr import *
@@ -19,6 +19,7 @@ from io import BytesIO
 import datetime
 import random
 from fastapi.staticfiles import StaticFiles
+import json
 
 ##setting cors origin
 origins = [
@@ -88,7 +89,7 @@ async def create_review(data:Dict[Any,Any]):
         #default number of character value
         char = max(100,int(char))
 
-        m = f"너는 {writer}의 {title}이라는 책을 읽은 사람이야. 자기소개는 하지 말고 {words}를 키워드로 해서 서평을 {char}자 이내로 써줘"
+        m = f"너는 {writer}의 {title}이라는 책을 읽은 사람이야. 너에 대한 자기소개는 하지 말고 {words}를 키워드로 해서 서평을 {char}자 이내로 써줘"
     elif writer == None:
         
         #default number of character value
@@ -97,11 +98,11 @@ async def create_review(data:Dict[Any,Any]):
         else:
             char = max(100,int(char))
         
-        m = f"너는 {title}이라는 책을 읽은 사람이야. 자기소개는 하지 말고 {words}를 키워드로 해서 서평을 {char}자 이내로 써줘"
+        m = f"너는 {title}이라는 책을 읽은 사람이야. 너에 대한 자기소개는 하지 말고 {words}를 키워드로 해서 서평을 {char}자 이내로 써줘"
     
     elif char == None:
         
-        m = f"너는 {writer}의 {title}이라는 책을 읽은 사람이야. 자기소개는 하지 말고 {words}를 키워드로 해서 서평을 100자 이내로 써줘"
+        m = f"너는 {writer}의 {title}이라는 책을 읽은 사람이야. 너에 대한 자기소개는 하지 말고 {words}를 키워드로 해서 서평을 100자 이내로 써줘"
     
     #chatgpt request
     completion = openai.ChatCompletion.create(
@@ -125,10 +126,10 @@ input:mp3 file(keyword), title
 output:review & point prediction
 """
 @app.post("/fast/reviews/sound")
-async def sound_to_review(title:str, sound: UploadFile = File(...), writer=None, char=None):
+async def sound_to_review(audio: UploadFile = File(...), title: str = Form(...), writer: str = Form(default=None), char: str = Form(default=None)):
     
     #read mp3 file to byte string
-    data = await sound.read()
+    data = await audio.read()
     
     headers = {
         "X-NCP-APIGW-API-KEY-ID": client_id,
@@ -141,13 +142,13 @@ async def sound_to_review(title:str, sound: UploadFile = File(...), writer=None,
     
     if(rescode == 200):
         
-        words = response.text #stt result
+        words = json.loads(response.text)['text'] #stt result
         
-        review_dict = create_gpt_review(title,words,writer,char) #create review & star
+        review,star = create_gpt_review(title,words,writer,char)
         
-        return {"review":review_dict["review"], "star":review_dict["star"]}
+        return {"review":review,"star":star,"respond":1}
     else:
-        return "Error : " + response.text
+        return {"review":'', "star":0, "respond":0}
     
     
 
@@ -248,7 +249,7 @@ output: chatgpt story, sound
 async def create_story(text:Dict[Any,Any]):
     
     #chatgpt query
-    query = f"너는 동화작가야. 자기소개는 하지 말고 어린이를 위해서 {text['text']}로 {np.random.choice(ADJECTIVE)} 동화를 만들어줘."
+    query = f"너는 동화작가야. 너에 대한 자기소개는 하지 말고 어린이를 위해서 {text['text']}로 {np.random.choice(ADJECTIVE)} 동화를 250자 이내로 만들어줘."
         
     #chatgpt request
     completion = openai.ChatCompletion.create(

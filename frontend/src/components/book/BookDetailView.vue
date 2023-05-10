@@ -26,13 +26,21 @@
       <p style="font-weight: bold; text-align: left; font-size: 24px; color:var(--ae-navy)">책 소개</p>
       <p>{{ book.description }}</p>
       <div class="bar"></div>
-      <p style="font-weight: bold; text-align: left; font-size: 24px; color:var(--ae-navy)">총 리뷰 개수 <span style="color:var(--ae-red)">{{ book.reviewCount }}</span>개 <button class='ae-btn btn-red review-btn' @click="showModal()">리뷰 등록</button></p>
+      <p style="font-weight: bold; text-align: left; font-size: 24px; color:var(--ae-navy); display:flex;">총 리뷰 개수 <span style="color:var(--ae-red)">{{ book.reviewCount }}</span>개
+       <span class='btn-group' v-if='!isLogin'>
+        <button class='ae-btn btn-red review-btn' @click="goTo('Login')">리뷰 등록</button>
+       </span>
+       <span class='btn-group' v-if='isLogin'>
+        <button v-if='myReview != null' class='ae-btn btn-navy review-btn'>리뷰 등록 불가</button>
+        <button v-else class='ae-btn btn-red review-btn' @click="showModal()">리뷰 등록</button>
+       </span>
+      </p>
     </div>
     <div>
       <review-book-list-view :isbn="isbn"></review-book-list-view>
     </div>
     <review-create-modal-view :modalShow="isModalVisible" @close-modal="closeModal">
-      <review-create-view :bookInfo="this.bookInfo" @close-modal="closeModal"/>
+      <review-create-view :bookInfo="this.bookInfo" @close-modal="closeModal" @get-my-review="getMyReview"/>
     </review-create-modal-view>
 
     <!-- 알림 신청 모달 -->
@@ -124,7 +132,8 @@ export default {
       upperLimitState: null,
       selected: '',
       isNotifications: false,
-      bookInfo: null
+      bookInfo: null,
+      isLogin: false
     }
   },
   created () {
@@ -137,16 +146,38 @@ export default {
   },
   computed: {
     ...mapState(bookStore, ['book']),
-    ...mapState(reviewStore, ['reviewBookList', 'reviewBookPageSetting'])
+    ...mapState(reviewStore, ['reviewBookList', 'reviewBookPageSetting', 'myReview'])
+  },
+  beforeMount () {
+    console.log('beforeMount')
+    this.isLogin = JSON.parse(sessionStorage.getItem('isLoginUser'))
+    if (this.isLogin) {
+      this.getMyReviewAction(this.isbn)
+    }
   },
   mounted () {
     this.getBookDetail(this.isbn)
     this.book = this.getBook
     this.isNotifications = this.book.notification
+
+    console.log('mounted')
+    this.isLogin = JSON.parse(sessionStorage.getItem('isLoginUser'))
+    if (this.isLogin) {
+      this.getMyReviewAction(this.isbn)
+    }
   },
   methods: {
     ...mapActions(bookStore, ['getBookDetail']),
     ...mapActions(notificationStore, ['notificationSave', 'notificationdelete']),
+    ...mapActions(reviewStore, ['getMyReviewAction']),
+    goTo (componentName) {
+      alert('로그인이 필요해요 ! ( •̀ ω •́ )✧')
+      this.$router.push({ name: componentName })
+    },
+    getMyReview () {
+      console.log('여기요 !!')
+      this.getMyReviewAction(this.isbn)
+    },
     onClickRedirect (url) {
       window.open(url, 'blank')
     },

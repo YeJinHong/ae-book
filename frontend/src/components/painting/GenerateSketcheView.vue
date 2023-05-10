@@ -65,27 +65,26 @@ export default {
       return paintingFile
     },
     onSaveClick () {
-      if (this.sketch.type === 'sketch') {
-        const paintingFile = this.Base64ToFile(this.sketch)
+      const paintingFile = this.Base64ToFile(this.sketch)
 
-        let data = {
-          title: 'sketch_' + new Date().getMilliseconds(),
-          type: 'LINE'
-        }
+      let data = {
+        title: 'sketch_' + new Date().getMilliseconds(),
+        type: 'LINE'
+      }
 
-        let formData = new FormData()
-        formData.append('paintingFile', paintingFile)
-        formData.append('data', new Blob([JSON.stringify(data)], {type: 'application/json'}))
+      let formData = new FormData()
+      formData.append('paintingFile', paintingFile)
+      formData.append('data', new Blob([JSON.stringify(data)], {type: 'application/json'}))
 
-        if (sessionStorage.getItem('isLoginUser') === 'true') {
-          this.savePainting(formData)
-            .then(
-              alert('선화를 저장에 성공했습니다.')
-            )
-            .catch(
-              alert('선화 저장에 실패했습니다.')
-            )
-        }
+      if (sessionStorage.getItem('isLoginUser') === 'true') {
+        this.savePainting(formData)
+          .then(
+            alert('선화를 저장에 성공했습니다.')
+          )
+          .catch(error => {
+            alert('선화 저장에 실패했습니다.')
+            console.error(error)
+          })
       }
       this.$router.push('/painting/board')
     },
@@ -97,6 +96,10 @@ export default {
 </script>
 
 <style scoped>
+
+img {
+  max-width: 500px;
+}
 .image-container {
   margin: auto;
   width: 1000px;
