@@ -48,10 +48,6 @@
     </review-create-modal-view>
 
     <!-- 알림 신청 모달 -->
-    <!-- <ModalView :modalShow="isNotificationModalVisible" @close-modal="closeNotificationModal">
-      <notification-create-view :isbn="isbn"/>
-      <notification-create-modal-button @close="closeNotificationModal"></notification-create-modal-button>
-    </ModalView> -->
     <b-modal
       id="modal-save-notification"
       ref="modal"
@@ -66,18 +62,18 @@
       <form ref="form" @submit.stop.prevent="handleSubmit">
         <b-form-group v-slot="{ ariaDescribedby }" class="text-left">
           <b-form-group>
-            <b-form-radio v-model="selected" :aria-describedby="ariaDescribedby" name="some-radios" value="D">최저가</b-form-radio>
+            <b-form-radio v-model="selected" :aria-describedby="ariaDescribedby" name="some-radios" value="D">최저가 (현재 최저가 : {{ book.price }}원)</b-form-radio>
           </b-form-group>
 
           <b-form-group>
             <b-form-radio v-model="selected" :aria-describedby="ariaDescribedby" name="some-radios" value="S">사용자 지정 최저가</b-form-radio>
             <b-form-group
-              label="알림 신청 가격"
+              label="지정 가격 : "
               label-for="upperLimit-input"
               invalid-feedback="알림 신청 가격을 입력하세요."
               :state="upperLimitState"
               v-if="selected === 'S'"
-              class="d-flex align-items-center mr-3 mt-1"
+              class="d-flex align-items-center mr-3 mt-2 ml-4"
             >
               <b-form-input
                 id="upperLimit-input"
@@ -146,7 +142,6 @@ export default {
     } else {
       this.isNotifications = this.book.notification
     }
-    console.log(this.isNotifications)
   },
   computed: {
     ...mapState(bookStore, ['book']),
@@ -191,15 +186,9 @@ export default {
       }
       this.isModalVisible = true
     },
-    // showNotificationModal () {
-    //   this.isNotificationModalVisible = true
-    // },
     closeModal () {
       this.isModalVisible = false
     },
-    // closeNotificationModal () {
-    //   this.isNotificationModalVisible = false
-    // },
     checkLoginAndOpenModal () {
       const login = sessionStorage.getItem('isLoginUser')
       if (!login) {
@@ -219,6 +208,11 @@ export default {
       this.upperLimitState = null
     },
     handleOk (bvModalEvent) {
+      if (this.selected === '') {
+        alert('알림 신청 타입을 선택해주세요!')
+        bvModalEvent.preventDefault()
+        return
+      }
       bvModalEvent.preventDefault()
       this.handleSubmit()
     },
@@ -233,7 +227,6 @@ export default {
         upperLimit: this.upperLimit,
         notificationType: this.selected
       }
-      console.log(data)
 
       this.notificationSave(data)
         .then(() => {
@@ -245,8 +238,6 @@ export default {
       })
     },
     cancelNotification (notificationId) {
-      console.log('삭제')
-      console.log(notificationId)
       if (confirm('알림을 취소하시겠습니까?')) {
         this.notificationdelete(notificationId)
           .then(() => {

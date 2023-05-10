@@ -21,7 +21,7 @@ export default {
 </script>
 
 <style>
-footer{
+.footer{
   background-color: var(--main-yellow);
   position: absolute;
   bottom: 0;
