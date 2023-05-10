@@ -358,11 +358,11 @@ export default {
 }
 
 .btn-box > button:nth-child(1){
-  width: 30%;
+  width: 40%;
 }
 
 .btn-box > button:nth-child(2){
-  width: 70%;
+  width: 60%;
 }
 
 .book-desc {
