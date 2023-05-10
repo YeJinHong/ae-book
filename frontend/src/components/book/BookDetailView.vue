@@ -1,7 +1,7 @@
 <template>
   <div v-if="book">
     <div class="book-container">
-      <h1>{{ book.title }}</h1>
+      <h1>{{ book.title | removeTitlePrefix }}</h1>
       <p>{{ book.author }} | {{ book.publisher }} | {{ book.publishDate }}</p>
       <div class="bar"></div>
       <div class="main-info">
@@ -272,7 +272,7 @@ export default {
   font-size: 45px;
   font-weight: 800;
   text-align: left;
-  margin-top: 30px;
+  margin-top: 45px;
 }
 
 .book-container > p {
