@@ -14,7 +14,7 @@
           </div>
           <div class="red-bar"></div>
           <p><span style="font-weight:bold">ISBN</span> {{ book.isbn }}</p>
-          <p>별별별별별</p>
+          <div class="rating"><review-score-view :score="parseInt(book.scoreSum / book.reviewCount)"></review-score-view></div>
           <!-- TODO: 비로그인시 알림 설정 버튼 안보이도록  -->
           <button type="button" class="ae-btn btn-navy" v-if=book.notification @click="cancelNotification(book.notificationId)">알림 신청중</button>
           <!-- <button type="button" class="ae-btn" v-else v-b-modal.modal-save-notification>알림 신청</button> -->
@@ -26,16 +26,21 @@
       <p style="font-weight: bold; text-align: left; font-size: 24px; color:var(--ae-navy)">책 소개</p>
       <p>{{ book.description }}</p>
       <div class="bar"></div>
+      <p style="font-weight: bold; text-align: left; font-size: 24px; color:var(--ae-navy); display:flex;">총 리뷰 개수 <span style="color:var(--ae-red)">{{ book.reviewCount }}</span>개
+       <span class='btn-group' v-if='!isLogin'>
+        <button class='ae-btn btn-red review-btn' @click="goTo('Login')">리뷰 등록</button>
+       </span>
+       <span class='btn-group' v-if='isLogin'>
+        <button v-if='myReview != null' class='ae-btn btn-navy review-btn'>리뷰 등록 불가</button>
+        <button v-else class='ae-btn btn-red review-btn' @click="showModal()">리뷰 등록</button>
+       </span>
+      </p>
     </div>
-    <!-- //////////////////////////////////////////////////////////////////////////////////// -->
-    <!-- TODO: 별점 및 서평 등록 -->
-    <button @click="showModal()">리뷰 등록</button>
-    <!-- TODO: 서평 수정 및 삭제 -->
     <div>
       <review-book-list-view :isbn="isbn"></review-book-list-view>
     </div>
     <review-create-modal-view :modalShow="isModalVisible" @close-modal="closeModal">
-      <review-create-view :isbn="isbn" @close-modal="closeModal"/>
+      <review-create-view :bookInfo="this.bookInfo" @close-modal="closeModal" @get-my-review="getMyReview"/>
     </review-create-modal-view>
 
     <!-- 알림 신청 모달 -->
@@ -96,6 +101,7 @@ import ReviewCreateView from '../review/ReviewCreateView.vue'
 import ReviewCreateModalView from '../review/ReviewCreateModalView.vue'
 import NotificationCreateView from '../notification/NotificationCreateView.vue'
 import NotificationCreateModalButton from '../notification/NotificationCreateModalButton.vue'
+import ReviewScoreView from '../review/ReviewScoreView.vue'
 
 const bookStore = 'bookStore'
 const reviewStore = 'reviewStore'
@@ -103,14 +109,20 @@ const notificationStore = 'notificationStore'
 
 export default {
   name: 'BookDetailView',
-  props: ['isbn'],
+  props: {
+    isbn: {
+      type: String,
+      required: true
+    }
+  },
   components: {
     ReviewBookListView,
     ReviewCreateView,
     ReviewCreateModalView,
     ModalView,
     NotificationCreateView,
-    NotificationCreateModalButton
+    NotificationCreateModalButton,
+    ReviewScoreView
   },
   data () {
     return {
@@ -119,7 +131,9 @@ export default {
       upperLimit: 0,
       upperLimitState: null,
       selected: '',
-      isNotifications: false
+      isNotifications: false,
+      bookInfo: null,
+      isLogin: false
     }
   },
   created () {
@@ -132,20 +146,47 @@ export default {
   },
   computed: {
     ...mapState(bookStore, ['book']),
-    ...mapState(reviewStore, ['reviewBookList', 'reviewBookPageSetting'])
+    ...mapState(reviewStore, ['reviewBookList', 'reviewBookPageSetting', 'myReview'])
+  },
+  beforeMount () {
+    console.log('beforeMount')
+    this.isLogin = JSON.parse(sessionStorage.getItem('isLoginUser'))
+    if (this.isLogin) {
+      this.getMyReviewAction(this.isbn)
+    }
   },
   mounted () {
     this.getBookDetail(this.isbn)
     this.book = this.getBook
     this.isNotifications = this.book.notification
+
+    console.log('mounted')
+    this.isLogin = JSON.parse(sessionStorage.getItem('isLoginUser'))
+    if (this.isLogin) {
+      this.getMyReviewAction(this.isbn)
+    }
   },
   methods: {
     ...mapActions(bookStore, ['getBookDetail']),
     ...mapActions(notificationStore, ['notificationSave', 'notificationdelete']),
+    ...mapActions(reviewStore, ['getMyReviewAction']),
+    goTo (componentName) {
+      alert('로그인이 필요해요 ! ( •̀ ω •́ )✧')
+      this.$router.push({ name: componentName })
+    },
+    getMyReview () {
+      console.log('여기요 !!')
+      this.getMyReviewAction(this.isbn)
+    },
     onClickRedirect (url) {
       window.open(url, 'blank')
     },
     showModal () {
+      this.bookInfo = {
+        isbn: this.isbn,
+        title: this.book.title.slice(5, this.book.title.length),
+        writer: this.book.author
+      }
       this.isModalVisible = true
     },
     // showNotificationModal () {
@@ -261,6 +302,7 @@ export default {
 
 .sub-info > p {
   text-align: left;
+  margin-bottom: 0;
 }
 
 .price-info {
@@ -292,5 +334,11 @@ export default {
   height:2px;
   background-color: #E0E0E0;
   margin: 35px 0px;
+}
+
+.rating {
+  text-align: left;
+  font-size:25px;
+  margin-bottom:50px;
 }
 </style>

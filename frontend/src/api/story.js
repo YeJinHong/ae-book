@@ -2,7 +2,7 @@ import axios from 'axios'
 import api from '@/api/auth'
 
 // 로그인한 유저의 동화 리스트
-const searchStory = pagination => api.get(`/api/stories`, {params: pagination})
+const searchStory = (pagination) => api.get(`/api/stories?page=${pagination.page}&size=3`)
 
 // 특정 동화의 상세 정보 조회
 const searchDetailStory = storyId => axios.get(`/api/stories/${storyId}`)

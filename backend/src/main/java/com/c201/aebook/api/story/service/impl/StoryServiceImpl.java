@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.c201.aebook.api.story.persistence.entity.StoryEntity;
 import com.c201.aebook.api.story.persistence.repository.StoryRepository;
+import com.c201.aebook.api.story.presentation.dto.response.StoryDeleteResponseDTO;
 import com.c201.aebook.api.story.presentation.dto.response.StoryResponseDTO;
 import com.c201.aebook.api.story.service.StoryService;
 import com.c201.aebook.api.user.persistence.entity.UserEntity;
@@ -35,6 +36,7 @@ public class StoryServiceImpl implements StoryService {
 		storyRepository.save(StoryEntity.builder()
 			.title(storySO.getTitle())
 			.content(storySO.getContent())
+			.voiceUrl(storySO.getVoiceUrl())
 			.imgUrl(storySO.getImgUrl())
 			.user(user)
 			.build());
@@ -46,10 +48,9 @@ public class StoryServiceImpl implements StoryService {
 		UserEntity userEntity = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-		// TODO : fetch join이 안되는 관계로 stream 내에서 nickname을 찾는 것으로 임시 구현... 방법 찾기
 		Page<StoryEntity> stories = storyRepository.findAllByUserId(userId, pageable);
 		return stories.map(storyEntity -> storyConverter.toStoryResponseDTO(storyEntity, storyEntity.getId(),
-			userRepository.findById(storyEntity.getUser().getId()).get().getNickname()));
+			userEntity.getNickname()));
 	}
 
 	@Override
@@ -78,12 +79,13 @@ public class StoryServiceImpl implements StoryService {
 			.title(storyPatchSO.getTitle())
 			.content(storyEntity.getContent())
 			.imgUrl(storyEntity.getImgUrl())
+			.voiceUrl(storyEntity.getVoiceUrl())
 			.user(storyEntity.getUser())
 			.build());
 	}
 
 	@Override
-	public void deleteStory(StoryDeleteSO storyDeleteSO) {
+	public StoryDeleteResponseDTO deleteStory(StoryDeleteSO storyDeleteSO) {
 		// 1. Story 유효성 검증
 		StoryEntity storyEntity = storyRepository.findById(storyDeleteSO.getStoryId())
 			.orElseThrow(() -> new CustomException(ErrorCode.STORY_NOT_FOUND));
@@ -93,5 +95,7 @@ public class StoryServiceImpl implements StoryService {
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		storyRepository.deleteById(storyDeleteSO.getStoryId());
+
+		return storyConverter.toStoryDeleteResponseDTO(storyDeleteSO, storyEntity);
 	}
 }

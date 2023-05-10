@@ -1,11 +1,11 @@
-from fastapi import FastAPI,File,UploadFile
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI,File,UploadFile,Form
+from fastapi.responses import JSONResponse, StreamingResponse, FileResponse
 from review_star_prediction import *
 from isbn_ocr import *
 from dotenv import load_dotenv
 import os
 import openai
-import io
+# import io
 import base64
 import cv2
 import sys
@@ -15,11 +15,16 @@ import numpy as np
 from PIL import Image
 from typing import Dict,Any
 from starlette.middleware.cors import CORSMiddleware
+from io import BytesIO
+import datetime
+import random
+from fastapi.staticfiles import StaticFiles
+import json
 
 ##setting cors origin
 origins = [
-    "http://127.0.0.1",
-    "http://127.0.0.1:3000",
+    "http://0.0.0.0:3000",
+    "http://0.0.0.0",
     "http://localhost:3000"
 ]
 
@@ -35,9 +40,10 @@ app.add_middleware(
 
 #constant
 STT_URL = "https://naveropenapi.apigw.ntruss.com/recog/v1/stt?lang=Kor"
-TTS_URL = "httxps://naveropenapi.apigw.ntruss.com/tts-premium/v1/tts"
+TTS_URL = "https://naveropenapi.apigw.ntruss.com/tts-premium/v1/tts"
 ADJECTIVE = ["아름다운","이해하기 쉬운","재미있는","슬픈","교훈을 주는","상상력을 자극하는",
              "감동을 주는","어린이가 좋아할 만한","사실적인"]
+VOICE = ["vara","vdain","nkyungtae","nminsang"]
 
 #api key
 load_dotenv()
@@ -45,13 +51,20 @@ openai.api_key = os.getenv("SECRET_KEY")
 client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET")
 
-@app.get("/")
+#setting static files
+
+app = FastAPI()
+
+# static serving "directory sound" 
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.get("/fast")
 async def root():
     return {"message":"Hello World"}
 
 #test
 #e.g.:http://127.0.0.1:8000/hello/daehyuck
-@app.get("/hello/{name}")
+@app.get("/fast/hello/{name}")
 async def say_hello(name: str):
     return {"message":f"Hello {name}"}
 
@@ -59,7 +72,7 @@ async def say_hello(name: str):
 input: title, words
 output: review, star point
 """
-@app.post("/reviews/gpt")
+@app.post("/fast/reviews/gpt")
 async def create_review(data:Dict[Any,Any]):
     
     # {작가}의 {제목} 책을 읽고 {키워드}를 키워드로 해서 서평을 {char} 자 이내로 써줘.
@@ -76,7 +89,7 @@ async def create_review(data:Dict[Any,Any]):
         #default number of character value
         char = max(100,int(char))
 
-        m = f"너는 {writer}의 {title}이라는 책을 읽은 사람이야. 자기소개는 하지 말고 {words}를 키워드로 해서 서평을 {char}자 이내로 써줘"
+        m = f"너는 {writer}의 {title}이라는 책을 읽은 사람이야. 너에 대한 자기소개는 하지 말고 {words}를 키워드로 해서 서평을 {char}자 이내로 써줘"
     elif writer == None:
         
         #default number of character value
@@ -85,11 +98,11 @@ async def create_review(data:Dict[Any,Any]):
         else:
             char = max(100,int(char))
         
-        m = f"너는 {title}이라는 책을 읽은 사람이야. 자기소개는 하지 말고 {words}를 키워드로 해서 서평을 {char}자 이내로 써줘"
+        m = f"너는 {title}이라는 책을 읽은 사람이야. 너에 대한 자기소개는 하지 말고 {words}를 키워드로 해서 서평을 {char}자 이내로 써줘"
     
     elif char == None:
         
-        m = f"너는 {writer}의 {title}이라는 책을 읽은 사람이야. 자기소개는 하지 말고 {words}를 키워드로 해서 서평을 100자 이내로 써줘"
+        m = f"너는 {writer}의 {title}이라는 책을 읽은 사람이야. 너에 대한 자기소개는 하지 말고 {words}를 키워드로 해서 서평을 100자 이내로 써줘"
     
     #chatgpt request
     completion = openai.ChatCompletion.create(
@@ -112,11 +125,11 @@ async def create_review(data:Dict[Any,Any]):
 input:mp3 file(keyword), title
 output:review & point prediction
 """
-@app.post("/reviews/sound")
-async def sound_to_review(title:str, sound: UploadFile = File(...), writer=None, char=None):
+@app.post("/fast/reviews/sound")
+async def sound_to_review(audio: UploadFile = File(...), title: str = Form(...), writer: str = Form(default=None), char: str = Form(default=None)):
     
     #read mp3 file to byte string
-    data = await sound.read()
+    data = await audio.read()
     
     headers = {
         "X-NCP-APIGW-API-KEY-ID": client_id,
@@ -129,18 +142,18 @@ async def sound_to_review(title:str, sound: UploadFile = File(...), writer=None,
     
     if(rescode == 200):
         
-        words = response.text #stt result
+        words = json.loads(response.text)['text'] #stt result
         
-        review_dict = create_gpt_review(title,words,writer,char) #create review & star
+        review,star = create_gpt_review(title,words,writer,char)
         
-        return {"review":review_dict["review"], "star":review_dict["star"]}
+        return {"review":review,"star":star,"respond":1}
     else:
-        return "Error : " + response.text
+        return {"review":'', "star":0, "respond":0}
     
     
 
 #convert image to sketch
-@app.post("/paintings/sketch")
+@app.post("/fast/paintings/sketch")
 async def image_to_sketch(image: UploadFile = File(...)):
     
     #read image data
@@ -186,7 +199,7 @@ async def image_to_sketch(image: UploadFile = File(...)):
 input: isbn image
 output: isbn string
 """
-@app.post("/books/isbn")
+@app.post("/fast/books/isbn")
 async def isbn_detection(image: UploadFile = File(...)):
     
     #read image data
@@ -230,13 +243,13 @@ async def isbn_detection(image: UploadFile = File(...)):
 
 """
 input: story keyword
-output: chatgpt story
+output: chatgpt story, sound
 """
-@app.post("/stories/gpt")
+@app.post("/fast/stories/gpt")
 async def create_story(text:Dict[Any,Any]):
     
     #chatgpt query
-    query = f"너는 동화작가야. 자기소개는 하지 말고 어린이를 위해서 {text['text']}로 {np.random.choice(ADJECTIVE)} 동화를 만들어줘."
+    query = f"너는 동화작가야. 너에 대한 자기소개는 하지 말고 어린이를 위해서 {text['text']}로 {np.random.choice(ADJECTIVE)} 동화를 250자 이내로 만들어줘."
         
     #chatgpt request
     completion = openai.ChatCompletion.create(
@@ -247,18 +260,22 @@ async def create_story(text:Dict[Any,Any]):
     )
     
     #chatgpt response
-    return {'data':completion.choices[0].message['content']}
+    story = completion.choices[0].message['content']
+    
+    return {'story': story}
 
 """
 input:text
-output:naver clova mp3 response data
+output:respond code(code = 200(success) & etc.(fail))
 """
-@app.post("/stories/sound")
-async def text_to_sound(text: str):
+@app.post("/fast/stories/sound")
+async def text_to_sound(text: Dict[Any,Any]):
+    
+    text = text['data']
     
     #create data(default)
     encText = urllib.parse.quote(text)
-    data = "speaker=nminsang&volume=-5&speed=0&pitch=0&format=wav&text=" + encText
+    data = f"speaker={np.random.choice(VOICE)}&volume=-5&speed=0&pitch=0&format=wav&text=" + encText
     
     #header
     request = urllib.request.Request(TTS_URL)
@@ -269,10 +286,29 @@ async def text_to_sound(text: str):
     response = urllib.request.urlopen(request, data=data.encode('utf-8'))
     rescode = response.getcode()
     
-    
     if(rescode==200):
         
-        #sound byte string    
-        return response
+        response_body = response.read()
+        now = datetime.datetime.now()
+        
+        #random filename
+        filename = f"{round(random.random()*1000)}_{now.year}_{now.month}_{now.day}_{now.hour}_{now.minute}_{now.second}_{now.microsecond}.wav"
+        
+        #save sound file
+        with open(f"./static/sound/{filename}",'wb') as f:
+            f.write(response_body)
+        f.close()
+        
+        rescode = 1
+    
     else:
-        return "Error Code:" + rescode
+        
+        rescode = 0
+        filename = ''
+        
+    return {'rescode':rescode, 'sound':filename}
+
+# File download
+@app.get("/fast/file/download/{filename}")
+def download_file(filename: str):
+    return FileResponse(path=f"static/sound/{filename}", filename=f"{filename}", media_type="multipart/form-data")

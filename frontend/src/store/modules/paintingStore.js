@@ -27,8 +27,18 @@ const paintingStore = {
     RESET_PAINTING_LIST (state) {
       state.paintingList = []
     },
+    RESET_SKETCH (state) {
+      state.sketch = ''
+    },
     SET_SKETCH: (state, data) => {
-      state.sketch = 'data:image/jpeg;base64,' + data
+      if (data.type === 'painting') {
+        state.sketch = data.url.fileUrl + '?timestamp=' + (new Date().getTime())
+      } else {
+        state.sketch = 'data:image/jpeg;base64,' + data.url
+      }
+    },
+    SET_SKETCH_PAINTING: (state, data) => {
+      state.sketch = data
     },
     SET_MAIN_PAINTING_LIST: (state, data) => {
       state.mainPaintingList = data
@@ -43,10 +53,9 @@ const paintingStore = {
       await savePainting(formdata)
         .then(({ data }) => {
           commit('SET_PAINTING', data.result)
-          console.log(data.result)
         })
         .catch(error => {
-          console.log(error)
+          console.error(error)
         })
     },
     async getPaintingList ({ commit }, request) {
@@ -62,7 +71,7 @@ const paintingStore = {
     async convertSketch ({ commit }, request) {
       await convertSketch(request)
         .then(({ data }) => {
-          commit('SET_SKETCH', data)
+          commit('SET_SKETCH', {url: data, type: 'sketch'})
         })
         .catch(error => {
           alert(error)

@@ -23,7 +23,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.c201.aebook.api.common.BaseResponse;
 import com.c201.aebook.api.story.presentation.dto.request.StoryPatchRequestDTO;
 import com.c201.aebook.api.story.presentation.dto.request.StoryRequestDTO;
+import com.c201.aebook.api.story.presentation.dto.response.StoryDeleteResponseDTO;
+import com.c201.aebook.api.story.presentation.dto.response.StoryPatchResponseDTO;
 import com.c201.aebook.api.story.presentation.dto.response.StoryResponseDTO;
+import com.c201.aebook.api.story.presentation.dto.response.StorySaveResponseDTO;
 import com.c201.aebook.api.story.presentation.validator.StoryValidator;
 import com.c201.aebook.api.story.service.StoryService;
 import com.c201.aebook.api.vo.StoryDeleteSO;
@@ -56,24 +59,29 @@ public class StoryController {
 		consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}
 	)
 	public BaseResponse<?> saveStory(
-		@RequestPart(value = "imageFile") MultipartFile multipartFile,
+		@RequestPart(value = "voiceFile") MultipartFile voiceFile,
+		@RequestPart(value = "imageFile") MultipartFile imageFile,
 		@RequestPart(value = "data") StoryRequestDTO storyRequestDTO,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) throws IOException {
 		Long userId = Long.parseLong(customUserDetails.getUsername());
-		String dirName = customUserDetails.getUsername();
+		String dirName = customUserDetails.getUsername() + "/stories";
 
 		// DTO NOT NULL 검증
 		storyValidator.validateStoryRequestDTO(storyRequestDTO);
 
 		// aws s3 file upload
-		String uploadImageUrl = s3Uploader.upload(multipartFile, dirName);
+		String uploadImageUrl = s3Uploader.upload(imageFile, dirName);
+		String uploadVoiceUrl = s3Uploader.upload(voiceFile, dirName);
 
 		// 동화 내용 DB 저장
-		StorySO storySO = storyConverter.toStorySO(userId, uploadImageUrl, storyRequestDTO);
+		StorySO storySO = storyConverter.toStorySO(userId, uploadVoiceUrl, uploadImageUrl, storyRequestDTO);
 		storyService.saveStory(storySO);
 
-		return new BaseResponse<>(null, HttpStatus.OK.value(), "동화 작성 완료");
+		StorySaveResponseDTO storySaveResponseDTO = storyConverter.toStorySaveResponseDTO(uploadVoiceUrl,
+			uploadImageUrl, storyRequestDTO);
+
+		return new BaseResponse<>(storySaveResponseDTO, HttpStatus.OK.value(), "동화 작성 완료");
 	}
 
 	@Operation(summary = "로그인 유저의 동화 리스트", description = "마이페이지에서 보여줄 나의 동화 리스트")
@@ -120,7 +128,10 @@ public class StoryController {
 			storyPatchRequestDTO);
 		storyService.updateStoryTitle(storyPatchSO);
 
-		return new BaseResponse<>(null, HttpStatus.OK.value(), "특정 동화의 제목이 정상적으로 변경되었습니다.");
+		StoryPatchResponseDTO storyPatchResponseDTO = storyConverter.toStoryPatchResponseDTO(storyPatchRequestDTO,
+			storyId);
+
+		return new BaseResponse<>(storyPatchResponseDTO, HttpStatus.OK.value(), "특정 동화의 제목이 정상적으로 변경되었습니다.");
 	}
 
 	@Operation(summary = "특정 동화를 삭제", description = "특정 동화를 삭제")
@@ -135,8 +146,9 @@ public class StoryController {
 
 		StoryDeleteSO storyDeleteSO = storyConverter.toStoryDeleteSO(userId, storyId);
 
-		storyService.deleteStory(storyDeleteSO);
-		return new BaseResponse<>(null, HttpStatus.OK.value(), "특정 동화의 삭제를 완료하였습니다.");
+		StoryDeleteResponseDTO storyDeleteResponseDTO = storyService.deleteStory(storyDeleteSO);
+
+		return new BaseResponse<>(storyDeleteResponseDTO, HttpStatus.OK.value(), "특정 동화의 삭제를 완료하였습니다.");
 	}
 
 }

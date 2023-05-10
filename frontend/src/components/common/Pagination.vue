@@ -3,9 +3,13 @@
     <div class="page-list">
       <ul>
         <li
-        class="pagebtn pre"
-        :class="{ disabled: pageSetting.first }"
-        @click="sendPage(pageSetting.pageable.pageNumber)"
+          v-if="pageSetting.first"
+          class="pagebtn pre disabled"
+      >◀</li>
+        <li
+          v-else
+          class="pagebtn pre"
+          @click="sendPage(pageSetting.pageable.pageNumber)"
       >◀</li>
         <li
           class="pagebtn"
@@ -17,10 +21,14 @@
           {{ page }}
         </li>
         <li
-        class="pagebtn next"
-        :class="{ disabled: pageSetting.last }"
-        @click="sendPage(pageSetting.pageable.pageNumber+2)"
-      >▶</li>
+          v-if="pageSetting.last"
+          class="pagebtn next disabled"
+        >▶</li>
+        <li
+          v-else
+          class="pagebtn next"
+          @click="sendPage(pageSetting.pageable.pageNumber+2)"
+        >▶</li>
       </ul>
 
     </div>

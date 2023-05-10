@@ -5,7 +5,8 @@ const notificationStore = {
   state: {
     isNotification: false,
     notification: null,
-    notificationList: []
+    notificationList: [],
+    notificationPageSetting: null
   },
   getters: {
     getIsNotification: state => {
@@ -33,6 +34,10 @@ const notificationStore = {
     },
     UPDATE_NOTIFICATION: (state, data) => {
       state.notification.upperLimit = data.upperLimit
+    },
+    SET_PAGE_SETTING: (state, data) => {
+      const { pageable, last, first, totalPages, size, totalElements, numberOfElements, empty } = data
+      state.notificationPageSetting = { pageable, last, first, totalPages, size, totalElements, numberOfElements, empty }
     }
   },
   actions: {
@@ -44,10 +49,11 @@ const notificationStore = {
           console.log(error)
         })
     },
-    async getBookNotificationList ({ commit }) {
-      await getNotificationList()
+    async getBookNotificationList ({ commit }, request) {
+      await getNotificationList(request)
         .then(({ data }) => {
           commit('SET_NOTIFICATION_LIST', data.result.content)
+          commit('SET_PAGE_SETTING', data.result)
         })
         .catch(error => {
           console.log(error)

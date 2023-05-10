@@ -1,13 +1,12 @@
 <template>
   <div>
-    <div>사용자 정보 변경(임시 -> 추후 모달로 변경)</div>
-
+    <h1 class="subject">사용자 정보 수정</h1>
+    <div style="height:2px; background-color: #E0E0E0;"></div>
     <div>
       <form id="form-modifyInfo" method="post" action="">
-        <div class="input-group mb-3"> 닉네임
+        <div class="form-input">닉네임
           <input
             type="text"
-            class="form-control"
             name="nickname"
             id="nickname"
             v-model="user.nickname"
@@ -15,9 +14,8 @@
           />
         </div>
 
-        <div class="input-group mb-3"> 이미지
+        <div class="form-input">이미지
           <input type="file"
-            class="form-control"
             name="profileUrl"
             id="profileUrl"
             ref="fileInput"
@@ -25,20 +23,48 @@
           />
         </div>
 
-        <div class="d-grid col-12 mx-auto">
-          <b-button
+        <div>
+          <button
             type="submit"
-            variant="secondary"
             @click.prevent="modifyUser"
-            id="btn-modify"
+            class="ae-btn btn-red"
           >
             수정
-          </b-button>
-          &nbsp;
-          <router-link :to="{ name: 'MyInfo' }" class="link"><b-button variant="secondary" type="button">취소</b-button></router-link>
+          </button>
+          <button type="button" class="ae-btn" v-b-modal.modal-delete-user>사용자 탈퇴</button>
         </div>
       </form>
+
     </div>
+
+    <b-modal
+      id="modal-delete-user"
+      ref="modal"
+      title="회원 탈퇴"
+      @show="resetModal"
+      @hidden="resetModal"
+      @ok="handleOk"
+      ok-title="확인"
+      ok-variant="danger"
+      cancel-title="취소"
+    >
+      <form ref="form" @submit.stop.prevent="handleSubmit">
+        <b-form-group
+          label="회원 탈퇴를 원하신다면 아래의 문구를 입력해주세요."
+          label-for="msg-input"
+          invalid-feedback="문구를 올바르게 입력해주세요"
+          :state="msgState"
+        >
+          <h6>&lt; 회원 탈퇴를 진행합니다 &gt;</h6><br>
+          <b-form-input
+            id="msg-input"
+            v-model="msg"
+            :state="msgState"
+            required
+          ></b-form-input>
+        </b-form-group>
+      </form>
+    </b-modal>
 
   </div>
 </template>
@@ -51,6 +77,8 @@ export default {
   name: 'MyInfoModify',
   data () {
     return {
+      msg: '',
+      msgState: null,
       nickname: '',
       profileUrl: null
     }
@@ -58,6 +86,7 @@ export default {
   created () {
     this.isLoginUser = sessionStorage.getItem('isLoginUser')
     this.nickname = this.user.nickname
+    this.user = this.getUserInfo
   },
   computed: {
     ...mapState(userStore, ['isLogin', 'isLoginError', 'user']),
@@ -68,7 +97,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(userStore, ['userUpdate']),
+    ...mapActions(userStore, ['userUpdate', 'userDelete', 'userLogout']),
     async modifyUser () {
       if (!this.user.nickname) {
         alert('닉네임은 입력은 필수입니다!')
@@ -80,7 +109,7 @@ export default {
       }
 
       let formData = new FormData()
-      if (!this.$refs.fileInput.files[0]) {
+      if (this.$refs.fileInput.files[0]) {
         formData.append('imgUrl', this.$refs.fileInput.files[0])
       } else {
         formData.append('imgUrl', null)
@@ -89,13 +118,77 @@ export default {
 
       console.log(formData)
       await this.userUpdate(formData)
-      this.$router.push({ name: 'MyInfo' })
+      alert('수정이 완료되었습니다.')
+      location.reload()
+    },
+    deleteUserInfo () {
+      console.log('사용자 탈퇴')
+      if (confirm('정말로 탈퇴하시겠습니까?')) {
+        this.userDelete()
+          .then(() => {
+            console.log('사용자 탈퇴 완료')
+            return this.userLogout()
+          })
+          .then(() => {
+            console.log('사용자 로그아웃 완료')
+            alert('그동안 서비스를 이용해주셔서 감사합니다')
+            this.$router.push({ name: 'Main' })
+          })
+          .catch((error) => {
+            console.error(error)
+          })
+      }
+    },
+    checkFormValidity () {
+      const valid = this.$refs.form.checkValidity()
+      this.msgState = valid
+      return valid
+    },
+    resetModal () {
+      this.msg = ''
+      this.msgState = null
+    },
+    handleOk (bvModalEvent) {
+      bvModalEvent.preventDefault()
+      this.handleSubmit()
+    },
+    handleSubmit () {
+      // Exit when the form isn't valid
+      if (!this.checkFormValidity()) {
+        return
+      }
+
+      if (this.msg === '회원 탈퇴를 진행합니다') {
+        this.deleteUserInfo()
+        this.$nextTick(() => {
+          this.$bvModal.hide('modal-delete-user')
+        })
+      } else {
+        this.msgState = false
+        this.$refs.form.reportValidity()
+      }
     }
   }
 
 }
 </script>
 
-<style>
+<style scoped>
+.subject{
+  text-align: left;
+  font-size: 24px;
+  font-weight: 800;
+}
 
+.form-input {
+  margin: 30px auto;
+  width:80%;
+  text-align: left;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.invalid-feedback {
+  text-align: left;
+}
 </style>

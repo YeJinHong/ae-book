@@ -27,6 +27,9 @@ public class StoryResponseDTO {
 	@Schema(description = "동화 이미지 url", defaultValue = "https://aebookbucket.s3.ap-northeast-2.amazonaws.com/%EC%95%84%EC%9D%B4%EB%B6%81.png")
 	private String imgUrl;
 
+	@Schema(description = "동화 보이스 url")
+	private String voiceUrl;
+
 	@Schema(description = "동화 작성 시간", defaultValue = "2023-04-14 10:30:15")
 	private LocalDateTime createdAt;
 
@@ -35,12 +38,13 @@ public class StoryResponseDTO {
 
 	@Builder
 	public StoryResponseDTO(Long storyId, String storyAuthorNickname, String title, String content, String imgUrl,
-		LocalDateTime createdAt, LocalDateTime updatedAt) {
+		String voiceUrl, LocalDateTime createdAt, LocalDateTime updatedAt) {
 		this.storyId = storyId;
 		this.storyAuthorNickname = storyAuthorNickname;
 		this.title = title;
 		this.content = content;
 		this.imgUrl = imgUrl;
+		this.voiceUrl = voiceUrl;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 	}
