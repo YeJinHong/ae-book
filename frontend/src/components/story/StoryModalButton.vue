@@ -44,6 +44,7 @@ export default {
           if (response.data.resultCode === 200) {
             alert('정상적으로 삭제했습니다.')
             this.closeModal()
+            location.reload()
           }
         })
         .catch(error => {
