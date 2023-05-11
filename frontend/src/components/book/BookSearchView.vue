@@ -18,7 +18,7 @@
         </div>
       </div>
       <div class="right">
-        <div v-if="(keyword === '' && totalSearchCount === 0) || !clickSearch" class="no-search">
+        <div v-if="(totalSearchCount === 0) || !clickSearch" class="no-search">
         검색어를 입력하세요.
       </div>
         <div v-else>
@@ -73,19 +73,22 @@ export default {
     ...mapMutations(bookStore, ['RESET_BOOK_SEARCH']),
     ...mapActions(bookStore, ['getSearchList']),
     onClickSearch () {
+      this.keyword = this.keyword.trim()
       if (this.keyword === '') {
         this.RESET_BOOK_SEARCH()
+        this.searchKeyword = ''
         return
       }
 
       this.autoCompleteList = []
-      console.log('키워드:' + this.keyword)
       // eslint-disable-next-line
       const regExp = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
       if (regExp.test(this.keyword)) {
         alert('특수문자를 입력할 수 없습니다.')
         return
       }
+
+      // 아무 검색 조건도 쓰지 않는다면 디폴트 설정으로 가도록.
       if (this.searchTargets.length === 0) {
         this.searchTargets = ['TITLE', 'AUTHOR', 'PUBLISHER']
       }
