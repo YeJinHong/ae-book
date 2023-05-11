@@ -8,7 +8,7 @@ const userStore = {
     user: {},
     isValidToken: false
   },
-  getter: {
+  getters: {
     getUserInfo: function (state) {
       return state.user
     }
