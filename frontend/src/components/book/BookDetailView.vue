@@ -148,7 +148,6 @@ export default {
     ...mapState(reviewStore, ['reviewBookList', 'reviewBookPageSetting', 'myReview'])
   },
   beforeMount () {
-    console.log('beforeMount')
     this.isLogin = JSON.parse(sessionStorage.getItem('isLoginUser'))
     if (this.isLogin) {
       this.getMyReviewAction(this.isbn)
@@ -157,7 +156,6 @@ export default {
   mounted () {
     this.getBookDetail(this.isbn)
     this.isNotifications = this.book.notification
-    console.log('mounted')
     this.isLogin = JSON.parse(sessionStorage.getItem('isLoginUser'))
     if (this.isLogin) {
       this.getMyReviewAction(this.isbn)
@@ -172,7 +170,6 @@ export default {
       this.$router.push({ name: componentName })
     },
     getMyReview () {
-      console.log('여기요 !!')
       this.getMyReviewAction(this.isbn)
     },
     onClickRedirect (url) {

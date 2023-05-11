@@ -134,7 +134,6 @@ export default {
             }
           })
           .then(result => {
-            console.log(result)
             this.form.content = result.data.review
             this.form.score = result.data.star
           })
@@ -158,7 +157,6 @@ export default {
           char: this.form.char
         })
         .then(result => {
-          console.log(result)
           this.form.content = result.data.review
           this.form.score = result.data.star
         })
