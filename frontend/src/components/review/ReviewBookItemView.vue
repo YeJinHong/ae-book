@@ -96,7 +96,6 @@ export default {
   methods: {
     ...mapActions(reviewStore, ['modifyReviewAction', 'deleteReviewAction']),
     async checkValue () {
-      console.log('update : ' + this.updateContent)
       let err = true
       let msg = ''
 
