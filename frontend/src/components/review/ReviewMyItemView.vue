@@ -201,7 +201,7 @@ export default {
 }
 .limit {
   text-align: right;
-  margin-right: 22px;
+  margin-right: 1px;
 }
 .item-content.is-expanded {
   height: auto !important;
@@ -250,8 +250,8 @@ export default {
   margin-left: 5px;
 }
 .item-modify {
-  width: 506px;
-  margin-left: 2px;
+  width: 534px;
+  margin-left: 9px;
   margin-top: 3px;
   font-size: 1em;
   resize: none;
