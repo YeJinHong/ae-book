@@ -4,9 +4,6 @@
     <b-button size="sm" variant="danger" @click="deleteStoryById()">
       삭제
     </b-button>
-    <b-button @click="playAudio(stop)" size="sm"><img src="../../assets/images/icons/play.png" width="20" height="20"></b-button>
-    <b-button @click="stopAudio(stop)" size="sm" variant="primary"><img src="../../assets/images/icons/pause.png" width="20" height="20"></b-button>
-    <b-button @click="restartAudio()" size="sm" variant="warning"><img src="../../assets/images/icons/redo.png" width="20" height="20"></b-button>
     <b-button @click="closeModal" size="sm" variant="dark">닫기</b-button>
   </div>
 </template>
@@ -23,8 +20,7 @@ export default {
   },
   data () {
     return {
-      audio: Object,
-      stop: true
+      audio: Object
     }
   },
   props: {
@@ -53,25 +49,6 @@ export default {
         .catch(error => {
           alert('정상적으로 삭제하지 못했습니다. ' + error)
         })
-    },
-
-    playAudio (stop) {
-      if (stop) {
-        this.audio.play()
-        this.stop = !stop
-      }
-    },
-    stopAudio (stop) {
-      if (stop === false) {
-        this.audio.pause()
-        this.stop = !stop
-      }
-    },
-    restartAudio () {
-      this.audio.pause()
-      this.audio.currentTime = 0
-      this.audio.play()
-      this.stop = !stop
     }
 
   },

@@ -10,11 +10,14 @@
       </template>
     </b-input-group>
     <div class="container">
-      <div class="container-left">
-        <img v-bind:src="story.imgUrl" alt="story image" v-if="story" id="storyImg" />
+      <div class="container-left" style="margin-bottom:10px;">
+        <img v-bind:src="story.imgUrl" alt="story image" v-if="story" id="storyImg" style="margin-bottom:10px;"/>
+        <b-button @click="playAudio(stop)" size="sm"><img src="../../assets/images/icons/play.png" width="20" height="20"></b-button>
+        <b-button @click="stopAudio(stop)" size="sm" variant="primary"><img src="../../assets/images/icons/pause.png" width="20" height="20"></b-button>
+        <b-button @click="restartAudio()" size="sm" variant="warning"><img src="../../assets/images/icons/redo.png" width="20" height="20"></b-button>
       </div>
       <div class="container-right">
-        {{ story.content }}
+        <p>{{ story.content }}</p>
       </div>
 
     </div>
@@ -39,7 +42,9 @@ export default {
 
   data () {
     return {
-      story: null
+      story: null,
+      audio: Object,
+      stop: true
     }
   },
   mounted () {
@@ -48,6 +53,7 @@ export default {
     searchDetailStory(this.storyId)
       .then(response => {
         this.story = response.data.result
+        this.audio = new Audio(this.story.voiceUrl)
       })
       .catch(error => {
         alert('정상적으로 조회하지 못했습니다. ' + error)
@@ -55,6 +61,7 @@ export default {
   },
   methods: {
     closeModal () {
+      this.audio.pause()
       this.$emit('close')
     },
     updateTitle () {
@@ -73,6 +80,24 @@ export default {
         }).catch(error => {
           alert('정상적으로 수정하지 못했습니다. ' + error)
         })
+    },
+    playAudio (stop) {
+      if (stop) {
+        this.audio.play()
+        this.stop = !stop
+      }
+    },
+    stopAudio (stop) {
+      if (stop === false) {
+        this.audio.pause()
+        this.stop = !stop
+      }
+    },
+    restartAudio () {
+      this.audio.pause()
+      this.audio.currentTime = 0
+      this.audio.play()
+      this.stop = !stop
     }
 
   }
@@ -95,9 +120,14 @@ export default {
 
 .container-right {
   width: 50%;
-  display: flex;
+  height: 500px;
+  padding:0px;
+  margin:0px;
   flex-direction: column;
   justify-content: space-evenly;
+  overflow-y: scroll;
+  white-space: pre-wrap;
+  display:block;
 }
 
 #storyImg{
@@ -106,4 +136,11 @@ export default {
   width: 100%;
   height: 95%;
 }
+
+p{
+  font-size: 25px;
+  line-height: 2;
+  letter-spacing: 2;
+}
+
 </style>
