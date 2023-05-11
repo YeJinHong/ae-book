@@ -34,10 +34,8 @@
     <div class="subject-line"><div class="subject">최신 리뷰</div><div class="red-bar"></div></div>
         <review-carousel-view :items="reviewMainList"></review-carousel-view>
     <!-- TODO : 우리 아이들 작품(만든 동화) 리스트 컴포넌트 -->
-    <div class="subject-line"><div class="subject">우리 아이들 작품</div><div class="red-bar"></div></div>
-    <div class="carousel-container">
-      <painting-carousel-view :items="mainPaintingList" :chunkSize="4"></painting-carousel-view>
-    </div>
+    <div class="subject-line" style="margin-bottom:50px;"><div class="subject">우리 아이들 작품</div><div class="red-bar"></div></div>
+    <main-painting-slide :items="mainPaintingList"></main-painting-slide>
   </div>
 </template>
 
@@ -47,6 +45,7 @@ import BookCarouselView from '@/components/common/list/BookCarouselView.vue'
 import PaintingCarouselView from '@/components/common/list/PaintingCarouselView.vue'
 import { mapState, mapActions } from 'vuex'
 import ReviewCarouselView from '../components/common/list/ReviewCarouselView.vue'
+import MainPaintingSlide from '../components/painting/MainPaintingSlide.vue'
 
 const reviewStore = 'reviewStore'
 const bookStore = 'bookStore'
@@ -58,7 +57,8 @@ export default {
     HeaderNavbarMain,
     ReviewCarouselView,
     BookCarouselView,
-    PaintingCarouselView
+    PaintingCarouselView,
+    MainPaintingSlide
   },
   methods: {
     ...mapActions(reviewStore, ['getReviewMainListAction']),
