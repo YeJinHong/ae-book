@@ -5,7 +5,9 @@
         <div class="item-info">
           <div>
             <div class="book-title">
+              <router-link class='router-font' :to="{ name: 'BookDetail', params: { isbn: review.isbn } }">
             {{ review.title | removeTitlePrefix }}
+              </router-link>
               <div class="item-updated-at">
               {{ review.updatedAt.slice(0, 10) }}
               </div>
@@ -185,6 +187,13 @@ export default {
 </script>
 
 <style scoped>
+.router-font:hover {
+  text-decoration: underline;
+}
+.router-font {
+  font-weight: 900;
+  color: var(--ae-navy);
+}
 .limit {
   text-align: right;
   margin-right: 22px;
@@ -208,7 +217,6 @@ export default {
 }
 .book-title {
   color: var(--ae-navy);
-  font-weight: 900;
   font-size: 1.2em;
   margin-top: 4px;
   margin-bottom: 2px;
