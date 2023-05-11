@@ -78,12 +78,14 @@ export default {
   border: 5px solid white;
   margin: 0px auto;
   background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .user-img{
   position: absolute;
-  width: 300px;
-  transform: translate(-50%, 0%);
+  width: 130px;
 }
 
 .nickname{
