@@ -54,7 +54,7 @@
       <div class='btn-group'>
         <div v-if="!isModify">
           <button class='ae-btn' @click="modifyReview">수정</button>
-          <button class='ae-btn btn-navy' @click="deleteReview">삭제</button>
+          <button class='ae-btn btn-red' @click="deleteReview">삭제</button>
         </div>
         <div v-if="isModify">
           <button class='ae-btn' @click="checkValue">완료</button>
@@ -278,7 +278,6 @@ export default {
 .ae-btn {
   border-width: 1.5px;
   border-style: solid;
-  border-color: var(--ae-navy);
   border-radius: 10px;
   padding: 0.3rem 1.8rem;
   font-size: 0.95rem;
