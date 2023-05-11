@@ -42,7 +42,14 @@
             <review-modify-score-view v-if="isModify" :score=this.form.score :isModify=this.isModify @modify-score="modifyScore" />
           </div>
         </b-form-group>
+        <div
+          v-if="isLoading"
+          :key = "repeatKey"
+          class="animated-text">
+          {{ loadingMessage }}
+        </div>
         <b-form-textarea
+          v-else
           id="input-3"
           v-model="form.content"
           placeholder="내용을 300자 내로 입력해주세요."
@@ -286,7 +293,6 @@ export default {
   width: 90px;
   font-weight: bold;
 }
-
 .animated-text {
   animation: fade-in-out-animation 4s linear;
 }
