@@ -1,6 +1,6 @@
 <template>
     <div>
-    <div class="page-list">
+    <div class="page-list" v-if="pageSetting !== null">
       <ul>
         <li
           v-if="pageSetting.first"
@@ -40,7 +40,6 @@ export default {
   name: 'Pagination',
   props: {
     pageSetting: {
-      type: Object,
       required: true
     }
   },
