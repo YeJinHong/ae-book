@@ -1,6 +1,6 @@
 <template>
   <div class="menu">
-    <div><img class="user-img" :src=user.profileUrl></div>
+    <div class="user-img-box"><img class="user-img" :src=user.profileUrl></div>
     <div class="nickname"><span style="font-weight:800">{{ user.nickname }}</span> 님</div>
     <ul>
       <li class="mypage-btn" @click="goTo('MyInfoModify')">사용자 정보 수정</li>
@@ -69,10 +69,23 @@ export default {
   justify-content: center;
 }
 
-.user-img{
-  border-radius: 100%;
+.user-img-box {
+  position: relative;
   width: 130px;
+  height: 130px;
+  overflow: hidden;
+  border-radius: 100%;
   border: 5px solid white;
+  margin: 0px auto;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.user-img{
+  position: absolute;
+  width: 130px;
 }
 
 .nickname{
