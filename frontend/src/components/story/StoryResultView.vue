@@ -5,7 +5,7 @@
       <template #prepend>
         <b-input-group-text>제목</b-input-group-text>
       </template>
-      <b-form-input v-model="title" placeholder="Enter your name"></b-form-input>
+      <b-form-input v-model="title" placeholder="Enter your Title"></b-form-input>
       <template #append>
         <b-button @click="onSaveClick" variant="success" size="sm" >동화 저장</b-button>
       </template>
