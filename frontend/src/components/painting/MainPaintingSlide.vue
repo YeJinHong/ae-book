@@ -1,6 +1,13 @@
 <template>
   <div class="rolling-container">
-    <div class="rolling-list">
+    <div class="rolling-list original" id="roller1">
+      <ul>
+        <li v-for="painting in items" :key="painting.id">
+          <img :src="painting.fileUrl">
+        </li>
+      </ul>
+    </div>
+    <div class="rolling-list clone" id="roller2">
       <ul>
         <li v-for="painting in items" :key="painting.id">
           <img :src="painting.fileUrl">
@@ -20,19 +27,8 @@ export default {
     }
   },
   mounted () {
-    let roller = document.querySelector('.rolling-list')
-    roller.id = 'roller1'
-
-    let clone = roller.cloneNode(true)
-    clone.id = 'roller2'
-    document.querySelector('.rolling-container').appendChild(clone)
-
     document.querySelector('#roller1').style.left = '0px'
-    // document.querySelector('#roller2').style.left = document.querySelector('.rolling-list ul').offsetWidth + 'px'
-    document.querySelector('#roller2').style.left = '3350px'
-
-    roller.classList.add('original')
-    clone.classList.add('clone')
+    document.querySelector('#roller2').style.left = document.querySelector('.rolling-list ul').offsetWidth + 'px'
   }
 }
 </script>
@@ -65,12 +61,12 @@ ul {
 @keyframes rollingleft1 {
   0% { transform: translateX(0); }
   50% { transform: translateX(-100%); }
-  50.01% { transform: translateX(100%); }
+  50.001% { transform: translateX(100%); }
   100% { transform: translateX(0); }
 }
 
 @keyframes rollingleft2 {
-  0% { transition: translateX(0); }
+  0% { transform: translateX(0); }
   100% { transform: translateX(-200%); }
 }
 
