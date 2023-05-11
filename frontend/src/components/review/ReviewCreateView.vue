@@ -42,7 +42,14 @@
             <review-modify-score-view v-if="isModify" :score=this.form.score :isModify=this.isModify @modify-score="modifyScore" />
           </div>
         </b-form-group>
+        <div
+          v-if="isLoading"
+          :key = "repeatKey"
+          class="animated-text">
+          {{ loadingMessage }}
+        </div>
         <b-form-textarea
+          v-else
           id="input-3"
           v-model="form.content"
           placeholder="내용을 300자 내로 입력해주세요."
@@ -88,13 +95,24 @@ export default {
       isModify: true,
       audioArray: [],
       mediaRecorder: null,
-      isRecording: false
+      isRecording: false,
+      isLoading: false,
+      loadingMessage: 'AI가 글을 쓰고 있습니다...',
+      repeatKey: 0
     }
   },
   computed: {
     ...mapState(bookStore, ['book'])
   },
+  mounted () {
+    this.animateText()
+  },
   methods: {
+    animateText () {
+      setInterval(() => {
+        this.repeatKey += 1
+      }, 4000)
+    },
     soundToKeyword () {
       navigator.mediaDevices.getUserMedia({ audio: true })
         .then((stream) => {
@@ -107,6 +125,7 @@ export default {
         })
     },
     async stopSoundToKeyword () {
+      this.isLoading = true
       this.isRecording = false
       this.mediaRecorder.stop()
       this.mediaRecorder.onstop = (event) => {
@@ -129,6 +148,7 @@ export default {
           .then(result => {
             this.form.content = result.data.review
             this.form.score = result.data.star
+            this.isLoading = false
           })
           .catch(err => {
             console.log(err)
@@ -141,7 +161,7 @@ export default {
         this.$refs.keywordInput.focus()
         return
       }
-
+      this.isLoading = true
       axios
         .post(`/fast/reviews/gpt`, {
           title: this.form.title,
@@ -151,6 +171,7 @@ export default {
         .then(result => {
           this.form.content = result.data.review
           this.form.score = result.data.star
+          this.isLoading = false
         })
         .catch(err => {
           console.log(err)
@@ -271,5 +292,13 @@ export default {
 .b-btn {
   width: 90px;
   font-weight: bold;
+}
+.animated-text {
+  animation: fade-in-out-animation 4s linear;
+}
+
+@keyframes fade-in-out-animation {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
 }
 </style>
