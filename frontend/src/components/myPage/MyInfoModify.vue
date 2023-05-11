@@ -120,7 +120,6 @@ export default {
       console.log(formData)
       await this.userUpdate(formData)
       alert('수정이 완료되었습니다.')
-      location.reload()
     },
     deleteUserInfo () {
       console.log('사용자 탈퇴')
