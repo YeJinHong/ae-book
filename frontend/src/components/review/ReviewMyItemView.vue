@@ -43,7 +43,7 @@
           <textarea v-show="isModify"
             id="reviewContent"
             class="item-modify"
-            rows="3"
+            rows="6"
             v-model="updateContent"
             ref="reviewContent"
             >
@@ -133,16 +133,21 @@ export default {
         setTimeout(() => {
           this.truncateContent()
           this.isModify = false
+          this.isExpanded = false
         }, 400)
       }
     },
     modifyReview () {
       if (!this.isModify) {
         this.isModify = true
+        this.isExpanded = true
       }
     },
     cancelModify () {
       this.isModify = false
+      this.isExpanded = false
+      this.updateScore = this.review.score
+      this.updateContent = this.review.content
     },
     modifyScore (newScore) {
       this.updateScore = newScore
