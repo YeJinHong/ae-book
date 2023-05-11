@@ -171,13 +171,13 @@ export default {
     ...mapActions(reviewStore, ['saveReviewAction', 'getReviewBookListAction']),
     onSubmit (event) {
       if (!this.form.content) {
-        alert('리뷰 내용을 입력해주세요 ㅠㅅㅠ')
+        alert('리뷰 내용을 입력해주세요')
         this.$refs.contentInput.focus()
         return
       }
 
       if (this.form.content.length > 300) {
-        alert('리뷰 내용을 줄여주세요 ㅠㅅㅠ \n' + '현재 입력된 글자는 ' + this.form.content.length + '입니다 ^~^')
+        alert('리뷰 입력은 300자 내로 가능합니다. \n' + '현재 입력된 글자는 ' + this.form.content.length + '입니다.')
         this.$refs.contentInput.focus()
         return
       }
