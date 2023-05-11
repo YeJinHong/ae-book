@@ -85,17 +85,18 @@ export default {
   },
   created () {
     this.isLoginUser = sessionStorage.getItem('isLoginUser')
-    this.nickname = this.user.nickname
-    this.user = this.getUserInfo
+    if (this.user.nickname) {
+      this.nickname = this.user.nickname
+    } else {
+      const userInfo = JSON.parse(sessionStorage.getItem('userInfo'))
+      this.user.nickname = userInfo.nickname
+      // this.user = userInfo
+    }
   },
   computed: {
     ...mapState(userStore, ['isLogin', 'isLoginError', 'user']),
-    ...mapGetters(userStore, ['getUserInfo']),
-    user () {
-      return JSON.parse(sessionStorage.getItem('userInfo'))
-    }
+    ...mapGetters(userStore, ['getUserInfo'])
   },
-
   methods: {
     ...mapActions(userStore, ['userUpdate', 'userDelete', 'userLogout']),
     async modifyUser () {
