@@ -101,13 +101,13 @@ export default {
       let msg = ''
 
       if (!this.updateContent) {
-        msg = '내용을 입력해주세요.'
+        msg = '리뷰 내용을 입력해주세요.'
         err = false
         this.$refs.reviewContent.focus()
       }
 
       if (this.updateContent.length > 300) {
-        msg = '리뷰 내용을 줄여주세요. \n' + '현재 입력된 글자는 ' + this.updateContent.length + '자 입니다.'
+        msg = '리뷰 입력은 300자 내로 가능합니다. \n' + '현재 입력된 글자는 ' + this.form.content.length + '입니다.'
         err = false
         this.$refs.reviewContent.focus()
       }
