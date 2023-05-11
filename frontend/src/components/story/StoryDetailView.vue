@@ -76,6 +76,7 @@ export default {
           if (response.data.resultCode === 200) {
             alert('정상적으로 수정했습니다.')
             this.closeModal()
+            location.reload()
           } else {
             alert('정상적으로 수정하지 못했습니다.')
           }
