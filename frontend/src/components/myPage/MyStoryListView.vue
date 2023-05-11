@@ -1,14 +1,10 @@
 <template>
   <div>
-    <h1>동화책 목록</h1>
-    <router-link to="/story/keyword"><button class="ae-btn btn-red">동화 만들러 가기</button></router-link>
+    <h2>나의 동화 목록</h2>
     <ModalView :modalShow="isModalVisible" @close-modal="closeModal">
-      <StoryDetailView />
+      <StoryDetailView @close="closeModal"/>
     </ModalView>
-    <div v-if="isLoginUser === false" class="story-container">
-      로그인한 유저만 확인 가능합니다.
-    </div>
-    <div v-else class="story-container">
+    <div class="story-container">
       <div v-for="story in storyList" :key="story.storyId" @click="showModal(story.storyId)">
         <list-item
         :item="story"
@@ -32,7 +28,7 @@ import Pagination from '../common/Pagination.vue'
 const storyStore = 'storyStore'
 
 export default {
-  name: 'StoryListView2',
+  name: 'MyStoryListView',
   components: {
     ModalView,
     StoryDetailView,
@@ -47,11 +43,9 @@ export default {
       isModalVisible: false
     }
   },
+
   mounted () {
-    if (sessionStorage.getItem('isLoginUser') === 'true') {
-      this.isLoginUser = true
-      this.getStoryList(this.request)
-    }
+    this.getStoryList(this.request)
   },
   computed: {
     ...mapState(storyStore, ['storyList', 'storyPageSetting']),
@@ -89,14 +83,5 @@ export default {
 .pagination-container {
   display:flex;
   justify-content: center;
-}
-
-.disabled{
-  background-color: lightgray;
-}
-
-h1 {
-  font-weight: 800;
-  margin: 10px 0px;
 }
 </style>
