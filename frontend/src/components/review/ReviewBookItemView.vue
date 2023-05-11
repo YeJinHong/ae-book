@@ -248,8 +248,8 @@ export default {
   margin-left: 5px;
 }
 .item-modify {
-  width: 620px;
-  margin-left: 15px;
+  width: 624px;
+  margin-left: 12px;
   margin-top: 3px;
   font-size: 1em;
   resize: none;
