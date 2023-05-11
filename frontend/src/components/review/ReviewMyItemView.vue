@@ -5,7 +5,9 @@
         <div class="item-info">
           <div>
             <div class="book-title">
+              <router-link class='router-font' :to="{ name: 'BookDetail', params: { isbn: review.isbn } }">
             {{ review.title | removeTitlePrefix }}
+              </router-link>
               <div class="item-updated-at">
               {{ review.updatedAt.slice(0, 10) }}
               </div>
@@ -41,7 +43,7 @@
           <textarea v-show="isModify"
             id="reviewContent"
             class="item-modify"
-            rows="3"
+            rows="6"
             v-model="updateContent"
             ref="reviewContent"
             >
@@ -52,11 +54,11 @@
       <div class='btn-group'>
         <div v-if="!isModify">
           <button class='ae-btn' @click="modifyReview">수정</button>
-          <button class='ae-btn btn-navy' @click="deleteReview">삭제</button>
+          <button class='ae-btn btn-red' @click="deleteReview">삭제</button>
         </div>
         <div v-if="isModify">
           <button class='ae-btn' @click="checkValue">완료</button>
-          <button class='ae-btn btn-navy' @click="cancelModify">취소</button>
+          <button class='ae-btn btn-red' @click="cancelModify">취소</button>
         </div>
       </div>
   </div>
@@ -131,16 +133,21 @@ export default {
         setTimeout(() => {
           this.truncateContent()
           this.isModify = false
+          this.isExpanded = false
         }, 400)
       }
     },
     modifyReview () {
       if (!this.isModify) {
         this.isModify = true
+        this.isExpanded = true
       }
     },
     cancelModify () {
       this.isModify = false
+      this.isExpanded = false
+      this.updateScore = this.review.score
+      this.updateContent = this.review.content
     },
     modifyScore (newScore) {
       this.updateScore = newScore
@@ -185,9 +192,16 @@ export default {
 </script>
 
 <style scoped>
+.router-font:hover {
+  text-decoration: underline;
+}
+.router-font {
+  font-weight: 900;
+  color: var(--ae-navy);
+}
 .limit {
   text-align: right;
-  margin-right: 22px;
+  margin-right: 1px;
 }
 .item-content.is-expanded {
   height: auto !important;
@@ -208,7 +222,6 @@ export default {
 }
 .book-title {
   color: var(--ae-navy);
-  font-weight: 900;
   font-size: 1.2em;
   margin-top: 4px;
   margin-bottom: 2px;
@@ -237,8 +250,8 @@ export default {
   margin-left: 5px;
 }
 .item-modify {
-  width: 506px;
-  margin-left: 2px;
+  width: 534px;
+  margin-left: 9px;
   margin-top: 3px;
   font-size: 1em;
   resize: none;
@@ -270,7 +283,6 @@ export default {
 .ae-btn {
   border-width: 1.5px;
   border-style: solid;
-  border-color: var(--ae-navy);
   border-radius: 10px;
   padding: 0.3rem 1.8rem;
   font-size: 0.95rem;
