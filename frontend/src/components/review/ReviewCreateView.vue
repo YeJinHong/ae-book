@@ -2,8 +2,7 @@
   <div>
     <div>
       <div class='description'>
-        <p class='p-bottom'>방법 1. 키워드를 작성한다. 리뷰의 길이는 선택적으로 지정한다.</p>
-        <p class='p-line'>자동 작성 버튼을 누른다.</p>
+        <p>방법 1. 키워드를 작성한다. 자동 작성 버튼을 누른다.</p>
         <p class='p-bottom'>방법 2. 마이크 버튼을 누른다. 키워드를 나열하며 말한다.</p>
         <p class='p-line'>마이크 버튼을 눌러서 녹음을 멈춘다.</p>
       </div>
