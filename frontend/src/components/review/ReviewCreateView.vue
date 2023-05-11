@@ -42,6 +42,12 @@
         </div>
       </div>
       <b-form-group id="input-group-3" label="Content" label-for="input-2">
+        <div
+          v-if="isLoading"
+          :key = "repeatKey"
+          class="animated-text">
+          {{ loadingMessage }}
+        </div>
         <b-form-textarea
           id="input-3"
           v-model="form.content"
@@ -92,13 +98,24 @@ export default {
       isModify: true,
       audioArray: [],
       mediaRecorder: null,
-      isRecording: false
+      isRecording: false,
+      isLoading: false,
+      loadingMessage: 'AI가 글을 쓰고 있습니다...',
+      repeatKey: 0
     }
+  },
+  mounted () {
+    this.animateText()
   },
   computed: {
     ...mapState(bookStore, ['book'])
   },
   methods: {
+    animateText () {
+      setInterval(() => {
+        this.repeatKey += 1
+      }, 4000)
+    },
     soundToKeyword () {
       navigator.mediaDevices.getUserMedia({ audio: true })
         .then((stream) => {
@@ -111,6 +128,7 @@ export default {
         })
     },
     async stopSoundToKeyword () {
+      this.isLoading = true
       this.isRecording = false
       this.mediaRecorder.stop()
       this.mediaRecorder.onstop = (event) => {
@@ -137,6 +155,7 @@ export default {
             console.log(result)
             this.form.content = result.data.review
             this.form.score = result.data.star
+            this.isLoading = false
           })
           .catch(err => {
             console.log(err)
@@ -149,7 +168,7 @@ export default {
         this.$refs.keywordInput.focus()
         return
       }
-
+      this.isLoading = true
       axios
         .post(`/fast/reviews/gpt`, {
           title: this.form.title,
@@ -161,6 +180,7 @@ export default {
           console.log(result)
           this.form.content = result.data.review
           this.form.score = result.data.star
+          this.isLoading = false
         })
         .catch(err => {
           console.log(err)
@@ -257,5 +277,14 @@ export default {
 .b-btn {
   width: 90px;
   font-weight: bold;
+}
+
+.animated-text {
+  animation: fade-in-out-animation 4s linear;
+}
+
+@keyframes fade-in-out-animation {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
 }
 </style>
