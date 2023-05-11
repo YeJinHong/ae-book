@@ -177,7 +177,7 @@ export default {
       }
 
       if (this.form.content.length > 300) {
-        alert('리뷰 입력은 300자 내로 가능합니다. \n' + '현재 입력된 글자는 ' + this.form.content.length + '입니다.')
+        alert('리뷰 입력은 300자 내로 가능합니다. \n' + '현재 입력된 글자는 ' + this.form.content.length + '자 입니다.')
         this.$refs.contentInput.focus()
         return
       }

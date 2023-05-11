@@ -105,7 +105,7 @@ export default {
       }
 
       if (this.updateContent.length > 300) {
-        msg = '리뷰 입력은 300자 내로 가능합니다. \n' + '현재 입력된 글자는 ' + this.updateContent.length + '입니다.'
+        msg = '리뷰 입력은 300자 내로 가능합니다. \n' + '현재 입력된 글자는 ' + this.updateContent.length + '자 입니다.'
         err = false
         this.$refs.reviewContent.focus()
       }
