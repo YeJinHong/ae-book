@@ -32,7 +32,7 @@ import Pagination from '../common/Pagination.vue'
 const storyStore = 'storyStore'
 
 export default {
-  name: 'StoryListView2',
+  name: 'StoryListView',
   components: {
     ModalView,
     StoryDetailView,
