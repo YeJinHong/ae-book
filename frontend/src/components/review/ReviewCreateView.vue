@@ -101,11 +101,11 @@ export default {
       repeatKey: 0
     }
   },
-  computed: {
-    ...mapState(bookStore, ['book'])
-  },
   mounted () {
     this.animateText()
+  },
+  computed: {
+    ...mapState(bookStore, ['book'])
   },
   methods: {
     animateText () {
