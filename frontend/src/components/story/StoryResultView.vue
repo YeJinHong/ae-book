@@ -43,6 +43,15 @@ export default {
     this.story = this.$route.params.story
     this.voiceBlob = this.$route.params.voiceBlob
   },
+  beforeRouteLeave (to, from, next) {
+    // 오디오 요소를 찾아 재생을 멈춥니다.
+    if (this.audio) {
+      this.audio.pause()
+      this.audio.currentTime = 0
+    }
+
+    next()
+  },
   mounted () {
     this.canvas = this.$refs.canvas
     this.ctx = this.canvas.getContext('2d')
