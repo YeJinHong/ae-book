@@ -52,7 +52,7 @@
           <textarea v-show="isModify"
             id="reviewContent"
             class="item-modify"
-            rows="4"
+            rows="6"
             v-model="updateContent"
             ref="reviewContent"
             >
@@ -132,16 +132,21 @@ export default {
         setTimeout(() => {
           this.truncateContent()
           this.isModify = false
+          this.isExpanded = false
         }, 400)
       }
     },
     modifyReview () {
       if (!this.isModify) {
         this.isModify = true
+        this.isExpanded = true
       }
     },
     cancelModify () {
       this.isModify = false
+      this.isExpanded = false
+      this.updateScore = this.review.score
+      this.updateContent = this.review.content
     },
     modifyScore (newScore) {
       this.updateScore = newScore
@@ -243,8 +248,8 @@ export default {
   margin-left: 5px;
 }
 .item-modify {
-  width: 637px;
-  margin-left: 15px;
+  width: 624px;
+  margin-left: 12px;
   margin-top: 3px;
   font-size: 1em;
   resize: none;
