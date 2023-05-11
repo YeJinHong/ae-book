@@ -3,7 +3,10 @@
     <div>
       <div class="item-group-1">
         <div class="item-user-info">
-          <img class="item-user-img" :src=review.reviewerImg />
+          <!-- <img class="item-user-img" :src=review.reviewerImg /> -->
+          <!-- <review-user-profile-image-view class="item-user-img" :imgUrl=review.reviewerImg /> -->
+          <review-user-profile-image-view :imgUrl=review.reviewerImg />
+          <!-- <img class="item-user-img" :src=review.reviewerImg /> -->
           <div>
             <div class="user-nickname">
             {{ review.reviewerNickname }}
@@ -67,6 +70,7 @@
 import { mapActions, mapState } from 'vuex'
 import ReviewScoreView from './ReviewScoreView.vue'
 import ReviewModifyScoreView from './ReviewModifyScoreView.vue'
+import ReviewUserProfileImageView from './ReviewUserProfileImageView.vue'
 
 const reviewStore = 'reviewStore'
 const bookStore = 'bookStore'
@@ -75,7 +79,8 @@ export default {
   name: 'ReviewBookItemView',
   components: {
     ReviewScoreView,
-    ReviewModifyScoreView
+    ReviewModifyScoreView,
+    ReviewUserProfileImageView
   },
   props: ['review', 'page'],
   data: function () {
@@ -216,7 +221,7 @@ export default {
 }
 .item-user-img {
   display: flex;
-  width: 50;
+  width: 50px;
   height: 50px;
   border-radius: 30px;
   margin-right: 20px;
