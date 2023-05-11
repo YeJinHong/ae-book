@@ -3,6 +3,7 @@ package com.c201.aebook.api.book.persistence.repository;
 import static com.c201.aebook.api.book.persistence.entity.QBookEntity.*;
 
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -37,27 +38,25 @@ public class BookCustomRepositoryImpl implements BookCustomRepository {
 	}
 
 	// 체크된 검색 옵션으로 동적 쿼리 만들기
-	private BooleanBuilder checkSearchOption(String[] searchTarget, String[] keyword) {
+	private BooleanBuilder checkSearchOption(String[] searchTarget, String[] keywords) {
 		BooleanBuilder booleanBuilder = new BooleanBuilder();
 		Arrays.stream(searchTarget)
 			.forEach(target -> {
 				if (TITLE_STRING.equals(target)) {
 					BooleanBuilder titleBooleanBuilder = new BooleanBuilder();
-					for (int i = 0; i < keyword.length; i++) {
-						titleBooleanBuilder.and(bookEntity.title.containsIgnoreCase(keyword[i]));
-					}
+					Stream.of(keywords)
+						.forEach(keyword -> titleBooleanBuilder.and(bookEntity.title.containsIgnoreCase(keyword)));
 					booleanBuilder.or(titleBooleanBuilder);
 				} else if (AUTHOR_STRING.equals(target)) {
 					BooleanBuilder authorBooleanBuilder = new BooleanBuilder();
-					for (int i = 0; i < keyword.length; i++) {
-						authorBooleanBuilder.and(bookEntity.title.containsIgnoreCase(keyword[i]));
-					}
+					Stream.of(keywords)
+						.forEach(keyword -> authorBooleanBuilder.and(bookEntity.author.containsIgnoreCase(keyword)));
 					booleanBuilder.or(authorBooleanBuilder);
 				} else if (PUBLISHER_STRING.equals(target)) {
 					BooleanBuilder publisherBooleanBuilder = new BooleanBuilder();
-					for (int i = 0; i < keyword.length; i++) {
-						publisherBooleanBuilder.and(bookEntity.title.containsIgnoreCase(keyword[i]));
-					}
+					Stream.of(keywords)
+						.forEach(
+							keyword -> publisherBooleanBuilder.and(bookEntity.publisher.containsIgnoreCase(keyword)));
 					booleanBuilder.or(publisherBooleanBuilder);
 				}
 			});
