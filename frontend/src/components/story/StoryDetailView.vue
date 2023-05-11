@@ -10,11 +10,13 @@
       </template>
     </b-input-group>
     <div class="container">
-      <div class="container-left" style="margin-bottom:10px;">
+      <div class="container-left" style="margin-bottom:20px;">
         <img v-bind:src="story.imgUrl" alt="story image" v-if="story" id="storyImg" style="margin-bottom:10px;"/>
-        <b-button @click="playAudio(stop)" size="sm"><img src="../../assets/images/icons/play.png" width="20" height="20"></b-button>
-        <b-button @click="stopAudio(stop)" size="sm" variant="primary"><img src="../../assets/images/icons/pause.png" width="20" height="20"></b-button>
-        <b-button @click="restartAudio()" size="sm" variant="warning"><img src="../../assets/images/icons/redo.png" width="20" height="20"></b-button>
+        <div>
+          <b-button @click="playAudio(stop)" size="sm" variant="link"><img src="../../assets/images/icons/play.png" width="40" height="40"></b-button>
+          <b-button @click="stopAudio(stop)" size="sm" variant="link"><img src="../../assets/images/icons/pause.png" width="40" height="40"></b-button>
+          <b-button @click="restartAudio()" size="sm" variant="link"><img src="../../assets/images/icons/redo.png" width="40" height="40"></b-button>
+        </div>
       </div>
       <div class="container-right">
         <p>{{ story.content }}</p>
