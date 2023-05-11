@@ -117,7 +117,6 @@ export default {
       }
       formData.append('content', new Blob([JSON.stringify(data)], {type: 'application/json'}))
 
-      console.log(formData)
       await this.userUpdate(formData)
       alert('수정이 완료되었습니다.')
     },
@@ -126,11 +125,9 @@ export default {
       if (confirm('정말로 탈퇴하시겠습니까?')) {
         this.userDelete()
           .then(() => {
-            console.log('사용자 탈퇴 완료')
             return this.userLogout()
           })
           .then(() => {
-            console.log('사용자 로그아웃 완료')
             alert('그동안 서비스를 이용해주셔서 감사합니다')
             this.$router.push({ name: 'Main' })
           })
