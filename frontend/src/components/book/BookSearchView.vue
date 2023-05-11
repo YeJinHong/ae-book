@@ -73,12 +73,21 @@ export default {
     ...mapMutations(bookStore, ['RESET_BOOK_SEARCH']),
     ...mapActions(bookStore, ['getSearchList']),
     onClickSearch () {
+      if (this.keyword === '') {
+        this.RESET_BOOK_SEARCH()
+        return
+      }
+
       this.autoCompleteList = []
+      console.log('키워드:' + this.keyword)
       // eslint-disable-next-line
-      const regExp = /[!@#$%^&*()-_+=[\]{}\\|;:'",.<>/?]/
+      const regExp = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
       if (regExp.test(this.keyword)) {
         alert('특수문자를 입력할 수 없습니다.')
         return
+      }
+      if (this.searchTargets.length === 0) {
+        this.searchTargets = ['TITLE', 'AUTHOR', 'PUBLISHER']
       }
 
       this.clickSearch = true
