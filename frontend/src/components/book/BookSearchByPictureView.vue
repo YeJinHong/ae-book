@@ -1,17 +1,11 @@
 <template>
   <div>
-    <div class="title-container">
       <h1>ISBN 사진으로 검색</h1>
-      <label for="file-upload" class="ae-btn btn-red">
-        사진 선택
+      <label for="file-upload" class="photo">
+        <img :src="imageUrl" v-if="imageUrl" style="width:100%" />
+        <img v-else src="https://img.icons8.com/ios/100/camera--v4.png" alt="camera--v4" class="camera"/>
       </label>
       <input id="file-upload" type="file" @change="onFileChange" accept=".jpg, .png, .jpeg"/>
-    </div>
-    <div class="image-container">
-      <div class="photo">
-        <img :src="imageUrl" v-if="imageUrl" />
-      </div>
-    </div>
   </div>
 </template>
 
@@ -77,17 +71,10 @@ export default {
 </script>
 
 <style scoped>
-.title-container {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  margin: 10px;
-}
+
 h1 {
   font-weight: 800;
   margin: 10px 0px;
-  display: inline;
 }
 .photo {
   height: 500px;
@@ -95,10 +82,9 @@ h1 {
   margin: auto;
   border-radius: 10px;
   border: 1px solid var(--ae-navy);
-}
-
-.photo > img {
-  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .ae-btn {
@@ -107,6 +93,11 @@ h1 {
 
 #file-upload {
   display: none;
+}
+
+.camera {
+  width: 100px;
+  margin: auto;
 }
 
 </style>
