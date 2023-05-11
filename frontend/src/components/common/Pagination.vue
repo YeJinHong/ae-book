@@ -38,7 +38,12 @@
 <script>
 export default {
   name: 'Pagination',
-  props: ['pageSetting'],
+  props: {
+    pageSetting: {
+      type: Object,
+      required: true
+    }
+  },
   computed: {
     computedPages () {
       const currentPage = this.pageSetting.pageable.pageNumber + 1
