@@ -58,7 +58,7 @@
         </div>
         <div v-if="isModify">
           <button class='ae-btn' @click="checkValue">완료</button>
-          <button class='ae-btn btn-navy' @click="cancelModify">취소</button>
+          <button class='ae-btn btn-red' @click="cancelModify">취소</button>
         </div>
       </div>
   </div>
