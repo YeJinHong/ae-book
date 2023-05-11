@@ -38,24 +38,24 @@
         </div>
         <hr>
         <b-form-group id="input-group-3" label="리뷰내용" label-for="input-2">
-          <b-form-textarea
-            id="input-3"
-            v-model="form.content"
-            placeholder="내용을 300자 내로 입력해주세요."
-            rows="6"
-            min="1"
-            :max="150"
-            ref="contentInput"
-          ></b-form-textarea>
-          <div v-show="isModify" class="limit">현재 {{ this.form.content.length }} / 300 자 입니다.</div>
+           <div class='score-container'>
+            <review-modify-score-view v-if="isModify" :score=this.form.score :isModify=this.isModify @modify-score="modifyScore" />
+          </div>
         </b-form-group>
+        <b-form-textarea
+          id="input-3"
+          v-model="form.content"
+          placeholder="내용을 300자 내로 입력해주세요."
+          rows="6"
+          min="1"
+          :max="150"
+          ref="contentInput"
+        ></b-form-textarea>
+        <div v-show="isModify" class="limit">현재 {{ this.form.content.length }} / 300 자 입니다.</div>
 
         <b-button class='submit-btn b-btn' type="button" variant="primary" @click="onSubmit">등록</b-button>
         <b-button class='reset-btn b-btn' type="reset" variant="danger">초기화</b-button>
       </b-form>
-      <!-- <b-card class="mt-3" header="Form Data Result">
-        <pre class="m-0">{{ bookInfo }}</pre>
-      </b-card> -->
     </div>
   </div>
 </template>
@@ -225,7 +225,11 @@ export default {
 <style scoped>
 #input-group-3 {
   margin-top: 30px;
+  margin-bottom: 0px;
   text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .limit {
   text-align: right;
@@ -254,7 +258,8 @@ export default {
   margin-bottom: 20px;
 }
 .score-container {
-  margin: 36px 0px 0px 0px;
+  margin-left: auto;
+  margin-bottom: 5px;
 }
 .btn-red {
   width: 120px;
