@@ -3,11 +3,11 @@
     <div class="user-img-box"><img class="user-img" :src=user.profileUrl></div>
     <div class="nickname"><span style="font-weight:800">{{ user.nickname }}</span> 님</div>
     <ul>
-      <li class="mypage-btn" @click="goTo('MyInfoModify')">사용자 정보 수정</li>
-      <li class="mypage-btn" @click="goTo('MyNotification')">알림 설정</li>
-      <li class="mypage-btn" @click="goTo('MyPainting')">그림장</li>
-      <li class="mypage-btn" @click="goTo('MyStoryListView')">동화책</li>
-      <li class="mypage-btn" @click="goTo('MyReview')">작성한 서평</li>
+      <li><router-link class="mypage-btn" :to="{ name: 'MyInfoModify' }" replace>사용자 정보 수정</router-link></li>
+      <li><router-link class="mypage-btn" :to="{ name: 'MyNotification' }" replace>알림 설정</router-link></li>
+      <li><router-link class="mypage-btn" :to="{ name: 'MyPainting' }" replace>그림장</router-link></li>
+      <li><router-link class="mypage-btn" :to="{ name: 'MyStoryListView' }" replace>동화책</router-link></li>
+      <li><router-link class="mypage-btn" :to="{ name: 'MyReview' }" replace>작성한 서평</router-link></li>
     </ul>
   </div>
 </template>
