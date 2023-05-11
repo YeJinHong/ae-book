@@ -20,6 +20,9 @@ import lombok.RequiredArgsConstructor;
 @Repository
 public class BookCustomRepositoryImpl implements BookCustomRepository {
 	private final JPAQueryFactory queryFactory;
+	private final String TITLE_STRING = "TITLE";
+	private final String AUTHOR_STRING = "AUTHOR";
+	private final String PUBLISHER_STRING = "PUBLISHER";
 
 	@Override
 	public Page<BookEntity> searchBookList(String[] keyword, String[] searchTarget, Pageable pageable) {
@@ -38,19 +41,19 @@ public class BookCustomRepositoryImpl implements BookCustomRepository {
 		BooleanBuilder booleanBuilder = new BooleanBuilder();
 		Arrays.stream(searchTarget)
 			.forEach(target -> {
-				if ("TITLE".equals(target)) {
+				if (TITLE_STRING.equals(target)) {
 					BooleanBuilder titleBooleanBuilder = new BooleanBuilder();
 					for (int i = 0; i < keyword.length; i++) {
 						titleBooleanBuilder.and(bookEntity.title.containsIgnoreCase(keyword[i]));
 					}
 					booleanBuilder.or(titleBooleanBuilder);
-				} else if ("AUTHOR".equals(target)) {
+				} else if (AUTHOR_STRING.equals(target)) {
 					BooleanBuilder authorBooleanBuilder = new BooleanBuilder();
 					for (int i = 0; i < keyword.length; i++) {
 						authorBooleanBuilder.and(bookEntity.title.containsIgnoreCase(keyword[i]));
 					}
 					booleanBuilder.or(authorBooleanBuilder);
-				} else if ("PUBLISHER".equals(target)) {
+				} else if (PUBLISHER_STRING.equals(target)) {
 					BooleanBuilder publisherBooleanBuilder = new BooleanBuilder();
 					for (int i = 0; i < keyword.length; i++) {
 						publisherBooleanBuilder.and(bookEntity.title.containsIgnoreCase(keyword[i]));
