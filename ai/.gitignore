@@ -415,4 +415,4 @@ poetry.toml
 
 # End of https://www.toptal.com/developers/gitignore/api/python
 
-./static/sound/*.wav
+/static/sound/*
