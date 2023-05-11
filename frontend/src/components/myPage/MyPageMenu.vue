@@ -24,15 +24,17 @@ export default {
   },
   created () {
     this.isLoginUser = sessionStorage.getItem('isLoginUser')
-    this.user = this.getUserInfo
-    console.log(this.user)
+    if (this.user.nickname || this.user.profileUrl) {
+      this.nickname = this.user.nickname
+    } else {
+      const userInfo = JSON.parse(sessionStorage.getItem('userInfo'))
+      this.user.nickname = userInfo.nickname
+      this.user.profileUrl = userInfo.profileUrl
+    }
   },
   computed: {
     ...mapState(userStore, ['isLogin', 'isLoginError', 'user']),
-    ...mapGetters(userStore, ['getUserInfo']),
-    user () {
-      return JSON.parse(sessionStorage.getItem('userInfo'))
-    }
+    ...mapGetters(userStore, ['getUserInfo'])
   },
   methods: {
     goTo (componentName) {
