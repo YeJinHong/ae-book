@@ -2,7 +2,7 @@
 <div>
   <div v-if="painting !== null">
     <input class="input-box" type="text" v-model="painting.title">
-    <button class="ae-btn btn-red" @click="onClickUpdate">수정</button>
+    <button type="button" class="ae-btn btn-red" @click="onClickUpdate">수정</button>
     <br>
     <img class="painting-img" v-bind:src="painting.fileUrl">
   </div>
