@@ -35,7 +35,7 @@ export default {
         .then(({ data }) => {
           const rexp = /\b\d{10}\b|\b\d{13}\b/
           if (rexp.test(data.data)) {
-            searchByISBN(request)
+            searchByISBN(data.data)
               .then(({data}) => {
                 this.$router.push(`/book/detail/${data.data}`)
               }).catch(error => {
@@ -98,6 +98,11 @@ h1 {
 .camera {
   width: 100px;
   margin: auto;
+}
+
+img {
+  max-width: 100%;
+  max-height: 100%;
 }
 
 </style>
