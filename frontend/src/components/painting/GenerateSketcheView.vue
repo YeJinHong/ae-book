@@ -1,14 +1,22 @@
 <template>
   <div>
-    <input type="file" @change="onFileChange" accept = ".jpg, ,.jpeg, .png"/>
+    <h1>선화 만들기</h1>
     <div class="image-container">
       <div class="before">
         <p>원본</p>
-        <img :src="imageUrl" v-if="imageUrl" />
+        <div class="img-box">
+          <label for="file-upload" class="photo">
+            <img :src="imageUrl" v-if="imageUrl" style="width:100%" />
+            <img v-else src="https://img.icons8.com/dotty/80/000000/file-submodule.png" alt="camera--v4" class="camera"/>
+          </label>
+        </div>
+        <input id="file-upload" type="file" @change="onFileChange" accept=".jpg, .png, .jpeg"/>
       </div>
       <div class="after">
         <p>변환</p>
-        <img :src="sketch"/>
+        <div class="img-box">
+          <img :src="sketch"/>
+        </div>
       </div>
     </div>
     <button @click="goBack" class="ae-btn btn-navy">돌아가기</button>
@@ -96,6 +104,10 @@ export default {
 </script>
 
 <style scoped>
+h1 {
+  font-weight: 800;
+  margin: 15px 10px;
+}
 
 img {
   max-width: 500px;
@@ -128,4 +140,18 @@ img {
 .after {
   width: 50%;
 }
+
+#file-upload {
+  display: none;
+}
+
+.img-box {
+  width: 100%;
+  min-height:400px;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 </style>
