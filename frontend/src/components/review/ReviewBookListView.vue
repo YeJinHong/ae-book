@@ -2,7 +2,7 @@
   <div>
     <div class="review-container">
       <div v-show="reviewBookList.length == 0">
-        <p>등록된 서평이 없습니다</p>
+        <p>등록된 리뷰가 없습니다</p>
       </div>
       <div v-show="reviewBookList.length > 0">
         <div
