@@ -59,6 +59,11 @@ export default new Router({
               alert('로그인이 필요한 페이지입니다.')
               next('/story/list')
             }
+            if (from.name === 'StoryResult') {
+              next({ name: 'StoryKeywordInput' })
+            } else {
+              next()
+            }
           }
         },
         {
