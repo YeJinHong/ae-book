@@ -7,7 +7,7 @@
     <button v-else class="ae-btn disabled" disabled>그림</button>
     <router-link to="/painting/generate"><button class="ae-btn btn-red">선화 만들러 가기</button></router-link>
     <ModalView :modalShow="isModalVisible" @close-modal="closeModal">
-      <painting-detail-view/>
+      <painting-detail-view  @close="closeModal"/>
       <painting-modal-button @close="closeModal"></painting-modal-button>
     </ModalView>
     <div v-if="isLoginUser === false" class="painting-container">
