@@ -21,7 +21,7 @@
       </div>
     </div>
     <div v-else>
-      <p class="no-content">동화책이 없습니다</p>
+      <p class="no-content">이 없습니다</p>
     </div>
 
   </div>
@@ -60,9 +60,6 @@ export default {
     ...mapState(storyStore, ['storyList', 'storyPageSetting']),
     ...mapGetters(storyStore, ['getStoryId'])
   },
-  // updated () {
-  //   this.getStoryList(this.request)
-  // },
   methods: {
     ...mapActions(storyStore, ['getStoryList']),
     ...mapMutations(storyStore, ['setStoryId', 'clearStoryId']),
