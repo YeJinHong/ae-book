@@ -34,7 +34,7 @@
     <div class="subject-line"><div class="subject">최신 리뷰</div><div class="red-bar"></div></div>
      <div class="review-container">
       <div v-show="reviewMainList.length == 0">
-        <p class="p-margin">등록된 리뷰가 없습니다</p>
+        <p class="p-margin p-font">등록된 리뷰가 없습니다</p>
       </div>
       <div v-show="reviewMainList.length > 0">
         <review-carousel-view :items="reviewMainList"></review-carousel-view>
