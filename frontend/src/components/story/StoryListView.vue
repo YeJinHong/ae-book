@@ -98,13 +98,9 @@ export default {
 .disabled{
   background-color: lightgray;
 }
-
-.h1-title {
-  display: inline;
-}
-
 .title-contanier {
   width: 800px;
   margin: auto;
 }
+
 </style>
