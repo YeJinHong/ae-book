@@ -6,7 +6,7 @@
       <StoryDetailView @close="closeModal"/>
     </ModalView>
     <div class="story-container">
-      <div v-if="storyList >= 1">
+      <div v-if="storyList.length >= 1">
         <div v-for="story in storyList" :key="story.storyId" @click="showModal(story.storyId)">
           <list-item
           :item="story"
@@ -18,9 +18,12 @@
         <p>동화가 없습니다</p>
       </div>
     </div>
-    <div class="pagination-container">
-      <pagination :pageSetting="storyPageSetting" @paging="paging"></pagination>
+    <div v-if="storyList.length >= 1">
+      <div class="pagination-container">
+        <pagination :pageSetting="storyPageSetting" @paging="paging"></pagination>
+      </div>
     </div>
+
   </div>
 </template>
 
