@@ -21,7 +21,7 @@
       </div>
     </div>
     <div v-else>
-      <p class="no-content">이 없습니다</p>
+      <p class="no-content">동화가 없습니다</p>
     </div>
 
   </div>
