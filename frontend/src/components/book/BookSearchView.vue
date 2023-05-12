@@ -18,7 +18,7 @@
         </div>
       </div>
       <div class="right">
-        <div v-if="(totalSearchCount === 0) || !clickSearch" class="no-search">
+        <div v-if="searchKeyword == '' || !clickSearch" class="no-search">
         검색어를 입력하세요.
       </div>
         <div v-else>
