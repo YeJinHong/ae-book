@@ -62,6 +62,7 @@ const userStore = {
     },
     async userLogout ({ commit }) {
       try {
+        console.log('로그아웃')
         const data = await logout()
         if (data.status === 200) {
           console.log(data)

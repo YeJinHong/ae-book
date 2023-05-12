@@ -12,7 +12,7 @@ const login = async (kakaoCode) => {
 }
 const logout = async () => {
   try {
-    // console.log('로그아웃')
+    console.log('로그아웃')
     const response = api.post(`/api/auth/logout`)
     return response
   } catch (error) {
