@@ -6,16 +6,24 @@
       <StoryDetailView @close="closeModal"/>
     </ModalView>
     <div class="story-container">
-      <div v-for="story in storyList" :key="story.storyId" @click="showModal(story.storyId)">
-        <list-item
-        :item="story"
-      >
-    </list-item>
+      <div v-if="storyList.length >= 1">
+        <div v-for="story in storyList" :key="story.storyId" @click="showModal(story.storyId)">
+          <list-item
+          :item="story"
+        >
+      </list-item>
+        </div>
+      </div>
+      <div v-if="storyList.length === 0">
+        <p>동화가 없습니다</p>
       </div>
     </div>
-    <div class="pagination-container">
-      <pagination :pageSetting="storyPageSetting" @paging="paging"></pagination>
+    <div v-if="storyList.length >= 1">
+      <div class="pagination-container">
+        <pagination :pageSetting="storyPageSetting" @paging="paging"></pagination>
+      </div>
     </div>
+
   </div>
 </template>
 
@@ -47,6 +55,7 @@ export default {
 
   mounted () {
     this.getStoryList(this.request)
+    console.log(this.storyList.length)
   },
   computed: {
     ...mapState(storyStore, ['storyList', 'storyPageSetting']),
@@ -93,6 +102,11 @@ export default {
   text-align: left;
   font-size: 24px;
   font-weight: 800;
+}
+
+p{
+  font-size: 25px;
+  margin-left: 30px;
 }
 
 </style>
