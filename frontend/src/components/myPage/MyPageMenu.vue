@@ -162,4 +162,8 @@ export default {
   margin-top: 2px;
   font-size: 20px;
 }
+
+.user-delete{
+  border : none;
+}
 </style>
