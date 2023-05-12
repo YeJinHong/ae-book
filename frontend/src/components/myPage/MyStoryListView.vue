@@ -1,6 +1,7 @@
 <template>
   <div>
-    <h2>나의 동화 목록</h2>
+    <h1 class="subject">동화책</h1>
+    <div style="height:2px; background-color: #E0E0E0;"></div>
     <ModalView :modalShow="isModalVisible" @close-modal="closeModal">
       <StoryDetailView @close="closeModal"/>
     </ModalView>
@@ -51,6 +52,9 @@ export default {
     ...mapState(storyStore, ['storyList', 'storyPageSetting']),
     ...mapGetters(storyStore, ['getStoryId'])
   },
+  updated () {
+    this.getStoryList(this.request)
+  },
   methods: {
     ...mapActions(storyStore, ['getStoryList']),
     ...mapMutations(storyStore, ['setStoryId', 'clearStoryId']),
@@ -84,4 +88,11 @@ export default {
   display:flex;
   justify-content: center;
 }
+
+.subject{
+  text-align: left;
+  font-size: 24px;
+  font-weight: 800;
+}
+
 </style>
