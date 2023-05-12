@@ -1,10 +1,11 @@
 <template>
-    <div>
+    <div class="pagination-box">
     <div class="page-list" v-if="pageSetting !== null">
       <ul>
         <li
           v-if="pageSetting.first"
           class="pagebtn pre disabled"
+          style="margin-left:0px"
       >◀</li>
         <li
           v-else
@@ -69,4 +70,15 @@ export default {
 </script>
 
 <style scoped>
+
+ul {
+  padding: 0px;
+}
+
+.pagination-box{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40px;
+}
 </style>
