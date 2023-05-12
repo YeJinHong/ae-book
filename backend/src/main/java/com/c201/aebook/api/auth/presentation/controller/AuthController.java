@@ -110,7 +110,6 @@ public class AuthController {
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             HttpServletRequest request
     ) {
-        log.info("ㅇㅇㅇㅇㅇㅇ");
         ValueOperations<String, String> logoutValueOperations = redisTemplate.opsForValue();
 
         // 1. token 정보 가져오기

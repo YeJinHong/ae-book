@@ -2,7 +2,7 @@
   <div>
     <div class="title-container">
       <h1 class="h1-title">동화책 목록</h1>
-      <router-link v-if="isLoginUser" to="/story/keyword"><button class="ae-btn btn-red">동화 만들러 가기</button></router-link>
+      <router-link to="/story/keyword"><button class="ae-btn btn-red">동화 만들러 가기</button></router-link>
     </div>
     <ModalView :modalShow="isModalVisible" @close-modal="closeModal">
       <StoryDetailView />
