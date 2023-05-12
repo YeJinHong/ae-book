@@ -8,7 +8,7 @@
     </ModalView>
     <div v-if="paintingList.length !== 0">
     <div class="painting-container">
-      <div v-for="painting in paintingList" :key="painting.id" @click="showModal(painting.id)">
+      <div v-for="(painting, index) in paintingList" :key="index" @click="showModal(painting.id)">
         <list-item
             :item="painting"
           >
