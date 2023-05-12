@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>그림 목록</h1>
+    <h1 class="h1-title">그림 목록</h1>
     <button v-if="isLoginUser" @click="onClickList('LINE')" class="ae-btn">선화 리스트</button>
     <button v-else class="ae-btn disabled" disabled>선화</button>
     <button v-if="isLoginUser" @click="onClickList('COLOR')" class="ae-btn">그림 리스트</button>
@@ -85,11 +85,6 @@ export default {
 </script>
 
 <style scoped>
-
-h1 {
-  font-weight: 800;
-  margin: 10px 0px;
-}
 .painting-container{
   margin: auto;
   margin-top: 30px;
