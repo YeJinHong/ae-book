@@ -1,7 +1,9 @@
 <template>
   <div>
-    <h1>동화책 목록</h1>
-    <router-link to="/story/keyword"><button class="ae-btn btn-red">동화 만들러 가기</button></router-link>
+    <div class="title-container">
+      <h1 class="h1-title">동화책 목록</h1>
+      <router-link to="/story/keyword"><button class="ae-btn btn-red">동화 만들러 가기</button></router-link>
+    </div>
     <ModalView :modalShow="isModalVisible" @close-modal="closeModal">
       <StoryDetailView />
     </ModalView>
@@ -89,14 +91,20 @@ export default {
 .pagination-container {
   display:flex;
   justify-content: center;
+  width: 800px;
+  margin: auto;
 }
 
 .disabled{
   background-color: lightgray;
 }
 
-h1 {
-  font-weight: 800;
-  margin: 10px 0px;
+.h1-title {
+  display: inline;
+}
+
+.title-contanier {
+  width: 800px;
+  margin: auto;
 }
 </style>
