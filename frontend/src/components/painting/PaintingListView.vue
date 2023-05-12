@@ -42,7 +42,8 @@ export default {
     return {
       request: null,
       isModalVisible: false,
-      isLoginUser: false
+      isLoginUser: false,
+      nowType: 'COLOR'
     }
   },
   components: {
@@ -58,7 +59,7 @@ export default {
   mounted () {
     if (sessionStorage.getItem('isLoginUser') === 'true') {
       this.isLoginUser = true
-      this.onClickList('COLOR')
+      this.onClickList(this.nowType)
     }
   },
   methods: {
@@ -67,6 +68,7 @@ export default {
       this.request = {
         type: type
       }
+      this.nowType = type
       this.getPaintingList(this.request)
     },
     paging (page) {
