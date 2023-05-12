@@ -1,10 +1,10 @@
 <template>
   <div>
-      <h1 class="subject">작성한 서평</h1>
+      <h1 class="subject">작성한 리뷰</h1>
       <div class="gray-bar"></div>
     <div class="review-container">
       <div v-show="reviewMyList.length == 0">
-        <p>서평이 없습니다</p>
+        <p>등록된 리뷰가 없습니다</p>
       </div>
       <div v-show="reviewMyList.length > 0">
         <div
