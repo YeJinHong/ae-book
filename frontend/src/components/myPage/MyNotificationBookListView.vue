@@ -7,14 +7,19 @@
       <notification-modal-button :notificationId="notificationId" :request="this.request" @close="closeModal"></notification-modal-button>
     </ModalView>
     <div class="notification-container">
-      <div v-for="notification in notificationList" :key="notification.id" @click="showModal(notification.id, notification.isbn)">
-        <list-item
-            :item="notification"
-          >
-        </list-item>
+      <div v-if="notificationList.length >=1">
+        <div v-for="notification in notificationList" :key="notification.id" @click="showModal(notification.id, notification.isbn)">
+          <list-item
+              :item="notification"
+            >
+          </list-item>
+        </div>
+      </div>
+      <div v-else>
+        <p>알림 신청한 책이 없습니다</p>
       </div>
     </div>
-    <div class="pagination-container">
+    <div class="pagination-container" v-if="notificationList.length >=1">
       <pagination :pageSetting="notificationPageSetting" @paging="paging"></pagination>
     </div>
   </div>
@@ -98,5 +103,10 @@ export default {
 .pagination-container {
   display:flex;
   justify-content: center;
+}
+
+p{
+  font-size: 25px;
+  margin-left: 30px;
 }
 </style>
