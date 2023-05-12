@@ -1,6 +1,6 @@
 <template>
   <div>
-      <h1>ISBN 사진으로 검색</h1>
+      <h1 class="h1-title">ISBN 사진으로 검색</h1>
       <label for="file-upload" class="photo">
         <img :src="imageUrl" v-if="imageUrl" style="width:100%" />
         <img v-else src="https://img.icons8.com/ios/100/camera--v4.png" alt="camera--v4" class="camera"/>
@@ -71,11 +71,6 @@ export default {
 </script>
 
 <style scoped>
-
-h1 {
-  font-weight: 800;
-  margin: 10px 0px;
-}
 .photo {
   height: 500px;
   width: 40%;

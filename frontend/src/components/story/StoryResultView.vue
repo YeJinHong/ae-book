@@ -169,7 +169,7 @@ export default {
   overflow-y: scroll;
   white-space: pre-wrap;
   display:block;
-  height: 300px;
+  height: 100%;
 
 }
 
@@ -193,7 +193,7 @@ p{
 }
 
 #buttonGroup{
-  margin-top:130px;
+  margin-top: 30px;
   border-radius: 15px;
   box-shadow: 0px 1px 10px 0.1px rgba(0, 0, 0, 0.3);
   background: white;
