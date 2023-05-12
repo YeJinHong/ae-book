@@ -13,8 +13,8 @@
     <div v-if="isLoginUser === false" class="painting-container">
       로그인한 유저만 확인 가능합니다.
     </div>
-    <div v-else class="painting-container">
-      <div v-for="painting in paintingList" :key="painting.id" @click="showModal(painting.id)">
+    <div v-else-if="paintingList !== null" class="painting-container">
+      <div v-for="(painting, index) in paintingList" :key="index" @click="showModal(painting.id)">
         <list-item
             :item="painting"
           >
