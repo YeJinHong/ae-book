@@ -1,13 +1,13 @@
 <template>
   <div>
-    <h1>선화 만들기</h1>
+    <h1 class="h1-title">선화 만들기</h1>
     <div class="image-container">
       <div class="before">
         <p>원본</p>
         <div class="img-box">
           <label for="file-upload" class="photo">
             <img :src="imageUrl" v-if="imageUrl" style="width:100%" />
-            <img v-else src="https://img.icons8.com/dotty/80/000000/file-submodule.png" alt="camera--v4" class="camera"/>
+            <img v-else src="https://img.icons8.com/ios-filled/100/file-submodule.png" alt="camera--v4" class="camera"/>
           </label>
         </div>
         <input id="file-upload" type="file" @change="onFileChange" accept=".jpg, .png, .jpeg"/>
@@ -104,11 +104,6 @@ export default {
 </script>
 
 <style scoped>
-h1 {
-  font-weight: 800;
-  margin: 15px 10px;
-}
-
 img {
   max-width: 500px;
 }
