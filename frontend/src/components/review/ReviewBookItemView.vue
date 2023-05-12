@@ -3,7 +3,7 @@
     <div>
       <div class="item-group-1">
         <div class="item-user-info">
-          <img class="item-user-img" :src=review.reviewerImg />
+          <img class="user-img-box" :src=review.reviewerImg />
           <div>
             <div class="user-nickname">
             {{ review.reviewerNickname }}
@@ -52,7 +52,7 @@
           <textarea v-show="isModify"
             id="reviewContent"
             class="item-modify"
-            rows="4"
+            rows="6"
             v-model="updateContent"
             ref="reviewContent"
             >
@@ -132,16 +132,21 @@ export default {
         setTimeout(() => {
           this.truncateContent()
           this.isModify = false
+          this.isExpanded = false
         }, 400)
       }
     },
     modifyReview () {
       if (!this.isModify) {
         this.isModify = true
+        this.isExpanded = true
       }
     },
     cancelModify () {
       this.isModify = false
+      this.isExpanded = false
+      this.updateScore = this.review.score
+      this.updateContent = this.review.content
     },
     modifyScore (newScore) {
       this.updateScore = newScore
@@ -209,9 +214,9 @@ export default {
 .more-content {
   border: none;
 }
-.item-user-img {
+.user-img-box {
   display: flex;
-  width: 50;
+  width: 50px;
   height: 50px;
   border-radius: 30px;
   margin-right: 20px;
@@ -243,8 +248,8 @@ export default {
   margin-left: 5px;
 }
 .item-modify {
-  width: 637px;
-  margin-left: 15px;
+  width: 624px;
+  margin-left: 12px;
   margin-top: 3px;
   font-size: 1em;
   resize: none;

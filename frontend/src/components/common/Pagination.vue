@@ -1,6 +1,6 @@
 <template>
     <div>
-    <div class="page-list">
+    <div class="page-list" v-if="pageSetting !== null">
       <ul>
         <li
           v-if="pageSetting.first"
@@ -38,7 +38,11 @@
 <script>
 export default {
   name: 'Pagination',
-  props: ['pageSetting'],
+  props: {
+    pageSetting: {
+      required: true
+    }
+  },
   computed: {
     computedPages () {
       const currentPage = this.pageSetting.pageable.pageNumber + 1
