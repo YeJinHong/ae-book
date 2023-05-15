@@ -147,7 +147,47 @@ public class NotificationServiceImplTest {
 
 	@Test
 	public void testGetMyNotificationBookDetail() {
-		throw new RuntimeException("not yet implemented");
+		// given
+		Long notificationId = 1L;
+
+		BookEntity book = BookEntity.builder().title("book title").author("author").publisher("publisher")
+				.isbn("9788915016521").price(5000).coverImageUrl("img url").aladinUrl("aladin url").build();
+		NotificationEntity notification = NotificationEntity.builder().notificationType("D").upperLimit(0).book(book).build();
+
+		BDDMockito.given(notificationRepository.findByNotificationId(notificationId)).willReturn(Optional.of(notification));
+
+		NotificationBookDetailResponseDTO notificationBookDetailResponseDTO = NotificationBookDetailResponseDTO.builder()
+				.id(notificationId)
+				.upperLimit(notification.getUpperLimit())
+				.notificationType(notification.getNotificationType())
+				.createdAt(notification.getCreatedAt())
+				.updatedAt(notification.getUpdatedAt())
+				.title(notification.getBook().getTitle())
+				.author(notification.getBook().getAuthor())
+				.publisher(notification.getBook().getPublisher())
+				.isbn(notification.getBook().getIsbn())
+				.price(notification.getBook().getPrice())
+				.coverImageUrl(notification.getBook().getCoverImageUrl())
+				.aladinUrl(notification.getBook().getAladinUrl())
+				.build();
+
+		// when
+		NotificationBookDetailResponseDTO ret = subject.getMyNotificationBookDetail(notificationId);
+
+		// given
+		Assertions.assertAll("결괏값 검증", () -> {
+			Assertions.assertNotNull(ret);
+			Assertions.assertEquals(ret.getNotificationType(), "D");
+			Assertions.assertEquals(ret.getUpperLimit(), 0);
+			Assertions.assertEquals(ret.getTitle(), "book title");
+			Assertions.assertEquals(ret.getPrice(), 5000);
+			Assertions.assertEquals(ret.getIsbn(), "9788915016521");
+			Assertions.assertEquals(ret.getCoverImageUrl(), "img url");
+			Assertions.assertEquals(ret.getAuthor(), "author");
+			Assertions.assertEquals(ret.getPublisher(), "publisher");
+			Assertions.assertEquals(ret.getAladinUrl(), "aladin url");
+		});
+		BDDMockito.then(notificationRepository).should(times(1)).findByNotificationId(notificationId);
 	}
 
 	@Test
