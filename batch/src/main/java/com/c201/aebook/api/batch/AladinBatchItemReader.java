@@ -82,7 +82,7 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 		return nextBookEntity;
 	}
 
-	private List<BookEntity> getDataFromApi() throws
+	public List<BookEntity> getDataFromApi() throws
 		IOException,
 		ParserConfigurationException,
 		SAXException,
@@ -106,6 +106,11 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 
 			NodeList itemNodes = getItemElementByUrl(builder, "item");
 
+			System.out.println(builder.toUriString());
+			System.out.println(itemNodes);
+
+			if(itemNodes == null || itemNodes.getLength() == 0) throw new IOException();
+
 			for (int i = 0; i < itemNodes.getLength(); i++) {
 				Node itemNode = itemNodes.item(i);
 				BookEntity entity = parseBook(itemNode);
@@ -121,7 +126,7 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 		return books;
 	}
 
-	private BookEntity parseBook(Node itemNode) throws
+	public BookEntity parseBook(Node itemNode) throws
 		ParseException,
 		ParserConfigurationException,
 		IOException,
@@ -129,7 +134,7 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 
 		String adultBookCheck = getChildText(itemNode, "adult");
 
-		if(adultBookCheck == "true") return null;//성인 책인 경우
+		if("true".equals(adultBookCheck)) return null;//성인 책인 경우
 
 		String title = getChildText(itemNode, "title");
 		String author = getChildText(itemNode, "author");
@@ -139,7 +144,11 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 		String description = getChildText(itemNode, "description");
 
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		Date date = format.parse(pubDate);
+		Date date = new Date();
+		if(pubDate != null){
+			date = format.parse(pubDate);
+		}
+
 
 		//하위 태그인 subInfo에 접근
 		NodeList nodeList = itemNode.getChildNodes();
@@ -246,13 +255,20 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 		return book;
 	}
 
-	private NodeList getItemElementByUrl(UriComponentsBuilder builder, String tagName) throws
+	public NodeList getItemElementByUrl(UriComponentsBuilder builder, String tagName) throws
 		IOException,
 		SAXException,
 		ParserConfigurationException {
+		System.out.println("여기 사람 있어요 url = " + builder.toUriString());
 
 		ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, null,
 			String.class);
+		System.out.println("여기 사람 있어요 = " + response);
+
+		if (response == null || response.getBody() == null) {
+			throw new RuntimeException("API response is null or has no body.");
+		}
+
 		String responseBody = response.getBody();
 
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
