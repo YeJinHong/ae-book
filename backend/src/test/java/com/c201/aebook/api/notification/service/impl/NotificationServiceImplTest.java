@@ -16,6 +16,7 @@ import com.c201.aebook.api.vo.NotificationSO;
 import com.c201.aebook.converter.NotificationConverter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
@@ -54,6 +55,7 @@ public class NotificationServiceImplTest {
 	}
 
 	@Test
+	@DisplayName("testSaveNotification: Happy Case")
 	public void testSaveNotification() {
 		// given
 		String userId = "1";
@@ -104,7 +106,7 @@ public class NotificationServiceImplTest {
 		Assertions.assertAll("결괏값 검증", () -> {
 			Assertions.assertNotNull(ret);
 			Assertions.assertEquals(ret.getId(), 1L);
-			Assertions.assertTrue(ret.getNotificationType().equals("S") || ret.getNotificationType().equals("D"));
+			Assertions.assertTrue("S".equals(ret.getNotificationType()) || "D".equals(ret.getNotificationType()));
 			Assertions.assertTrue(ret.getUpperLimit() >= 0);
 		});
 		BDDMockito.then(bookRepository).should(times(1)).findByIsbn(isbn);
@@ -114,6 +116,7 @@ public class NotificationServiceImplTest {
 	}
 
 	@Test
+	@DisplayName("testGetMyNotificationBookList: Happy Case")
 	public void testGetMyNotificationBookList() {
 		// given
 		String userId = "1";
@@ -146,6 +149,7 @@ public class NotificationServiceImplTest {
 	}
 
 	@Test
+	@DisplayName("testGetMyNotificationBookDetail: Happy Case")
 	public void testGetMyNotificationBookDetail() {
 		// given
 		Long notificationId = 1L;
@@ -191,6 +195,7 @@ public class NotificationServiceImplTest {
 	}
 
 	@Test
+	@DisplayName("testUpdateNotification: Happy Case")
 	public void testUpdateNotification() {
 		// given
 		String userId = "1";
@@ -226,6 +231,7 @@ public class NotificationServiceImplTest {
 	}
 
 	@Test
+	@DisplayName("testDeleteNotification: Happy Case")
 	public void testDeleteNotification() {
 		// given
 		String userId = "1";
