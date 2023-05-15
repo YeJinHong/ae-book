@@ -227,7 +227,19 @@ public class NotificationServiceImplTest {
 
 	@Test
 	public void testDeleteNotification() {
-		throw new RuntimeException("not yet implemented");
+		// given
+		String userId = "1";
+		Long notificationId = 1L;
+
+		NotificationEntity notification = NotificationEntity.builder().notificationType("D").upperLimit(0).build();
+
+		BDDMockito.given(notificationRepository.findByIdAndUserId(Long.valueOf(userId), notificationId)).willReturn(Optional.of(notification));
+
+		// when
+		subject.deleteNotification(userId, notificationId);
+
+		// then
+
 	}
 
 }
