@@ -37,7 +37,7 @@ export default {
           if (rexp.test(data.data)) {
             searchByISBN(data.data)
               .then(({data}) => {
-                this.$router.push(`/book/detail/${data.data}`)
+                this.$router.push(`/book/detail/${data.result.isbn}`)
               }).catch(error => {
                 alert('존재하지 않거나 접근이 불가능한 도서입니다.')
                 console.error(error)
