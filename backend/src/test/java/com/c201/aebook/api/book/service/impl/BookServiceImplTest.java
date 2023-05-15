@@ -23,6 +23,7 @@ import com.c201.aebook.api.book.persistence.entity.BookEntity;
 import com.c201.aebook.api.book.persistence.repository.BookCustomRepository;
 import com.c201.aebook.api.book.persistence.repository.BookRepository;
 import com.c201.aebook.api.book.presentation.dto.response.BookSearchResponseDTO;
+import com.c201.aebook.api.book.presentation.dto.response.BookSimpleResponseDTO;
 import com.c201.aebook.api.notification.persistence.repository.NotificationRepository;
 import com.c201.aebook.converter.BookConverter;
 
@@ -110,7 +111,26 @@ public class BookServiceImplTest {
 
 	@Test
 	public void testGetNewBookList() {
-		throw new RuntimeException("not yet implemented");
+		// given
+		List<BookEntity> bookList = new ArrayList<>();
+		BookEntity book = BookEntity.builder().title("title1").build();
+		bookList.add(book);
+		BDDMockito.given(bookRepository.findTop16ByOrderByUpdatedAtDesc()).willReturn(bookList);
+
+		BookSimpleResponseDTO responseDTO = BookSimpleResponseDTO.builder()
+			.title(book.getTitle())
+			.build();
+
+		BDDMockito.given(bookConverter.toBookSimpleResponseDTO(book))
+			.willReturn(responseDTO);
+		// when
+		List<BookSimpleResponseDTO> ret = subject.getNewBookList();
+		// then
+		Assertions.assertAll("결괏값 검증", () -> {
+			Assertions.assertNotNull(ret);
+			Assertions.assertEquals(ret.get(0).getTitle(), "title1");
+		});
+		BDDMockito.then(bookRepository).should(times(1)).findTop16ByOrderByUpdatedAtDesc();
 	}
 
 }
