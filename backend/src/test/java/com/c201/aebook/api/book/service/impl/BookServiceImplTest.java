@@ -81,20 +81,18 @@ public class BookServiceImplTest {
 		String[] searchTarget = {"TITLE"};
 		Pageable pageable = PageRequest.of(0, 10, Sort.unsorted());
 		List<BookEntity> bookList = new ArrayList<>();
-		bookList.add(BookEntity.builder().title("title1").build());
-		bookList.add(BookEntity.builder().title("title2").build());
+		BookEntity book = BookEntity.builder().title("title1").build();
+		bookList.add(book);
 		Page<BookEntity> bookPage = new PageImpl<>(bookList, pageable, bookList.size());
 		BDDMockito.given(bookCustomRepository.searchBookList(keyword.split(" "), searchTarget, pageable))
 			.willReturn(bookPage);
 
-		bookPage.stream().forEach(book -> {
-			BookSearchResponseDTO responseDTO = BookSearchResponseDTO.builder()
-				.title(book.getTitle())
-				.build();
+		BookSearchResponseDTO responseDTO = BookSearchResponseDTO.builder()
+			.title(book.getTitle())
+			.build();
 
-			BDDMockito.given(bookConverter.toBookSearchResponseDTO(book))
-				.willReturn(responseDTO);
-		});
+		BDDMockito.given(bookConverter.toBookSearchResponseDTO(book))
+			.willReturn(responseDTO);
 
 		// when
 		Page<BookSearchResponseDTO> ret = subject.searchBookList(keyword, searchTarget, pageable);
