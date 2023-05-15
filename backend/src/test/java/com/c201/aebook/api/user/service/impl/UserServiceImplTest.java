@@ -69,7 +69,17 @@ public class UserServiceImplTest {
 
 	@Test
 	public void testGetProfileImage() {
-		throw new RuntimeException("not yet implemented");
+		// given
+		Long userId = 1L;
+		String profileUrl = "profile url";
+
+		BDDMockito.given(userRepository.findProfileUrlById(userId)).willReturn(profileUrl);
+
+		// when
+		subject.getProfileImage(userId);
+
+		// then
+
 	}
 
 	@Test
