@@ -23,7 +23,7 @@
       </div>
 
     </div>
-    <StoryModalButton :voiceUrl="story.voiceUrl" @close="closeModal"></StoryModalButton>
+    <StoryModalButton :voiceUrl="story.voiceUrl" @close-modal="closeModal"></StoryModalButton>
   </div>
 </template>
 
@@ -56,6 +56,10 @@ export default {
       .then(response => {
         this.story = response.data.result
         this.audio = new Audio(this.story.voiceUrl)
+        this.audio.addEventListener('ended', () => {
+          this.stop = !this.stop
+        })
+        this.$emit('audio-submit', this.audio)
       })
       .catch(error => {
         alert('정상적으로 조회하지 못했습니다. ' + error)
@@ -64,8 +68,11 @@ export default {
   methods: {
     ...mapActions(storyStore, ['updateTitleOfStory']),
     closeModal () {
-      this.audio.pause()
-      this.$emit('close')
+      if (this.audio) {
+        this.audio.pause()
+        this.audio.currentTime = 0
+      }
+      this.$emit('close-modal')
     },
     updateTitle () {
       this.storyId = this.getStoryId
