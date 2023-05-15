@@ -7,7 +7,7 @@ public interface UserService {
 
     public void duplicatedUserByNickname(String nickname);
 
-    public String getProfileImage(long userId);
+    public String getProfileImage(Long userId);
 
     public UserResponseDTO updateUserInfo(Long userId, UserSO userSO);
 

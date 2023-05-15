@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String getProfileImage(long userId) {
+    public String getProfileImage(Long userId) {
         // 사용자 아이디로 프로필 이미지 찾기
         return userRepository.findProfileUrlById(userId);
     }
