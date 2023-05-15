@@ -89,6 +89,7 @@ export default {
 
       await this.userUpdate(formData)
       alert('수정이 완료되었습니다.')
+      this.profileUrl = ''
     },
     onFileChange (e) {
       const file = e.target.files[0]
