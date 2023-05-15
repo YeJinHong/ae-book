@@ -115,7 +115,34 @@ public class NotificationServiceImplTest {
 
 	@Test
 	public void testGetMyNotificationBookList() {
-		throw new RuntimeException("not yet implemented");
+		// given
+		String userId = "1";
+		Pageable pageable = PageRequest.of(0, 10, Sort.unsorted());
+
+		List<NotificationEntity> notificationList = new ArrayList<>();
+		BookEntity book = BookEntity.builder().title("book test").isbn("9788915016521").price(5000).coverImageUrl("img url").build();
+		NotificationEntity notification = NotificationEntity.builder().notificationType("D").upperLimit(0).book(book).build();
+		notificationList.add(notification);
+		Page<NotificationEntity> notificationPage = new PageImpl<>(notificationList, pageable, notificationList.size());
+
+		BDDMockito.given(notificationRepository.findByUserId(Long.valueOf(userId), pageable)).willReturn(notificationPage);
+		NotificationBookListResponseDTO notificationBookListResponseDTO = NotificationBookListResponseDTO.builder()
+				.notificationType("D").upperLimit(0).title("book test").isbn("9788915016521").price(5000).coverImageUrl("img url").build();
+
+		// when
+		Page<NotificationBookListResponseDTO> ret = subject.getMyNotificationBookList(userId, pageable);
+
+		// then
+		Assertions.assertAll("결괏값 검증", () -> {
+			Assertions.assertNotNull(ret);
+			Assertions.assertEquals(ret.getContent().get(0).getNotificationType(), "D");
+			Assertions.assertEquals(ret.getContent().get(0).getUpperLimit(), 0);
+			Assertions.assertEquals(ret.getContent().get(0).getTitle(), "book test");
+			Assertions.assertEquals(ret.getContent().get(0).getPrice(), 5000);
+			Assertions.assertEquals(ret.getContent().get(0).getIsbn(), "9788915016521");
+			Assertions.assertEquals(ret.getContent().get(0).getCoverImageUrl(), "img url");
+		});
+		BDDMockito.then(notificationRepository).should(times(1)).findByUserId(Long.valueOf(userId), pageable);
 	}
 
 	@Test
