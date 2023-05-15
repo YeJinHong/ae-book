@@ -1,6 +1,9 @@
 package com.c201.aebook.api.user.service.impl;
 
+import com.c201.aebook.api.user.persistence.entity.UserEntity;
 import com.c201.aebook.api.user.persistence.repository.UserRepository;
+import com.c201.aebook.api.user.presentation.dto.response.UserResponseDTO;
+import com.c201.aebook.api.vo.UserSO;
 import com.c201.aebook.converter.UserConverter;
 import com.c201.aebook.utils.exception.CustomException;
 import com.c201.aebook.utils.exception.ErrorCode;
@@ -14,8 +17,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceImplTest {
@@ -83,8 +89,36 @@ public class UserServiceImplTest {
 	}
 
 	@Test
+	@DisplayName("testUpdateUserInfo: Happy Case")
 	public void testUpdateUserInfo() {
-		throw new RuntimeException("not yet implemented");
+		// given
+		Long userId = 1L;
+		String nickname = "test nickname";
+		String profileUrl = "test profile url";
+
+		UserSO userSO = UserSO.builder().nickname(nickname).profileUrl(profileUrl).build();
+
+		UserEntity user = UserEntity.builder().nickname("test nickname").profileUrl("test profile url").build();
+		BDDMockito.given(userRepository.findById(userId)).willReturn(Optional.of(user));
+
+		user.updateUserEntity(userSO.getNickname(), userSO.getProfileUrl());
+
+		UserResponseDTO userResponseDTO = UserResponseDTO.builder()
+				.nickname(userSO.getNickname()).profileUrl(userSO.getProfileUrl()).build();
+		BDDMockito.given(userConverter.toUserResponse(user.getNickname(), user.getProfileUrl())).willReturn(userResponseDTO);
+
+		// when
+		UserResponseDTO ret = subject.updateUserInfo(userId, userSO);
+
+		// then
+		Assertions.assertAll("결과값 검증", () -> {
+			Assertions.assertNotNull(ret);
+			Assertions.assertEquals(ret.getNickname(), "test nickname");
+			Assertions.assertEquals(ret.getProfileUrl(), "test profile url");
+		});
+		BDDMockito.then(userRepository).should(times(1)).findById(userId);
+
+//		throw new RuntimeException("not yet implemented");
 	}
 
 	@Test
