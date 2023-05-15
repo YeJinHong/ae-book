@@ -66,3 +66,7 @@ a:visited {
   font-weight: 800;
   margin: 15px 0px;
 }
+
+.p-font {
+  font-size: 24px;
+}
