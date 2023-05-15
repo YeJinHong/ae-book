@@ -7,7 +7,7 @@
       <li><router-link class="mypage-btn" :to="{ name: 'MyNotification' }" replace>알림 설정</router-link></li>
       <li><router-link class="mypage-btn" :to="{ name: 'MyPainting' }" replace>그림장</router-link></li>
       <li><router-link class="mypage-btn" :to="{ name: 'MyStoryListView' }" replace>동화책</router-link></li>
-      <li><router-link class="mypage-btn" :to="{ name: 'MyReview' }" replace>작성한 서평</router-link></li>
+      <li><router-link class="mypage-btn" :to="{ name: 'MyReview' }" replace>작성한 리뷰</router-link></li>
       <li><button type="button" class="mypage-btn user-delete" v-b-modal.modal-delete-user>사용자 탈퇴</button></li>
     </ul>
 

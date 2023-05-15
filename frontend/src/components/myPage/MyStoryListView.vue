@@ -21,7 +21,7 @@
       </div>
     </div>
     <div v-else>
-      <p class="no-content">그림이 없습니다</p>
+      <p class="no-content">동화가 없습니다</p>
     </div>
 
   </div>
@@ -55,14 +55,10 @@ export default {
 
   mounted () {
     this.getStoryList(this.request)
-    console.log(this.storyList.length)
   },
   computed: {
     ...mapState(storyStore, ['storyList', 'storyPageSetting']),
     ...mapGetters(storyStore, ['getStoryId'])
-  },
-  updated () {
-    this.getStoryList(this.request)
   },
   methods: {
     ...mapActions(storyStore, ['getStoryList']),

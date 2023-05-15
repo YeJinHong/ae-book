@@ -7,10 +7,7 @@
     <ModalView :modalShow="isModalVisible" @close-modal="closeModal">
       <StoryDetailView />
     </ModalView>
-    <div v-if="isLoginUser === false" class="story-container">
-      로그인한 유저만 확인 가능합니다.
-    </div>
-    <div v-else class="story-container">
+    <div class="story-container">
       <div v-for="story in storyList" :key="story.storyId" @click="showModal(story.storyId)">
         <list-item
         :item="story"
