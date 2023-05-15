@@ -192,7 +192,37 @@ public class NotificationServiceImplTest {
 
 	@Test
 	public void testUpdateNotification() {
-		throw new RuntimeException("not yet implemented");
+		// given
+		String userId = "1";
+		Long notificationId = 1L;
+		int upperLimit = 1000;
+		String notificationType = "D";
+
+		NotificationPatchSO notificationPatchSO = NotificationPatchSO.builder()
+				.notificationType(notificationType).upperLimit(upperLimit).build();
+		NotificationEntity notification = NotificationEntity.builder().notificationType("D").upperLimit(0).build();
+
+		BDDMockito.given(notificationRepository.findById(notificationId)).willReturn(Optional.of(notification));
+		notification.updateNotificationEntity(notificationPatchSO.getUpperLimit(), notificationPatchSO.getNotificationType());
+
+		NotificationUpdateResponseDTO notificationUpdateResponseDTO = NotificationUpdateResponseDTO.builder()
+				.upperLimit(notification.getUpperLimit())
+				.notificationType(notification.getNotificationType())
+				.build();
+		BDDMockito.given(notificationConverter.toNotificationUpdateResponseDTO(notification.getUpperLimit(), notification.getNotificationType()))
+				.willReturn(notificationUpdateResponseDTO);
+
+		// when
+		NotificationUpdateResponseDTO ret = subject.updateNotification(userId, notificationId, notificationPatchSO);
+
+		// then
+		Assertions.assertAll("결괏값 검증", () -> {
+			Assertions.assertNotNull(ret);
+			Assertions.assertEquals(ret.getNotificationType(), "D");
+			Assertions.assertEquals(ret.getUpperLimit(), 1000);
+		});
+		BDDMockito.then(notificationRepository).should(times(1)).findById(notificationId);
+
 	}
 
 	@Test
