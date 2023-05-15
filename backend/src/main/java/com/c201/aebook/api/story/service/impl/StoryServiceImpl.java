@@ -7,7 +7,8 @@ import org.springframework.stereotype.Service;
 import com.c201.aebook.api.story.persistence.entity.StoryEntity;
 import com.c201.aebook.api.story.persistence.repository.StoryRepository;
 import com.c201.aebook.api.story.presentation.dto.response.StoryDeleteResponseDTO;
-import com.c201.aebook.api.story.presentation.dto.response.StoryResponseDTO;
+import com.c201.aebook.api.story.presentation.dto.response.StoryDetailResponseDTO;
+import com.c201.aebook.api.story.presentation.dto.response.StoryListResponseDTO;
 import com.c201.aebook.api.story.service.StoryService;
 import com.c201.aebook.api.user.persistence.entity.UserEntity;
 import com.c201.aebook.api.user.persistence.repository.UserRepository;
@@ -43,23 +44,35 @@ public class StoryServiceImpl implements StoryService {
 	}
 
 	@Override
-	public Page<StoryResponseDTO> getStoryList(Long userId, Pageable pageable) {
+	public Page<StoryListResponseDTO> getStoryListByUserId(Long userId, Pageable pageable) {
 		// 1. User 유효성 검증
 		UserEntity userEntity = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
+		String nickname = userEntity.getNickname();
+
 		Page<StoryEntity> stories = storyRepository.findAllByUserId(userId, pageable);
-		return stories.map(storyEntity -> storyConverter.toStoryResponseDTO(storyEntity, storyEntity.getId(),
-			userEntity.getNickname()));
+		return stories.map(
+			storyEntity -> storyConverter.toStoryListResponseDTO(storyEntity, storyEntity.getId(), nickname));
 	}
 
 	@Override
-	public StoryResponseDTO getStoryDetail(Long storyId) {
+	public Page<StoryListResponseDTO> getStoryList(Pageable pageable) {
+		Page<StoryEntity> stories = storyRepository.findAll(pageable);
+		return stories.map(storyEntity -> {
+			UserEntity userEntity = userRepository.findById(storyEntity.getUser().getId())
+				.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+			return storyConverter.toStoryListResponseDTO(storyEntity, storyEntity.getId(), userEntity.getNickname());
+		});
+	}
+
+	@Override
+	public StoryDetailResponseDTO getStoryDetail(Long storyId) {
 		// 1. Story 유효성 검증
 		StoryEntity storyEntity = storyRepository.findById(storyId)
 			.orElseThrow(() -> new CustomException(ErrorCode.STORY_NOT_FOUND));
 
-		return storyConverter.toStoryResponseDTO(storyEntity, storyEntity.getId(),
+		return storyConverter.toStoryDetailResponseDTO(storyEntity, storyEntity.getId(),
 			userRepository.findById(storyEntity.getUser().getId()).get().getNickname());
 	}
 
