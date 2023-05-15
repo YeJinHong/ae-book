@@ -89,8 +89,6 @@ const storyStore = {
         .then(({data}) => {
           alert('성공적으로 삭제했습니다.')
           commit('DELETE_STORY', data.result)
-
-          console.log(state.currentPage)
           searchStory({page: state.currentPage})
             .then(({ data }) => {
               commit('SET_PAGE_SETTING', data.result)
