@@ -2,7 +2,14 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.7.7'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+	//id 'jacoco'
 }
+
+//jacoco {
+//	toolVersion = '0.8.5'
+//
+//	reportsDir = file("$buildDir/customJacocoReportDir")
+//}
 
 group = 'com.c201'
 version = '0.0.1-SNAPSHOT'
@@ -37,6 +44,9 @@ dependencies {
 
 	// json
 	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+
+	//jacoco
+	//implementation 'gradle.plugin.gradle.jacoco:jacoco-diff-coverage:0.8.5'
 
 }
 
