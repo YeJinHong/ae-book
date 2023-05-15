@@ -5,23 +5,23 @@
     <ModalView :modalShow="isModalVisible" @close-modal="closeModal">
       <StoryDetailView @close="closeModal"/>
     </ModalView>
-    <div class="story-container">
-      <div v-if="storyList.length >= 1">
-        <div v-for="story in storyList" :key="story.storyId" @click="showModal(story.storyId)">
-          <list-item
-          :item="story"
-        >
-      </list-item>
-        </div>
+
+    <div v-if="storyList.length !== 0">
+      <div class="story-container">
+          <div v-for="story in storyList" :key="story.storyId" @click="showModal(story.storyId)">
+            <list-item
+            :item="story"
+          >
+        </list-item>
+          </div>
+
       </div>
-      <div v-if="storyList.length === 0">
-        <p>동화가 없습니다</p>
-      </div>
-    </div>
-    <div v-if="storyList.length >= 1">
       <div class="pagination-container">
         <pagination :pageSetting="storyPageSetting" @paging="paging"></pagination>
       </div>
+    </div>
+    <div v-else>
+      <p class="no-content">동화가 없습니다</p>
     </div>
 
   </div>
@@ -55,14 +55,10 @@ export default {
 
   mounted () {
     this.getMyStoryList(this.request)
-    console.log(this.storyList.length)
   },
   computed: {
     ...mapState(storyStore, ['storyList', 'storyPageSetting']),
     ...mapGetters(storyStore, ['getStoryId'])
-  },
-  updated () {
-    this.getMyStoryList(this.request)
   },
   methods: {
     ...mapActions(storyStore, ['getMyStoryList']),
@@ -104,9 +100,9 @@ export default {
   font-weight: 800;
 }
 
-p{
+.no-content{
   font-size: 25px;
-  margin-left: 30px;
+  margin-top: 30px;
 }
 
 </style>

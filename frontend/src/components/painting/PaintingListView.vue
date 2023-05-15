@@ -7,22 +7,29 @@
     <button v-else class="ae-btn disabled" disabled>그림</button>
     <router-link to="/painting/generate"><button class="ae-btn btn-red">선화 만들러 가기</button></router-link>
     <ModalView :modalShow="isModalVisible" @close-modal="closeModal">
-      <painting-detail-view/>
+      <painting-detail-view  @close="closeModal"/>
       <painting-modal-button @close="closeModal"></painting-modal-button>
     </ModalView>
     <div v-if="isLoginUser === false" class="painting-container">
       로그인한 유저만 확인 가능합니다.
     </div>
-    <div v-else-if="paintingList !== null" class="painting-container">
-      <div v-for="(painting, index) in paintingList" :key="index" @click="showModal(painting.id)">
-        <list-item
-            :item="painting"
-          >
-        </list-item>
+    <div v-else>
+      <div v-if="paintingList.length === 0">
+        <p class="no-content">그림이 없습니다</p>
       </div>
-    </div>
-    <div class="pagination-container">
-      <pagination :pageSetting="paintingPageSetting" @paging="paging"></pagination>
+      <div v-else>
+        <div class="painting-container">
+          <div v-for="(painting, index) in paintingList" :key="index" @click="showModal(painting.id)">
+            <list-item
+                :item="painting"
+              >
+            </list-item>
+          </div>
+        </div>
+        <div class="pagination-container">
+          <pagination :pageSetting="paintingPageSetting" @paging="paging"></pagination>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -42,7 +49,8 @@ export default {
     return {
       request: null,
       isModalVisible: false,
-      isLoginUser: false
+      isLoginUser: false,
+      nowType: 'COLOR'
     }
   },
   components: {
@@ -58,7 +66,7 @@ export default {
   mounted () {
     if (sessionStorage.getItem('isLoginUser') === 'true') {
       this.isLoginUser = true
-      this.onClickList('COLOR')
+      this.onClickList(this.nowType)
     }
   },
   methods: {
@@ -67,6 +75,7 @@ export default {
       this.request = {
         type: type
       }
+      this.nowType = type
       this.getPaintingList(this.request)
     },
     paging (page) {
@@ -101,5 +110,10 @@ export default {
 
 .disabled{
   background-color: lightgray;
+}
+
+.no-content{
+  font-size: 25px;
+  margin-top: 30px;
 }
 </style>
