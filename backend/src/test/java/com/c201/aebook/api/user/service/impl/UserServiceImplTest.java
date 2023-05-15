@@ -74,6 +74,7 @@ public class UserServiceImplTest {
 	}
 
 	@Test
+	@DisplayName("testGetProfileImage: Happy Case")
 	public void testGetProfileImage() {
 		// given
 		Long userId = 1L;
