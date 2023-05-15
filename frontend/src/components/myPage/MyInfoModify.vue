@@ -10,7 +10,7 @@
             type="text"
             name="nickname"
             id="nickname"
-            v-model="user.nickname"
+            v-model="nickname"
             placeholder="새로운 닉네임을 입력해주세요"
           />
         </div>
@@ -70,13 +70,13 @@ export default {
   methods: {
     ...mapActions(userStore, ['userUpdate', 'userDelete', 'userLogout']),
     async modifyUser () {
-      if (!this.user.nickname) {
+      if (!this.nickname) {
         alert('닉네임은 입력은 필수입니다!')
         return
       }
 
       let data = {
-        nickname: this.user.nickname
+        nickname: this.nickname
       }
 
       let formData = new FormData()
@@ -94,9 +94,6 @@ export default {
     onFileChange (e) {
       const file = e.target.files[0]
       this.previewImage(file)
-      // const formData = new FormData()
-      // formData.append('image', file)
-      // this.getISBNfromPicture(formData)
     },
     previewImage (file) {
       const reader = new FileReader()
