@@ -6,8 +6,9 @@ import com.c201.aebook.api.story.persistence.entity.StoryEntity;
 import com.c201.aebook.api.story.presentation.dto.request.StoryPatchRequestDTO;
 import com.c201.aebook.api.story.presentation.dto.request.StoryRequestDTO;
 import com.c201.aebook.api.story.presentation.dto.response.StoryDeleteResponseDTO;
+import com.c201.aebook.api.story.presentation.dto.response.StoryDetailResponseDTO;
+import com.c201.aebook.api.story.presentation.dto.response.StoryListResponseDTO;
 import com.c201.aebook.api.story.presentation.dto.response.StoryPatchResponseDTO;
-import com.c201.aebook.api.story.presentation.dto.response.StoryResponseDTO;
 import com.c201.aebook.api.story.presentation.dto.response.StorySaveResponseDTO;
 import com.c201.aebook.api.vo.StoryDeleteSO;
 import com.c201.aebook.api.vo.StoryPatchSO;
@@ -21,11 +22,13 @@ public interface StoryConverter {
 
 	StoryDeleteSO toStoryDeleteSO(Long userId, Long storyId);
 
-	StoryResponseDTO toStoryResponseDTO(StoryEntity storyEntity, Long storyId, String storyAuthorNickname);
+	StoryDetailResponseDTO toStoryDetailResponseDTO(StoryEntity storyEntity, Long storyId, String nickname);
 
 	StoryPatchSO toStoryPatchSO(String userId, Long storyId, StoryPatchRequestDTO storyPatchRequestDTO);
 
 	StoryPatchResponseDTO toStoryPatchResponseDTO(StoryPatchRequestDTO storyPatchRequestDTO, Long storyId);
 
 	StoryDeleteResponseDTO toStoryDeleteResponseDTO(StoryDeleteSO storyDeleteSO, StoryEntity storyEntity);
+
+	StoryListResponseDTO toStoryListResponseDTO(StoryEntity storyEntity, Long storyId, String nickname);
 }
