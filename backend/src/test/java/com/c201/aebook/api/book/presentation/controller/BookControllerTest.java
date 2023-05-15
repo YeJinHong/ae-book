@@ -27,6 +27,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.c201.aebook.api.book.presentation.dto.response.BookResponseDTO;
 import com.c201.aebook.api.book.presentation.dto.response.BookSearchResponseDTO;
+import com.c201.aebook.api.book.presentation.dto.response.BookSimpleResponseDTO;
 import com.c201.aebook.api.book.service.impl.BookServiceImpl;
 import com.c201.aebook.api.user.persistence.entity.UserEntity;
 import com.c201.aebook.auth.CustomUserDetails;
@@ -101,8 +102,16 @@ public class BookControllerTest {
 	}
 
 	@Test
-	public void testGetNewBookList() {
-		throw new RuntimeException("not yet implemented");
+	public void testGetNewBookList() throws Exception {
+		// given
+		List<BookSimpleResponseDTO> bookList = new ArrayList<>();
+		bookList.add(BookSimpleResponseDTO.builder().build());
+		BDDMockito.given(bookService.getNewBookList()).willReturn(bookList);
+		// when
+		mockMvc.perform(get("/books/new"))
+			.andExpect(status().isOk());
+		// then
+		BDDMockito.verify(bookService, times(1)).getNewBookList();
 	}
 
 }
