@@ -72,7 +72,9 @@ public class BookControllerTest {
 		titleList.add("title2");
 		BDDMockito.given(bookService.getAutocompleteTitle(keyword)).willReturn(titleList);
 		// when
-		mockMvc.perform(get("/books/autocomplete?keyword=" + keyword)).andExpect(status().isOk());
+		mockMvc.perform(get("/books/autocomplete")
+				.param("keyword", keyword))
+			.andExpect(status().isOk());
 		// then
 		BDDMockito.verify(bookService).getAutocompleteTitle(keyword);
 	}
