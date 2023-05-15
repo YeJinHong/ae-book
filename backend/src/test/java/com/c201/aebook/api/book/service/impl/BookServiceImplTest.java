@@ -75,7 +75,8 @@ public class BookServiceImplTest {
 		// then
 		Assertions.assertAll("결괏값 검증", () -> {
 			Assertions.assertNotNull(ret);
-			Assertions.assertEquals(ret.getIsbn(), "isbn");
+			Assertions.assertEquals(ret.getIsbn(), isbn);
+			Assertions.assertEquals(ret.getNotificationId(), 1L);
 		});
 		BDDMockito.then(bookRepository).should(times(1)).findByIsbn(isbn);
 		BDDMockito.then(notificationRepository)
