@@ -2,6 +2,9 @@ package com.c201.aebook.api.user.service.impl;
 
 import com.c201.aebook.api.user.persistence.repository.UserRepository;
 import com.c201.aebook.converter.UserConverter;
+import com.c201.aebook.utils.exception.CustomException;
+import com.c201.aebook.utils.exception.ErrorCode;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,6 +13,9 @@ import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceImplTest {
@@ -40,6 +46,25 @@ public class UserServiceImplTest {
 
 		// then
 
+	}
+
+	@Test
+	@DisplayName("testDuplicatedUserByNickname: sad Case")
+	public void testDuplicatedUserByNickname1() {
+		// given
+		String nickname = "test nickname";
+
+		BDDMockito.given(userRepository.existsByNickname(nickname)).willReturn(true);
+
+		// when
+		Throwable throwable = Assertions.assertThrows(CustomException.class, () -> {
+			subject.duplicatedUserByNickname(nickname);
+		});
+
+		// then
+		Assertions.assertAll("결과값 검증", () -> {
+			Assertions.assertEquals(ErrorCode.DUPLICATE_RESOURCE, ((CustomException)throwable).getErrorCode());
+		});
 	}
 
 	@Test
