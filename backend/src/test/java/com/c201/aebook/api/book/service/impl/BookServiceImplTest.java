@@ -110,7 +110,7 @@ public class BookServiceImplTest {
 		String[] searchTarget = {"TITLE"};
 		Pageable pageable = PageRequest.of(0, 10, Sort.unsorted());
 		List<BookEntity> bookList = new ArrayList<>();
-		BookEntity book = BookEntity.builder().title("title1").build();
+		BookEntity book = BookEntity.builder().title("title").build();
 		bookList.add(book);
 		Page<BookEntity> bookPage = new PageImpl<>(bookList, pageable, bookList.size());
 		BDDMockito.given(bookCustomRepository.searchBookList(keyword.split(" "), searchTarget, pageable))
@@ -128,8 +128,7 @@ public class BookServiceImplTest {
 		// then
 		Assertions.assertAll("결괏값 검증", () -> {
 			Assertions.assertNotNull(ret);
-			Assertions.assertEquals(ret.getContent().get(0).getTitle(), "title1");
-			Assertions.assertEquals(ret.getContent().get(1).getTitle(), "title2");
+			Assertions.assertEquals(ret.getContent().get(0).getTitle(), "title");
 		});
 		BDDMockito.then(bookCustomRepository)
 			.should(times(1))
