@@ -1,6 +1,10 @@
 package com.c201.aebook.api.story.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -51,9 +55,13 @@ public class StoryServiceImpl implements StoryService {
 
 		String nickname = userEntity.getNickname();
 
-		Page<StoryEntity> stories = storyRepository.findAllByUserId(userId, pageable);
-		return stories.map(
-			storyEntity -> storyConverter.toStoryListResponseDTO(storyEntity, storyEntity.getId(), nickname));
+		Page<StoryEntity> stories = storyRepository.findAll(pageable);
+		List<StoryListResponseDTO> storyList = stories.stream()
+			.filter(storyEntity -> storyEntity.getUser().getId() != userId)
+			.map(storyEntity -> storyConverter.toStoryListResponseDTO(storyEntity, storyEntity.getId(), nickname))
+			.collect(Collectors.toList());
+
+		return new PageImpl<StoryListResponseDTO>(storyList);
 	}
 
 	@Override
