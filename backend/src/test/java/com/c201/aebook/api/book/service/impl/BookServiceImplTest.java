@@ -4,6 +4,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,9 +23,13 @@ import org.springframework.data.domain.Sort;
 import com.c201.aebook.api.book.persistence.entity.BookEntity;
 import com.c201.aebook.api.book.persistence.repository.BookCustomRepository;
 import com.c201.aebook.api.book.persistence.repository.BookRepository;
+import com.c201.aebook.api.book.presentation.dto.response.BookResponseDTO;
 import com.c201.aebook.api.book.presentation.dto.response.BookSearchResponseDTO;
 import com.c201.aebook.api.book.presentation.dto.response.BookSimpleResponseDTO;
+import com.c201.aebook.api.notification.persistence.entity.NotificationEntity;
 import com.c201.aebook.api.notification.persistence.repository.NotificationRepository;
+import com.c201.aebook.api.user.persistence.entity.UserEntity;
+import com.c201.aebook.auth.CustomUserDetails;
 import com.c201.aebook.converter.BookConverter;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,7 +56,31 @@ public class BookServiceImplTest {
 
 	@Test
 	public void testSearchBookDetail() {
-		throw new RuntimeException("not yet implemented");
+		// given
+		String isbn = "isbn";
+		CustomUserDetails customUserDetails = new CustomUserDetails(UserEntity.builder().id(1L).build());
+		BookEntity book = BookEntity.builder().isbn("isbn").build();
+		NotificationEntity notificationEntity = NotificationEntity.builder().id(1L).build();
+		BDDMockito.given(bookRepository.findByIsbn(isbn)).willReturn(Optional.of(book));
+		BookResponseDTO responseDTO = BookResponseDTO.builder()
+			.isbn(book.getIsbn())
+			.build();
+		BDDMockito.given(bookConverter.toBookResponseDTO(book)).willReturn(responseDTO);
+		BDDMockito.given(
+				notificationRepository.findByUserIdAndBookId(Long.valueOf(customUserDetails.getUsername()), book.getId()))
+			.willReturn(notificationEntity);
+		// when
+		BookResponseDTO ret = subject.searchBookDetail(isbn, customUserDetails);
+
+		// then
+		Assertions.assertAll("결괏값 검증", () -> {
+			Assertions.assertNotNull(ret);
+			Assertions.assertEquals(ret.getIsbn(), "isbn");
+		});
+		BDDMockito.then(bookRepository).should(times(1)).findByIsbn(isbn);
+		BDDMockito.then(notificationRepository)
+			.should(times(1))
+			.findByUserIdAndBookId(Long.valueOf(customUserDetails.getUsername()), book.getId());
 	}
 
 	@Test
