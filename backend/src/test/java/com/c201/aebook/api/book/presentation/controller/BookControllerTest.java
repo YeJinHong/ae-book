@@ -1,6 +1,7 @@
 package com.c201.aebook.api.book.presentation.controller;
 
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -14,11 +15,18 @@ import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.c201.aebook.api.book.presentation.dto.response.BookResponseDTO;
+import com.c201.aebook.api.book.presentation.dto.response.BookSearchResponseDTO;
 import com.c201.aebook.api.book.service.impl.BookServiceImpl;
 import com.c201.aebook.api.user.persistence.entity.UserEntity;
 import com.c201.aebook.auth.CustomUserDetails;
@@ -37,7 +45,9 @@ public class BookControllerTest {
 
 	@BeforeEach
 	protected void setUp() throws Exception {
-		mockMvc = MockMvcBuilders.standaloneSetup(bookController).build();
+		mockMvc = MockMvcBuilders.standaloneSetup(bookController)
+			.setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+			.build();
 	}
 
 	@Test
@@ -68,8 +78,24 @@ public class BookControllerTest {
 	}
 
 	@Test
-	public void testSearchBookList() {
-		throw new RuntimeException("not yet implemented");
+	public void testSearchBookList() throws Exception {
+		// given
+		String keyword = "keyword";
+		String[] searchTargets = {"TITLE"};
+		Pageable pageable = PageRequest.of(0, 10, Sort.unsorted());
+		List<BookSearchResponseDTO> bookList = new ArrayList<>();
+		bookList.add(BookSearchResponseDTO.builder().title("title1").build());
+		bookList.add(BookSearchResponseDTO.builder().title("title2").build());
+		Page<BookSearchResponseDTO> bookPage = new PageImpl<>(bookList, pageable, bookList.size());
+		BDDMockito.given(bookService.searchBookList(keyword, searchTargets, pageable)).willReturn(bookPage);
+
+		// when
+		mockMvc.perform(get("/books")
+				.param("keyword", keyword)
+				.param("searchTargets", searchTargets))
+			.andExpect(status().isOk());
+		// then
+		BDDMockito.verify(bookService, times(1)).searchBookList(keyword, searchTargets, pageable);
 	}
 
 	@Test
