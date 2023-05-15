@@ -4,6 +4,9 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,8 +54,17 @@ public class BookControllerTest {
 	}
 
 	@Test
-	public void testGetAutocompleteTitle() {
-		throw new RuntimeException("not yet implemented");
+	public void testGetAutocompleteTitle() throws Exception {
+		// given
+		String keyword = "keyword";
+		List<String> titleList = new ArrayList<>();
+		titleList.add("title1");
+		titleList.add("title2");
+		BDDMockito.given(bookService.getAutocompleteTitle(keyword)).willReturn(titleList);
+		// when
+		mockMvc.perform(get("/books/autocomplete?keyword=" + keyword)).andExpect(status().isOk());
+		// then
+		BDDMockito.verify(bookService).getAutocompleteTitle(keyword);
 	}
 
 	@Test
