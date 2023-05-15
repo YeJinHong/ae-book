@@ -34,7 +34,8 @@ public class UserEntity extends BaseEntity {
     private int status;
 
     @Builder
-    public UserEntity(Long kakaoId, String nickname, String phone, String profileUrl, int status) {
+    public UserEntity(Long id, Long kakaoId, String nickname, String phone, String profileUrl, int status) {
+        this.id = id;
         this.kakaoId = kakaoId;
         this.nickname = nickname;
         this.phone = phone;
