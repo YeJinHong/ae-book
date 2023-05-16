@@ -146,9 +146,13 @@ export default {
             }
           })
           .then(result => {
-            this.form.keyword = result.data.words
-            this.form.content = result.data.review
-            this.form.score = result.data.star
+            if (result.data.respond === 0) {
+              alert('음성인식에 실패했습니다. 다시 말씀해주세요.')
+            } else {
+              this.form.keyword = result.data.words
+              this.form.content = result.data.review
+              this.form.score = result.data.star
+            }
             this.isLoading = false
           })
           .catch(err => {
