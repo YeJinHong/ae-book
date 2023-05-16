@@ -43,7 +43,7 @@ public class UserServiceImplTest {
 
 	@Test
 	@DisplayName("testDuplicatedUserByNickname: Happy Case")
-	public void testDuplicatedUserByNickname() {
+	public void testIsDuplicatedUserByNickname() {
 		// given
 		String nickname = "test nickname";
 		Boolean checkNickname = false;
@@ -51,28 +51,32 @@ public class UserServiceImplTest {
 		BDDMockito.given(userRepository.existsByNickname(nickname)).willReturn(checkNickname);
 
 		// when
-		subject.duplicatedUserByNickname(nickname);
+		boolean ret = subject.isDuplicatedUserByNickname(nickname);
 
 		// then
+		Assertions.assertAll("결과값 검증", () -> {
+			Assertions.assertNotNull(ret);
+			Assertions.assertTrue(ret);
+		});
 
 	}
 
 	@Test
 	@DisplayName("testDuplicatedUserByNickname: sad Case")
-	public void testDuplicatedUserByNickname1() {
+	public void testIsDuplicatedUserByNickname1() {
 		// given
 		String nickname = "test nickname";
+		Boolean checkNickname = true;
 
-		BDDMockito.given(userRepository.existsByNickname(nickname)).willReturn(true);
+		BDDMockito.given(userRepository.existsByNickname(nickname)).willReturn(checkNickname);
 
 		// when
-		Throwable throwable = Assertions.assertThrows(CustomException.class, () -> {
-			subject.duplicatedUserByNickname(nickname);
-		});
+		boolean ret = subject.isDuplicatedUserByNickname(nickname);
 
 		// then
 		Assertions.assertAll("결과값 검증", () -> {
-			Assertions.assertEquals(ErrorCode.DUPLICATE_RESOURCE, ((CustomException)throwable).getErrorCode());
+			Assertions.assertNotNull(ret);
+			Assertions.assertFalse(ret);
 		});
 	}
 
@@ -86,10 +90,13 @@ public class UserServiceImplTest {
 		BDDMockito.given(userRepository.findProfileUrlById(userId)).willReturn(profileUrl);
 
 		// when
-		subject.getProfileImage(userId);
+		String ret = subject.getProfileImage(userId);
 
 		// then
-
+		Assertions.assertAll("결과값 검증", () -> {
+			Assertions.assertNotNull(ret);
+			Assertions.assertEquals(ret, "profile url");
+		});
 	}
 
 	@Test
