@@ -23,14 +23,16 @@ public class UserServiceImpl implements UserService {
     private final NotificationServiceImpl notificationService;
 
     @Override
-    public void duplicatedUserByNickname(String nickname) {
+    public boolean isDuplicatedUserByNickname(String nickname) {
         // 닉네임 존재 여부를 true, false로 반환
         boolean userNickname = userRepository.existsByNickname(nickname);
 
-        // 닉네임이 존재한다면 중복이므로 에러 던지기
+        // 닉네임이 존재한다면 중복이므로 false 반환
         if(userNickname) {
-            throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
+            return false;
         }
+
+        return true;
     }
 
     @Override
