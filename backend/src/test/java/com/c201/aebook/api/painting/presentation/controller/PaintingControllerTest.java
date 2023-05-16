@@ -183,9 +183,20 @@ public class PaintingControllerTest {
 
 	}
 
+	@DisplayName("testGetNewPaintingList: Happy Case")
 	@Test
-	public void testGetNewPaintingList() {
-		throw new RuntimeException("not yet implemented");
+	public void testGetNewPaintingList() throws Exception {
+		// given
+		List<PaintingResponseDTO> bookList = new ArrayList<>();
+		bookList.add(new PaintingResponseDTO());
+
+		BDDMockito.given(paintingService.getNewPaintingList()).willReturn(bookList);
+
+		// when
+		mockMvc.perform(get("/paintings/new"))
+			.andExpect(status().isOk());
+		// then
+		BDDMockito.then(paintingService).should(times(1)).getNewPaintingList();
 	}
 
 }
