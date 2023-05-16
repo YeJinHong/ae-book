@@ -156,7 +156,7 @@ export default {
             this.isLoading = false
           })
           .catch(err => {
-            console.log(err)
+            throw new Error(err)
           })
       }
     },
@@ -179,7 +179,7 @@ export default {
           this.isLoading = false
         })
         .catch(err => {
-          console.log(err)
+          throw new Error(err)
         })
     },
     ...mapActions(reviewStore, ['saveReviewAction', 'getReviewBookListAction']),
@@ -223,7 +223,7 @@ export default {
           this.book.scoreSum += this.form.score
         })
         .catch((err) => {
-          console.log(err)
+          throw Error(err)
         })
     },
     onReset (event) {
