@@ -4,7 +4,7 @@
       <h1 class="h1-title">동화책 목록</h1>
       <router-link to="/story/keyword"><button class="ae-btn btn-red">동화 만들러 가기</button></router-link>
     </div>
-    <ModalView :audio="audio" :modalShow="isModalVisible" @close-modal = "closeModal">
+    <ModalView :audio="audio" :modalShow="isModalVisible" @close-modal="closeModal">
       <StoryDetailView @audio-submit="audioSubmit" @close-modal="closeModal"/>
     </ModalView>
     <div class="story-container">
