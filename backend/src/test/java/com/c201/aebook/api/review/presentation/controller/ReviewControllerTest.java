@@ -36,21 +36,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ExtendWith(SpringExtension.class)
 @Import(ReviewController.class)
 public class ReviewControllerTest {
-	
+
 	@Autowired
 	private ReviewController reviewController;
-	
+
 	private MockMvc mockMvc;
-	
+
 	@MockBean
 	private ReviewValidator reviewValidator;
-	
+
 	@MockBean
 	private RegexValidator regexValidator;
-	
+
 	@MockBean
 	private ReviewServiceImpl reviewService;
-	
+
 	@MockBean
 	private ReviewConverter reviewConverter;
 
