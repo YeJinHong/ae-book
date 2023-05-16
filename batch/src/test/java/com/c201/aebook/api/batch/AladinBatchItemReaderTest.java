@@ -4,6 +4,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.c201.aebook.api.book.persistence.entity.BookEntity;
@@ -36,27 +40,16 @@ public class AladinBatchItemReaderTest {
 	@Test
 	public void readTest() throws Exception {
 		// given
-		int expectedItemCount = 1; // 예상 아이템 개수
-
-		// restTemplate mock 설정
-		Mockito.when(restTemplate.getForObject(anyString(), eq(String.class))).thenReturn(null);
-
-		// subject.getDataFromApi() mock 설정
 		AladinBatchItemReader mockReader = Mockito.spy(subject);
-		NodeList mockNodeList = mock(NodeList.class);
-
-		Mockito.doReturn(mockNodeList)
-			.when(mockReader)
-			.getItemElementByUrl(any(UriComponentsBuilder.class), eq("item"));
-		//Mockito.when(mockReader.parseBook(any(Node.class))).thenReturn(BookEntity.builder().author("author").title("title").build());
+		List<BookEntity> mockBooks = new ArrayList<>();
+		mockBooks.add(BookEntity.builder().author("author").title("title").build());
+		Mockito.doReturn(mockBooks).when(mockReader).getDataFromApi();
 
 		// when
 		BookEntity actualBook = mockReader.read();
 
 		// then
 		assertNotNull(actualBook);
-		//assertEquals("title", actualBook.getTitle());
-		//assertEquals("author", actualBook.getAuthor());
 	}
 
 	// @Test
