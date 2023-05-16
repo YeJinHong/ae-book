@@ -141,9 +141,23 @@ public class PaintingControllerTest {
 
 	}
 
+	@DisplayName("testDeletePainting: Happy Case")
 	@Test
-	public void testDeletePainting() {
-		throw new RuntimeException("not yet implemented");
+	public void testDeletePainting() throws Exception {
+		// given
+		Long paintingId = 1L;
+		Long userId = 1L;
+		UserEntity user = UserEntity.builder().id(userId).build();
+		CustomUserDetails customUserDetails = new CustomUserDetails(user);
+
+		String filePath = "filePath";
+		BDDMockito.given(paintingService.getFilePath(paintingId, userId)).willReturn(filePath);
+		// when
+		mockMvc.perform(delete("/paintings/" + paintingId)
+				.with(user(customUserDetails)))
+			.andExpect(status().isOk());
+		// then
+		BDDMockito.then(paintingService).should(times(1)).getFilePath(paintingId, userId);
 	}
 
 	@Test
