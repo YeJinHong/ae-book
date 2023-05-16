@@ -82,11 +82,10 @@ public class AuthServiceImpl implements AuthService {
                 String.class
         );
 
-        // log.info("access : {}", accessTokenResponse);
-
         // 4. 발급 받은 카카오 Access token 정보 중 필요한 정보만 KakaoTokenDto에 저장
         ObjectMapper objectMapper = new ObjectMapper();
         KakaoTokenDTO kakaoTokenDto = null;
+        log.info("accessTokenResponse : {}", accessTokenResponse.getBody());
         try {
             kakaoTokenDto = objectMapper.readValue(accessTokenResponse.getBody(), KakaoTokenDTO.class);
         } catch (JsonProcessingException e) {
