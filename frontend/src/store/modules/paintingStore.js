@@ -50,7 +50,6 @@ const paintingStore = {
     ADD_PAINTING: (state, data) => {
       state.paintingList.unshift(data)
       state.paintingList.pop()
-      console.log(data)
     },
     DELETE_PAINTING: (state, data) => {
       const index = state.paintingList.findIndex(item => item.id === data)
