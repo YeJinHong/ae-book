@@ -47,18 +47,23 @@ export default {
       stop: true
     }
   },
+  beforeMount () {
+    window.addEventListener('beforeunload', this.showConfirmation)
+  },
+  beforeDestroy () {
+    window.removeEventListener('beforeunload', this.showConfirmation)
+  },
   created () {
     this.painting = this.$route.params.painting
     this.story = this.$route.params.story
     this.voiceBlob = this.$route.params.voiceBlob
   },
   beforeRouteLeave (to, from, next) {
-    // 오디오 요소를 찾아 재생을 멈춥니다.
+    // 오디오 요소를 찾아 재생을 멈춘다
     if (this.audio) {
       this.audio.pause()
       this.audio.currentTime = 0
     }
-
     next()
   },
   mounted () {
@@ -73,6 +78,11 @@ export default {
   },
   methods: {
     ...mapActions(storyStore, ['saveStory']),
+    showConfirmation (event) {
+      event.preventDefault()
+      event.returnValue = ''
+      return ''
+    },
     createAudio () {
       var blobURL = window.URL.createObjectURL(this.voiceBlob)
       this.audio = new Audio(blobURL)
