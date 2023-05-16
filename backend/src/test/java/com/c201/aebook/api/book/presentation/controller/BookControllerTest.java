@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
@@ -51,6 +52,7 @@ public class BookControllerTest {
 			.build();
 	}
 
+	@DisplayName("testSearchBookDetail: Happy Case")
 	@Test
 	public void testSearchBookDetail() throws Exception {
 		// given
@@ -64,6 +66,7 @@ public class BookControllerTest {
 		BDDMockito.verify(bookService).searchBookDetail(eq(isbn), any(CustomUserDetails.class));
 	}
 
+	@DisplayName("testGetAutocompleteTitle: Happy Case")
 	@Test
 	public void testGetAutocompleteTitle() throws Exception {
 		// given
@@ -80,6 +83,7 @@ public class BookControllerTest {
 		BDDMockito.verify(bookService).getAutocompleteTitle(keyword);
 	}
 
+	@DisplayName("testSearchBookList: Happy Case")
 	@Test
 	public void testSearchBookList() throws Exception {
 		// given
@@ -101,6 +105,7 @@ public class BookControllerTest {
 		BDDMockito.verify(bookService, times(1)).searchBookList(keyword, searchTargets, pageable);
 	}
 
+	@DisplayName("testGetNewBookList: Happy Case")
 	@Test
 	public void testGetNewBookList() throws Exception {
 		// given
