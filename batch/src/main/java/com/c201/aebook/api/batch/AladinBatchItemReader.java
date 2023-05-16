@@ -62,14 +62,14 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 	 * 알라딘 api에서 책 정보를 읽어옴
 	 * */
 	@Override
-	public BookEntity read() {
+	public BookEntity read() throws Exception{
 
 		if (bookList.size() == 0) {
 			try {
 				bookList = getDataFromApi();
 				log.info("list size=" + bookList.size());
 			} catch (Exception e) {
-				e.printStackTrace();
+				throw new Exception();
 			}
 		}
 
