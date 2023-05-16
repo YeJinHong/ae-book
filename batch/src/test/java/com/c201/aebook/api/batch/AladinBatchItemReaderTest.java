@@ -1,8 +1,5 @@
 package com.c201.aebook.api.batch;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -20,12 +17,10 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.c201.aebook.api.book.persistence.entity.BookEntity;
+import com.c201.aebook.helper.AladinBatchItemReaderHelper;
 
 @ExtendWith(MockitoExtension.class)
 public class AladinBatchItemReaderTest {
@@ -36,19 +31,29 @@ public class AladinBatchItemReaderTest {
 	@InjectMocks
 	private AladinBatchItemReader subject;
 
+	@Mock
+	private AladinBatchItemReaderHelper helper;
+
 	@BeforeEach
 	protected void setUp() throws Exception {
 		ReflectionTestUtils.setField(subject, "API_KEY", "ttbleedy9091441001");
+		ReflectionTestUtils.setField(helper, "API_KEY", "ttbleedy9091441001");
 	}
 
 	@Test
 	public void readTest() throws Exception {
 		// given
 		AladinBatchItemReader mockReader = Mockito.spy(subject);
-		List<BookEntity> mockBooks = new ArrayList<>();
 
-		mockBooks.add(BookEntity.builder().author("author").title("title").build());
-		Mockito.doReturn(mockBooks).when(mockReader).getDataFromApi();
+		// bookList에 담길 가짜 데이터를 생성
+		List<BookEntity> mockBooks = new ArrayList<>();
+		mockBooks.add(BookEntity.builder().author("작가더미1").title("제목더미1").build());
+		mockBooks.add(BookEntity.builder().author("작가더미2").title("제목더미2").build());
+
+		// getDataFromApi() 호출 결과를 고정
+		AladinBatchItemReaderHelper mockHelper = Mockito.spy(helper);
+		Mockito.doReturn(mockBooks).when(mockHelper).getDataFromApi();
+		ReflectionTestUtils.setField(mockReader, "aladinBatchItemReaderHelper", mockHelper);
 
 		// when
 		BookEntity actualBook = mockReader.read();
@@ -57,10 +62,8 @@ public class AladinBatchItemReaderTest {
 		Assertions.assertNotNull(actualBook);
 	}
 
-
 	@Test
 	public void testGetDataFromApi() throws IOException, ParserConfigurationException, SAXException, ParseException {
-
 
 	}
 
