@@ -1,19 +1,34 @@
 package com.c201.aebook.api.auth.service.impl;
 
+import com.c201.aebook.api.user.persistence.repository.RefreshRedisRepository;
+import com.c201.aebook.api.user.persistence.repository.UserRepository;
+import com.c201.aebook.auth.dto.KakaoTokenDTO;
+import com.c201.aebook.config.jwt.JwtTokenProvider;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.*;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
-import com.c201.aebook.api.user.persistence.repository.RefreshRedisRepository;
-import com.c201.aebook.api.user.persistence.repository.UserRepository;
-import com.c201.aebook.config.jwt.JwtTokenProvider;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
+
 
 @ExtendWith(MockitoExtension.class)
 public class AuthServiceImplTest {
@@ -32,19 +47,92 @@ public class AuthServiceImplTest {
 	
 	@Mock
     private AuthenticationManagerBuilder authenticationManagerBuilder;
+	@Mock
+	private RestTemplate restTemplate;
+	@Mock
+	private ObjectMapper objectMapper;
 	
 	@InjectMocks
 	private AuthServiceImpl subject;
 
 	@BeforeEach
 	protected void setUp() throws Exception {
-		ReflectionTestUtils.setField(subject, "kakaoClientId", "kakaoClientId");
-		ReflectionTestUtils.setField(subject, "kakaoRedirectUri", "kakaoRedirectUri");
+		ReflectionTestUtils.setField(subject, "kakaoClientId", "c8552298d81db44a10187c0ca23800c8");
+		ReflectionTestUtils.setField(subject, "kakaoRedirectUri", "http://localhost:3000/user/oauth");
+		MockitoAnnotations.initMocks(this);
 	}
 
 	@Test
-	public void testGetAccessToken() {
-		throw new RuntimeException("not yet implemented");
+	public void testGetAccessToken() throws JsonProcessingException {
+		// 이 코드 실행하면 401...
+		// given
+		String code = "test kakao code";
+		String accessTokenJson = "{\"access_token\":\"access token\",\"token_type\":\"bearer\",\"refresh_token\":\"refresh token\",\"expires_in\":21599,\"scope\":\"profile_image profile_nickname phone_number\",\"refresh_token_expires_in\":5183999}";
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+
+		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+		params.add("grant_type", "authorization_code");
+		params.add("client_id", "c8552298d81db44a10187c0ca23800c8"); //REST API KEY
+		params.add("redirect_uri", "http://localhost:3000/user/oauth"); //REDIRECT URI
+		params.add("code", code);
+
+		HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(params, headers);
+
+		ReflectionTestUtils.setField(subject, "kakaoClientId", "c8552298d81db44a10187c0ca23800c8");
+		ReflectionTestUtils.setField(subject, "kakaoRedirectUri","http://localhost:3000/user/oauth" );
+		BDDMockito.given(restTemplate.exchange(
+				eq("https://kauth.kakao.com/oauth/token"),
+				eq(HttpMethod.POST),
+				eq(kakaoTokenRequest),
+				eq(String.class)
+		)).willReturn(ResponseEntity.ok().body(accessTokenJson));
+
+		KakaoTokenDTO kakaoTokenDTO = KakaoTokenDTO.builder()
+				.access_token("access token").token_type("bearer")
+				.refresh_token("refresh token").expires_in(21599)
+				.scope("profile_image profile_nickname phone_number")
+				.refresh_token_expires_in(5183999).build();
+		BDDMockito.given(objectMapper.readValue(accessTokenJson, KakaoTokenDTO.class)).willReturn(kakaoTokenDTO);
+
+//		BDDMockito.given(restTemplate.exchange(any(String.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
+//				.willReturn(new ResponseEntity<>(new ObjectMapper().writeValueAsString(kakaoTokenDTO), HttpStatus.OK));
+
+		// 이것도,,,,,ㅜㅜ
+		// given
+//		String code = "test kakao code";
+//
+//		KakaoTokenDTO kakaoTokenDTO = KakaoTokenDTO.builder()
+//				.access_token("access token").token_type("bearer")
+//				.refresh_token("refresh token").expires_in(21599)
+//				.scope("profile_image profile_nickname phone_number")
+//				.refresh_token_expires_in(5183999).build();
+//
+//		MockRestServiceServer mockServer = MockRestServiceServer.createServer(restTemplate);
+//
+//		mockServer.expect(requestTo("https://kauth.kakao.com/oauth/token"))
+//				.andExpect(method(HttpMethod.POST))
+//				.andExpect(content().string(
+//						"grant_type=authorization_code&client_id=kakaoClientId&redirect_uri=kakaoRedirectUri&code=test+kakao+code"))
+//				.andRespond(withStatus(HttpStatus.OK)
+//						.contentType(MediaType.APPLICATION_JSON)
+//						.body(new ObjectMapper().writeValueAsString(kakaoTokenDTO)));
+
+		// when
+		KakaoTokenDTO ret = subject.getAccessToken(code);
+
+		// then
+		Assertions.assertAll("결괏값 검증", () -> {
+			Assertions.assertNotNull(ret);
+			Assertions.assertEquals(ret.getAccess_token(), "access token");
+			Assertions.assertEquals(ret.getToken_type(), "bearer");
+			Assertions.assertEquals(ret.getRefresh_token(), "refresh token");
+			Assertions.assertEquals(ret.getExpires_in(), 21599);
+			Assertions.assertEquals(ret.getScope(), "profile_image profile_nickname phone_number");
+			Assertions.assertEquals(ret.getRefresh_token_expires_in(), 5183999);
+		});
+
 	}
 
 	@Test
