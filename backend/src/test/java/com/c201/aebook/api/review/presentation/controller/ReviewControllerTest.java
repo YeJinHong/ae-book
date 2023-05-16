@@ -209,8 +209,6 @@ public class ReviewControllerTest {
 
 		CustomUserDetails customUserDetails = new CustomUserDetails(UserEntity.builder().build());
 
-		BDDMockito.doNothing().when(reviewService).deleteReview(reviewId, customUserDetails.getUsername());
-
 		// when
 		mockMvc.perform(delete("/reviews/" + reviewId)
 				.with(user(customUserDetails)))
