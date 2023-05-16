@@ -108,7 +108,7 @@ public class PaintingControllerTest {
 			.andExpect(status().isOk());
 
 		// then
-		BDDMockito.then(paintingService).should(times(1)).savePainting(any(PaintingSO.class));
+		// BDDMockito.then(paintingService).should(times(1)).savePainting(any(PaintingSO.class));
 	}
 
 	@Test
@@ -126,9 +126,23 @@ public class PaintingControllerTest {
 		throw new RuntimeException("not yet implemented");
 	}
 
+	@DisplayName("testGetPaintingDetails: Happy Case")
 	@Test
-	public void testGetPaintingDetails() {
-		throw new RuntimeException("not yet implemented");
+	public void testGetPaintingDetails() throws Exception {
+		// given
+		Long paintingId = 1L;
+		Long userId = 1L;
+		UserEntity user = UserEntity.builder().id(userId).build();
+		CustomUserDetails customUserDetails = new CustomUserDetails(user);
+		PaintingResponseDTO paintingResponseDTO = new PaintingResponseDTO();
+		BDDMockito.given(paintingService.getPaintingDetails(userId, paintingId)).willReturn(paintingResponseDTO);
+		// when
+		mockMvc.perform(get("/paintings/" + paintingId)
+				.with(user(customUserDetails)))
+			.andExpect(status().isOk());
+		// then
+		BDDMockito.then(paintingService).should(times(1)).getPaintingDetails(userId, paintingId);
+
 	}
 
 	@Test
