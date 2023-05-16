@@ -30,15 +30,17 @@ public class PaintingServiceImpl implements PaintingService {
 	private final PaintingConverter paintingConverter;
 
 	@Override
-	public void savePainting(PaintingSO paintingSO) {
+	public PaintingResponseDTO savePainting(PaintingSO paintingSO) {
 		UserEntity user = userRepository.findById(paintingSO.getUserId())
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		paintingRepository.save(PaintingEntity.builder()
+		PaintingEntity paintingEntity = paintingRepository.save(PaintingEntity.builder()
 			.title(paintingSO.getTitle())
 			.fileUrl(paintingSO.getFileUrl())
 			.type(paintingSO.getType())
 			.user(user)
 			.build());
+		PaintingResponseDTO paintingResponseDTO = paintingConverter.toPaintingResponseDTO(paintingEntity);
+		return paintingResponseDTO;
 	}
 
 	@Override
