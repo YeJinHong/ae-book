@@ -6,7 +6,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +19,12 @@ import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
@@ -61,7 +69,8 @@ public class PaintingControllerTest {
 	@BeforeEach
 	protected void setUp() throws Exception {
 		mockMvc = MockMvcBuilders.standaloneSetup(paintingController)
-			.setCustomArgumentResolvers(new AuthenticationPrincipalArgumentResolver())
+			.setCustomArgumentResolvers(new AuthenticationPrincipalArgumentResolver(),
+				new PageableHandlerMethodArgumentResolver())
 			.addFilters(new SecurityContextPersistenceFilter())
 			.build();
 	}
@@ -136,6 +145,7 @@ public class PaintingControllerTest {
 		CustomUserDetails customUserDetails = new CustomUserDetails(user);
 		PaintingResponseDTO paintingResponseDTO = new PaintingResponseDTO();
 		BDDMockito.given(paintingService.getPaintingDetails(userId, paintingId)).willReturn(paintingResponseDTO);
+
 		// when
 		mockMvc.perform(get("/paintings/" + paintingId)
 				.with(user(customUserDetails)))
@@ -145,9 +155,32 @@ public class PaintingControllerTest {
 
 	}
 
+	@DisplayName("testGetPaintingList: Happy Case")
 	@Test
-	public void testGetPaintingList() {
-		throw new RuntimeException("not yet implemented");
+	public void testGetPaintingList() throws Exception {
+		// given
+		Long paintingId = 1L;
+		Long userId = 1L;
+		PaintingType type = PaintingType.COLOR;
+		UserEntity user = UserEntity.builder().id(userId).build();
+		CustomUserDetails customUserDetails = new CustomUserDetails(user);
+
+		List<PaintingResponseDTO> bookList = new ArrayList<>();
+		bookList.add(new PaintingResponseDTO());
+
+		Pageable pageable = PageRequest.of(0, 4, Sort.by(Sort.Direction.DESC, "createdAt"));
+		Page<PaintingResponseDTO> bookPage = new PageImpl<>(bookList, pageable, bookList.size());
+
+		BDDMockito.given(paintingService.getPaintingList(userId, type, pageable)).willReturn(bookPage);
+
+		// when
+		mockMvc.perform(get("/paintings")
+				.param("type", "COLOR")
+				.with(user(customUserDetails)))
+			.andExpect(status().isOk());
+		// then
+		BDDMockito.then(paintingService).should(times(1)).getPaintingList(userId, type, pageable);
+
 	}
 
 	@Test
