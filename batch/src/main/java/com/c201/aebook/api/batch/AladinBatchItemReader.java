@@ -106,11 +106,10 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 
 			NodeList itemNodes = getItemElementByUrl(builder, "item");
 
-			System.out.println(builder.toUriString());
-			System.out.println(itemNodes);
+			if(itemNodes == null) throw new IOException();
 
-			if(itemNodes == null || itemNodes.getLength() == 0) throw new IOException();
-
+			System.out.println("찍어 = " + itemNodes);
+			System.out.println("사람 살려 = " + itemNodes.item(0));
 			for (int i = 0; i < itemNodes.getLength(); i++) {
 				Node itemNode = itemNodes.item(i);
 				BookEntity entity = parseBook(itemNode);
