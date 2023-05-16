@@ -120,9 +120,25 @@ public class PaintingControllerTest {
 		// BDDMockito.then(paintingService).should(times(1)).savePainting(any(PaintingSO.class));
 	}
 
+	@DisplayName("testDownloadPainting: Happy Case")
 	@Test
-	public void testDownloadPainting() {
-		throw new RuntimeException("not yet implemented");
+	public void testDownloadPainting() throws Exception {
+		// given
+		Long paintingId = 1L;
+		String filePath = "filePath";
+		Long userId = 1L;
+		UserEntity user = UserEntity.builder().id(userId).build();
+		CustomUserDetails customUserDetails = new CustomUserDetails(user);
+
+		BDDMockito.given(paintingService.getFilePath(paintingId, userId)).willReturn(filePath);
+		// when
+		mockMvc.perform(get("/paintings/download/" + paintingId)
+				.with(user(customUserDetails)))
+			.andExpect(status().isOk());
+		// then
+		BDDMockito.then(paintingService).should(times(1)).getFilePath(paintingId, userId);
+		BDDMockito.then(s3Downloader).should(times(1)).download(filePath);
+
 	}
 
 	@Test
