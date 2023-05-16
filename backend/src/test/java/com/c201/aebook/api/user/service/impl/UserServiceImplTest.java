@@ -1,5 +1,6 @@
 package com.c201.aebook.api.user.service.impl;
 
+import com.c201.aebook.api.notification.service.impl.NotificationServiceImpl;
 import com.c201.aebook.api.user.persistence.entity.UserEntity;
 import com.c201.aebook.api.user.persistence.repository.UserRepository;
 import com.c201.aebook.api.user.presentation.dto.response.UserResponseDTO;
@@ -30,6 +31,8 @@ public class UserServiceImplTest {
 	private UserRepository userRepository;
 	@Mock
 	private UserConverter userConverter;
+	@Mock
+	private NotificationServiceImpl notificationService;
 
 	@InjectMocks
 	private UserServiceImpl subject;
@@ -123,8 +126,25 @@ public class UserServiceImplTest {
 	}
 
 	@Test
+	@DisplayName("testDeleteUserInfo: Happy Case")
 	public void testDeleteUserInfo() {
-		throw new RuntimeException("not yet implemented");
+		// given
+		Long userId = 1L;
+		Long kakaoId = 123456L;
+		String phone = "010-2000-0813";
+		String nickname = "test nickname";
+		String profileuUrl = "profile url";
+		UserEntity user = UserEntity.builder().id(userId).kakaoId(kakaoId).phone(phone).nickname(nickname).status(1).profileUrl(profileuUrl).build();
+
+		BDDMockito.given(userRepository.findById(userId)).willReturn(Optional.of(user));
+
+		user.invalidateUserEntity(null, null, "탈퇴한 사용자", 0, "https://aebookbucket.s3.ap-northeast-2.amazonaws.com/basic_profile.png");
+
+		// when
+		subject.deleteUserInfo(userId);
+
+		// then
+
 	}
 
 }
