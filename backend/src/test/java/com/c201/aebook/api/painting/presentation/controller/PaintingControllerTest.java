@@ -36,10 +36,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.c201.aebook.api.painting.persistence.entity.PaintingType;
 import com.c201.aebook.api.painting.presentation.dto.request.PaintingRequestDTO;
+import com.c201.aebook.api.painting.presentation.dto.request.PaintingTitleRequestDTO;
 import com.c201.aebook.api.painting.presentation.dto.response.PaintingResponseDTO;
 import com.c201.aebook.api.painting.presentation.validator.PaintingValidator;
 import com.c201.aebook.api.painting.service.impl.PaintingServiceImpl;
 import com.c201.aebook.api.user.persistence.entity.UserEntity;
+import com.c201.aebook.api.vo.PaintingPatchSO;
 import com.c201.aebook.api.vo.PaintingSO;
 import com.c201.aebook.auth.CustomUserDetails;
 import com.c201.aebook.converter.PaintingConverter;
@@ -160,9 +162,28 @@ public class PaintingControllerTest {
 		BDDMockito.then(paintingService).should(times(1)).getFilePath(paintingId, userId);
 	}
 
+	@DisplayName("testUpdatePaintingTitle: Happy Case")
 	@Test
-	public void testUpdatePaintingTitle() {
-		throw new RuntimeException("not yet implemented");
+	public void testUpdatePaintingTitle() throws Exception {
+		// given
+		Long paintingId = 1L;
+		Long userId = 1L;
+		UserEntity user = UserEntity.builder().id(userId).build();
+		CustomUserDetails customUserDetails = new CustomUserDetails(user);
+		PaintingTitleRequestDTO paintingTitleRequestDTO = new PaintingTitleRequestDTO("title");
+		PaintingPatchSO paintingPatchSO = new PaintingPatchSO();
+		BDDMockito.given(paintingConverter.toPaintingPatchSO(paintingId, userId, paintingTitleRequestDTO))
+			.willReturn(paintingPatchSO);
+		PaintingResponseDTO paintingResponseDTO = new PaintingResponseDTO();
+		BDDMockito.given(paintingService.updatePaintingTitle(paintingPatchSO)).willReturn(paintingResponseDTO);
+		// when
+		mockMvc.perform(patch("/paintings/" + paintingId)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(new ObjectMapper().writeValueAsString(paintingTitleRequestDTO))
+				.with(user(customUserDetails)))
+			.andExpect(status().isOk());
+		// then
+		BDDMockito.then(paintingService).should(times(1)).updatePaintingTitle(paintingPatchSO);
 	}
 
 	@DisplayName("testGetPaintingDetails: Happy Case")
