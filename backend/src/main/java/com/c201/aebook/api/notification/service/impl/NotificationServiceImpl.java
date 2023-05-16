@@ -46,7 +46,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         // 3. 알림 타입이 D이면서 upperLimit이 0 이상인지 확인
-        if(notificationSO.getNotificationType().equals("D") && notificationSO.getUpperLimit() >= 0) {
+        if("D".equals(notificationSO.getNotificationType()) && notificationSO.getUpperLimit() >= 0) {
             notificationSO.setUpperLimit(0);
         }
 
