@@ -108,8 +108,7 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 
 			if(itemNodes == null) throw new IOException();
 
-			System.out.println("찍어 = " + itemNodes);
-			System.out.println("사람 살려 = " + itemNodes.item(0));
+
 			for (int i = 0; i < itemNodes.getLength(); i++) {
 				Node itemNode = itemNodes.item(i);
 				BookEntity entity = parseBook(itemNode);
@@ -258,11 +257,9 @@ public class AladinBatchItemReader implements ItemReader<BookEntity> {
 		IOException,
 		SAXException,
 		ParserConfigurationException {
-		System.out.println("여기 사람 있어요 url = " + builder.toUriString());
 
 		ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, null,
 			String.class);
-		System.out.println("여기 사람 있어요 = " + response);
 
 		if (response == null || response.getBody() == null) {
 			throw new RuntimeException("API response is null or has no body.");
