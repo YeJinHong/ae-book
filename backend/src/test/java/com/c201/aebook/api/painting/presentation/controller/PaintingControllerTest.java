@@ -6,8 +6,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +17,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.web.context.SecurityContextPersistenceFilter;
+import org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -33,7 +33,6 @@ import com.c201.aebook.auth.CustomUserDetails;
 import com.c201.aebook.converter.PaintingConverter;
 import com.c201.aebook.utils.S3Downloader;
 import com.c201.aebook.utils.S3Uploader;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ExtendWith(SpringExtension.class)
 @Import(PaintingController.class)
@@ -53,22 +52,19 @@ public class PaintingControllerTest {
 	@MockBean
 	private S3Downloader s3Downloader;
 
-	private ObjectMapper objectMapper = new ObjectMapper();
-
+	@SuppressWarnings("deprecation")
 	@BeforeEach
 	protected void setUp() throws Exception {
-		mockMvc = MockMvcBuilders.standaloneSetup(paintingController).build();
+		mockMvc = MockMvcBuilders.standaloneSetup(paintingController)
+			.setCustomArgumentResolvers(new AuthenticationPrincipalArgumentResolver())
+			.addFilters(new SecurityContextPersistenceFilter())
+			.build();
 	}
 
 	@DisplayName("testSavePainting: Happy Case")
 	@Test
 	public void testSavePainting() throws Exception {
 		// given
-		Map<String, String> data = new HashMap<>();
-		data.put("title", "제목");
-		data.put("type", "COLOR");
-		String contents = objectMapper.writeValueAsString(data);
-
 		Long userId = 1L;
 		UserEntity user = UserEntity.builder().id(userId).build();
 		CustomUserDetails customUserDetails = new CustomUserDetails(user);
@@ -91,7 +87,7 @@ public class PaintingControllerTest {
 		// when
 		mockMvc.perform(multipart("/paintings")
 				.file(paintingFile)
-				.file(new MockMultipartFile("data", "", "application/json", contents.getBytes(StandardCharsets.UTF_8)))
+				.file(new MockMultipartFile("data", "", "application/json", "contents".getBytes(StandardCharsets.UTF_8)))
 				.contentType("multipart/form-data")
 				.accept(MediaType.APPLICATION_JSON)
 				.characterEncoding("UTF-8")
