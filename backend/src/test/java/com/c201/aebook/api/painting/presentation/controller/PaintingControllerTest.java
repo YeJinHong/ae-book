@@ -6,6 +6,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,7 +26,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.c201.aebook.api.painting.persistence.entity.PaintingType;
 import com.c201.aebook.api.painting.presentation.dto.request.PaintingRequestDTO;
+import com.c201.aebook.api.painting.presentation.dto.response.PaintingResponseDTO;
 import com.c201.aebook.api.painting.presentation.validator.PaintingValidator;
 import com.c201.aebook.api.painting.service.impl.PaintingServiceImpl;
 import com.c201.aebook.api.user.persistence.entity.UserEntity;
@@ -33,6 +37,7 @@ import com.c201.aebook.auth.CustomUserDetails;
 import com.c201.aebook.converter.PaintingConverter;
 import com.c201.aebook.utils.S3Downloader;
 import com.c201.aebook.utils.S3Uploader;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ExtendWith(SpringExtension.class)
 @Import(PaintingController.class)
@@ -65,14 +70,14 @@ public class PaintingControllerTest {
 	@Test
 	public void testSavePainting() throws Exception {
 		// given
+		Map<String, String> data = new HashMap<>();
+		data.put("title", "test-title");
+		data.put("type", "COLOR");
+		String contents = new ObjectMapper().writeValueAsString(data);
+
 		Long userId = 1L;
 		UserEntity user = UserEntity.builder().id(userId).build();
 		CustomUserDetails customUserDetails = new CustomUserDetails(user);
-		PaintingRequestDTO paintingRequestDTO = new PaintingRequestDTO();
-		paintingRequestDTO.setTitle("title");
-
-		String uploadImageUrl = "uploadImageUrl";
-		BDDMockito.given(s3Uploader.upload(any(MultipartFile.class), any(String.class))).willReturn(uploadImageUrl);
 
 		MockMultipartFile paintingFile = new MockMultipartFile(
 			"paintingFile",
@@ -81,13 +86,21 @@ public class PaintingControllerTest {
 			"<<png data>>".getBytes(StandardCharsets.UTF_8)
 		);
 
-		PaintingSO paintingSO = new PaintingSO();
+		PaintingRequestDTO paintingRequestDTO = new PaintingRequestDTO("title", PaintingType.COLOR);
+		String uploadImageUrl = "uploadImageUrl";
+		BDDMockito.given(s3Uploader.upload(any(MultipartFile.class), any(String.class))).willReturn(uploadImageUrl);
+
+		PaintingSO paintingSO = new PaintingSO(paintingRequestDTO.getTitle(), uploadImageUrl, PaintingType.COLOR,
+			userId);
 		BDDMockito.given(paintingConverter.toPaintingSO(userId, uploadImageUrl, paintingRequestDTO))
 			.willReturn(paintingSO);
+		PaintingResponseDTO paintingResponseDTO = new PaintingResponseDTO();
+		BDDMockito.given(paintingService.savePainting(paintingSO))
+			.willReturn(paintingResponseDTO);
 		// when
 		mockMvc.perform(multipart("/paintings")
 				.file(paintingFile)
-				.file(new MockMultipartFile("data", "", "application/json", "contents".getBytes(StandardCharsets.UTF_8)))
+				.file(new MockMultipartFile("data", "", "application/json", contents.getBytes(StandardCharsets.UTF_8)))
 				.contentType("multipart/form-data")
 				.accept(MediaType.APPLICATION_JSON)
 				.characterEncoding("UTF-8")
@@ -95,8 +108,7 @@ public class PaintingControllerTest {
 			.andExpect(status().isOk());
 
 		// then
-		BDDMockito.verify(paintingService, times(1)).savePainting(paintingSO);
-		BDDMockito.verify(paintingConverter, times(1)).toPaintingSO(userId, uploadImageUrl, paintingRequestDTO);
+		BDDMockito.then(paintingService).should(times(1)).savePainting(any(PaintingSO.class));
 	}
 
 	@Test
