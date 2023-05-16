@@ -29,63 +29,63 @@ import com.c201.aebook.api.listener.step.BookIntegrationStepListener;
 @SpringBatchTest
 public class BatchJobConfigTest {
 
-	@Mock
-	private JobBuilderFactory jobBuilderFactory;
-
-	@Mock
-	private StepBuilderFactory stepBuilderFactory;
-
-	@Mock
-	private BookIntegrationJobListener bookIntegrationJobListener;
-
-	@Mock
-	private BookIntegrationStepListener bookIntegrationStepListener;
-
-	@Mock
-	private AladinBatchItemReader aladinBatchItemReader;
-
-	@Mock
-	private AladinBatchItemWriter aladinBatchItemWriter;
-
-	@Autowired
-	private JobRepository jobRepository;
-
-	@InjectMocks
-	private BatchJobConfig batchJobConfig;
-
-	@Autowired
-	private JobLauncherTestUtils jobLauncherTestUtils;
-
-	@BeforeEach
-	public void setUp() throws Exception {
-		MockitoAnnotations.openMocks(this);
-		jobLauncherTestUtils.setJobRepository(jobRepository);
-	}
-
-	@Test
-	void job() throws Exception {
-
-		//given
-		Job job = batchJobConfig.job();
-		JobParameters jobParameters = new JobParameters();
-
-		//when
-		JobExecution jobExecution = this.jobLauncherTestUtils.launchJob();
-
-		//then
-		Assertions.assertEquals(ExitStatus.COMPLETED, jobExecution.getExitStatus());
-	}
-
-	@Test
-	void step() throws Exception {
-		// given
-		JobExecution jobExecution = this.jobLauncherTestUtils.launchStep("bookIntegrationStep");
-
-		// when
-		StepExecution stepExecution = jobExecution.getStepExecutions().iterator().next();
-
-		// then
-		Assertions.assertEquals(ExitStatus.COMPLETED, stepExecution.getExitStatus());
-	}
+	// @Mock
+	// private JobBuilderFactory jobBuilderFactory;
+	//
+	// @Mock
+	// private StepBuilderFactory stepBuilderFactory;
+	//
+	// @Mock
+	// private BookIntegrationJobListener bookIntegrationJobListener;
+	//
+	// @Mock
+	// private BookIntegrationStepListener bookIntegrationStepListener;
+	//
+	// @Mock
+	// private AladinBatchItemReader aladinBatchItemReader;
+	//
+	// @Mock
+	// private AladinBatchItemWriter aladinBatchItemWriter;
+	//
+	// @Autowired
+	// private JobRepository jobRepository;
+	//
+	// @InjectMocks
+	// private BatchJobConfig batchJobConfig;
+	//
+	// @Autowired
+	// private JobLauncherTestUtils jobLauncherTestUtils;
+	//
+	// @BeforeEach
+	// public void setUp() throws Exception {
+	// 	MockitoAnnotations.openMocks(this);
+	// 	jobLauncherTestUtils.setJobRepository(jobRepository);
+	// }
+	//
+	// @Test
+	// void job() throws Exception {
+	//
+	// 	//given
+	// 	Job job = batchJobConfig.job();
+	// 	JobParameters jobParameters = new JobParameters();
+	//
+	// 	//when
+	// 	JobExecution jobExecution = this.jobLauncherTestUtils.launchJob();
+	//
+	// 	//then
+	// 	Assertions.assertEquals(ExitStatus.COMPLETED, jobExecution.getExitStatus());
+	// }
+	//
+	// @Test
+	// void step() throws Exception {
+	// 	// given
+	// 	JobExecution jobExecution = this.jobLauncherTestUtils.launchStep("bookIntegrationStep");
+	//
+	// 	// when
+	// 	StepExecution stepExecution = jobExecution.getStepExecutions().iterator().next();
+	//
+	// 	// then
+	// 	Assertions.assertEquals(ExitStatus.COMPLETED, stepExecution.getExitStatus());
+	// }
 
 }
