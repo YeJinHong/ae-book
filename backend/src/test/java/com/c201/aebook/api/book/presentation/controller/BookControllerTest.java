@@ -63,7 +63,7 @@ public class BookControllerTest {
 		// when
 		mockMvc.perform(get("/books/" + isbn)).andExpect(status().isOk());
 		// then
-		BDDMockito.verify(bookService).searchBookDetail(eq(isbn), any(CustomUserDetails.class));
+		BDDMockito.then(bookService).should(times(1)).searchBookDetail(eq(isbn), any(CustomUserDetails.class));
 	}
 
 	@DisplayName("testGetAutocompleteTitle: Happy Case")
@@ -80,7 +80,7 @@ public class BookControllerTest {
 				.param("keyword", keyword))
 			.andExpect(status().isOk());
 		// then
-		BDDMockito.verify(bookService).getAutocompleteTitle(keyword);
+		BDDMockito.then(bookService).should(times(1)).getAutocompleteTitle(keyword);
 	}
 
 	@DisplayName("testSearchBookList: Happy Case")
@@ -102,7 +102,7 @@ public class BookControllerTest {
 				.param("searchTargets", searchTargets))
 			.andExpect(status().isOk());
 		// then
-		BDDMockito.verify(bookService, times(1)).searchBookList(keyword, searchTargets, pageable);
+		BDDMockito.then(bookService).should(times(1)).searchBookList(keyword, searchTargets, pageable);
 	}
 
 	@DisplayName("testGetNewBookList: Happy Case")
@@ -116,7 +116,7 @@ public class BookControllerTest {
 		mockMvc.perform(get("/books/new"))
 			.andExpect(status().isOk());
 		// then
-		BDDMockito.verify(bookService, times(1)).getNewBookList();
+		BDDMockito.then(bookService).should(times(1)).getNewBookList();
 	}
 
 }
