@@ -51,6 +51,7 @@ public class AuthServiceImpl implements AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate redisTemplate;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final RestTemplate restTemplate;
 
     /**
      * 인가코드로 요청하여 카카오 AccessToken을 발급 받는 기능
@@ -59,7 +60,6 @@ public class AuthServiceImpl implements AuthService {
      * */
     @Override
     public KakaoTokenDTO getAccessToken(String code) {
-        RestTemplate rt = new RestTemplate();
 
         // 1. Header 생성
         HttpHeaders headers = new HttpHeaders();
@@ -75,7 +75,7 @@ public class AuthServiceImpl implements AuthService {
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(params, headers);
 
         // 3. 카카오 Access token 발급 받기
-        ResponseEntity<String> accessTokenResponse = rt.exchange(
+        ResponseEntity<String> accessTokenResponse = restTemplate.exchange(
                 "https://kauth.kakao.com/oauth/token",
                 HttpMethod.POST,
                 kakaoTokenRequest,
