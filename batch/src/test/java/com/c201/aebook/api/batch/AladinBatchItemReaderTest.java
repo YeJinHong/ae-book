@@ -1,5 +1,7 @@
 package com.c201.aebook.api.batch;
 
+import static org.mockito.Mockito.*;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -17,6 +19,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.c201.aebook.api.book.persistence.entity.BookEntity;
@@ -64,7 +69,25 @@ public class AladinBatchItemReaderTest {
 
 	@Test
 	public void testGetDataFromApi() throws IOException, ParserConfigurationException, SAXException, ParseException {
+		//given
+		AladinBatchItemReader mockReader = Mockito.spy(subject);
+		NodeList mockNodeList = mock(NodeList.class);
 
+		// Mockito.doReturn(mockNodeList)
+		// 	.when(mockReader)
+		// 	.getItemElementByUrl(any(UriComponentsBuilder.class), eq("item"));
+		//
+		// BookEntity mockBookEntity = mock(BookEntity.class);
+		// Mockito.when(mockReader.parseBook(any(Node.class))).thenReturn(mockBookEntity);
+
+
+		//when
+		//List<BookEntity> books = mockReader.getDataFromApi();
+
+
+		//then
+		// Assertions.assertNotNull(books);
+		// Assertions.assertFalse(books.isEmpty());
 	}
 
 	@Test
