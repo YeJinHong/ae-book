@@ -138,8 +138,9 @@ export default {
       formData.append('data', new Blob([JSON.stringify(data)], {type: 'application/json'}))
 
       this.saveStory(formData)
-        .then(
+        .then(result => {
           alert('동화 저장에 성공했습니다.')
+        }
         )
         .catch(error => {
           alert('동화 저장에 실패했습니다.' + error)
