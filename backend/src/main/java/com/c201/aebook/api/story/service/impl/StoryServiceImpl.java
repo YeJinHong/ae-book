@@ -57,7 +57,7 @@ public class StoryServiceImpl implements StoryService {
 
 		Page<StoryEntity> stories = storyRepository.findAll(pageable);
 		List<StoryListResponseDTO> storyList = stories.stream()
-			.filter(storyEntity -> storyEntity.getUser().getId() != userId)
+			.filter(storyEntity -> storyEntity.getUser().getId() == userId)
 			.map(storyEntity -> storyConverter.toStoryListResponseDTO(storyEntity, storyEntity.getId(), nickname))
 			.collect(Collectors.toList());
 
@@ -70,6 +70,7 @@ public class StoryServiceImpl implements StoryService {
 		return stories.map(storyEntity -> {
 			UserEntity userEntity = userRepository.findById(storyEntity.getUser().getId())
 				.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+			System.out.println(userEntity.getId());
 			return storyConverter.toStoryListResponseDTO(storyEntity, storyEntity.getId(), userEntity.getNickname());
 		});
 	}
