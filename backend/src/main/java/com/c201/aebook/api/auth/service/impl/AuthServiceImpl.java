@@ -60,7 +60,6 @@ public class AuthServiceImpl implements AuthService {
      * */
     @Override
     public KakaoTokenDTO getAccessToken(String code) {
-
         // 1. Header 생성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -102,8 +101,6 @@ public class AuthServiceImpl implements AuthService {
      * */
     @Override
     public KakaoProfile findProfile(String token) {
-        RestTemplate rt = new RestTemplate();
-
         // 1. Header 생성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + token);
@@ -113,7 +110,7 @@ public class AuthServiceImpl implements AuthService {
                 new HttpEntity<>(headers);
 
         // 2. Http 요청 (POST 방식) 후, response 변수에 유저 프로필 정보를 받기
-        ResponseEntity<String> kakaoProfileResponse = rt.exchange(
+        ResponseEntity<String> kakaoProfileResponse = restTemplate.exchange(
                 "https://kapi.kakao.com/v2/user/me",
                 HttpMethod.POST,
                 kakaoProfileRequest,
