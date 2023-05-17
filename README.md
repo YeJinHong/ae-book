@@ -89,15 +89,14 @@ application-db.yml
 
 ## 6. 사용자 인터페이스
 
-![메인페이지](./exec/img/main_01.PNG)
+![메인페이지](./exec/img/MainPage.gif)
 ![그림판 페이지](./exec/img/paint_01.PNG)
 ![AI 동화 페이지](./exec/img/story_01.PNG)
-![선화 추출 페이지](./exec/img/story_paint_01.PNG)
-![동화 색칠 페이지](./exec/img/story_paint_02.PNG)
-![사진으로 도서 검색 페이지](./exec/img/search_isbn_01.PNG)
-![책 조회 페이지](./exec/img/book_search_01.PNG)
-![책 상세 페이지](./exec/img/book_detail_01.PNG)
-![최저가 알림](./exec/img/notification_01.jpg)
-![ChatGPT 서평 자동 작성 페이지](./exec/img/chatgpt_01.PNG)
-![음성 인식 서평 자동 작성 페이지](./exec/img/chatgpt_02.PNG)
+![선화 추출 페이지](./exec/img/makePaint.gif)
+![사진으로 도서 검색 페이지](./exec/img/ISBN.gif)
+![책 검색 페이지](./exec/img/SearchBook.gif)
+![최저가 알림 신청 페이지](./exec/img/NotificationRegister.gif)
+![카카오톡 최저가 알림](./exec/img/notification_01.jpg)
+![ChatGPT 서평 자동 작성 페이지](./exec/img/chatGptReview.gif)
+![음성 인식 서평 자동 작성 페이지](./exec/img/SoundReview.gif)
 ![마이 페이지](./exec/img/mypage_01.PNG)
