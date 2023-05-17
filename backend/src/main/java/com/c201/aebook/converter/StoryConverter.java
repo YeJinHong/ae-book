@@ -20,7 +20,7 @@ import org.mapstruct.Mappings;
 public interface StoryConverter {
 	StorySO toStorySO(Long userId, String voiceUrl, String imgUrl, StoryRequestDTO storyRequestDTO);
 
-	StorySaveResponseDTO toStorySaveResponseDTO(String voiceUrl, String imgUrl, StoryRequestDTO storyRequestDTO);
+	StorySaveResponseDTO toStorySaveResponseDTO(StorySO storySO);
 
 	StoryDeleteSO toStoryDeleteSO(Long userId, Long storyId);
 
