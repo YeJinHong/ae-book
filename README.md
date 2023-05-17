@@ -31,6 +31,8 @@
 | Java SE | JDK8 |  |
 | Gradle | - |  |
 | Spring boot | 2.7.10 |  |
+| Spring Security |  3.0.4  |   |
+| Spring Batch | 4.3.3 | |
 | JPA | - |  |
 | database [mariadb] | 10.11.2 |  |
 | Redis | 7.0.10 | 용도 : session 클러스터링 |
@@ -39,8 +41,14 @@
 | node | 14.21.3 | |
 
 
+
 ## 3. 배포 환경
 
+### CICD
+- AWS EC2
+- AWS S3
+- Minikube
+- Docker, Jenkins, Nginx
 
 ### gitignore
 
@@ -75,8 +83,9 @@ application-db.yml
 - dev 브랜치는 2명, release-v1.x브랜치는 3명의 approve가 있어야 반영하는 것으로 합의<br>
 - pr 당 400라인(medium, 200라인은 hard 버전) 이내로 보내기를 권장<br>
 - pr에는 반드시 라인 커멘트 달아주기<br>
+<br>
 
-
+![gitflow](./exec/img/gitFlow.gif)
 
 
 ## 5. 외부 기술
@@ -87,16 +96,44 @@ application-db.yml
 2. 알라딘 Open API<br>
 - 도서 DB 제공 : 알라딘 인터넷서점(www.aladin.co.kr)<br>
 
-## 6. 사용자 인터페이스
+## 6. 서비스 설계
 
+### ERD
+![ERD](./exec/img/aebookERD.png)
+
+
+### API 명세서
+![API](./exec/img/apiDocs.PNG)
+
+
+### 화면 설계서
+![화면설계](./exec/img/figma.PNG)
+
+## 7. 사용자 인터페이스
+
+### 메인 페이지
 ![메인페이지](./exec/img/MainPage.gif)
-![그림판 페이지](./exec/img/paint_01.PNG)
-![AI 동화 페이지](./exec/img/story_01.PNG)
+
+### 색칠 공부 페이지
 ![선화 추출 페이지](./exec/img/makePaint.gif)
+
+### 사진으로 책 검색 페이지
 ![사진으로 도서 검색 페이지](./exec/img/ISBN.gif)
+
+### 제목으로 책 검색 페이지
 ![책 검색 페이지](./exec/img/SearchBook.gif)
+
+### 최저가 알림 신청 페이지
 ![최저가 알림 신청 페이지](./exec/img/NotificationRegister.gif)
+
+### 카카오톡 최저가 알림톡 
 ![카카오톡 최저가 알림](./exec/img/notification_01.jpg)
+
+### ChatGPT 서평 작성 페이지
 ![ChatGPT 서평 자동 작성 페이지](./exec/img/chatGptReview.gif)
+
+### 음성 인식을 통한 ChatGPT 서평 작성 페이지
 ![음성 인식 서평 자동 작성 페이지](./exec/img/SoundReview.gif)
+
+### 마이페이지
 ![마이 페이지](./exec/img/mypage_01.PNG)
