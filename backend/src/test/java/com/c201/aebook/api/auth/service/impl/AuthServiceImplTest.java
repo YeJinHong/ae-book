@@ -6,9 +6,12 @@ import com.c201.aebook.api.user.persistence.entity.RefreshRedisTokenEntity;
 import com.c201.aebook.api.user.persistence.entity.UserEntity;
 import com.c201.aebook.api.user.persistence.repository.RefreshRedisRepository;
 import com.c201.aebook.api.user.persistence.repository.UserRepository;
+import com.c201.aebook.api.vo.TokenSO;
 import com.c201.aebook.auth.dto.KakaoTokenDTO;
 import com.c201.aebook.auth.profile.KakaoProfile;
 import com.c201.aebook.config.jwt.JwtTokenProvider;
+import com.c201.aebook.utils.exception.CustomException;
+import com.c201.aebook.utils.exception.ErrorCode;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jdk.nashorn.internal.parser.Token;
@@ -20,14 +23,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.*;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
@@ -228,7 +235,7 @@ public class AuthServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("testResolveToken: sad Case")
+	@DisplayName("testResolveToken: Sad Case")
 	public void testResolveToken1() {
 		// given
 		MockHttpServletRequest request = new MockHttpServletRequest();
@@ -247,8 +254,105 @@ public class AuthServiceImplTest {
 	}
 
 	@Test
+	@DisplayName("testReissueAccessToken: Happy Case")
 	public void testReissueAccessToken() {
-		throw new RuntimeException("not yet implemented");
+		// given
+		TokenSO tokenSO = TokenSO.builder().accessToken("access token").refreshToken("refresh token").build();
+
+		BDDMockito.given(jwtTokenProvider.validateToken(tokenSO.getRefreshToken())).willReturn(true);
+
+		Authentication authentication = mock(Authentication.class);
+		BDDMockito.given(jwtTokenProvider.getAuthentication(tokenSO.getAccessToken())).willReturn(authentication);
+
+		String userId = "1";
+		RefreshRedisTokenEntity refreshRedisToken = RefreshRedisTokenEntity.createToken(userId, "refresh token");
+		BDDMockito.given(refreshRedisRepository.findById(authentication.getName())).willReturn(Optional.of(refreshRedisToken));
+
+		ValueOperations<String, String> valueOperations = mock(ValueOperations.class);
+		Mockito.when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+
+		TokenDTO tokenDTO = TokenDTO.builder().accessToken("newAccessToken").refreshToken("newRefreshToken").build();
+		BDDMockito.given(jwtTokenProvider.generateTokenDto(authentication.getName())).willReturn(tokenDTO);
+
+		// when
+		TokenDTO ret = subject.reissueAccessToken(tokenSO);
+
+		// then
+		Assertions.assertAll("결괏값 검증", () -> {
+			Assertions.assertNotNull(ret);
+			Assertions.assertEquals(ret.getAccessToken(), "newAccessToken");
+			Assertions.assertEquals(ret.getRefreshToken(), "newRefreshToken");
+		});
+	}
+
+	@Test
+	@DisplayName("testReissueAccessToken: Sad Case Invalid Refresh Token")
+	public void testReissueAccessToken1() {
+		// given
+		TokenSO tokenSO = TokenSO.builder().accessToken("access token").refreshToken("refresh token").build();
+
+		BDDMockito.given(jwtTokenProvider.validateToken(tokenSO.getRefreshToken())).willReturn(false);
+
+		// when
+		Throwable throwable = Assertions.assertThrows(CustomException.class, () -> {
+			TokenDTO ret = subject.reissueAccessToken(tokenSO);
+		});
+
+		// then
+		Assertions.assertAll("결과값 검증", () -> {
+			Assertions.assertEquals(ErrorCode.INVALID_REFRESH_TOKEN, ((CustomException)throwable).getErrorCode());
+		});
+	}
+
+	@Test
+	@DisplayName("testReissueAccessToken: Sad Case Refresh Token Not Found")
+	public void testReissueAccessToken2() {
+		// given
+		TokenSO tokenSO = TokenSO.builder().accessToken("access token").refreshToken("refresh token").build();
+
+		BDDMockito.given(jwtTokenProvider.validateToken(tokenSO.getRefreshToken())).willReturn(true);
+
+		Authentication authentication = mock(Authentication.class);
+		BDDMockito.given(jwtTokenProvider.getAuthentication(tokenSO.getAccessToken())).willReturn(authentication);
+
+		String userId = "1";
+		BDDMockito.given(refreshRedisRepository.findById(authentication.getName())).willReturn(Optional.empty());
+
+		// when
+		Throwable throwable = Assertions.assertThrows(CustomException.class, () -> {
+			TokenDTO ret = subject.reissueAccessToken(tokenSO);
+		});
+
+		// then
+		Assertions.assertAll("결과값 검증", () -> {
+			Assertions.assertEquals(ErrorCode.REFRESH_TOKEN_NOT_FOUND, ((CustomException)throwable).getErrorCode());
+		});
+	}
+
+	@Test
+	@DisplayName("testReissueAccessToken: Sad Case Mismatch Refresh Token")
+	public void testReissueAccessToken3() {
+		// given
+		TokenSO tokenSO = TokenSO.builder().accessToken("access token").refreshToken("refresh token").build();
+
+		BDDMockito.given(jwtTokenProvider.validateToken(tokenSO.getRefreshToken())).willReturn(true);
+
+		Authentication authentication = mock(Authentication.class);
+		BDDMockito.given(jwtTokenProvider.getAuthentication(tokenSO.getAccessToken())).willReturn(authentication);
+
+		String userId = "1";
+		RefreshRedisTokenEntity refreshRedisToken = RefreshRedisTokenEntity.createToken(userId, "mismatch refresh token");
+		BDDMockito.given(refreshRedisRepository.findById(authentication.getName())).willReturn(Optional.of(refreshRedisToken));
+
+		// when
+		Throwable throwable = Assertions.assertThrows(CustomException.class, () -> {
+			TokenDTO ret = subject.reissueAccessToken(tokenSO);
+		});
+
+		// then
+		Assertions.assertAll("결과값 검증", () -> {
+			Assertions.assertEquals(ErrorCode.MISMATCH_REFRESH_TOKEN, ((CustomException)throwable).getErrorCode());
+		});
 	}
 
 }
