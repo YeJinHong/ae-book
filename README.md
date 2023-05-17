@@ -83,8 +83,9 @@ application-db.yml
 - dev 브랜치는 2명, release-v1.x브랜치는 3명의 approve가 있어야 반영하는 것으로 합의<br>
 - pr 당 400라인(medium, 200라인은 hard 버전) 이내로 보내기를 권장<br>
 - pr에는 반드시 라인 커멘트 달아주기<br>
+<br>
 
-
+![gitflow](./exec/img/gitFlow.gif)
 
 
 ## 5. 외부 기술
@@ -95,7 +96,20 @@ application-db.yml
 2. 알라딘 Open API<br>
 - 도서 DB 제공 : 알라딘 인터넷서점(www.aladin.co.kr)<br>
 
-## 6. 사용자 인터페이스
+## 6. 서비스 설계
+
+### ERD
+![ERD](./exec/img/aebookERD.png)
+
+
+### API 명세서
+![API](./exec/img/apiDocs.PNG)
+
+
+### 화면 설계서
+![화면설계](./exec/img/figma.PNG)
+
+## 7. 사용자 인터페이스
 
 ### 메인 페이지
 ![메인페이지](./exec/img/MainPage.gif)
