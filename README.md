@@ -31,6 +31,8 @@
 | Java SE | JDK8 |  |
 | Gradle | - |  |
 | Spring boot | 2.7.10 |  |
+| Spring Security |    |   |
+| Spring Batch | 4.3.3 | |
 | JPA | - |  |
 | database [mariadb] | 10.11.2 |  |
 | Redis | 7.0.10 | 용도 : session 클러스터링 |
