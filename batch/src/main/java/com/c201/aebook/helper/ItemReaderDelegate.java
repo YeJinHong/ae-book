@@ -57,6 +57,9 @@ public class ItemReaderDelegate {
 		return parseBook(itemNode);
 	}
 
+	public String replaceCharacterFromText(String text){
+		return replaceCharacter(text);
+	}
 
 	private List<BookEntity> getDataFromApi() throws
 		IOException,
@@ -213,6 +216,10 @@ public class ItemReaderDelegate {
 
 		if(minPriceBookId == 0 || isbn == null || isbn.isEmpty() || aladinUrl == null || aladinUrl.isEmpty() || author == null || author.isEmpty() || minPriceResult == 0) return null;
 
+		//특수 문자 제거
+		title = replaceCharacter(title);
+		description = replaceCharacter(description);
+
 		BookEntity book = BookEntity.builder()
 			.id(minPriceBookId)
 			.coverImageUrl(coverUrl)
@@ -300,5 +307,21 @@ public class ItemReaderDelegate {
 		//해당 태그의 노드가 없는 경우 null 반환
 		return null;
 	}
+
+
+	/*
+	* 특수 문자 제거 함수
+	* */
+	private String replaceCharacter(String context){
+		String result = context;
+		result = result.replaceAll("&quot;", "\"");
+		result = result.replaceAll("&amp;", "&");
+		result = result.replaceAll("&nbsp;", " ");
+		result = result.replaceAll("&lt;", "<");
+		result = result.replaceAll("&gt;", ">");
+
+		return result;
+	}
+
 
 }
