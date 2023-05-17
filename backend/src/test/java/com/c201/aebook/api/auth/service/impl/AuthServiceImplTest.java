@@ -47,8 +47,10 @@ public class AuthServiceImplTest {
 	
 	@Mock
     private AuthenticationManagerBuilder authenticationManagerBuilder;
+	
 	@Mock
 	private RestTemplate restTemplate;
+	
 	@Mock
 	private ObjectMapper objectMapper;
 	
@@ -59,12 +61,10 @@ public class AuthServiceImplTest {
 	protected void setUp() throws Exception {
 		ReflectionTestUtils.setField(subject, "kakaoClientId", "c8552298d81db44a10187c0ca23800c8");
 		ReflectionTestUtils.setField(subject, "kakaoRedirectUri", "http://localhost:3000/user/oauth");
-		MockitoAnnotations.initMocks(this);
 	}
-
+	
 	@Test
 	public void testGetAccessToken() throws JsonProcessingException {
-		// 이 코드 실행하면 401...
 		// given
 		String code = "test kakao code";
 		String accessTokenJson = "{\"access_token\":\"access token\",\"token_type\":\"bearer\",\"refresh_token\":\"refresh token\",\"expires_in\":21599,\"scope\":\"profile_image profile_nickname phone_number\",\"refresh_token_expires_in\":5183999}";
@@ -88,36 +88,6 @@ public class AuthServiceImplTest {
 				eq(kakaoTokenRequest),
 				eq(String.class)
 		)).willReturn(ResponseEntity.ok().body(accessTokenJson));
-
-		KakaoTokenDTO kakaoTokenDTO = KakaoTokenDTO.builder()
-				.access_token("access token").token_type("bearer")
-				.refresh_token("refresh token").expires_in(21599)
-				.scope("profile_image profile_nickname phone_number")
-				.refresh_token_expires_in(5183999).build();
-		BDDMockito.given(objectMapper.readValue(accessTokenJson, KakaoTokenDTO.class)).willReturn(kakaoTokenDTO);
-
-//		BDDMockito.given(restTemplate.exchange(any(String.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
-//				.willReturn(new ResponseEntity<>(new ObjectMapper().writeValueAsString(kakaoTokenDTO), HttpStatus.OK));
-
-		// 이것도,,,,,ㅜㅜ
-		// given
-//		String code = "test kakao code";
-//
-//		KakaoTokenDTO kakaoTokenDTO = KakaoTokenDTO.builder()
-//				.access_token("access token").token_type("bearer")
-//				.refresh_token("refresh token").expires_in(21599)
-//				.scope("profile_image profile_nickname phone_number")
-//				.refresh_token_expires_in(5183999).build();
-//
-//		MockRestServiceServer mockServer = MockRestServiceServer.createServer(restTemplate);
-//
-//		mockServer.expect(requestTo("https://kauth.kakao.com/oauth/token"))
-//				.andExpect(method(HttpMethod.POST))
-//				.andExpect(content().string(
-//						"grant_type=authorization_code&client_id=kakaoClientId&redirect_uri=kakaoRedirectUri&code=test+kakao+code"))
-//				.andRespond(withStatus(HttpStatus.OK)
-//						.contentType(MediaType.APPLICATION_JSON)
-//						.body(new ObjectMapper().writeValueAsString(kakaoTokenDTO)));
 
 		// when
 		KakaoTokenDTO ret = subject.getAccessToken(code);
