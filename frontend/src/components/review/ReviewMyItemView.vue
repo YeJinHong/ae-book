@@ -96,6 +96,7 @@ export default {
   },
   methods: {
     ...mapActions(reviewStore, ['modifyReviewAction', 'deleteReviewAction']),
+    ...mapActions(bookStore, ['getBookDetail']),
     async checkValue () {
       let err = true
       let msg = ''
@@ -116,6 +117,7 @@ export default {
       if (!err) alert(msg)
       // 만약, 내용이 다 입력되어 있다면 리뷰 수정 후 getReviewBookListAction(request)
       else {
+        this.getBookDetail(this.review.isbn)
         const payload = {
           reviewId: this.review.id,
           data: {
