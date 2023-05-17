@@ -13,6 +13,8 @@ import com.c201.aebook.api.story.presentation.dto.response.StorySaveResponseDTO;
 import com.c201.aebook.api.vo.StoryDeleteSO;
 import com.c201.aebook.api.vo.StoryPatchSO;
 import com.c201.aebook.api.vo.StorySO;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 
 @Mapper(componentModel = "spring")
 public interface StoryConverter {
@@ -22,13 +24,24 @@ public interface StoryConverter {
 
 	StoryDeleteSO toStoryDeleteSO(Long userId, Long storyId);
 
-	StoryDetailResponseDTO toStoryDetailResponseDTO(StoryEntity storyEntity, Long storyId, String nickname);
+	@Mappings({
+			@Mapping(source = "id", target = "storyId"),
+			@Mapping(source = "user.nickname", target = "nickname")
+	})
+	StoryDetailResponseDTO toStoryDetailResponseDTO(StoryEntity storyEntity);
 
 	StoryPatchSO toStoryPatchSO(String userId, Long storyId, StoryPatchRequestDTO storyPatchRequestDTO);
 
 	StoryPatchResponseDTO toStoryPatchResponseDTO(StoryPatchRequestDTO storyPatchRequestDTO, Long storyId);
 
-	StoryDeleteResponseDTO toStoryDeleteResponseDTO(StoryDeleteSO storyDeleteSO, StoryEntity storyEntity);
+	@Mappings({
+			@Mapping(source = "id", target = "storyId")
+	})
+	StoryDeleteResponseDTO toStoryDeleteResponseDTO(StoryEntity storyEntity);
 
-	StoryListResponseDTO toStoryListResponseDTO(StoryEntity storyEntity, Long storyId, String nickname);
+	@Mappings({
+			@Mapping(source = "id", target = "storyId"),
+			@Mapping(source = "user.nickname", target = "nickname")
+	})
+	StoryListResponseDTO toStoryListResponseDTO(StoryEntity storyEntity);
 }

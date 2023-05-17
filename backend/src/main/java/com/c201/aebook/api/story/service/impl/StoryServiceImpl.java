@@ -24,6 +24,8 @@ import com.c201.aebook.utils.exception.CustomException;
 import com.c201.aebook.utils.exception.ErrorCode;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -58,7 +60,7 @@ public class StoryServiceImpl implements StoryService {
 		Page<StoryEntity> stories = storyRepository.findAll(pageable);
 		List<StoryListResponseDTO> storyList = stories.stream()
 			.filter(storyEntity -> storyEntity.getUser().getId() == userId)
-			.map(storyEntity -> storyConverter.toStoryListResponseDTO(storyEntity, storyEntity.getId(), nickname))
+			.map(storyEntity -> storyConverter.toStoryListResponseDTO(storyEntity))
 			.collect(Collectors.toList());
 
 		return new PageImpl<StoryListResponseDTO>(storyList);
@@ -70,8 +72,7 @@ public class StoryServiceImpl implements StoryService {
 		return stories.map(storyEntity -> {
 			UserEntity userEntity = userRepository.findById(storyEntity.getUser().getId())
 				.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-			System.out.println(userEntity.getId());
-			return storyConverter.toStoryListResponseDTO(storyEntity, storyEntity.getId(), userEntity.getNickname());
+			return storyConverter.toStoryListResponseDTO(storyEntity);
 		});
 	}
 
@@ -81,8 +82,7 @@ public class StoryServiceImpl implements StoryService {
 		StoryEntity storyEntity = storyRepository.findById(storyId)
 			.orElseThrow(() -> new CustomException(ErrorCode.STORY_NOT_FOUND));
 
-		return storyConverter.toStoryDetailResponseDTO(storyEntity, storyEntity.getId(),
-			userRepository.findById(storyEntity.getUser().getId()).get().getNickname());
+		return storyConverter.toStoryDetailResponseDTO(storyEntity);
 	}
 
 	@Override
@@ -118,6 +118,6 @@ public class StoryServiceImpl implements StoryService {
 
 		storyRepository.deleteById(storyDeleteSO.getStoryId());
 
-		return storyConverter.toStoryDeleteResponseDTO(storyDeleteSO, storyEntity);
+		return storyConverter.toStoryDeleteResponseDTO(storyEntity);
 	}
 }
