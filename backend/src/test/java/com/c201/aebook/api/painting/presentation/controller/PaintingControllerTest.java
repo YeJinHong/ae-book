@@ -81,10 +81,10 @@ public class PaintingControllerTest {
 	@Test
 	public void testSavePainting() throws Exception {
 		// given
-		Map<String, String> data = new HashMap<>();
-		data.put("title", "test-title");
-		data.put("type", "COLOR");
-		String contents = new ObjectMapper().writeValueAsString(data);
+		Map<String, String> input = new HashMap<>();
+		input.put("title", "test-title");
+		input.put("type", "COLOR");
+		String contents = new ObjectMapper().writeValueAsString(input);
 
 		Long userId = 1L;
 		UserEntity user = UserEntity.builder().id(userId).build();
@@ -97,13 +97,22 @@ public class PaintingControllerTest {
 			"<<png data>>".getBytes(StandardCharsets.UTF_8)
 		);
 
-		PaintingRequestDTO paintingRequestDTO = new PaintingRequestDTO("title", PaintingType.COLOR);
+		MockMultipartFile data = new MockMultipartFile(
+			"data",
+			"",
+			"application/json",
+			contents.getBytes(StandardCharsets.UTF_8)
+		);
+
+		PaintingRequestDTO paintingRequestDTO = new PaintingRequestDTO(input.get("title"),
+			PaintingType.valueOf(input.get("type")));
 		String uploadImageUrl = "uploadImageUrl";
 		BDDMockito.given(s3Uploader.upload(any(MultipartFile.class), any(String.class))).willReturn(uploadImageUrl);
 
 		PaintingSO paintingSO = new PaintingSO(paintingRequestDTO.getTitle(), uploadImageUrl, PaintingType.COLOR,
 			userId);
-		BDDMockito.given(paintingConverter.toPaintingSO(userId, uploadImageUrl, paintingRequestDTO))
+		BDDMockito.given(
+				paintingConverter.toPaintingSO(any(Long.class), any(String.class), any(PaintingRequestDTO.class)))
 			.willReturn(paintingSO);
 		PaintingResponseDTO paintingResponseDTO = new PaintingResponseDTO();
 		BDDMockito.given(paintingService.savePainting(paintingSO))
@@ -111,7 +120,7 @@ public class PaintingControllerTest {
 		// when
 		mockMvc.perform(multipart("/paintings")
 				.file(paintingFile)
-				.file(new MockMultipartFile("data", "", "application/json", contents.getBytes(StandardCharsets.UTF_8)))
+				.file(data)
 				.contentType("multipart/form-data")
 				.accept(MediaType.APPLICATION_JSON)
 				.characterEncoding("UTF-8")
@@ -119,7 +128,7 @@ public class PaintingControllerTest {
 			.andExpect(status().isOk());
 
 		// then
-		// BDDMockito.then(paintingService).should(times(1)).savePainting(any(PaintingSO.class));
+		BDDMockito.then(paintingService).should(times(1)).savePainting(any(PaintingSO.class));
 	}
 
 	@DisplayName("testDownloadPainting: Happy Case")
@@ -171,11 +180,13 @@ public class PaintingControllerTest {
 		UserEntity user = UserEntity.builder().id(userId).build();
 		CustomUserDetails customUserDetails = new CustomUserDetails(user);
 		PaintingTitleRequestDTO paintingTitleRequestDTO = new PaintingTitleRequestDTO("title");
-		PaintingPatchSO paintingPatchSO = new PaintingPatchSO();
-		BDDMockito.given(paintingConverter.toPaintingPatchSO(paintingId, userId, paintingTitleRequestDTO))
+		PaintingPatchSO paintingPatchSO = PaintingPatchSO.builder().build();
+		BDDMockito.given(
+				paintingConverter.toPaintingPatchSO(any(Long.class), any(Long.class), any(PaintingTitleRequestDTO.class)))
 			.willReturn(paintingPatchSO);
 		PaintingResponseDTO paintingResponseDTO = new PaintingResponseDTO();
-		BDDMockito.given(paintingService.updatePaintingTitle(paintingPatchSO)).willReturn(paintingResponseDTO);
+		BDDMockito.given(paintingService.updatePaintingTitle(paintingPatchSO))
+			.willReturn(paintingResponseDTO);
 		// when
 		mockMvc.perform(patch("/paintings/" + paintingId)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -183,7 +194,7 @@ public class PaintingControllerTest {
 				.with(user(customUserDetails)))
 			.andExpect(status().isOk());
 		// then
-		BDDMockito.then(paintingService).should(times(1)).updatePaintingTitle(paintingPatchSO);
+		BDDMockito.then(paintingService).should(times(1)).updatePaintingTitle(any(PaintingPatchSO.class));
 	}
 
 	@DisplayName("testGetPaintingDetails: Happy Case")
