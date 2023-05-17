@@ -32,7 +32,7 @@ public interface StoryConverter {
 
 	StoryPatchSO toStoryPatchSO(String userId, Long storyId, StoryPatchRequestDTO storyPatchRequestDTO);
 
-	StoryPatchResponseDTO toStoryPatchResponseDTO(StoryPatchRequestDTO storyPatchRequestDTO, Long storyId);
+	StoryPatchResponseDTO toStoryPatchResponseDTO(StoryPatchSO storyPatchSO);
 
 	@Mappings({
 			@Mapping(source = "id", target = "storyId")

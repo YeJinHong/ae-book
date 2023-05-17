@@ -3,7 +3,7 @@ package com.c201.aebook.api.story.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.c201.aebook.api.story.presentation.dto.response.StorySaveResponseDTO;
+import com.c201.aebook.api.story.presentation.dto.response.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -11,9 +11,6 @@ import org.springframework.stereotype.Service;
 
 import com.c201.aebook.api.story.persistence.entity.StoryEntity;
 import com.c201.aebook.api.story.persistence.repository.StoryRepository;
-import com.c201.aebook.api.story.presentation.dto.response.StoryDeleteResponseDTO;
-import com.c201.aebook.api.story.presentation.dto.response.StoryDetailResponseDTO;
-import com.c201.aebook.api.story.presentation.dto.response.StoryListResponseDTO;
 import com.c201.aebook.api.story.service.StoryService;
 import com.c201.aebook.api.user.persistence.entity.UserEntity;
 import com.c201.aebook.api.user.persistence.repository.UserRepository;
@@ -89,7 +86,7 @@ public class StoryServiceImpl implements StoryService {
 	}
 
 	@Override
-	public void updateStoryTitle(StoryPatchSO storyPatchSO) {
+	public StoryPatchResponseDTO updateStoryTitle(StoryPatchSO storyPatchSO) {
 		// 1. Story 유효성 검증
 		StoryEntity storyEntity = storyRepository.findById(storyPatchSO.getStoryId())
 			.orElseThrow(() -> new CustomException(ErrorCode.STORY_NOT_FOUND));
@@ -107,6 +104,8 @@ public class StoryServiceImpl implements StoryService {
 			.voiceUrl(storyEntity.getVoiceUrl())
 			.user(storyEntity.getUser())
 			.build());
+
+		return storyConverter.toStoryPatchResponseDTO(storyPatchSO);
 	}
 
 	@Override

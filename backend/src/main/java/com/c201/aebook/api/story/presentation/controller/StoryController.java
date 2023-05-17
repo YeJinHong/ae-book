@@ -141,8 +141,7 @@ public class StoryController {
 			storyPatchRequestDTO);
 		storyService.updateStoryTitle(storyPatchSO);
 
-		StoryPatchResponseDTO storyPatchResponseDTO = storyConverter.toStoryPatchResponseDTO(storyPatchRequestDTO,
-			storyId);
+		StoryPatchResponseDTO storyPatchResponseDTO = storyService.updateStoryTitle(storyPatchSO);
 
 		return new BaseResponse<>(storyPatchResponseDTO, HttpStatus.OK.value(), "특정 동화의 제목이 정상적으로 변경되었습니다.");
 	}
