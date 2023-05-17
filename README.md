@@ -31,7 +31,7 @@
 | Java SE | JDK8 |  |
 | Gradle | - |  |
 | Spring boot | 2.7.10 |  |
-| Spring Security |    |   |
+| Spring Security |  3.0.4  |   |
 | Spring Batch | 4.3.3 | |
 | JPA | - |  |
 | database [mariadb] | 10.11.2 |  |
@@ -41,8 +41,14 @@
 | node | 14.21.3 | |
 
 
+
 ## 3. 배포 환경
 
+### CICD
+- AWS EC2
+- AWS S3
+- Minikube
+- Docker, Jenkins, Nginx
 
 ### gitignore
 
