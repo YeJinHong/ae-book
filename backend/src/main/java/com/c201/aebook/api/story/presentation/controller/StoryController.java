@@ -77,10 +77,9 @@ public class StoryController {
 
 		// 동화 내용 DB 저장
 		StorySO storySO = storyConverter.toStorySO(userId, uploadVoiceUrl, uploadImageUrl, storyRequestDTO);
-		storyService.saveStory(storySO);
 
-		StorySaveResponseDTO storySaveResponseDTO = storyConverter.toStorySaveResponseDTO(uploadVoiceUrl,
-			uploadImageUrl, storyRequestDTO);
+
+		StorySaveResponseDTO storySaveResponseDTO = storyService.saveStory(storySO);
 
 		return new BaseResponse<>(storySaveResponseDTO, HttpStatus.OK.value(), "동화 작성 완료");
 	}

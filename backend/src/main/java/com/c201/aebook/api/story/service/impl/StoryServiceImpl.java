@@ -3,6 +3,7 @@ package com.c201.aebook.api.story.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.c201.aebook.api.story.presentation.dto.response.StorySaveResponseDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +36,7 @@ public class StoryServiceImpl implements StoryService {
 	private final StoryConverter storyConverter;
 
 	@Override
-	public void saveStory(StorySO storySO) {
+	public StorySaveResponseDTO saveStory(StorySO storySO) {
 		// 유효한 userId인지 검증
 		UserEntity user = userRepository.findById(storySO.getUserId())
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -47,6 +48,8 @@ public class StoryServiceImpl implements StoryService {
 			.imgUrl(storySO.getImgUrl())
 			.user(user)
 			.build());
+
+		return storyConverter.toStorySaveResponseDTO(storySO);
 	}
 
 	@Override
