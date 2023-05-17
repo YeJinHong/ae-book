@@ -136,4 +136,9 @@ public class NotificationServiceImpl implements NotificationService {
         // 2. 알림 삭제
         notificationRepository.delete(notificationEntity);
     }
+
+    @Override
+    public void deleteAllNoticiation(Long userId) {
+        notificationRepository.deleteByUserId(userId);
+    }
 }
