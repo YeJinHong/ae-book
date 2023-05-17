@@ -118,7 +118,10 @@ export default {
 }
 
 #navbarNav{
-  margin-bottom: -33px;
+  margin-bottom: -35px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .nav-menu.first {
