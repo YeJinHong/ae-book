@@ -21,6 +21,7 @@ import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.*;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.client.MockRestServiceServer;
@@ -152,6 +153,7 @@ public class AuthServiceImplTest {
 	@Test
 	@DisplayName("testSaveUserOrLogin: Happy Case")
 	public void testSaveUserOrLogin() {
+		// given
 		String token = "test kakao access token";
 		String kakaoProfileJson = "{\"id\":123456789,\"connected_at\":\"2023-04-19T02:22:56Z\",\"properties\":{\"nickname\":\"test nickname\",\"profile_image\":\"http://k.kakaocdn.net/dn/dpk9l1/btqmGhA2lKL/Oz0wDuJn1YV2DIn92f6DVK/img_640x640.jpg\",\"thumbnail_image\":\"http://k.kakaocdn.net/dn/dpk9l1/btqmGhA2lKL/Oz0wDuJn1YV2DIn92f6DVK/img_110x110.jpg\"},\"kakao_account\":{\"profile_nickname_needs_agreement\":false,\"profile_image_needs_agreement\":false,\"profile\":{\"nickname\":\"test nickname\",\"thumbnail_image_url\":\"http://k.kakaocdn.net/dn/dpk9l1/btqmGhA2lKL/Oz0wDuJn1YV2DIn92f6DVK/img_110x110.jpg\",\"profile_image_url\":\"http://k.kakaocdn.net/dn/dpk9l1/btqmGhA2lKL/Oz0wDuJn1YV2DIn92f6DVK/img_640x640.jpg\",\"is_default_image\":true},\"has_phone_number\":true,\"phone_number_needs_agreement\":false,\"phone_number\":\"+82 10-0000-0000\"}}";
 		Long kakaoId = 123456789L;
@@ -180,7 +182,7 @@ public class AuthServiceImplTest {
 				eq(String.class)
 		)).willReturn(ResponseEntity.ok().body(kakaoProfileJson));
 
-		BDDMockito.given(userRepository.findByKakaoId(any())).willReturn(null);
+		BDDMockito.given(userRepository.findByKakaoId(kakaoId)).willReturn(null);
 		BDDMockito.given(userRepository.countByNicknameStartingWith(any())).willReturn(1L);
 
 		TokenDTO tokenDTO = TokenDTO.builder().accessToken("access token").refreshToken("refresh token").grantType("type").AuthorizationHeader("header").accessTokenExpiresIn(1234L).build();
@@ -206,8 +208,42 @@ public class AuthServiceImplTest {
 	}
 
 	@Test
+	@DisplayName("testResolveToken: Happy Case")
 	public void testResolveToken() {
-		throw new RuntimeException("not yet implemented");
+		// given
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		String header = "Authorization";
+		String token = "Bearer testToken";
+		request.addHeader(header, token);
+
+		// when
+		String ret = subject.resolveToken(request, header);
+
+		// then
+		Assertions.assertAll("결괏값 검증", () -> {
+			Assertions.assertNotNull(ret);
+			Assertions.assertEquals(ret, "testToken");
+		});
+
+	}
+
+	@Test
+	@DisplayName("testResolveToken: sad Case")
+	public void testResolveToken1() {
+		// given
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		String header = "Authorization";
+		String token = "testToken";
+		request.addHeader(header, token);
+
+		// when
+		String ret = subject.resolveToken(request, header);
+
+		// then
+		Assertions.assertAll("결괏값 검증", () -> {
+			Assertions.assertNull(ret);
+		});
+
 	}
 
 	@Test
