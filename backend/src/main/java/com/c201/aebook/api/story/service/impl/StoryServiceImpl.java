@@ -50,12 +50,11 @@ public class StoryServiceImpl implements StoryService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Page<StoryListResponseDTO> getStoryListByUserId(Long userId, Pageable pageable) {
 		// 1. User 유효성 검증
 		UserEntity userEntity = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
-		String nickname = userEntity.getNickname();
 
 		Page<StoryEntity> stories = storyRepository.findAll(pageable);
 		List<StoryListResponseDTO> storyList = stories.stream()
@@ -67,13 +66,10 @@ public class StoryServiceImpl implements StoryService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Page<StoryListResponseDTO> getStoryList(Pageable pageable) {
 		Page<StoryEntity> stories = storyRepository.findAll(pageable);
-		return stories.map(storyEntity -> {
-			UserEntity userEntity = userRepository.findById(storyEntity.getUser().getId())
-				.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-			return storyConverter.toStoryListResponseDTO(storyEntity);
-		});
+		return stories.map(storyEntity -> storyConverter.toStoryListResponseDTO(storyEntity));
 	}
 
 	@Override
