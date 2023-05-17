@@ -1,4 +1,5 @@
 import { searchMyStory, registerStory, updateStoryTitle, deleteStory, searchStoryList } from '@/api/story'
+import Vue from 'vue'
 
 const storyStore = {
   namespaced: true,
@@ -7,10 +8,14 @@ const storyStore = {
     storyId: null,
     storyPageSetting: null,
     storyList: [],
-    story: null
+    story: null,
+    currentPage: null
   },
 
   mutations: {
+    SET_CURRENT_PAGE (state, page) {
+      state.currentPage = page
+    },
     setStoryId (state, id) {
       state.storyId = id
     },
@@ -29,10 +34,11 @@ const storyStore = {
     },
     UPDATE_STORY: (state, data) => {
       const index = state.storyList.findIndex(item => item.storyId === data.storyId)
-      state.storyList[index].title = data.title
+      // state.storyList[index].title = data.title
+      Vue.set(state.storyList[index], 'title', data.title)
     },
     DELETE_STORY: (state, data) => {
-      const index = state.storyList.findIndex(item => item.storyId === data)
+      const index = state.storyList.findIndex(item => item.storyId === data.storyId)
       state.storyList.splice(index, 1)
     }
   },
@@ -44,6 +50,7 @@ const storyStore = {
 
   actions: {
     async getMyStoryList ({commit}, request) {
+      commit('SET_CURRENT_PAGE', request.page)
       await searchMyStory(request)
         .then(({data}) => {
           console.log(data)
@@ -69,6 +76,11 @@ const storyStore = {
       await registerStory(request)
         .then(({ data }) => {
           commit('SET_STORY', data.result)
+          searchStory({page: 0})
+            .then(({ data }) => {
+              commit('SET_PAGE_SETTING', data.result)
+              commit('SET_LIST', data.result.content)
+            })
         })
         .catch(error => {
           console.error(error)
@@ -84,11 +96,16 @@ const storyStore = {
           alert('수정에 실패했습니다. ' + error)
         })
     },
-    async deleteStoryById ({ commit }, storyId) {
+    async deleteStoryById ({ commit, state }, storyId) {
       await deleteStory(storyId)
         .then(({data}) => {
           alert('성공적으로 삭제했습니다.')
           commit('DELETE_STORY', data.result)
+          searchStory({page: state.currentPage})
+            .then(({ data }) => {
+              commit('SET_PAGE_SETTING', data.result)
+              commit('SET_LIST', data.result.content)
+            })
         })
         .catch(error => {
           alert('삭제 실패했습니다.' + error)
