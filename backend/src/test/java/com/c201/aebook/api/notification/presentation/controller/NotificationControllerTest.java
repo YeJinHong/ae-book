@@ -1,13 +1,16 @@
 package com.c201.aebook.api.notification.presentation.controller;
 
 import com.c201.aebook.api.notification.presentation.dto.request.NotificationRequestDTO;
+import com.c201.aebook.api.notification.presentation.dto.request.NotificationUpdateRequestDTO;
 import com.c201.aebook.api.notification.presentation.dto.response.NotificationBookDetailResponseDTO;
 import com.c201.aebook.api.notification.presentation.dto.response.NotificationBookListResponseDTO;
 import com.c201.aebook.api.notification.presentation.dto.response.NotificationResponseDTO;
+import com.c201.aebook.api.notification.presentation.dto.response.NotificationUpdateResponseDTO;
 import com.c201.aebook.api.notification.presentation.vaildator.NotificationValidator;
 import com.c201.aebook.api.notification.service.impl.NotificationServiceImpl;
 import com.c201.aebook.api.review.presentation.dto.request.ReviewRequestDTO;
 import com.c201.aebook.api.user.persistence.entity.UserEntity;
+import com.c201.aebook.api.vo.NotificationPatchSO;
 import com.c201.aebook.api.vo.NotificationSO;
 import com.c201.aebook.auth.CustomUserDetails;
 import com.c201.aebook.converter.NotificationConverter;
@@ -35,10 +38,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -79,7 +82,7 @@ public class NotificationControllerTest {
 		NotificationRequestDTO notificationRequestDTO = NotificationRequestDTO.builder().isbn("123456789").upperLimit(5000).notificationType("S").build();
 
 		NotificationSO notificationSO = NotificationSO.builder().isbn("123456789").upperLimit(5000).notificationType("S").build();
-		BDDMockito.given(notificationConverter.toNotificationSO(Mockito.any(NotificationRequestDTO.class))).willReturn(notificationSO);
+		BDDMockito.given(notificationConverter.toNotificationSO(any(NotificationRequestDTO.class))).willReturn(notificationSO);
 
 		NotificationResponseDTO notificationResponseDTO = NotificationResponseDTO.builder().upperLimit(5000).notificationType("S").build();
 		BDDMockito.given(notificationService.saveNotification(customUserDetails.getUsername(), notificationSO)).willReturn(notificationResponseDTO);
@@ -122,6 +125,7 @@ public class NotificationControllerTest {
 	}
 
 	@Test
+	@DisplayName("testGetNotificationBookDetail: Happy Case")
 	public void testGetNotificationBookDetail() throws Exception {
 		// given
 		CustomUserDetails customUserDetails = new CustomUserDetails(UserEntity.builder().id(1L).build());
@@ -140,8 +144,30 @@ public class NotificationControllerTest {
 	}
 
 	@Test
-	public void testUpdateNotification() {
-		throw new RuntimeException("not yet implemented");
+	@DisplayName("testUpdateNotification: Happy Case")
+	public void testUpdateNotification() throws Exception {
+		// given
+		CustomUserDetails customUserDetails = new CustomUserDetails(UserEntity.builder().id(1L).build());
+		Long notificationId = 1L;
+
+		NotificationUpdateRequestDTO notificationUpdateRequestDTO = NotificationUpdateRequestDTO.builder().notificationType("D").upperLimit(0).build();
+		NotificationPatchSO notificationPatchSO = NotificationPatchSO.builder().notificationType(notificationUpdateRequestDTO.getNotificationType()).upperLimit(notificationUpdateRequestDTO.getUpperLimit()).build();
+		BDDMockito.given(notificationConverter.toNotificationPatchSO(Mockito.any(NotificationUpdateRequestDTO.class))).willReturn(notificationPatchSO);
+
+		BDDMockito.given(notificationService.updateNotification(customUserDetails.getUsername(), notificationId,notificationPatchSO))
+				.willReturn(NotificationUpdateResponseDTO.builder().build());
+
+		// when
+		mockMvc.perform(patch("/notifications/" + notificationId)
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(new ObjectMapper().writeValueAsString(notificationPatchSO))
+						.with(user(customUserDetails)))
+				.andExpect(status().isOk())
+				.andDo(print());
+
+		// then
+		BDDMockito.then(notificationService).should(times(1)).updateNotification(customUserDetails.getUsername(), notificationId, notificationPatchSO);
+
 	}
 
 	@Test
