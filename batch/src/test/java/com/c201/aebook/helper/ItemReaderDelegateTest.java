@@ -48,7 +48,6 @@ class ItemReaderDelegateTest {
 
 	@BeforeEach
 	protected void setUp() throws Exception {
-		ReflectionTestUtils.setField(subject, "API_KEY", "ttbleedy9091441001");
 		ReflectionTestUtils.setField(subject, "restTemplate", restTemplate);
 	}
 
@@ -135,7 +134,7 @@ class ItemReaderDelegateTest {
 		Assertions.assertEquals("최정희, 이슬기 (지은이)", book.getAuthor());
 		Assertions.assertEquals("메이트북스", book.getPublisher());
 		Assertions.assertEquals("https://image.aladin.co.kr/product/24929/72/coversum/k912632497_1.jpg", book.getCoverImageUrl());
-		
+
 	}
 
 
