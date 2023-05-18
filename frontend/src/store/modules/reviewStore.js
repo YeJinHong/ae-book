@@ -1,4 +1,5 @@
 import { saveReview, getMyReview, getReviewMainList, getReviewBookList, getReviewMyList, modifyReview, deleteReview } from '../../api/review'
+import Vue from 'vue'
 
 const reviewStore = {
   namespaced: true,
@@ -56,6 +57,18 @@ const reviewStore = {
     },
     RESET_MY_REVIEW (state) {
       state.myReview = null
+    },
+    MODIFY_REVIEW: (state, data) => {
+      const Myindex = state.reviewMyList.findIndex(item => item.id === data.id)
+      const Bookindex = state.reviewBookList.findIndex(item => item.id === data.id)
+
+      if (Myindex !== -1) {
+        Vue.set(state.reviewMyList[Myindex], 'content', data.content)
+      }
+
+      if (Bookindex !== -1) {
+        Vue.set(state.reviewBookList[Bookindex], 'content', data.content)
+      }
     }
   },
   /*
@@ -83,6 +96,7 @@ const reviewStore = {
     async modifyReviewAction ({ commit }, payload) {
       await modifyReview(payload)
         .then(({ data }) => {
+          commit('MODIFY_REVIEW', data.result)
         })
         .catch((err) => {
           console.log(err)
