@@ -174,7 +174,7 @@ public class NotificationServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("testGetNotificationUserInfoByBookId : happy case")
+	@DisplayName("testGetNotificationUserInfoByBookId : Happy case")
 	public void testGetNotificationUserInfoByBookId() {
 		// given
 		Long bookId = 1234567890l;
@@ -187,14 +187,30 @@ public class NotificationServiceImplTest {
 		
 		// then
 		Assertions.assertAll("결괏값 검증", () -> {
-			Assertions.assertEquals(ret, ret);
+			Assertions.assertNotNull(ret);
 		});
 		BDDMockito.then(notificationRepository).should(times(1)).findByBookId(bookId);
 	}
 
 	@Test
+	@DisplayName("testGetNotificationUserInfoByBookIdAndNotificationType: Happy Case")
 	public void testGetNotificationUserInfoByBookIdAndNotificationType() {
-		throw new RuntimeException("not yet implemented");
+		// given
+		Long bookId = 1234567890L;
+		String notificationType = "notificationType";
+
+		List<NotificationEntity> notificationUserList = new ArrayList<>();
+		BDDMockito.given(notificationRepository.findByBookIdAndNotificationType(bookId, notificationType)).willReturn(notificationUserList);
+
+		// when
+		List<NotificationEntity> ret = subject.getNotificationUserInfoByBookIdAndNotificationType(bookId, notificationType);
+
+		// then
+		Assertions.assertAll("결괏값 검증", () -> {
+			Assertions.assertNotNull(ret);
+		});
+		BDDMockito.then(notificationRepository).should(times(1)).findByBookIdAndNotificationType(bookId, notificationType);
+
 	}
 
 	@Test
