@@ -131,8 +131,46 @@ public class NotificationServiceImplTest {
 	}
 
 	@Test
+	@DisplayName("testCustomizeLowestPriceTalk: Happy Case")
 	public void testCustomizeLowestPriceTalk() {
-		throw new RuntimeException("not yet implemented");
+		// given
+		String token = "talk token";
+		String bookTitle = "test book title";
+		String notificationSubject = "도서 최저가 갱신";
+		int price = 5000;
+
+		UserEntity user1 = UserEntity.builder().nickname("test nickname").phone("010-0000-0000").build();
+		NotificationEntity notification1 = NotificationEntity.builder().user(user1).upperLimit(4000).notificationType("S").build();
+		List<NotificationEntity> userList = new ArrayList<>();
+		userList.add(notification1);
+
+		String response = "{\"code\": 0, \"message\": \"성공적으로 전송요청 하였습니다.\", \"info\": {\"type\": \"AT\", \"mid\": 571413780, \"current\": \"49889.5\", \"unit\": 6.5, \"total\": 6.5, \"scnt\": 1, \"fcnt\": 0}}";
+		ResponseEntity<String> mockedResponse = ResponseEntity.ok(response);
+
+		ReflectionTestUtils.setField(subject, "TalkApiKey", "TestTalkApiKey");
+		ReflectionTestUtils.setField(subject, "TalkUserId", "TestTalkUserId");
+		ReflectionTestUtils.setField(subject, "TalkSenderKey", "TestSenderKey");
+		ReflectionTestUtils.setField(subject, "LowestPriceTplCode", "TestTplCode");
+		ReflectionTestUtils.setField(subject, "TalkSender", "TestSender");
+		ReflectionTestUtils.setField(subject, "aebookUrl", "aebookUrl");
+
+		BDDMockito.given(restTemplate.exchange(
+				eq("https://kakaoapi.aligo.in/akv10/alimtalk/send/"),
+				eq(HttpMethod.POST),
+				Matchers.<HttpEntity<MultiValueMap<String, Object>>>any(),
+				eq(String.class)
+		)).willReturn(ResponseEntity.ok().body(response));
+
+		// when
+		ResponseEntity<String> ret = subject.CustomizeLowestPriceTalk(token, userList, bookTitle, price);
+
+		// then
+		Assertions.assertAll("결괏값 검증", () -> {
+			Assertions.assertNotNull(ret);
+			Assertions.assertEquals(ret.getStatusCode(), HttpStatus.OK);
+			Assertions.assertEquals(ret.getBody(), response);
+		});
+
 	}
 
 	@Test
