@@ -132,8 +132,6 @@ export default {
         await this.modifyReviewAction(payload)
         await this.$emit('paging', this.page + 1)
 
-        console.log(this.book)
-
         this.book.scoreSum += this.updateScore - this.review.score
         // 2. 수정 반영해서 리스트 가져오기 : emit 완료보다 상태변경이 빨라서 딜레이 설정
         setTimeout(() => {
@@ -161,9 +159,7 @@ export default {
     async deleteReview () {
       if (confirm('삭제하시겠습니까?')) {
         await this.deleteReviewAction(this.review.id)
-        console.log(this.review.isbn)
         this.getBookDetail(this.review.isbn)
-        console.log(this.book)
         this.book.scoreSum -= this.review.score
         this.book.reviewCount -= 1
       }
