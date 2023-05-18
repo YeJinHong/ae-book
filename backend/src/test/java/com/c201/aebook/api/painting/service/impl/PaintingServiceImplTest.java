@@ -131,9 +131,24 @@ public class PaintingServiceImplTest {
 		BDDMockito.then(paintingServiceHelper).should(times(1)).getOwnPainting(userId, paintingId);
 	}
 
+	@DisplayName("testGetFilePath: Happy Case")
 	@Test
 	public void testGetFilePath() {
-		throw new RuntimeException("not yet implemented");
+		// given
+		Long userId = 1L;
+		Long paintingId = 1L;
+		PaintingEntity painting = PaintingEntity.builder()
+			.fileUrl("https://aebookbucket.s3.ap-northeast-2.amazonaws.com/test/paintings/painting-test.png")
+			.build();
+		BDDMockito.given(paintingServiceHelper.getOwnPainting(userId, paintingId)).willReturn(painting);
+		// when
+		String ret = subject.getFilePath(paintingId, userId);
+		// then
+		Assertions.assertAll("결괏값 검증", () -> {
+			Assertions.assertNotNull(ret);
+			Assertions.assertEquals(ret, "test/paintings/painting-test.png");
+		});
+		BDDMockito.then(paintingServiceHelper).should(times(1)).getOwnPainting(userId, paintingId);
 	}
 
 	@Test
