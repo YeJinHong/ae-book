@@ -2,10 +2,11 @@ package com.c201.aebook.api.story.service.impl;
 
 import com.c201.aebook.api.story.persistence.entity.StoryEntity;
 import com.c201.aebook.api.story.persistence.repository.StoryRepository;
-import com.c201.aebook.api.story.presentation.dto.response.StoryListResponseDTO;
-import com.c201.aebook.api.story.presentation.dto.response.StorySaveResponseDTO;
+import com.c201.aebook.api.story.presentation.dto.response.*;
 import com.c201.aebook.api.user.persistence.entity.UserEntity;
 import com.c201.aebook.api.user.persistence.repository.UserRepository;
+import com.c201.aebook.api.vo.StoryDeleteSO;
+import com.c201.aebook.api.vo.StoryPatchSO;
 import com.c201.aebook.api.vo.StorySO;
 import com.c201.aebook.converter.StoryConverter;
 import org.apache.catalina.User;
@@ -168,17 +169,121 @@ public class StoryServiceImplTest {
 
 	@Test
 	public void testGetStoryDetail() {
-		throw new RuntimeException("not yet implemented");
+		// given
+		Long storyId = 1l;
+
+		StoryEntity storyEntity = StoryEntity.builder().id(storyId).build();
+		BDDMockito.given(storyRepository.findById(storyId)).willReturn(Optional.of(storyEntity));
+
+		StoryDetailResponseDTO storyDetailResponseDTO =  StoryDetailResponseDTO.builder()
+				.storyId(1l)
+				.title("title")
+				.build();
+
+		BDDMockito.given(storyConverter.toStoryDetailResponseDTO(storyEntity))
+				.willReturn(storyDetailResponseDTO);
+
+		// when
+		StoryDetailResponseDTO ret = subject.getStoryDetail(storyId);
+
+		// then
+		Assertions.assertAll("결과값 검증", () -> {
+			Assertions.assertNotNull(ret);
+			Assertions.assertEquals(ret.getStoryId(), 1l);
+			Assertions.assertEquals(ret.getTitle(), "title");
+		});
+
+		BDDMockito.then(storyRepository)
+				.should(times(1))
+				.findById(storyId);
+
 	}
 
 	@Test
 	public void testUpdateStoryTitle() {
-		throw new RuntimeException("not yet implemented");
+		// given
+		StoryPatchSO storyPatchSO = StoryPatchSO.builder().storyId(1l).title("title").userId("5").build();
+
+		UserEntity userEntity = UserEntity.builder().id(5l).nickname("nickname1").build();
+		StoryEntity storyEntity = StoryEntity.builder()
+				.id(storyPatchSO.getStoryId())
+				.user(userEntity)
+				.title(storyPatchSO.getTitle()).build();
+
+		BDDMockito.given(storyRepository.findById(storyPatchSO.getStoryId())).willReturn(Optional.of(storyEntity));
+		BDDMockito.given(userRepository.findById(5l)).willReturn(Optional.of(userEntity));
+
+		StoryPatchResponseDTO storyPatchResponseDTO = StoryPatchResponseDTO.builder()
+				.storyId(storyEntity.getId())
+				.title(storyEntity.getTitle())
+				.build();
+
+		BDDMockito.given(storyConverter.toStoryPatchResponseDTO(storyPatchSO))
+				.willReturn(storyPatchResponseDTO);
+
+		// when
+		StoryPatchResponseDTO ret = subject.updateStoryTitle(storyPatchSO);
+
+		// then
+		Assertions.assertAll("결과값 검증", () -> {
+			Assertions.assertNotNull(ret);
+			Assertions.assertEquals(ret.getStoryId(), 1l);
+			Assertions.assertEquals(ret.getTitle(), "title");
+		});
+
+		BDDMockito.then(storyRepository)
+				.should(times(1))
+				.findById(storyPatchSO.getStoryId());
+		BDDMockito.then(userRepository)
+				.should(times(1))
+				.findById(Long.parseLong(storyPatchSO.getUserId()));
+		BDDMockito.then(storyRepository)
+				.should(times(1))
+				.save(any(StoryEntity.class));
+
 	}
 
 	@Test
 	public void testDeleteStory() {
-		throw new RuntimeException("not yet implemented");
+		// given
+		StoryDeleteSO storyDeleteSO = StoryDeleteSO.builder().storyId(1l).userId(5l).build();
+
+		UserEntity userEntity = UserEntity.builder().id(5l).nickname("nickname1").build();
+		StoryEntity storyEntity = StoryEntity.builder()
+				.id(storyDeleteSO.getStoryId())
+				.title("title")
+				.user(userEntity).build();
+
+		BDDMockito.given(storyRepository.findById(storyDeleteSO.getStoryId())).willReturn(Optional.of(storyEntity));
+		BDDMockito.given(userRepository.findById(5l)).willReturn(Optional.of(userEntity));
+
+		StoryDeleteResponseDTO storyDeleteResponseDTO = StoryDeleteResponseDTO.builder()
+				.storyId(storyEntity.getId())
+				.title(storyEntity.getTitle())
+				.build();
+
+		BDDMockito.given(storyConverter.toStoryDeleteResponseDTO(storyEntity))
+				.willReturn(storyDeleteResponseDTO);
+
+		// when
+		StoryDeleteResponseDTO ret = subject.deleteStory(storyDeleteSO);
+
+		// then
+		Assertions.assertAll("결과값 검증", () -> {
+			Assertions.assertNotNull(ret);
+			Assertions.assertEquals(ret.getStoryId(), 1l);
+			Assertions.assertEquals(ret.getTitle(), "title");
+		});
+
+		BDDMockito.then(storyRepository)
+				.should(times(1))
+				.findById(storyDeleteSO.getStoryId());
+		BDDMockito.then(userRepository)
+				.should(times(1))
+				.findById(storyDeleteSO.getUserId());
+		BDDMockito.then(storyRepository)
+				.should(times(1))
+				.deleteById(storyDeleteSO.getStoryId());
 	}
 
 }
