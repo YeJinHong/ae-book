@@ -67,11 +67,14 @@ public class PaintingServiceImplTest {
 			.title(paintingSO.getTitle())
 			.user(userEntity)
 			.build();
+		PaintingResponseDTO paintingResponseDTO = PaintingResponseDTO.builder()
+			.title(paintingEntity.getTitle())
+			.build();
 
-		BDDMockito.given(paintingRepository.save(any(PaintingEntity.class)))
-			.willReturn(any(PaintingEntity.class));
-		BDDMockito.given(paintingConverter.toPaintingResponseDTO(any(PaintingEntity.class)))
-			.willReturn(any(PaintingResponseDTO.class));
+		BDDMockito.given(paintingRepository.save(any()))
+			.willReturn(paintingEntity);
+		BDDMockito.given(paintingConverter.toPaintingResponseDTO(paintingEntity))
+			.willReturn(paintingResponseDTO);
 		// when
 		PaintingResponseDTO ret = subject.savePainting(paintingSO);
 		// then
@@ -84,7 +87,7 @@ public class PaintingServiceImplTest {
 			.findById(paintingSO.getUserId());
 		BDDMockito.then(paintingRepository)
 			.should(times(1))
-			.save(paintingEntity);
+			.save(any(PaintingEntity.class));
 	}
 
 	@DisplayName("testGetPaintingList: Happy Case")
