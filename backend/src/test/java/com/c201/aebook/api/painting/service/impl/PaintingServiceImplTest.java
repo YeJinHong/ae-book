@@ -28,6 +28,7 @@ import com.c201.aebook.api.painting.presentation.dto.response.PaintingResponseDT
 import com.c201.aebook.api.painting.service.PaintingServiceHelper;
 import com.c201.aebook.api.user.persistence.entity.UserEntity;
 import com.c201.aebook.api.user.persistence.repository.UserRepository;
+import com.c201.aebook.api.vo.PaintingPatchSO;
 import com.c201.aebook.api.vo.PaintingSO;
 import com.c201.aebook.converter.PaintingConverter;
 
@@ -151,9 +152,31 @@ public class PaintingServiceImplTest {
 		BDDMockito.then(paintingServiceHelper).should(times(1)).getOwnPainting(userId, paintingId);
 	}
 
+	@DisplayName("testUpdatePaintingTitle: Happy Case")
 	@Test
 	public void testUpdatePaintingTitle() {
-		throw new RuntimeException("not yet implemented");
+		// given
+		Long userId = 1L;
+		Long paintingId = 1L;
+		PaintingPatchSO paintingPatchSO = PaintingPatchSO.builder().userId(userId).paintingId(paintingId).build();
+		PaintingEntity painting = PaintingEntity.builder().build();
+		BDDMockito.given(paintingServiceHelper.getOwnPainting(paintingPatchSO.getUserId(),
+				paintingPatchSO.getPaintingId()))
+			.willReturn(painting);
+		PaintingResponseDTO paintingResponseDTO = PaintingResponseDTO.builder()
+			.id(paintingId)
+			.build();
+		BDDMockito.given(paintingConverter.toPaintingResponseDTO(painting))
+			.willReturn(paintingResponseDTO);
+		// when
+		PaintingResponseDTO ret = subject.updatePaintingTitle(paintingPatchSO);
+		// then
+		Assertions.assertAll("결괏값 검증", () -> {
+			Assertions.assertNotNull(ret);
+			Assertions.assertEquals(ret.getId(), paintingId);
+		});
+		BDDMockito.then(paintingServiceHelper).should(times(1)).getOwnPainting(userId, paintingId);
+		BDDMockito.then(paintingRepository).should(times(1)).save(painting);
 	}
 
 	@DisplayName("testGetPaintingDetails: Happy Case")
