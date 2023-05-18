@@ -118,7 +118,6 @@ public class StoryServiceImplTest {
 				.build();
 		storyList.add(storyListResponseDTO);
 
-
 		BDDMockito.given(storyConverter.toStoryListResponseDTO(storyEntity))
 				.willReturn(storyListResponseDTO);
 
@@ -137,7 +136,34 @@ public class StoryServiceImplTest {
 
 	@Test
 	public void testGetStoryList() {
-		throw new RuntimeException("not yet implemented");
+		// given
+		Pageable pageable = PageRequest.of(0, 3, Sort.unsorted());
+		List<StoryEntity> storyPageList = new ArrayList<>();
+
+		StoryEntity storyEntity = StoryEntity.builder().title("title").build();
+		storyPageList.add(storyEntity);
+		Page<StoryEntity> storyPage = new PageImpl<>(storyPageList, pageable, storyPageList.size());
+		BDDMockito.given(storyRepository.findAll(pageable)).willReturn(storyPage);
+
+		StoryListResponseDTO storyListResponseDTO = StoryListResponseDTO.builder()
+				.title("title")
+				.build();
+
+		BDDMockito.given(storyConverter.toStoryListResponseDTO(storyEntity))
+				.willReturn(storyListResponseDTO);
+
+		// when
+		Page<StoryListResponseDTO> ret = subject.getStoryList(pageable);
+
+		// then
+		Assertions.assertAll("결과값 검증", () -> {
+			Assertions.assertNotNull(ret);
+			Assertions.assertEquals(ret.getContent().get(0).getTitle(), "title");
+		});
+		BDDMockito.then(storyRepository)
+				.should(times(1))
+				.findAll(pageable);
+
 	}
 
 	@Test
