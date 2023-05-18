@@ -25,6 +25,7 @@ import com.c201.aebook.api.painting.persistence.entity.PaintingEntity;
 import com.c201.aebook.api.painting.persistence.entity.PaintingType;
 import com.c201.aebook.api.painting.persistence.repository.PaintingRepository;
 import com.c201.aebook.api.painting.presentation.dto.response.PaintingResponseDTO;
+import com.c201.aebook.api.painting.service.PaintingServiceHelper;
 import com.c201.aebook.api.user.persistence.entity.UserEntity;
 import com.c201.aebook.api.user.persistence.repository.UserRepository;
 import com.c201.aebook.api.vo.PaintingSO;
@@ -38,6 +39,8 @@ public class PaintingServiceImplTest {
 	private UserRepository userRepository;
 	@Mock
 	private PaintingConverter paintingConverter;
+	@Mock
+	private PaintingServiceHelper paintingServiceHelper;
 	@InjectMocks
 	private PaintingServiceImpl subject;
 
@@ -129,9 +132,24 @@ public class PaintingServiceImplTest {
 		throw new RuntimeException("not yet implemented");
 	}
 
+	@DisplayName("testGetPaintingDetails: Happy Case")
 	@Test
 	public void testGetPaintingDetails() {
-		throw new RuntimeException("not yet implemented");
+		// given
+		Long userId = 1L;
+		Long paintingId = 1L;
+		PaintingEntity painting = PaintingEntity.builder().title("title").build();
+		BDDMockito.given(paintingServiceHelper.getOwnPainting(userId, paintingId)).willReturn(painting);
+		PaintingResponseDTO responseDTO = PaintingResponseDTO.builder().title("title").build();
+		BDDMockito.given(paintingConverter.toPaintingResponseDTO(painting)).willReturn(responseDTO);
+		// when
+		PaintingResponseDTO ret = subject.getPaintingDetails(userId, paintingId);
+		// then
+		Assertions.assertAll("결괏값 검증", () -> {
+			Assertions.assertNotNull(ret);
+			Assertions.assertEquals(ret.getTitle(), "title");
+		});
+		BDDMockito.then(paintingServiceHelper).should(times(1)).getOwnPainting(userId, paintingId);
 	}
 
 	@DisplayName("testGetNewPaintingList: Happy Case")
@@ -160,10 +178,4 @@ public class PaintingServiceImplTest {
 		BDDMockito.then(paintingRepository).should(times(1)).findTop12ByTypeOrderByCreatedAtDesc(PaintingType.COLOR);
 
 	}
-
-	@Test
-	public void testGetOwnPainting() {
-		throw new RuntimeException("not yet implemented");
-	}
-
 }
