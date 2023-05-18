@@ -53,7 +53,6 @@ const storyStore = {
       commit('SET_CURRENT_PAGE', request.page)
       await searchMyStory(request)
         .then(({data}) => {
-          console.log(data)
           commit('SET_PAGE_SETTING', data.result)
           commit('SET_LIST', data.result.content)
         })
@@ -64,7 +63,6 @@ const storyStore = {
     async getStoryList ({commit}, request) {
       await searchStoryList(request)
         .then(({data}) => {
-          console.log(data)
           commit('SET_PAGE_SETTING', data.result)
           commit('SET_LIST', data.result.content)
         })
