@@ -114,7 +114,7 @@ public class PaintingControllerTest {
 		BDDMockito.given(
 				paintingConverter.toPaintingSO(any(Long.class), any(String.class), any(PaintingRequestDTO.class)))
 			.willReturn(paintingSO);
-		PaintingResponseDTO paintingResponseDTO = new PaintingResponseDTO();
+		PaintingResponseDTO paintingResponseDTO = PaintingResponseDTO.builder().build();
 		BDDMockito.given(paintingService.savePainting(paintingSO))
 			.willReturn(paintingResponseDTO);
 		// when
@@ -184,7 +184,7 @@ public class PaintingControllerTest {
 		BDDMockito.given(
 				paintingConverter.toPaintingPatchSO(any(Long.class), any(Long.class), any(PaintingTitleRequestDTO.class)))
 			.willReturn(paintingPatchSO);
-		PaintingResponseDTO paintingResponseDTO = new PaintingResponseDTO();
+		PaintingResponseDTO paintingResponseDTO = PaintingResponseDTO.builder().build();
 		BDDMockito.given(paintingService.updatePaintingTitle(paintingPatchSO))
 			.willReturn(paintingResponseDTO);
 		// when
@@ -205,7 +205,7 @@ public class PaintingControllerTest {
 		Long userId = 1L;
 		UserEntity user = UserEntity.builder().id(userId).build();
 		CustomUserDetails customUserDetails = new CustomUserDetails(user);
-		PaintingResponseDTO paintingResponseDTO = new PaintingResponseDTO();
+		PaintingResponseDTO paintingResponseDTO = PaintingResponseDTO.builder().build();
 		BDDMockito.given(paintingService.getPaintingDetails(userId, paintingId)).willReturn(paintingResponseDTO);
 
 		// when
@@ -228,7 +228,7 @@ public class PaintingControllerTest {
 		CustomUserDetails customUserDetails = new CustomUserDetails(user);
 
 		List<PaintingResponseDTO> bookList = new ArrayList<>();
-		bookList.add(new PaintingResponseDTO());
+		bookList.add(PaintingResponseDTO.builder().build());
 
 		Pageable pageable = PageRequest.of(0, 4, Sort.by(Sort.Direction.DESC, "createdAt"));
 		Page<PaintingResponseDTO> bookPage = new PageImpl<>(bookList, pageable, bookList.size());
@@ -250,7 +250,7 @@ public class PaintingControllerTest {
 	public void testGetNewPaintingList() throws Exception {
 		// given
 		List<PaintingResponseDTO> bookList = new ArrayList<>();
-		bookList.add(new PaintingResponseDTO());
+		bookList.add(PaintingResponseDTO.builder().build());
 
 		BDDMockito.given(paintingService.getNewPaintingList()).willReturn(bookList);
 
