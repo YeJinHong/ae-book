@@ -129,25 +129,30 @@ public class ItemReaderDelegate {
 		Date date = format.parse(pubDate);
 
 		//하위 태그인 subInfo에 접근
-		Node subInfoNode = getChildNode(itemNode, "subInfo");
-		Node usedListNode = getChildNode(subInfoNode, "usedList");
+		Optional<Node> subInfoNode = getChildNode(itemNode, "subInfo");
 
-		NodeList subInfoList = subInfoNode.getChildNodes();
-		NodeList userUsedList = usedListNode.getChildNodes();
+		if(!subInfoNode.isPresent()){
+			return Optional.empty();
+		}
+
+		Optional<Node> usedListNode = getChildNode(subInfoNode.get(), "usedList");
+
+		NodeList subInfoList = subInfoNode.get().getChildNodes();
+		NodeList userUsedList = usedListNode.get().getChildNodes();
 
 		Node userUsedNode = getChildNodeByTagName(userUsedList, "userUsed");
 		Node aladinUsedNode = getChildNodeByTagName(userUsedList, "aladinUsed");
 		Node spaceUsedNode = getChildNodeByTagName(userUsedList, "spaceUsed");
 
-		int userUsedPrice = parseToInteger(userUsedNode, "minPrice");//회원 직접 배송 중고의 보유 상품중 최저가 상품 판매가격
-		int newUsedBookprice = parseToInteger(itemNode, "priceSales");//새로 들어온 중고책 가격
-		int aladinUsedPrice = parseToInteger(aladinUsedNode, "minPrice");//알라딘 직접 배송 중고의 보유 상품중 최저가 상품 판매가격
-		int spaceUsedPrice = parseToInteger(spaceUsedNode, "minPrice");//광활한 우주점(매장 배송) 중고의 보유 상품중 최저가 상품 판매가격
+		int userUsedPrice = (int)parseToNumber(userUsedNode, "minPrice");//회원 직접 배송 중고의 보유 상품중 최저가 상품 판매가격
+		int newUsedBookprice = (int)parseToNumber(itemNode, "priceSales");//새로 들어온 중고책 가격
+		int aladinUsedPrice = (int)parseToNumber(aladinUsedNode, "minPrice");//알라딘 직접 배송 중고의 보유 상품중 최저가 상품 판매가격
+		int spaceUsedPrice = (int)parseToNumber(spaceUsedNode, "minPrice");//광활한 우주점(매장 배송) 중고의 보유 상품중 최저가 상품 판매가격
 
 		//보유 상품수
-		int aladinUsedItemCount = parseToInteger(aladinUsedNode, "itemCount");
-		int spaceUsedItemCount = parseToInteger(spaceUsedNode, "itemCount");
-		int userUsedItemCount = parseToInteger(userUsedNode, "itemCount");
+		int aladinUsedItemCount = (int)parseToNumber(aladinUsedNode, "itemCount");
+		int spaceUsedItemCount = (int)parseToNumber(spaceUsedNode, "itemCount");
+		int userUsedItemCount = (int)parseToNumber(userUsedNode, "itemCount");
 
 		ArrayList<Integer> prices = new ArrayList<>();
 		prices.add(newUsedBookprice);
@@ -175,8 +180,12 @@ public class ItemReaderDelegate {
 		}
 
 		Node newBookParentNode = getChildNodeByTagName(subInfoList, "newBookList");
-		Node newBookNode = getChildNode(newBookParentNode, "newBook");
-		long usedBookId = parseToInteger(newBookNode, "itemId");
+		Optional<Node> newBookNode = getChildNode(newBookParentNode, "newBook");
+		if(!newBookNode.isPresent()){
+			return Optional.empty();
+		}
+
+		long usedBookId = parseToNumber(newBookNode.get(), "itemId");
 
 		long minPriceBookId = 0;
 
@@ -196,7 +205,7 @@ public class ItemReaderDelegate {
 			}
 			minPriceBookId = usedBookId;
 			//isbn 구함
-			String subInfoIsbn = getChildText(newBookNode, "isbn");
+			String subInfoIsbn = getChildText(newBookNode.get(), "isbn");
 
 			//도서 상세 페이지로 접속
 			String detailUrl = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx";
@@ -258,13 +267,10 @@ public class ItemReaderDelegate {
 	}
 
 	/*
-	 * 해당 태그의 값을 Integer로 변환
+	 * 해당 태그의 값을 숫자로 변환
 	 * */
-	private int parseToInteger(Node nodeItem, String tagName) {
-		if (getChildText(nodeItem, tagName) != null) {
-			return Integer.parseInt(getChildText(nodeItem, tagName));
-		}
-		return 0;
+	private long parseToNumber(Node nodeItem, String tagName) {
+		return getChildText(nodeItem, tagName) != null ?  Long.parseLong(getChildText(nodeItem, tagName)) : 0;
 	}
 
 	/*
@@ -328,9 +334,9 @@ public class ItemReaderDelegate {
 		return data == null || data.isEmpty();
 	}
 
-	private Node getChildNode(Node parentNode, String tagName) {
+	private Optional<Node> getChildNode(Node parentNode, String tagName) {
 		NodeList nodeList = parentNode.getChildNodes();
-		return getChildNodeByTagName(nodeList, tagName);
+		return Optional.ofNullable(getChildNodeByTagName(nodeList, tagName));
 	}
 
 }
