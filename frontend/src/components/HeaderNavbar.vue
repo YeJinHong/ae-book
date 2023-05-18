@@ -14,7 +14,7 @@
                 <b-nav-item>
                     <router-link to="/story">
                       <div class="nav-menu first">
-                        <span>동화책 만들기</span>
+                        <span>내가 만드는 동화</span>
                       </div>
                     </router-link>
                 </b-nav-item>

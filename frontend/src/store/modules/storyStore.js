@@ -74,7 +74,7 @@ const storyStore = {
       await registerStory(request)
         .then(({ data }) => {
           commit('SET_STORY', data.result)
-          searchStory({page: 0})
+          searchStoryList({page: 0})
             .then(({ data }) => {
               commit('SET_PAGE_SETTING', data.result)
               commit('SET_LIST', data.result.content)
@@ -99,7 +99,7 @@ const storyStore = {
         .then(({data}) => {
           alert('성공적으로 삭제했습니다.')
           commit('DELETE_STORY', data.result)
-          searchStory({page: state.currentPage})
+          searchMyStory({page: state.currentPage})
             .then(({ data }) => {
               commit('SET_PAGE_SETTING', data.result)
               commit('SET_LIST', data.result.content)
