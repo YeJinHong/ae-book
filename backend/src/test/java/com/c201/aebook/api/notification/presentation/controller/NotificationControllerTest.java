@@ -1,6 +1,7 @@
 package com.c201.aebook.api.notification.presentation.controller;
 
 import com.c201.aebook.api.notification.presentation.dto.request.NotificationRequestDTO;
+import com.c201.aebook.api.notification.presentation.dto.response.NotificationBookDetailResponseDTO;
 import com.c201.aebook.api.notification.presentation.dto.response.NotificationBookListResponseDTO;
 import com.c201.aebook.api.notification.presentation.dto.response.NotificationResponseDTO;
 import com.c201.aebook.api.notification.presentation.vaildator.NotificationValidator;
@@ -121,8 +122,21 @@ public class NotificationControllerTest {
 	}
 
 	@Test
-	public void testGetNotificationBookDetail() {
-		throw new RuntimeException("not yet implemented");
+	public void testGetNotificationBookDetail() throws Exception {
+		// given
+		CustomUserDetails customUserDetails = new CustomUserDetails(UserEntity.builder().id(1L).build());
+		Long notificationId = 1L;
+
+		BDDMockito.given(notificationService.getMyNotificationBookDetail(notificationId)).willReturn(NotificationBookDetailResponseDTO.builder().build());
+
+		// when
+		mockMvc.perform(get("/notifications/" + notificationId)
+						.with(user(customUserDetails)))
+				.andExpect(status().isOk())
+				.andDo(print());
+
+		// then
+		BDDMockito.then(notificationService).should(times(1)).getMyNotificationBookDetail(notificationId);
 	}
 
 	@Test
