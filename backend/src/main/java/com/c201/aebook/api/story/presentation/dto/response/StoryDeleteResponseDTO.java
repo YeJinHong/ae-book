@@ -1,13 +1,14 @@
 package com.c201.aebook.api.story.presentation.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@Builder
 public class StoryDeleteResponseDTO {
 	@Schema(description = "동화 Id", defaultValue = "1")
 	private Long storyId;
