@@ -1,6 +1,7 @@
 package com.c201.aebook.api.notification.presentation.controller;
 
 import com.c201.aebook.api.notification.presentation.dto.request.NotificationRequestDTO;
+import com.c201.aebook.api.notification.presentation.dto.response.NotificationBookListResponseDTO;
 import com.c201.aebook.api.notification.presentation.dto.response.NotificationResponseDTO;
 import com.c201.aebook.api.notification.presentation.vaildator.NotificationValidator;
 import com.c201.aebook.api.notification.service.impl.NotificationServiceImpl;
@@ -21,6 +22,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
@@ -28,6 +30,9 @@ import org.springframework.security.web.method.annotation.AuthenticationPrincipa
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Mockito.times;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -91,8 +96,28 @@ public class NotificationControllerTest {
 	}
 
 	@Test
-	public void testGetNotificationBookList() {
-		throw new RuntimeException("not yet implemented");
+	@DisplayName("testGetNotificationBookList: Happy Case")
+	public void testGetNotificationBookList() throws Exception {
+		// given
+		CustomUserDetails customUserDetails = new CustomUserDetails(UserEntity.builder().id(1L).build());
+		Pageable pageable = PageRequest.of(0, 6, Sort.Direction.DESC, "createdAt");
+
+		List<NotificationBookListResponseDTO> list = new ArrayList<>();
+		list.add(NotificationBookListResponseDTO.builder().isbn("0123456789").title("test title").price(5000).build());
+		list.add(NotificationBookListResponseDTO.builder().isbn("1234567890").title("test title2").price(6000).build());
+
+		Page<NotificationBookListResponseDTO> page = new PageImpl<>(list, pageable, list.size());
+		BDDMockito.given(notificationService.getMyNotificationBookList(customUserDetails.getUsername(), pageable)).willReturn(page);
+
+		// when
+		mockMvc.perform(get("/notifications")
+						.with(user(customUserDetails)))
+				.andExpect(status().isOk())
+				.andDo(print());
+
+		// then
+		BDDMockito.then(notificationService).should(times(1)).getMyNotificationBookList(customUserDetails.getUsername(), pageable);
+
 	}
 
 	@Test
