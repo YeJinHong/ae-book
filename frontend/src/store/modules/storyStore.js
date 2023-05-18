@@ -45,6 +45,9 @@ const storyStore = {
   getters: {
     getStoryId: state => {
       return state.storyId
+    },
+    getStoryPageSetting: state => {
+      return state.storyPageSetting
     }
   },
 
@@ -84,7 +87,14 @@ const storyStore = {
           alert('수정에 실패했습니다. ' + error)
         })
     },
-    async deleteStoryById ({ commit, state }, storyId) {
+    async deleteStoryById ({ commit, state }, payload) {
+      const storyId = payload.id
+      const flag = payload.flag
+      if (flag === true) {
+        commit('SET_CURRENT_PAGE', state.currentPage - 1)
+      } else {
+        commit('SET_CURRENT_PAGE', state.currentPage)
+      }
       await deleteStory(storyId)
         .then(({data}) => {
           alert('성공적으로 삭제했습니다.')
