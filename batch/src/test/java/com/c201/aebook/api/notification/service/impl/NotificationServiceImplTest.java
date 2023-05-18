@@ -3,8 +3,11 @@ package com.c201.aebook.api.notification.service.impl;
 import static org.mockito.Mockito.times;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.c201.aebook.api.user.persistence.entity.UserEntity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.simple.parser.ParseException;
@@ -13,14 +16,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.c201.aebook.api.notification.persistence.entity.NotificationEntity;
@@ -91,8 +89,45 @@ public class NotificationServiceImplTest {
 	}
 
 	@Test
+	@DisplayName("testLowestPriceTalk: Happy Case")
 	public void testLowestPriceTalk() {
-		throw new RuntimeException("not yet implemented");
+		// given
+		String token = "talk token";
+		String bookTitle = "test book title";
+		String notificationSubject = "도서 최저가 갱신";
+
+		UserEntity user1 = UserEntity.builder().nickname("test nickname").phone("010-0000-0000").build();
+		NotificationEntity notification1 = NotificationEntity.builder().user(user1).build();
+		List<NotificationEntity> userList = new ArrayList<>();
+		userList.add(notification1);
+
+		String response = "{\"code\": 0, \"message\": \"성공적으로 전송요청 하였습니다.\", \"info\": {\"type\": \"AT\", \"mid\": 571413780, \"current\": \"49889.5\", \"unit\": 6.5, \"total\": 6.5, \"scnt\": 1, \"fcnt\": 0}}";
+		ResponseEntity<String> mockedResponse = ResponseEntity.ok(response);
+
+		ReflectionTestUtils.setField(subject, "TalkApiKey", "TestTalkApiKey");
+		ReflectionTestUtils.setField(subject, "TalkUserId", "TestTalkUserId");
+		ReflectionTestUtils.setField(subject, "TalkSenderKey", "TestSenderKey");
+		ReflectionTestUtils.setField(subject, "LowestPriceTplCode", "TestTplCode");
+		ReflectionTestUtils.setField(subject, "TalkSender", "TestSender");
+		ReflectionTestUtils.setField(subject, "aebookUrl", "aebookUrl");
+
+		BDDMockito.given(restTemplate.exchange(
+				eq("https://kakaoapi.aligo.in/akv10/alimtalk/send/"),
+				eq(HttpMethod.POST),
+				Matchers.<HttpEntity<MultiValueMap<String, Object>>>any(),
+				eq(String.class)
+		)).willReturn(ResponseEntity.ok().body(response));
+
+		// when
+		ResponseEntity<String> ret = subject.LowestPriceTalk(token, userList, bookTitle);
+
+		// then
+		Assertions.assertAll("결괏값 검증", () -> {
+			Assertions.assertNotNull(ret);
+			Assertions.assertEquals(ret.getStatusCode(), HttpStatus.OK);
+			Assertions.assertEquals(ret.getBody(), response);
+		});
+
 	}
 
 	@Test
