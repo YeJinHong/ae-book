@@ -106,9 +106,6 @@ const paintingStore = {
           // 메모리 누수 방지
           URL.revokeObjectURL(downloadLink.href)
         })
-        .catch(
-          alert('그림 다운로드에 실패했습니다.')
-        )
     },
     async deletePainting ({ dispatch }, request) {
       await deletePainting(request.paintingId)
@@ -116,9 +113,6 @@ const paintingStore = {
           alert('그림을 성공적으로 삭제했습니다.')
           dispatch('getPaintingList', request)
         })
-        .catch(
-          alert('그림 삭제에 실패했습니다.')
-        )
     },
     async updatePaintingTitle ({ commit }, request) {
       await updatePaintingTitle(request)
@@ -127,9 +121,6 @@ const paintingStore = {
           commit('SET_PAINTING', data.result)
           commit('UPDATE_PAINTING', data.result)
         })
-        .catch(
-          alert('그림 제목을 수정에 실패했습니다.')
-        )
     },
     async getNewPainting ({ commit }, request) {
       await getNewPainting(request)
