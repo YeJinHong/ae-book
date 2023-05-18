@@ -18,6 +18,8 @@ import com.c201.aebook.api.painting.persistence.entity.PaintingEntity;
 import com.c201.aebook.api.painting.persistence.repository.PaintingRepository;
 import com.c201.aebook.api.user.persistence.entity.UserEntity;
 import com.c201.aebook.api.user.persistence.repository.UserRepository;
+import com.c201.aebook.utils.exception.CustomException;
+import com.c201.aebook.utils.exception.ErrorCode;
 
 @ExtendWith(MockitoExtension.class)
 class PaintingServiceHelperTest {
@@ -58,7 +60,7 @@ class PaintingServiceHelperTest {
 	@Test
 	void testGetOwnPainting2() {
 		// given
-		Long authorUserId = 1L;
+		Long authorUserId = 2L;
 		Long loginUserId = 1L;
 		Long paintingId = 1L;
 		UserEntity authorUserEntity = UserEntity.builder().id(authorUserId).build();
@@ -67,7 +69,13 @@ class PaintingServiceHelperTest {
 		PaintingEntity paintingEntity = PaintingEntity.builder().id(paintingId).user(authorUserEntity).build();
 		BDDMockito.given(paintingRepository.findById(paintingId)).willReturn(Optional.of(paintingEntity));
 		// when
+		Throwable throwable = Assertions.assertThrows(CustomException.class, () -> {
+			subject.getOwnPainting(loginUserId, paintingId);
+		});
 		// then
+		Assertions.assertAll("결괏값 검증", () -> {
+			Assertions.assertEquals(((CustomException)throwable).getErrorCode(), ErrorCode.FORBIDDEN_USER);
+		});
 		BDDMockito.then(userRepository).should(times(1)).findById(loginUserId);
 		BDDMockito.then(paintingRepository).should(times(1)).findById(paintingId);
 	}
