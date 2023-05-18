@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import ReviewScoreView from './ReviewScoreView.vue'
 import ReviewModifyScoreView from './ReviewModifyScoreView.vue'
 
@@ -88,11 +88,13 @@ export default {
 
       // 더보기
       isTruncated: false,
-      isExpanded: false
+      isExpanded: false,
+      reviewMyPageSetting: null
     }
   },
   computed: {
-    ...mapState(bookStore, ['book'])
+    ...mapState(bookStore, ['book']),
+    ...mapGetters(reviewStore, ['getReviewMyPageSetting'])
   },
   methods: {
     ...mapActions(reviewStore, ['modifyReviewAction', 'deleteReviewAction']),
@@ -130,6 +132,8 @@ export default {
         await this.modifyReviewAction(payload)
         await this.$emit('paging', this.page + 1)
 
+        console.log(this.book)
+
         this.book.scoreSum += this.updateScore - this.review.score
         // 2. 수정 반영해서 리스트 가져오기 : emit 완료보다 상태변경이 빨라서 딜레이 설정
         setTimeout(() => {
@@ -157,11 +161,19 @@ export default {
     async deleteReview () {
       if (confirm('삭제하시겠습니까?')) {
         await this.deleteReviewAction(this.review.id)
+        console.log(this.review.isbn)
+        this.getBookDetail(this.review.isbn)
+        console.log(this.book)
         this.book.scoreSum -= this.review.score
         this.book.reviewCount -= 1
       }
+      this.reviewMyPageSetting = this.getReviewMyPageSetting
 
-      this.$emit('paging', this.page + 1)
+      if (this.reviewMyPageSetting.numberOfElements === 1) {
+        this.$emit('paging', this.page)
+      } else {
+        this.$emit('paging', this.page + 1)
+      }
     },
     check (index) {
       this.review.score = index
