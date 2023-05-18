@@ -73,6 +73,7 @@ public class StoryServiceImpl implements StoryService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public StoryDetailResponseDTO getStoryDetail(Long storyId) {
 		// 1. Story 유효성 검증
 		StoryEntity storyEntity = storyRepository.findById(storyId)
