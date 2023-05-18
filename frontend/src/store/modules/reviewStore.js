@@ -28,6 +28,9 @@ const reviewStore = {
     },
     getReviewBookList: state => {
       return state.reviewBookList
+    },
+    getReviewMyPageSetting: state => {
+      return state.reviewMyPageSetting
     }
   },
   /*
