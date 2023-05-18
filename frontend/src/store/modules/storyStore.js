@@ -1,4 +1,4 @@
-import { searchStory, registerStory, updateStoryTitle, deleteStory } from '@/api/story'
+import { searchMyStory, registerStory, updateStoryTitle, deleteStory, searchStoryList } from '@/api/story'
 import Vue from 'vue'
 
 const storyStore = {
@@ -49,9 +49,19 @@ const storyStore = {
   },
 
   actions: {
-    async getStoryList ({commit}, request) {
+    async getMyStoryList ({commit}, request) {
       commit('SET_CURRENT_PAGE', request.page)
-      await searchStory(request)
+      await searchMyStory(request)
+        .then(({data}) => {
+          commit('SET_PAGE_SETTING', data.result)
+          commit('SET_LIST', data.result.content)
+        })
+        .catch(error => {
+          console.error(error)
+        })
+    },
+    async getStoryList ({commit}, request) {
+      await searchStoryList(request)
         .then(({data}) => {
           commit('SET_PAGE_SETTING', data.result)
           commit('SET_LIST', data.result.content)
