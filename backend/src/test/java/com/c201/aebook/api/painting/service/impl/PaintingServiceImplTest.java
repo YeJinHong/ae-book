@@ -117,9 +117,18 @@ public class PaintingServiceImplTest {
 			.findByUserIdAndType(userId, type, pageable);
 	}
 
+	@DisplayName("testDeletePainting: Happy Case")
 	@Test
 	public void testDeletePainting() {
-		throw new RuntimeException("not yet implemented");
+		// given
+		Long userId = 1L;
+		Long paintingId = 1L;
+		PaintingEntity painting = PaintingEntity.builder().title("title").build();
+		BDDMockito.given(paintingServiceHelper.getOwnPainting(userId, paintingId)).willReturn(painting);
+		// when
+		subject.deletePainting(userId, paintingId);
+		// then
+		BDDMockito.then(paintingServiceHelper).should(times(1)).getOwnPainting(userId, paintingId);
 	}
 
 	@Test
