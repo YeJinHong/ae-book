@@ -171,8 +171,20 @@ public class NotificationControllerTest {
 	}
 
 	@Test
-	public void testDeleteNotification() {
-		throw new RuntimeException("not yet implemented");
+	@DisplayName("testDeleteNotification: Happy Case")
+	public void testDeleteNotification() throws Exception {
+		// given
+		CustomUserDetails customUserDetails = new CustomUserDetails(UserEntity.builder().id(1L).build());
+		Long notificationId = 1L;
+
+		// when
+		mockMvc.perform(delete("/notifications/" + notificationId)
+						.with(user(customUserDetails)))
+				.andExpect(status().isOk())
+				.andDo(print());
+
+		// then
+		BDDMockito.then(notificationService).should(times(1)).deleteNotification(customUserDetails.getUsername(), notificationId);
 	}
 
 }
