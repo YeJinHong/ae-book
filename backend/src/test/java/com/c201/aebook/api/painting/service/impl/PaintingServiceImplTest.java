@@ -134,9 +134,31 @@ public class PaintingServiceImplTest {
 		throw new RuntimeException("not yet implemented");
 	}
 
+	@DisplayName("testGetNewPaintingList: Happy Case")
 	@Test
 	public void testGetNewPaintingList() {
-		throw new RuntimeException("not yet implemented");
+		// given
+		List<PaintingEntity> paintingList = new ArrayList<>();
+		PaintingEntity painting = PaintingEntity.builder().title("title").type(PaintingType.COLOR).build();
+		paintingList.add(painting);
+		BDDMockito.given(paintingRepository.findTop12ByTypeOrderByCreatedAtDesc(PaintingType.COLOR))
+			.willReturn(paintingList);
+
+		PaintingResponseDTO responseDTO = PaintingResponseDTO.builder()
+			.title(painting.getTitle())
+			.build();
+
+		BDDMockito.given(paintingConverter.toPaintingResponseDTO(painting))
+			.willReturn(responseDTO);
+		// when
+		List<PaintingResponseDTO> ret = subject.getNewPaintingList();
+		// then
+		Assertions.assertAll("결괏값 검증", () -> {
+			Assertions.assertNotNull(ret);
+			Assertions.assertEquals(ret.get(0).getTitle(), "title");
+		});
+		BDDMockito.then(paintingRepository).should(times(1)).findTop12ByTypeOrderByCreatedAtDesc(PaintingType.COLOR);
+
 	}
 
 	@Test
