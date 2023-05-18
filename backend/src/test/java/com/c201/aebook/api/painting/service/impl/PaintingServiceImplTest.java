@@ -1,12 +1,44 @@
 package com.c201.aebook.api.painting.service.impl;
 
+import static org.mockito.Mockito.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.BDDMockito;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
+import com.c201.aebook.api.painting.persistence.entity.PaintingEntity;
+import com.c201.aebook.api.painting.persistence.entity.PaintingType;
+import com.c201.aebook.api.painting.persistence.repository.PaintingRepository;
+import com.c201.aebook.api.painting.presentation.dto.response.PaintingResponseDTO;
+import com.c201.aebook.api.user.persistence.entity.UserEntity;
+import com.c201.aebook.api.user.persistence.repository.UserRepository;
+import com.c201.aebook.converter.PaintingConverter;
 
 @ExtendWith(MockitoExtension.class)
 public class PaintingServiceImplTest {
+	@Mock
+	private PaintingRepository paintingRepository;
+	@Mock
+	private UserRepository userRepository;
+	@Mock
+	private PaintingConverter paintingConverter;
+	@InjectMocks
+	private PaintingServiceImpl subject;
 
 	@BeforeEach
 	protected void setUp() throws Exception {
@@ -17,9 +49,35 @@ public class PaintingServiceImplTest {
 		throw new RuntimeException("not yet implemented");
 	}
 
+	@DisplayName("testGetPaintingList: Happy Case")
 	@Test
 	public void testGetPaintingList() {
-		throw new RuntimeException("not yet implemented");
+		// given
+		Long userId = 1L;
+		UserEntity userEntity = UserEntity.builder().id(userId).build();
+		BDDMockito.given(userRepository.findById(userId))
+			.willReturn(Optional.of(userEntity));
+		PaintingType type = PaintingType.COLOR;
+		Pageable pageable = PageRequest.of(0, 10, Sort.unsorted());
+		List<PaintingEntity> paintingList = new ArrayList<>();
+		PaintingEntity painting = PaintingEntity.builder().title("title").build();
+		paintingList.add(painting);
+		Page<PaintingEntity> paintingPage = new PageImpl<>(paintingList, pageable, paintingList.size());
+		BDDMockito.given(paintingRepository.findByUserIdAndType(userId, type, pageable))
+			.willReturn(paintingPage);
+		PaintingResponseDTO paintingResponseDTO = PaintingResponseDTO.builder().title("title").build();
+		BDDMockito.given(paintingConverter.toPaintingResponseDTO(painting))
+			.willReturn(paintingResponseDTO);
+		// when
+		Page<PaintingResponseDTO> ret = subject.getPaintingList(userId, type, pageable);
+		// then
+		Assertions.assertAll("결괏값 검증", () -> {
+			Assertions.assertNotNull(ret);
+			Assertions.assertEquals(ret.getContent().get(0).getTitle(), "title");
+		});
+		BDDMockito.then(paintingRepository)
+			.should(times(1))
+			.findByUserIdAndType(userId, type, pageable);
 	}
 
 	@Test
