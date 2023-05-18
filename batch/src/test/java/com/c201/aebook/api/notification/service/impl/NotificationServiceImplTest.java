@@ -214,8 +214,42 @@ public class NotificationServiceImplTest {
 	}
 
 	@Test
+	@DisplayName("testContainsKeyStartingWith: Happy Case")
 	public void testContainsKeyStartingWith() {
-		throw new RuntimeException("not yet implemented");
+		// given
+		MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+		map.add("apikey", "apikey");
+		map.add("userid", "userId");
+		map.add("receiver", "receiver");
+		String keyPrefix = "receiver";
+
+		// when
+		boolean ret = subject.containsKeyStartingWith(map, keyPrefix);
+
+		// then
+		Assertions.assertAll("결괏값 검증", () -> {
+			Assertions.assertNotNull(ret);
+			Assertions.assertTrue(ret);
+		});
+	}
+
+	@Test
+	@DisplayName("testContainsKeyStartingWith: Sad Case")
+	public void testContainsKeyStartingWith1() {
+		// given
+		MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+		map.add("apikey", "apikey");
+		map.add("userid", "userId");
+		String keyPrefix = "receiver";
+
+		// when
+		boolean ret = subject.containsKeyStartingWith(map, keyPrefix);
+
+		// then
+		Assertions.assertAll("결괏값 검증", () -> {
+			Assertions.assertNotNull(ret);
+			Assertions.assertFalse(ret);
+		});
 	}
 
 }
